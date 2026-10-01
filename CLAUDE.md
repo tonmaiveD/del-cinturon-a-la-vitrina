@@ -15,6 +15,12 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
 
 ## Flujo de trabajo
 
+- **Todo el proyecto vive en esta carpeta** (`~/Documents/del-cinturon-a-la-vitrina`): código,
+  datos, texturas, reportes, configuración de vista previa. No dejar archivos ni configuración
+  del proyecto en otras carpetas.
+- Commits: git no tiene identidad global; usar
+  `git -c user.name="Pablo Hoffenberg" -c user.email="apaec@yahoo.com" commit ...`.
+- Al retomar: leer la sección **Estado** de este archivo.
 - Una etapa a la vez: proponer → esperar OK del usuario → implementar → verificar → documentar.
 - No avanzar de fase sin confirmación. Al cerrar fase: resumen, deuda técnica, riesgos y capturas
   en `docs/cierres/`.
@@ -37,8 +43,8 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
   Three coincide con ECEF bajo ese mapeo; el globo se orienta con ECEF → EQJ de la fecha.
 - Escala visual: Sol ×10, planetas ×1500, marcador del bólido 60 km. Siempre etiquetada.
 - Texturas en `public/texturas/` (Blue Marble reescalada: 4096 escritorio, 2048 móvil).
-- Vista previa: la herramienta del navegador lee `.claude/launch.json` de la carpeta de la sesión
-  (`~/Downloads/apple_health_export`), donde hay una entrada `meteoritos-vite`.
+- Vista previa: `.claude/launch.json` del proyecto (configuración `vite`, puerto 5173). La sesión
+  de trabajo debe estar abierta en esta carpeta para que la herramienta de vista previa la lea.
 
 ## Núcleo orbital (`src/core/`)
 

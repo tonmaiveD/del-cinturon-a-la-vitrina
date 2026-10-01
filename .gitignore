@@ -5,3 +5,4 @@ dist
 tests/e2e/.resultados
 playwright-report
 .DS_Store
+.claude/settings.local.json
