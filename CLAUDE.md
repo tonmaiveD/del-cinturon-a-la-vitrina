@@ -57,6 +57,11 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
 - `npm run validate` (corre también en `build`) falla si: un esquema no valida, se referencia una
   fuente inexistente, o un valor "verificado" usa una fuente con `metadatos_verificados: false`.
 - `npm run schemas` exporta JSON Schema a `docs/esquemas/`.
+- Incertidumbres: `sigma` siempre 1σ; si la fuente publica 2σ se guarda también `sigma_publicada`
+  y `nivel_sigma` (el esquema verifica la conversión). Popova et al. 2013 publica a **2σ**.
+- `data/cneos/*.json`: respuestas crudas de la API, sin modificar, con URL y fecha de consulta.
+- Discrepancia conocida CNEOS vs. Popova para Chelyabinsk: hora del pico 03:20:26 vs 03:20:32.2 UTC
+  y altura 23,3 vs 29,7 km. Tenerla en cuenta en la etapa 3.
 - Fichas narrativas: `content/fichas/*.md` con `estado: borrador | aprobada`; solo se publican
   las aprobadas. Se generan con la API de Claude en build, nunca en el navegador (Fase 4).
 
@@ -85,8 +90,17 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
 
 - **Fase 0 (andamiaje): completa.**
 - **Fase 1, etapa 1 (núcleo orbital + tests): completa** (38 tests).
-- Siguiente: Fase 1, etapa 2 — datos de Chelyabinsk (Borovička 2013, Popova 2013, CNEOS,
-  MetBull) con fuentes (esperando OK).
+- **Fase 1, etapa 2 (datos de Chelyabinsk): completa** con dos pendientes (ver abajo).
+- Siguiente: Fase 1, etapa 3 — órbita desde el vector CNEOS + Monte Carlo + reporte de
+  validación (esperando OK).
+
+### Pendientes de datos
+
+- **MetBull** responde con verificación anti-bots: nombre oficial, masa y punto de caída siguen
+  "pendiente" (no se intenta eludir la verificación). Requiere que el usuario consulte el registro
+  57165 o una vía de acceso autorizada.
+- **Borovička et al. 2013**: elementos en la Tabla 2 del artículo de pago; no leídos. Referencias
+  de órbita usadas: Popova et al. 2013 (Tabla 1, 2σ) y Emel'yanenko et al. 2014 (arXiv, formal).
 
 ## Deuda técnica conocida
 

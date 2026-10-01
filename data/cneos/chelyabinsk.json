@@ -1,0 +1,40 @@
+{
+  "fuente": "cneos-fireball-api",
+  "consulta": "https://ssd-api.jpl.nasa.gov/fireball.api?date-min=2013-02-15&date-max=2013-02-16&vel-comp=true",
+  "consultado": "2026-10-01T13:55:44Z",
+  "nota": "Respuesta cruda sin modificar. Campos según la documentación oficial: date (UTC, pico de brillo), energy (energía radiada total, ×1e10 J), impact-e (energía de impacto estimada, kt), alt (km), vel (km/s), vx/vy/vz (km/s, 'Earth centered').",
+  "respuesta": {
+    "signature": { "source": "NASA/JPL Fireball Data API", "version": "1.2" },
+    "count": "1",
+    "fields": [
+      "date",
+      "energy",
+      "impact-e",
+      "lat",
+      "lat-dir",
+      "lon",
+      "lon-dir",
+      "alt",
+      "vel",
+      "vx",
+      "vy",
+      "vz"
+    ],
+    "data": [
+      [
+        "2013-02-15 03:20:26",
+        "37500",
+        "441",
+        "54.8",
+        "N",
+        "61.1",
+        "E",
+        "23.3",
+        "18.6",
+        "12.80",
+        "-13.30",
+        "-2.40"
+      ]
+    ]
+  }
+}

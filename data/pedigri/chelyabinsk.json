@@ -1,0 +1,242 @@
+{
+  "id": "chelyabinsk",
+  "nombre_oficial": {
+    "valor": "Chelyabinsk",
+    "fuente": "metbull",
+    "ubicacion": "registro 57165",
+    "estado": "pendiente",
+    "nota": "Nombre usado en la literatura; falta confirmarlo en MetBull."
+  },
+  "metbull_id": 57165,
+  "clase": {
+    "valor": "LL5",
+    "fuente": "popova-2013-science",
+    "ubicacion": "texto principal, caracterización del meteorito",
+    "estado": "verificado",
+    "nota": "Choque S4 según la misma fuente."
+  },
+  "fecha_caida": {
+    "valor": "2013-02-15T03:20:32.2Z",
+    "unidad": "UTC",
+    "sigma": 0.1,
+    "sigma_publicada": 0.1,
+    "nivel_sigma": "formal-sin-nivel",
+    "fuente": "popova-2013-science",
+    "ubicacion": "texto principal, sección de trayectoria",
+    "estado": "verificado",
+    "nota": "Instante del pico de radiación (no de llegada al suelo). Incertidumbre ±0.1 s, nivel no declarado en el texto."
+  },
+  "radiante_geocentrico": {
+    "ra": {
+      "valor": 333.2,
+      "unidad": "grados",
+      "sigma": 0.8,
+      "sigma_publicada": 1.6,
+      "nivel_sigma": "2-sigma",
+      "fuente": "popova-2013-science",
+      "ubicacion": "Tabla 1",
+      "estado": "verificado"
+    },
+    "dec": {
+      "valor": 0.3,
+      "unidad": "grados",
+      "sigma": 0.9,
+      "sigma_publicada": 1.8,
+      "nivel_sigma": "2-sigma",
+      "fuente": "popova-2013-science",
+      "ubicacion": "Tabla 1",
+      "estado": "verificado"
+    },
+    "v_geocentrica": {
+      "valor": 15.3,
+      "unidad": "km/s",
+      "sigma": 0.2,
+      "sigma_publicada": 0.4,
+      "nivel_sigma": "2-sigma",
+      "fuente": "popova-2013-science",
+      "ubicacion": "Tabla 1",
+      "estado": "verificado"
+    },
+    "v_entrada": {
+      "valor": 19.16,
+      "unidad": "km/s",
+      "sigma": 0.15,
+      "sigma_publicada": 0.3,
+      "nivel_sigma": "2-sigma",
+      "fuente": "popova-2013-science",
+      "ubicacion": "Tabla 1",
+      "estado": "verificado"
+    }
+  },
+  "orbitas": [
+    {
+      "fuente": "popova-2013-science",
+      "ubicacion": "Tabla 1, columna \"Pre-atmospheric orbit Chelyabinsk\"",
+      "marco": "ecliptica-J2000",
+      "epoca": {
+        "valor": "2013-02-15.139",
+        "unidad": "ET (fecha decimal)",
+        "fuente": "popova-2013-science",
+        "ubicacion": "Tabla 1",
+        "estado": "verificado"
+      },
+      "a": {
+        "valor": 1.76,
+        "unidad": "AU",
+        "sigma": 0.08,
+        "sigma_publicada": 0.16,
+        "nivel_sigma": "2-sigma",
+        "fuente": "popova-2013-science",
+        "ubicacion": "Tabla 1",
+        "estado": "verificado"
+      },
+      "e": {
+        "valor": 0.581,
+        "sigma": 0.009,
+        "sigma_publicada": 0.018,
+        "nivel_sigma": "2-sigma",
+        "fuente": "popova-2013-science",
+        "ubicacion": "Tabla 1",
+        "estado": "verificado"
+      },
+      "i": {
+        "valor": 4.93,
+        "unidad": "grados",
+        "sigma": 0.24,
+        "sigma_publicada": 0.48,
+        "nivel_sigma": "2-sigma",
+        "fuente": "popova-2013-science",
+        "ubicacion": "Tabla 1",
+        "estado": "verificado"
+      },
+      "omega": {
+        "valor": 108.3,
+        "unidad": "grados",
+        "sigma": 1.9,
+        "sigma_publicada": 3.8,
+        "nivel_sigma": "2-sigma",
+        "fuente": "popova-2013-science",
+        "ubicacion": "Tabla 1",
+        "estado": "verificado"
+      },
+      "nodo": {
+        "valor": 326.4422,
+        "unidad": "grados",
+        "sigma": 0.0014,
+        "sigma_publicada": 0.0028,
+        "nivel_sigma": "2-sigma",
+        "fuente": "popova-2013-science",
+        "ubicacion": "Tabla 1",
+        "estado": "verificado"
+      },
+      "q": {
+        "valor": 0.739,
+        "unidad": "AU",
+        "sigma": 0.01,
+        "sigma_publicada": 0.02,
+        "nivel_sigma": "2-sigma",
+        "fuente": "popova-2013-science",
+        "ubicacion": "Tabla 1",
+        "estado": "verificado"
+      },
+      "Q": {
+        "valor": 2.78,
+        "unidad": "AU",
+        "sigma": 0.1,
+        "sigma_publicada": 0.2,
+        "nivel_sigma": "2-sigma",
+        "fuente": "popova-2013-science",
+        "ubicacion": "Tabla 1",
+        "estado": "verificado"
+      },
+      "tiempo_perihelio": {
+        "valor": "2012-12-31.9",
+        "unidad": "fecha decimal",
+        "sigma": 1.0,
+        "sigma_publicada": 2.0,
+        "nivel_sigma": "2-sigma",
+        "fuente": "popova-2013-science",
+        "ubicacion": "Tabla 1",
+        "estado": "verificado",
+        "nota": "σ en días."
+      }
+    },
+    {
+      "fuente": "emelyanenko-2014-arxiv",
+      "ubicacion": "Tabla 1",
+      "marco": "ecliptica-J2000",
+      "epoca": {
+        "valor": "2013-02-15.0",
+        "unidad": "TT (fecha decimal)",
+        "fuente": "emelyanenko-2014-arxiv",
+        "ubicacion": "Tabla 1",
+        "estado": "verificado"
+      },
+      "a": {
+        "valor": 1.8804986,
+        "unidad": "AU",
+        "sigma": 0.068,
+        "sigma_publicada": 0.068,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "emelyanenko-2014-arxiv",
+        "ubicacion": "Tabla 1",
+        "estado": "verificado",
+        "nota": "Incertidumbre formal de mínimos cuadrados; la fuente no declara el nivel. Se asume 1σ."
+      },
+      "e": {
+        "valor": 0.608988648,
+        "sigma": 0.017,
+        "sigma_publicada": 0.017,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "emelyanenko-2014-arxiv",
+        "ubicacion": "Tabla 1",
+        "estado": "verificado",
+        "nota": "Incertidumbre formal de mínimos cuadrados; la fuente no declara el nivel. Se asume 1σ."
+      },
+      "i": {
+        "valor": 5.938266,
+        "unidad": "grados",
+        "sigma": 0.427,
+        "sigma_publicada": 0.427,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "emelyanenko-2014-arxiv",
+        "ubicacion": "Tabla 1",
+        "estado": "verificado",
+        "nota": "Incertidumbre formal de mínimos cuadrados; la fuente no declara el nivel. Se asume 1σ."
+      },
+      "omega": {
+        "valor": 108.926276,
+        "unidad": "grados",
+        "sigma": 0.536,
+        "sigma_publicada": 0.536,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "emelyanenko-2014-arxiv",
+        "ubicacion": "Tabla 1",
+        "estado": "verificado",
+        "nota": "Incertidumbre formal de mínimos cuadrados; la fuente no declara el nivel. Se asume 1σ."
+      },
+      "nodo": {
+        "valor": 326.445884,
+        "unidad": "grados",
+        "sigma": 0.002,
+        "sigma_publicada": 0.002,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "emelyanenko-2014-arxiv",
+        "ubicacion": "Tabla 1",
+        "estado": "verificado",
+        "nota": "Incertidumbre formal de mínimos cuadrados; la fuente no declara el nivel. Se asume 1σ."
+      },
+      "M": {
+        "valor": 16.872985,
+        "unidad": "grados",
+        "sigma": 1.069,
+        "sigma_publicada": 1.069,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "emelyanenko-2014-arxiv",
+        "ubicacion": "Tabla 1",
+        "estado": "verificado",
+        "nota": "Incertidumbre formal de mínimos cuadrados; la fuente no declara el nivel. Se asume 1σ."
+      }
+    }
+  ]
+}

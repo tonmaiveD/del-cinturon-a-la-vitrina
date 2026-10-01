@@ -31,12 +31,13 @@
   {
     "id": "borovicka-2013-nature",
     "tipo": "articulo",
-    "cita": "Borovička, J. et al. (2013). The trajectory, structure and origin of the Chelyabinsk asteroidal impactor. Nature, 503, 235–237.",
+    "cita": "Borovička, J., Spurný, P., Brown, P., Wiegert, P., Kalenda, P., Clark, D., Shrbený, L. (2013). The trajectory, structure and origin of the Chelyabinsk asteroidal impactor. Nature, 503, 235–237.",
     "doi": "10.1038/nature12671",
     "licencia": "Cita bibliográfica",
     "consultado": "2026-10-01",
-    "metadatos_verificados": false,
-    "notas": "DOI tomado de un índice secundario (RePEc); confirmar en la editorial."
+    "metadatos_verificados": true,
+    "notas": "Autores y DOI verificados en nature.com y en la página del coautor P. Wiegert. Los elementos orbitales están en la Tabla 2 del artículo (acceso de pago, no leída). El suplemento (de acceso libre) sí se leyó: describe un Monte Carlo de 1000 clones integrados hacia atrás con Tierra, Luna y planetas.",
+    "url": "https://www.nature.com/articles/nature12671"
   },
   {
     "id": "cbet-3423",
@@ -56,5 +57,36 @@
     "consultado": "2026-10-01",
     "metadatos_verificados": false,
     "notas": "Título, revista y DOI pendientes de verificación."
+  },
+  {
+    "id": "popova-2013-science",
+    "tipo": "articulo",
+    "cita": "Popova, O. P. et al. (2013). Chelyabinsk Airburst, Damage Assessment, Meteorite Recovery, and Characterization. Science, 342, 1069–1073.",
+    "doi": "10.1126/science.1242642",
+    "url": "https://push-zb.helmholtz-munich.de/deliver.php?id=4308",
+    "licencia": "Cita bibliográfica; copia de repositorio institucional para uso personal",
+    "consultado": "2026-10-01",
+    "metadatos_verificados": true,
+    "notas": "Leída la copia completa del artículo (6 págs.). Tabla 1: trayectoria y órbita con incertidumbres a 2σ, equinoccio J2000.0. Páginas 1069–1073 por confirmar."
+  },
+  {
+    "id": "emelyanenko-2014-arxiv",
+    "tipo": "articulo",
+    "cita": "Emel'yanenko, V. V., Naroenkov, S. A., Jenniskens, P., Popova, O. P. (2014). The Orbit and Dynamical Evolution of the Chelyabinsk Object. Preprint arXiv:1412.1987 (enviado a Meteoritics & Planetary Science).",
+    "url": "https://arxiv.org/abs/1412.1987",
+    "licencia": "Licencia de distribución de arXiv",
+    "consultado": "2026-10-01",
+    "metadatos_verificados": true,
+    "notas": "Leído el preprint. Tabla 1: elementos pre-atmosféricos, equinoccio J2000, época 2013-02-15.0 TT; incertidumbres formales de mínimos cuadrados sin nivel declarado. No se verificó la versión publicada."
+  },
+  {
+    "id": "metbull",
+    "tipo": "base-de-datos",
+    "cita": "Meteoritical Society. Meteoritical Bulletin Database.",
+    "url": "https://www.lpi.usra.edu/meteor/",
+    "licencia": "Por verificar",
+    "consultado": "2026-10-01",
+    "metadatos_verificados": false,
+    "notas": "El 2026-10-01 el sitio respondió con una verificación anti-bots que no se intentó eludir; registro no leído."
   }
 ]

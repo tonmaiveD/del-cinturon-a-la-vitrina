@@ -22,6 +22,19 @@
           "type": "number",
           "minimum": 0
         },
+        "sigma_publicada": {
+          "type": "number",
+          "minimum": 0
+        },
+        "nivel_sigma": {
+          "type": "string",
+          "enum": [
+            "1-sigma",
+            "2-sigma",
+            "3-sigma",
+            "formal-sin-nivel"
+          ]
+        },
         "fuente": {
           "type": "string",
           "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
@@ -68,6 +81,19 @@
           "type": "number",
           "minimum": 0
         },
+        "sigma_publicada": {
+          "type": "number",
+          "minimum": 0
+        },
+        "nivel_sigma": {
+          "type": "string",
+          "enum": [
+            "1-sigma",
+            "2-sigma",
+            "3-sigma",
+            "formal-sin-nivel"
+          ]
+        },
         "fuente": {
           "type": "string",
           "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
@@ -109,6 +135,19 @@
           "type": "number",
           "minimum": 0
         },
+        "sigma_publicada": {
+          "type": "number",
+          "minimum": 0
+        },
+        "nivel_sigma": {
+          "type": "string",
+          "enum": [
+            "1-sigma",
+            "2-sigma",
+            "3-sigma",
+            "formal-sin-nivel"
+          ]
+        },
         "fuente": {
           "type": "string",
           "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
@@ -149,6 +188,19 @@
         "sigma": {
           "type": "number",
           "minimum": 0
+        },
+        "sigma_publicada": {
+          "type": "number",
+          "minimum": 0
+        },
+        "nivel_sigma": {
+          "type": "string",
+          "enum": [
+            "1-sigma",
+            "2-sigma",
+            "3-sigma",
+            "formal-sin-nivel"
+          ]
         },
         "fuente": {
           "type": "string",
@@ -194,6 +246,19 @@
               "type": "number",
               "minimum": 0
             },
+            "sigma_publicada": {
+              "type": "number",
+              "minimum": 0
+            },
+            "nivel_sigma": {
+              "type": "string",
+              "enum": [
+                "1-sigma",
+                "2-sigma",
+                "3-sigma",
+                "formal-sin-nivel"
+              ]
+            },
             "fuente": {
               "type": "string",
               "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
@@ -235,6 +300,19 @@
               "type": "number",
               "minimum": 0
             },
+            "sigma_publicada": {
+              "type": "number",
+              "minimum": 0
+            },
+            "nivel_sigma": {
+              "type": "string",
+              "enum": [
+                "1-sigma",
+                "2-sigma",
+                "3-sigma",
+                "formal-sin-nivel"
+              ]
+            },
             "fuente": {
               "type": "string",
               "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
@@ -267,6 +345,233 @@
       ],
       "additionalProperties": false
     },
+    "radiante_geocentrico": {
+      "type": "object",
+      "properties": {
+        "ra": {
+          "type": "object",
+          "properties": {
+            "valor": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "unidad": {
+              "type": "string"
+            },
+            "sigma": {
+              "type": "number",
+              "minimum": 0
+            },
+            "sigma_publicada": {
+              "type": "number",
+              "minimum": 0
+            },
+            "nivel_sigma": {
+              "type": "string",
+              "enum": [
+                "1-sigma",
+                "2-sigma",
+                "3-sigma",
+                "formal-sin-nivel"
+              ]
+            },
+            "fuente": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "ubicacion": {
+              "type": "string"
+            },
+            "estado": {
+              "type": "string",
+              "enum": [
+                "verificado",
+                "pendiente"
+              ]
+            },
+            "nota": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "valor",
+            "fuente",
+            "estado"
+          ],
+          "additionalProperties": false
+        },
+        "dec": {
+          "type": "object",
+          "properties": {
+            "valor": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "unidad": {
+              "type": "string"
+            },
+            "sigma": {
+              "type": "number",
+              "minimum": 0
+            },
+            "sigma_publicada": {
+              "type": "number",
+              "minimum": 0
+            },
+            "nivel_sigma": {
+              "type": "string",
+              "enum": [
+                "1-sigma",
+                "2-sigma",
+                "3-sigma",
+                "formal-sin-nivel"
+              ]
+            },
+            "fuente": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "ubicacion": {
+              "type": "string"
+            },
+            "estado": {
+              "type": "string",
+              "enum": [
+                "verificado",
+                "pendiente"
+              ]
+            },
+            "nota": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "valor",
+            "fuente",
+            "estado"
+          ],
+          "additionalProperties": false
+        },
+        "v_geocentrica": {
+          "type": "object",
+          "properties": {
+            "valor": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "unidad": {
+              "type": "string"
+            },
+            "sigma": {
+              "type": "number",
+              "minimum": 0
+            },
+            "sigma_publicada": {
+              "type": "number",
+              "minimum": 0
+            },
+            "nivel_sigma": {
+              "type": "string",
+              "enum": [
+                "1-sigma",
+                "2-sigma",
+                "3-sigma",
+                "formal-sin-nivel"
+              ]
+            },
+            "fuente": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "ubicacion": {
+              "type": "string"
+            },
+            "estado": {
+              "type": "string",
+              "enum": [
+                "verificado",
+                "pendiente"
+              ]
+            },
+            "nota": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "valor",
+            "fuente",
+            "estado"
+          ],
+          "additionalProperties": false
+        },
+        "v_entrada": {
+          "type": "object",
+          "properties": {
+            "valor": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "unidad": {
+              "type": "string"
+            },
+            "sigma": {
+              "type": "number",
+              "minimum": 0
+            },
+            "sigma_publicada": {
+              "type": "number",
+              "minimum": 0
+            },
+            "nivel_sigma": {
+              "type": "string",
+              "enum": [
+                "1-sigma",
+                "2-sigma",
+                "3-sigma",
+                "formal-sin-nivel"
+              ]
+            },
+            "fuente": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "ubicacion": {
+              "type": "string"
+            },
+            "estado": {
+              "type": "string",
+              "enum": [
+                "verificado",
+                "pendiente"
+              ]
+            },
+            "nota": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "valor",
+            "fuente",
+            "estado"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "ra",
+        "dec",
+        "v_geocentrica"
+      ],
+      "additionalProperties": false
+    },
     "orbitas": {
       "type": "array",
       "items": {
@@ -275,6 +580,9 @@
           "fuente": {
             "type": "string",
             "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "ubicacion": {
+            "type": "string"
           },
           "marco": {
             "type": "string",
@@ -295,6 +603,19 @@
               "sigma": {
                 "type": "number",
                 "minimum": 0
+              },
+              "sigma_publicada": {
+                "type": "number",
+                "minimum": 0
+              },
+              "nivel_sigma": {
+                "type": "string",
+                "enum": [
+                  "1-sigma",
+                  "2-sigma",
+                  "3-sigma",
+                  "formal-sin-nivel"
+                ]
               },
               "fuente": {
                 "type": "string",
@@ -337,6 +658,19 @@
                 "type": "number",
                 "minimum": 0
               },
+              "sigma_publicada": {
+                "type": "number",
+                "minimum": 0
+              },
+              "nivel_sigma": {
+                "type": "string",
+                "enum": [
+                  "1-sigma",
+                  "2-sigma",
+                  "3-sigma",
+                  "formal-sin-nivel"
+                ]
+              },
               "fuente": {
                 "type": "string",
                 "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
@@ -377,6 +711,19 @@
               "sigma": {
                 "type": "number",
                 "minimum": 0
+              },
+              "sigma_publicada": {
+                "type": "number",
+                "minimum": 0
+              },
+              "nivel_sigma": {
+                "type": "string",
+                "enum": [
+                  "1-sigma",
+                  "2-sigma",
+                  "3-sigma",
+                  "formal-sin-nivel"
+                ]
               },
               "fuente": {
                 "type": "string",
@@ -419,6 +766,19 @@
                 "type": "number",
                 "minimum": 0
               },
+              "sigma_publicada": {
+                "type": "number",
+                "minimum": 0
+              },
+              "nivel_sigma": {
+                "type": "string",
+                "enum": [
+                  "1-sigma",
+                  "2-sigma",
+                  "3-sigma",
+                  "formal-sin-nivel"
+                ]
+              },
               "fuente": {
                 "type": "string",
                 "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
@@ -459,6 +819,19 @@
               "sigma": {
                 "type": "number",
                 "minimum": 0
+              },
+              "sigma_publicada": {
+                "type": "number",
+                "minimum": 0
+              },
+              "nivel_sigma": {
+                "type": "string",
+                "enum": [
+                  "1-sigma",
+                  "2-sigma",
+                  "3-sigma",
+                  "formal-sin-nivel"
+                ]
               },
               "fuente": {
                 "type": "string",
@@ -501,6 +874,19 @@
                 "type": "number",
                 "minimum": 0
               },
+              "sigma_publicada": {
+                "type": "number",
+                "minimum": 0
+              },
+              "nivel_sigma": {
+                "type": "string",
+                "enum": [
+                  "1-sigma",
+                  "2-sigma",
+                  "3-sigma",
+                  "formal-sin-nivel"
+                ]
+              },
               "fuente": {
                 "type": "string",
                 "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
@@ -542,6 +928,181 @@
                 "type": "number",
                 "minimum": 0
               },
+              "sigma_publicada": {
+                "type": "number",
+                "minimum": 0
+              },
+              "nivel_sigma": {
+                "type": "string",
+                "enum": [
+                  "1-sigma",
+                  "2-sigma",
+                  "3-sigma",
+                  "formal-sin-nivel"
+                ]
+              },
+              "fuente": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "ubicacion": {
+                "type": "string"
+              },
+              "estado": {
+                "type": "string",
+                "enum": [
+                  "verificado",
+                  "pendiente"
+                ]
+              },
+              "nota": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "valor",
+              "fuente",
+              "estado"
+            ],
+            "additionalProperties": false
+          },
+          "Q": {
+            "type": "object",
+            "properties": {
+              "valor": {
+                "type": [
+                  "number",
+                  "string"
+                ]
+              },
+              "unidad": {
+                "type": "string"
+              },
+              "sigma": {
+                "type": "number",
+                "minimum": 0
+              },
+              "sigma_publicada": {
+                "type": "number",
+                "minimum": 0
+              },
+              "nivel_sigma": {
+                "type": "string",
+                "enum": [
+                  "1-sigma",
+                  "2-sigma",
+                  "3-sigma",
+                  "formal-sin-nivel"
+                ]
+              },
+              "fuente": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "ubicacion": {
+                "type": "string"
+              },
+              "estado": {
+                "type": "string",
+                "enum": [
+                  "verificado",
+                  "pendiente"
+                ]
+              },
+              "nota": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "valor",
+              "fuente",
+              "estado"
+            ],
+            "additionalProperties": false
+          },
+          "M": {
+            "type": "object",
+            "properties": {
+              "valor": {
+                "type": [
+                  "number",
+                  "string"
+                ]
+              },
+              "unidad": {
+                "type": "string"
+              },
+              "sigma": {
+                "type": "number",
+                "minimum": 0
+              },
+              "sigma_publicada": {
+                "type": "number",
+                "minimum": 0
+              },
+              "nivel_sigma": {
+                "type": "string",
+                "enum": [
+                  "1-sigma",
+                  "2-sigma",
+                  "3-sigma",
+                  "formal-sin-nivel"
+                ]
+              },
+              "fuente": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "ubicacion": {
+                "type": "string"
+              },
+              "estado": {
+                "type": "string",
+                "enum": [
+                  "verificado",
+                  "pendiente"
+                ]
+              },
+              "nota": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "valor",
+              "fuente",
+              "estado"
+            ],
+            "additionalProperties": false
+          },
+          "tiempo_perihelio": {
+            "type": "object",
+            "properties": {
+              "valor": {
+                "type": [
+                  "number",
+                  "string"
+                ]
+              },
+              "unidad": {
+                "type": "string"
+              },
+              "sigma": {
+                "type": "number",
+                "minimum": 0
+              },
+              "sigma_publicada": {
+                "type": "number",
+                "minimum": 0
+              },
+              "nivel_sigma": {
+                "type": "string",
+                "enum": [
+                  "1-sigma",
+                  "2-sigma",
+                  "3-sigma",
+                  "formal-sin-nivel"
+                ]
+              },
               "fuente": {
                 "type": "string",
                 "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
@@ -570,6 +1131,7 @@
         },
         "required": [
           "fuente",
+          "ubicacion",
           "marco",
           "epoca",
           "a",
@@ -587,7 +1149,6 @@
     "nombre_oficial",
     "clase",
     "fecha_caida",
-    "punto_caida",
     "orbitas"
   ],
   "additionalProperties": false

@@ -40,30 +40,55 @@ export const Fuentes = z.array(Fuente).superRefine((fs, ctx) => {
   }
 });
 
-/** Un dato científico con su procedencia. `sigma` es 1σ en la misma unidad. */
-export const Valor = z.object({
-  valor: z.union([z.number(), z.string()]),
-  unidad: z.string().optional(),
-  sigma: z.number().nonnegative().optional(),
-  fuente: idSlug,
-  /** Página, tabla o ecuación dentro de la fuente. */
-  ubicacion: z.string().optional(),
-  estado: Estado,
-  nota: z.string().optional(),
-});
+/** Nivel de la incertidumbre tal como la publica la fuente. */
+export const NivelSigma = z.enum(['1-sigma', '2-sigma', '3-sigma', 'formal-sin-nivel']);
+
+/**
+ * Un dato científico con su procedencia.
+ * `sigma` es SIEMPRE 1σ en la misma unidad (derivada de `sigma_publicada` si la fuente da 2σ).
+ * Si la fuente no declara el nivel (`formal-sin-nivel`), `sigma` asume 1σ y debe decirlo `nota`.
+ */
+export const Valor = z
+  .object({
+    valor: z.union([z.number(), z.string()]),
+    unidad: z.string().optional(),
+    sigma: z.number().nonnegative().optional(),
+    sigma_publicada: z.number().nonnegative().optional(),
+    nivel_sigma: NivelSigma.optional(),
+    fuente: idSlug,
+    /** Página, tabla o ecuación dentro de la fuente. */
+    ubicacion: z.string().optional(),
+    estado: Estado,
+    nota: z.string().optional(),
+  })
+  .superRefine((v, ctx) => {
+    if (v.sigma_publicada === undefined) return;
+    if (!v.nivel_sigma || v.sigma === undefined) {
+      ctx.addIssue({ code: 'custom', message: 'sigma_publicada exige nivel_sigma y sigma (1σ)' });
+      return;
+    }
+    const k = { '1-sigma': 1, '2-sigma': 2, '3-sigma': 3, 'formal-sin-nivel': 1 }[v.nivel_sigma];
+    if (Math.abs(v.sigma * k - v.sigma_publicada) > 1e-12 * Math.max(1, v.sigma_publicada))
+      ctx.addIssue({ code: 'custom', message: `sigma (${v.sigma}) no es sigma_publicada/${k}` });
+  });
 export type Valor = z.infer<typeof Valor>;
 
 /** Elementos orbitales heliocéntricos osculadores, eclíptica y equinoccio J2000. */
 export const Orbita = z.object({
   fuente: idSlug,
+  /** Tabla o sección de la fuente donde aparece la órbita. */
+  ubicacion: z.string(),
   marco: z.literal('ecliptica-J2000'),
-  epoca: Valor, // fecha ISO 8601 TDB/UTC según la fuente (indicar en nota)
+  epoca: Valor, // fecha con su escala de tiempo (TT, ET, UTC) tal como la da la fuente
   a: Valor, // AU
   e: Valor,
   i: Valor, // grados
   omega: Valor, // argumento del perihelio, grados
   nodo: Valor, // longitud del nodo ascendente Ω, grados
   q: Valor.optional(), // AU
+  Q: Valor.optional(), // AU
+  M: Valor.optional(), // anomalía media en la época, grados
+  tiempo_perihelio: Valor.optional(),
 });
 export type Orbita = z.infer<typeof Orbita>;
 
@@ -74,7 +99,17 @@ export const Meteorito = z.object({
   clase: Valor,
   masa_total: Valor.optional(), // kg recuperados
   fecha_caida: Valor, // ISO 8601 UTC
-  punto_caida: z.object({ lat: Valor, lon: Valor }),
+  /** Puede faltar mientras no haya fuente accesible; la UI no lo muestra entonces. */
+  punto_caida: z.object({ lat: Valor, lon: Valor }).optional(),
+  /** Radiante geocéntrico y velocidades publicadas (para validar órbitas calculadas). */
+  radiante_geocentrico: z
+    .object({
+      ra: Valor, // grados, J2000
+      dec: Valor, // grados, J2000
+      v_geocentrica: Valor, // km/s
+      v_entrada: Valor.optional(), // km/s, V∞
+    })
+    .optional(),
   orbitas: z.array(Orbita),
 });
 export type Meteorito = z.infer<typeof Meteorito>;
