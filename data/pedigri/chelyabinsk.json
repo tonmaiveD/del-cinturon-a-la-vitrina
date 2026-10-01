@@ -237,6 +237,58 @@
         "estado": "verificado",
         "nota": "Incertidumbre formal de mínimos cuadrados; la fuente no declara el nivel. Se asume 1σ."
       }
+    },
+    {
+      "fuente": "pena-asensio-2025",
+      "ubicacion": "arXiv:2508.01454v3, Tabla 3, fila Chelyabinsk / Borovička et al. (2013a)",
+      "marco": "ecliptica-J2000",
+      "epoca": {
+        "valor": "2013-02-15",
+        "unidad": "fecha (sin hora en la fuente)",
+        "fuente": "pena-asensio-2025",
+        "ubicacion": "arXiv:2508.01454v3, Tabla 3",
+        "estado": "pendiente",
+        "nota": "Valor de Borovička et al. 2013a citado por Peña-Asensio et al. 2025 (redondeado, sin incertidumbre). Pendiente de verificar en la Tabla 2 del original."
+      },
+      "a": {
+        "valor": 1.72,
+        "unidad": "AU",
+        "fuente": "pena-asensio-2025",
+        "ubicacion": "arXiv:2508.01454v3, Tabla 3",
+        "estado": "pendiente",
+        "nota": "Valor de Borovička et al. 2013a citado por Peña-Asensio et al. 2025 (redondeado, sin incertidumbre). Pendiente de verificar en la Tabla 2 del original."
+      },
+      "e": {
+        "valor": 0.57,
+        "fuente": "pena-asensio-2025",
+        "ubicacion": "arXiv:2508.01454v3, Tabla 3",
+        "estado": "pendiente",
+        "nota": "Valor de Borovička et al. 2013a citado por Peña-Asensio et al. 2025 (redondeado, sin incertidumbre). Pendiente de verificar en la Tabla 2 del original."
+      },
+      "i": {
+        "valor": 4.98,
+        "unidad": "grados",
+        "fuente": "pena-asensio-2025",
+        "ubicacion": "arXiv:2508.01454v3, Tabla 3",
+        "estado": "pendiente",
+        "nota": "Valor de Borovička et al. 2013a citado por Peña-Asensio et al. 2025 (redondeado, sin incertidumbre). Pendiente de verificar en la Tabla 2 del original."
+      },
+      "omega": {
+        "valor": 107.67,
+        "unidad": "grados",
+        "fuente": "pena-asensio-2025",
+        "ubicacion": "arXiv:2508.01454v3, Tabla 3",
+        "estado": "pendiente",
+        "nota": "Valor de Borovička et al. 2013a citado por Peña-Asensio et al. 2025 (redondeado, sin incertidumbre). Pendiente de verificar en la Tabla 2 del original."
+      },
+      "nodo": {
+        "valor": 326.46,
+        "unidad": "grados",
+        "fuente": "pena-asensio-2025",
+        "ubicacion": "arXiv:2508.01454v3, Tabla 3",
+        "estado": "pendiente",
+        "nota": "Valor de Borovička et al. 2013a citado por Peña-Asensio et al. 2025 (redondeado, sin incertidumbre). Pendiente de verificar en la Tabla 2 del original."
+      }
     }
   ]
 }

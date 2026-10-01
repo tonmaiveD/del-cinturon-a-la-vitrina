@@ -17,11 +17,7 @@
     },
     "confianza": {
       "type": "string",
-      "enum": [
-        "alto",
-        "medio",
-        "especulativo"
-      ]
+      "enum": ["alto", "medio", "especulativo"]
     },
     "justificacion": {
       "type": "string"
@@ -35,13 +31,6 @@
       }
     }
   },
-  "required": [
-    "id",
-    "nombre",
-    "clases",
-    "confianza",
-    "justificacion",
-    "fuentes"
-  ],
+  "required": ["id", "nombre", "clases", "confianza", "justificacion", "fuentes"],
   "additionalProperties": false
 }

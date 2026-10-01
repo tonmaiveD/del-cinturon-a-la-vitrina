@@ -72,7 +72,17 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
   Tierra**. La literatura lo trata como ECEF. Se resolverá empíricamente con Chelyabinsk
   (ambas hipótesis) y se documentará en `docs/reportes/chelyabinsk.md`.
 - La velocidad se reporta en el pico de brillo, no al tope de la atmósfera.
-- Precisión: Peña-Asensio et al. 2025 (A&A 701, A202) — confirmar σ en el artículo antes de usar.
+- Marco: Peña-Asensio et al. 2025 (§2.1) lo describen como ECEF. Con 18 eventos calibrados las
+  hipótesis ECEF-relativa (se suma ω × r) e inercial **no se distinguen** frente a órbitas
+  terrestres. Se adopta ECEF-relativa; con ella reproducimos las órbitas CNEOS de ese artículo
+  (D_D mediana 0.008).
+- Incertidumbre (Monte Carlo): Tabla 4 de Peña-Asensio et al. 2025 da **medianas** de error del
+  grupo bajo D_D (≥ 2018 o ≥ 0.45 kt): 0.55 km/s, 1.35° (α_g), 0.84° (δ_g). Parametrización:
+  σ = mediana / 0.6745 (principal) y σ = mediana (sensibilidad). Pre-2018 y < 0.45 kt: errores
+  mucho mayores (D_D mediano 0.31); decidir en Fase 3 cómo mostrarlos.
+- Similitud orbital: **D_D de Drummond** (no D_SH), umbral 0.1 (`src/core/similitud.ts`).
+- Órbita desde CNEOS (`src/core/orbita-bolido.ts`): retro N-cuerpos hasta 0.05 AU, luego hacia
+  adelante sin Tierra/Luna hasta la época del impacto (elementos "pre-atmosféricos").
 
 ## Convenciones
 
@@ -91,8 +101,10 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
 - **Fase 0 (andamiaje): completa.**
 - **Fase 1, etapa 1 (núcleo orbital + tests): completa** (38 tests).
 - **Fase 1, etapa 2 (datos de Chelyabinsk): completa** con dos pendientes (ver abajo).
-- Siguiente: Fase 1, etapa 3 — órbita desde el vector CNEOS + Monte Carlo + reporte de
-  validación (esperando OK).
+- **Fase 1, etapa 3 (validación científica): APROBADA** — `docs/reportes/chelyabinsk.md`
+  (`npm run validacion:chelyabinsk`, ~35 s). 51 tests.
+- Siguiente: Fase 1, etapa 4 — escena 3D (globo, atmósfera, bloom, sistema solar, nube orbital)
+  (esperando OK).
 
 ### Pendientes de datos
 

@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "validate": "tsx pipeline/validate-data.ts",
-    "schemas": "tsx pipeline/export-schemas.ts"
+    "schemas": "tsx pipeline/export-schemas.ts",
+    "validacion:chelyabinsk": "tsx pipeline/validacion-chelyabinsk.ts"
   },
   "license": "UNLICENSED",
   "type": "module",

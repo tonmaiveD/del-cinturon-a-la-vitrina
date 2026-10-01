@@ -137,3 +137,34 @@ export function referenciasDeFuente(obj: unknown, ruta = '$'): { ruta: string; i
   }
   return out;
 }
+
+const ElementosTabla = z.object({
+  a: z.number(),
+  e: z.number(),
+  i: z.number(),
+  omega: z.number(),
+  nodo: z.number(),
+});
+
+/** Eventos con vector CNEOS y órbita terrestre independiente, transcritos de una fuente. */
+export const Calibracion = z.object({
+  fuente: idSlug,
+  ubicacion: z.string(),
+  consultado: z.iso.date(),
+  nota: z.string(),
+  eventos: z.array(
+    z.object({
+      nombre: z.string(),
+      fecha: z.iso.datetime(),
+      lat: z.number(),
+      lon: z.number(),
+      alt_km: z.number(),
+      energia_impacto_kt: z.number(),
+      v_ecef_kms: z.tuple([z.number(), z.number(), z.number()]),
+      ref: ElementosTabla.extend({ fuente: z.string(), dd: z.number() }),
+      cneos_pena: ElementosTabla,
+    }),
+  ),
+});
+export type Calibracion = z.infer<typeof Calibracion>;
+export type EventoCalibrado = Calibracion['eventos'][number];

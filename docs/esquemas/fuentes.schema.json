@@ -10,14 +10,7 @@
       },
       "tipo": {
         "type": "string",
-        "enum": [
-          "articulo",
-          "circular",
-          "base-de-datos",
-          "api",
-          "software",
-          "textura"
-        ]
+        "enum": ["articulo", "circular", "base-de-datos", "api", "software", "textura"]
       },
       "cita": {
         "type": "string",
@@ -47,14 +40,7 @@
         "type": "string"
       }
     },
-    "required": [
-      "id",
-      "tipo",
-      "cita",
-      "licencia",
-      "consultado",
-      "metadatos_verificados"
-    ],
+    "required": ["id", "tipo", "cita", "licencia", "consultado", "metadatos_verificados"],
     "additionalProperties": false
   }
 }

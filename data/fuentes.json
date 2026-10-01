@@ -7,7 +7,7 @@
     "licencia": "Datos del Gobierno de EE. UU.; la documentación no indica licencia explícita",
     "consultado": "2026-10-01",
     "metadatos_verificados": true,
-    "notas": "vx, vy, vz se describen solo como 'Earth centered'. El marco (fijo a la Tierra o inercial) no está especificado en la doc oficial; ver CLAUDE.md."
+    "notas": "vx, vy, vz se describen solo como 'Earth centered'. Peña-Asensio et al. 2025 los interpretan como ECEF; la diferencia frente a la hipótesis inercial no se puede resolver empíricamente (docs/reportes/chelyabinsk.md)."
   },
   {
     "id": "astronomy-engine",
@@ -26,7 +26,8 @@
     "licencia": "Cita bibliográfica",
     "consultado": "2026-10-01",
     "metadatos_verificados": true,
-    "notas": "Las cifras σv, σRA, σDec solo se conocen por un resumen secundario; leer el artículo antes de usarlas."
+    "notas": "Leída la versión arXiv:2508.01454v3 (HTML). Confirma que vx, vy, vz están en ECEF (sección 2.1). Tabla 4: errores medianos del grupo de bajo D_D (≥ 2018 o ≥ 0.45 kt): |ΔV| 0.55 km/s, Δα_g 1.35°, Δδ_g 0.84°. Tablas 2 y 3: 18 eventos calibrados (transcritos en data/calibracion/). Umbral D_D = 0.1 (Drummond 1981).",
+    "url": "https://arxiv.org/abs/2508.01454"
   },
   {
     "id": "borovicka-2013-nature",
