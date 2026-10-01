@@ -1,0 +1,594 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "nombre_oficial": {
+      "type": "object",
+      "properties": {
+        "valor": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "unidad": {
+          "type": "string"
+        },
+        "sigma": {
+          "type": "number",
+          "minimum": 0
+        },
+        "fuente": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "ubicacion": {
+          "type": "string"
+        },
+        "estado": {
+          "type": "string",
+          "enum": [
+            "verificado",
+            "pendiente"
+          ]
+        },
+        "nota": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "valor",
+        "fuente",
+        "estado"
+      ],
+      "additionalProperties": false
+    },
+    "metbull_id": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "maximum": 9007199254740991
+    },
+    "clase": {
+      "type": "object",
+      "properties": {
+        "valor": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "unidad": {
+          "type": "string"
+        },
+        "sigma": {
+          "type": "number",
+          "minimum": 0
+        },
+        "fuente": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "ubicacion": {
+          "type": "string"
+        },
+        "estado": {
+          "type": "string",
+          "enum": [
+            "verificado",
+            "pendiente"
+          ]
+        },
+        "nota": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "valor",
+        "fuente",
+        "estado"
+      ],
+      "additionalProperties": false
+    },
+    "masa_total": {
+      "type": "object",
+      "properties": {
+        "valor": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "unidad": {
+          "type": "string"
+        },
+        "sigma": {
+          "type": "number",
+          "minimum": 0
+        },
+        "fuente": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "ubicacion": {
+          "type": "string"
+        },
+        "estado": {
+          "type": "string",
+          "enum": [
+            "verificado",
+            "pendiente"
+          ]
+        },
+        "nota": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "valor",
+        "fuente",
+        "estado"
+      ],
+      "additionalProperties": false
+    },
+    "fecha_caida": {
+      "type": "object",
+      "properties": {
+        "valor": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "unidad": {
+          "type": "string"
+        },
+        "sigma": {
+          "type": "number",
+          "minimum": 0
+        },
+        "fuente": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "ubicacion": {
+          "type": "string"
+        },
+        "estado": {
+          "type": "string",
+          "enum": [
+            "verificado",
+            "pendiente"
+          ]
+        },
+        "nota": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "valor",
+        "fuente",
+        "estado"
+      ],
+      "additionalProperties": false
+    },
+    "punto_caida": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "object",
+          "properties": {
+            "valor": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "unidad": {
+              "type": "string"
+            },
+            "sigma": {
+              "type": "number",
+              "minimum": 0
+            },
+            "fuente": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "ubicacion": {
+              "type": "string"
+            },
+            "estado": {
+              "type": "string",
+              "enum": [
+                "verificado",
+                "pendiente"
+              ]
+            },
+            "nota": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "valor",
+            "fuente",
+            "estado"
+          ],
+          "additionalProperties": false
+        },
+        "lon": {
+          "type": "object",
+          "properties": {
+            "valor": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "unidad": {
+              "type": "string"
+            },
+            "sigma": {
+              "type": "number",
+              "minimum": 0
+            },
+            "fuente": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "ubicacion": {
+              "type": "string"
+            },
+            "estado": {
+              "type": "string",
+              "enum": [
+                "verificado",
+                "pendiente"
+              ]
+            },
+            "nota": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "valor",
+            "fuente",
+            "estado"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ],
+      "additionalProperties": false
+    },
+    "orbitas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "fuente": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "marco": {
+            "type": "string",
+            "const": "ecliptica-J2000"
+          },
+          "epoca": {
+            "type": "object",
+            "properties": {
+              "valor": {
+                "type": [
+                  "number",
+                  "string"
+                ]
+              },
+              "unidad": {
+                "type": "string"
+              },
+              "sigma": {
+                "type": "number",
+                "minimum": 0
+              },
+              "fuente": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "ubicacion": {
+                "type": "string"
+              },
+              "estado": {
+                "type": "string",
+                "enum": [
+                  "verificado",
+                  "pendiente"
+                ]
+              },
+              "nota": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "valor",
+              "fuente",
+              "estado"
+            ],
+            "additionalProperties": false
+          },
+          "a": {
+            "type": "object",
+            "properties": {
+              "valor": {
+                "type": [
+                  "number",
+                  "string"
+                ]
+              },
+              "unidad": {
+                "type": "string"
+              },
+              "sigma": {
+                "type": "number",
+                "minimum": 0
+              },
+              "fuente": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "ubicacion": {
+                "type": "string"
+              },
+              "estado": {
+                "type": "string",
+                "enum": [
+                  "verificado",
+                  "pendiente"
+                ]
+              },
+              "nota": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "valor",
+              "fuente",
+              "estado"
+            ],
+            "additionalProperties": false
+          },
+          "e": {
+            "type": "object",
+            "properties": {
+              "valor": {
+                "type": [
+                  "number",
+                  "string"
+                ]
+              },
+              "unidad": {
+                "type": "string"
+              },
+              "sigma": {
+                "type": "number",
+                "minimum": 0
+              },
+              "fuente": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "ubicacion": {
+                "type": "string"
+              },
+              "estado": {
+                "type": "string",
+                "enum": [
+                  "verificado",
+                  "pendiente"
+                ]
+              },
+              "nota": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "valor",
+              "fuente",
+              "estado"
+            ],
+            "additionalProperties": false
+          },
+          "i": {
+            "type": "object",
+            "properties": {
+              "valor": {
+                "type": [
+                  "number",
+                  "string"
+                ]
+              },
+              "unidad": {
+                "type": "string"
+              },
+              "sigma": {
+                "type": "number",
+                "minimum": 0
+              },
+              "fuente": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "ubicacion": {
+                "type": "string"
+              },
+              "estado": {
+                "type": "string",
+                "enum": [
+                  "verificado",
+                  "pendiente"
+                ]
+              },
+              "nota": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "valor",
+              "fuente",
+              "estado"
+            ],
+            "additionalProperties": false
+          },
+          "omega": {
+            "type": "object",
+            "properties": {
+              "valor": {
+                "type": [
+                  "number",
+                  "string"
+                ]
+              },
+              "unidad": {
+                "type": "string"
+              },
+              "sigma": {
+                "type": "number",
+                "minimum": 0
+              },
+              "fuente": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "ubicacion": {
+                "type": "string"
+              },
+              "estado": {
+                "type": "string",
+                "enum": [
+                  "verificado",
+                  "pendiente"
+                ]
+              },
+              "nota": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "valor",
+              "fuente",
+              "estado"
+            ],
+            "additionalProperties": false
+          },
+          "nodo": {
+            "type": "object",
+            "properties": {
+              "valor": {
+                "type": [
+                  "number",
+                  "string"
+                ]
+              },
+              "unidad": {
+                "type": "string"
+              },
+              "sigma": {
+                "type": "number",
+                "minimum": 0
+              },
+              "fuente": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "ubicacion": {
+                "type": "string"
+              },
+              "estado": {
+                "type": "string",
+                "enum": [
+                  "verificado",
+                  "pendiente"
+                ]
+              },
+              "nota": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "valor",
+              "fuente",
+              "estado"
+            ],
+            "additionalProperties": false
+          },
+          "q": {
+            "type": "object",
+            "properties": {
+              "valor": {
+                "type": [
+                  "number",
+                  "string"
+                ]
+              },
+              "unidad": {
+                "type": "string"
+              },
+              "sigma": {
+                "type": "number",
+                "minimum": 0
+              },
+              "fuente": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "ubicacion": {
+                "type": "string"
+              },
+              "estado": {
+                "type": "string",
+                "enum": [
+                  "verificado",
+                  "pendiente"
+                ]
+              },
+              "nota": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "valor",
+              "fuente",
+              "estado"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "fuente",
+          "marco",
+          "epoca",
+          "a",
+          "e",
+          "i",
+          "omega",
+          "nodo"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "id",
+    "nombre_oficial",
+    "clase",
+    "fecha_caida",
+    "punto_caida",
+    "orbitas"
+  ],
+  "additionalProperties": false
+}

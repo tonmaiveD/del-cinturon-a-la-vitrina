@@ -1,0 +1,7 @@
+node_modules
+dist
+.env
+.env.*
+tests/e2e/.resultados
+playwright-report
+.DS_Store

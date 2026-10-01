@@ -1,0 +1,45 @@
+:root {
+  --fondo: #05060a;
+  --texto: #e8eaf0;
+  --texto-suave: #a9b0c2;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--fondo);
+  color: var(--texto);
+}
+#escena {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.cabecera {
+  position: relative;
+  z-index: 1;
+  padding: 16px;
+  max-width: 40rem;
+}
+.cabecera h1 {
+  margin: 0 0 4px;
+  font-size: 1.5rem;
+}
+.cabecera p {
+  margin: 0;
+  color: var(--texto-suave);
+}
+.cabecera .estado {
+  margin-top: 8px;
+  font-size: 0.875rem;
+}

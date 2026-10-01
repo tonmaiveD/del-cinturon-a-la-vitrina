@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      },
+      "tipo": {
+        "type": "string",
+        "enum": [
+          "articulo",
+          "circular",
+          "base-de-datos",
+          "api",
+          "software",
+          "textura"
+        ]
+      },
+      "cita": {
+        "type": "string",
+        "minLength": 1
+      },
+      "doi": {
+        "type": "string",
+        "pattern": "^10\\.\\d{4,9}\\/\\S+$"
+      },
+      "url": {
+        "type": "string",
+        "format": "uri"
+      },
+      "licencia": {
+        "type": "string",
+        "minLength": 1
+      },
+      "consultado": {
+        "type": "string",
+        "format": "date",
+        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+      },
+      "metadatos_verificados": {
+        "type": "boolean"
+      },
+      "notas": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "id",
+      "tipo",
+      "cita",
+      "licencia",
+      "consultado",
+      "metadatos_verificados"
+    ],
+    "additionalProperties": false
+  }
+}

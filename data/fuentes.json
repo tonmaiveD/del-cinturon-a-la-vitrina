@@ -1,0 +1,60 @@
+[
+  {
+    "id": "cneos-fireball-api",
+    "tipo": "api",
+    "cita": "NASA/JPL Center for Near Earth Object Studies (CNEOS). Fireball Data API.",
+    "url": "https://ssd-api.jpl.nasa.gov/doc/fireball.html",
+    "licencia": "Datos del Gobierno de EE. UU.; la documentación no indica licencia explícita",
+    "consultado": "2026-10-01",
+    "metadatos_verificados": true,
+    "notas": "vx, vy, vz se describen solo como 'Earth centered'. El marco (fijo a la Tierra o inercial) no está especificado en la doc oficial; ver CLAUDE.md."
+  },
+  {
+    "id": "astronomy-engine",
+    "tipo": "software",
+    "cita": "Cross, D. Astronomy Engine, v2.1.19.",
+    "url": "https://github.com/cosinekitty/astronomy",
+    "licencia": "MIT",
+    "consultado": "2026-10-01",
+    "metadatos_verificados": true
+  },
+  {
+    "id": "pena-asensio-2025",
+    "tipo": "articulo",
+    "cita": "Peña-Asensio, E., Socas-Navarro, H., Seligman, D. Z. (2025). Error dependencies in the space-based CNEOS fireball database. Astronomy & Astrophysics, 701, A202.",
+    "doi": "10.1051/0004-6361/202554224",
+    "licencia": "Cita bibliográfica",
+    "consultado": "2026-10-01",
+    "metadatos_verificados": true,
+    "notas": "Las cifras σv, σRA, σDec solo se conocen por un resumen secundario; leer el artículo antes de usarlas."
+  },
+  {
+    "id": "borovicka-2013-nature",
+    "tipo": "articulo",
+    "cita": "Borovička, J. et al. (2013). The trajectory, structure and origin of the Chelyabinsk asteroidal impactor. Nature, 503, 235–237.",
+    "doi": "10.1038/nature12671",
+    "licencia": "Cita bibliográfica",
+    "consultado": "2026-10-01",
+    "metadatos_verificados": false,
+    "notas": "DOI tomado de un índice secundario (RePEc); confirmar en la editorial."
+  },
+  {
+    "id": "cbet-3423",
+    "tipo": "circular",
+    "cita": "Borovička, J., Spurný, P., Shrbený, L. (2013). Trajectory and orbit of the Chelyabinsk superbolide. CBET 3423.",
+    "url": "https://tamkin3.eps.harvard.edu/cbet/003400/CBET003423.txt",
+    "licencia": "Cita bibliográfica",
+    "consultado": "2026-10-01",
+    "metadatos_verificados": false,
+    "notas": "Resultados preliminares. Autores por confirmar leyendo la circular."
+  },
+  {
+    "id": "devillepoix-2019",
+    "tipo": "articulo",
+    "cita": "Devillepoix, H. A. R. et al. (2019). Comparación de datos de sensores del Gobierno de EE. UU. con observaciones terrestres de bólidos.",
+    "licencia": "Cita bibliográfica",
+    "consultado": "2026-10-01",
+    "metadatos_verificados": false,
+    "notas": "Título, revista y DOI pendientes de verificación."
+  }
+]
