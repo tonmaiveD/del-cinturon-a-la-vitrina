@@ -32,6 +32,24 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
   Elementos orbitales en eclíptica y equinoccio J2000.
 - Hosting: pendiente de decidir al cerrar la Fase 1.
 
+## Núcleo orbital (`src/core/`)
+
+- Unidades internas: AU, días, radianes; GM en AU³/día² vía `Astro.MassProduct` (DE405). Tiempo
+  del integrador: días UT desde J2000 (convención de astronomy-engine, que aproxima UT1 ≈ UTC).
+- `kepler.ts`: Kepler elíptico/hiperbólico (Halley), estado ↔ elementos. Casi parabólicas
+  (|e−1| < 1e-9) no soportadas. Convenciones degeneradas: ecuatorial → Ω = 0; circular → ω = 0.
+- `integrador.ts`: DOPRI5 adaptativo (Dormand & Prince 1980), admite integrar hacia atrás y
+  detenerse con `alPaso`. Orden 5 verificado empíricamente en tests.
+- `dinamica.ts`: marco **heliocéntrico** EQJ con término indirecto y planetas vía `HelioVector`.
+  No se usa el marco baricéntrico porque `BaryState` de astronomy-engine define el baricentro
+  solo con Sol + gigantes (aceleración espuria ~GM⊕/AU²).
+- `marcos.ts`: EQJ ↔ ECL J2000 (rotaciones de astronomy-engine; sus matrices están por columnas),
+  ECEF ↔ EQJ vía GAST + `Rotation_EQD_EQJ` (sin movimiento del polo), estado de un punto
+  terrestre con `ObserverState` (válido 0–100 km de altura).
+- Validación medida (2026-10-01): vs `GravitySimulator` misma física < 0,2 km a 16 días.
+  Los estados VSOP truncados de astronomy-engine no son autoconsistentes a ~10³ km en 30 días
+  (≈ 1 m/s en velocidad de la Tierra; despreciable frente a la σ del CNEOS ~0,5 km/s).
+
 ## Datos y fuentes
 
 - `data/` es la fuente de verdad, editada a mano: `fuentes.json`, `pedigri/*.json`,
@@ -66,7 +84,9 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
 ## Estado
 
 - **Fase 0 (andamiaje): completa.**
-- Siguiente: Fase 1, etapa 1 — núcleo orbital + tests (esperando OK).
+- **Fase 1, etapa 1 (núcleo orbital + tests): completa** (38 tests).
+- Siguiente: Fase 1, etapa 2 — datos de Chelyabinsk (Borovička 2013, Popova 2013, CNEOS,
+  MetBull) con fuentes (esperando OK).
 
 ## Deuda técnica conocida
 
