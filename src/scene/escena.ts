@@ -7,7 +7,7 @@ import {
   ToneMappingEffect,
   ToneMappingMode,
 } from 'postprocessing';
-import { HalfFloatType, PerspectiveCamera, type Scene, Vector3, WebGLRenderer } from 'three';
+import { HalfFloatType, type Object3D, PerspectiveCamera, type Scene, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
@@ -66,14 +66,14 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
     return { camara, controles };
   }
 
-  function etiqueta(texto: string, posicion: Vector3, escena: Scene, clase = ''): CSS2DObject {
+  /** Etiqueta HTML que sigue a `padre` (se dibuja en su origen local). */
+  function etiqueta(texto: string, padre: Object3D, clase = ''): CSS2DObject {
     const div = document.createElement('div');
     div.className = `etiqueta ${clase}`;
     div.textContent = texto;
     div.setAttribute('aria-hidden', 'true'); // la descripción accesible va en el panel
     const obj = new CSS2DObject(div);
-    obj.position.copy(posicion);
-    escena.add(obj);
+    padre.add(obj);
     return obj;
   }
 
@@ -107,13 +107,21 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
     }
   }
 
+  const ganchos = new Set<(dt: number) => void>();
+  /** Registra una función que se ejecuta en cada cuadro con el tiempo real transcurrido (s). */
+  function alCuadro(f: (dt: number) => void): void {
+    ganchos.add(f);
+  }
+
   // Medición de fps (promedio móvil) para verificación de rendimiento
   let fps = 0;
   let ultimo = performance.now();
   renderer.setAnimationLoop(() => {
     const ahora = performance.now();
+    const dt = Math.min(0.1, (ahora - ultimo) / 1000);
     fps = fps * 0.95 + (1000 / Math.max(1, ahora - ultimo)) * 0.05;
     ultimo = ahora;
+    ganchos.forEach((f) => f(dt));
     const v = vistas.get(activa);
     if (!v) return;
     v.controles.update();
@@ -122,5 +130,6 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
     etiquetas.render(v.escena, v.camara);
   });
 
-  return { registrar, activar, etiqueta, activa: () => activa, fps: () => fps };
+  const vista = (n: NombreVista) => vistas.get(n)!;
+  return { registrar, activar, etiqueta, alCuadro, vista, activa: () => activa, fps: () => fps };
 }

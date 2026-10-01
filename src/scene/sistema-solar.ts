@@ -7,6 +7,8 @@ import * as Astro from 'astronomy-engine';
 import {
   AdditiveBlending,
   BufferAttribute,
+  Points,
+  PointsMaterial,
   BufferGeometry,
   Color,
   Group,
@@ -25,6 +27,7 @@ import { gm } from '../core/dinamica';
 import { estadoDesdeElementos, type Elementos } from '../core/kepler';
 import { eqjAEcl, KM_POR_AU } from '../core/marcos';
 import { GRAD, type Vec3 } from '../core/vector';
+import { indiceInferior, interpolar, type Muestra } from '../timeline/interpolacion';
 import { aThree } from './coordenadas';
 import { PLANETAS, RADIO_SOL_KM, type Planeta } from './cuerpos';
 
@@ -44,7 +47,9 @@ export interface DatosOrbitas {
 }
 
 /** Factores de exageración de la escala visual (se muestran en la etiqueta). */
-export const EXAGERACION = { sol: 10, planetas: 1500 };
+export const EXAGERACION = { sol: 10, planetas: 1500, jupiter: 150 };
+/** Radio dibujado del meteoroide en escala visual (AU): ~900 000 km. */
+export const RADIO_VISUAL_METEOROIDE_AU = 0.006;
 
 const MU_SOL = gm('Sun');
 const PUNTOS_ORBITA = 160;
@@ -74,7 +79,12 @@ function helioEcl(cuerpo: Planeta['cuerpo'], t: Astro.AstroTime): Vec3 {
   return eqjAEcl([v.x, v.y, v.z]);
 }
 
-export function crearVistaSistemaSolar(fecha: Date, orbitas: DatosOrbitas) {
+export function crearVistaSistemaSolar(
+  fecha: Date,
+  orbitas: DatosOrbitas,
+  trayectoria: Muestra[],
+  radioMeteoroideKm = 0.01,
+) {
   const escena = new Scene();
   escena.background = new Color(0x000000);
   const t = Astro.MakeTime(fecha);
@@ -95,6 +105,7 @@ export function crearVistaSistemaSolar(fecha: Date, orbitas: DatosOrbitas) {
     );
     malla.position.copy(pos);
     malla.userData.radioAU = p.radioKm / KM_POR_AU;
+    malla.userData.clave = p.clave;
     mallas.set(p.clave, malla);
     planetas.add(malla);
 
@@ -146,14 +157,70 @@ export function crearVistaSistemaSolar(fecha: Date, orbitas: DatosOrbitas) {
   );
   escena.add(nominal);
 
+  // Meteoroide sobre la trayectoria N-cuerpos nominal, con estela hasta el instante actual
+  const ptsTray = trayectoria.map(([, x, y, z]) => aThree([x, y, z]));
+  const geomEstela = new BufferGeometry().setFromPoints(ptsTray);
+  const estela = new Line(geomEstela, new LineBasicMaterial({ color: 0xffd08a }));
+  estela.frustumCulled = false;
+  escena.add(estela);
+  const meteoroide = new Mesh(
+    new SphereGeometry(1, 16, 8),
+    new MeshBasicMaterial({ color: new Color(6, 3.4, 1.2) }),
+  );
+  escena.add(meteoroide);
+
+  // Nube de posiciones: cada clone propagado con Kepler (sin perturbaciones) al instante actual
+  const elClones = orbitas.clones.map(aRad);
+  const posClones = new Float32Array(elClones.length * 3);
+  const geomPuntos = new BufferGeometry();
+  geomPuntos.setAttribute('position', new BufferAttribute(posClones, 3));
+  const puntosClones = new Points(
+    geomPuntos,
+    new PointsMaterial({
+      color: 0xffb066,
+      size: 3,
+      sizeAttenuation: false,
+      transparent: true,
+      opacity: 0.8,
+      depthWrite: false,
+    }),
+  );
+  puntosClones.frustumCulled = false;
+  escena.add(puntosClones);
+  const epocaUt = orbitas.nominal.epoca_ut_j2000;
+
+  function actualizarTiempo(f: Date): void {
+    const tt = Astro.MakeTime(f);
+    for (const p of PLANETAS) mallas.get(p.clave)!.position.copy(aThree(helioEcl(p.cuerpo, tt)));
+    const dt = tt.ut - epocaUt;
+    geomEstela.setDrawRange(0, indiceInferior(trayectoria, dt) + 1);
+    meteoroide.position.copy(aThree(interpolar(trayectoria, dt)));
+    elClones.forEach((el, k) => {
+      const r = estadoDesdeElementos(el, MU_SOL, tt.ut).r;
+      const v = aThree(r);
+      posClones.set([v.x, v.y, v.z], k * 3);
+    });
+    geomPuntos.attributes.position!.needsUpdate = true;
+  }
+  actualizarTiempo(fecha);
+
   const radioSolAU = RADIO_SOL_KM / KM_POR_AU;
   function aplicarEscala(visual: boolean): void {
     sol.scale.setScalar(radioSolAU * (visual ? EXAGERACION.sol : 1));
     for (const m of mallas.values())
-      m.scale.setScalar(m.userData.radioAU * (visual ? EXAGERACION.planetas : 1));
+      m.scale.setScalar(
+        m.userData.radioAU *
+          (visual
+            ? m.userData.clave === 'jupiter'
+              ? EXAGERACION.jupiter
+              : EXAGERACION.planetas
+            : 1),
+      );
+    // Meteoroide: en escala visual, del tamaño aparente de un planeta pequeño
+    meteoroide.scale.setScalar(visual ? RADIO_VISUAL_METEOROIDE_AU : radioMeteoroideKm / KM_POR_AU);
   }
   aplicarEscala(true);
 
   const posicionTierra = () => mallas.get('tierra')!.position.clone();
-  return { escena, aplicarEscala, posicionTierra, mallas };
+  return { escena, aplicarEscala, posicionTierra, mallas, meteoroide, sol, actualizarTiempo };
 }

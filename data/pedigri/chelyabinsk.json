@@ -15,6 +15,17 @@
     "estado": "verificado",
     "nota": "Choque S4 según la misma fuente."
   },
+  "diametro_preatmosferico": {
+    "valor": 19.8,
+    "unidad": "m",
+    "sigma": 4.6,
+    "sigma_publicada": 4.6,
+    "nivel_sigma": "formal-sin-nivel",
+    "fuente": "popova-2013-science",
+    "ubicacion": "texto principal, sección de trayectoria y tamaño",
+    "estado": "verificado",
+    "nota": "Supone forma esférica y densidad 3,3 g/cm³ (según la fuente). Nivel de la incertidumbre no declarado en el texto; se asume 1σ."
+  },
   "fecha_caida": {
     "valor": "2013-02-15T03:20:32.2Z",
     "unidad": "UTC",

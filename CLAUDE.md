@@ -41,7 +41,15 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
   terrestres en EQJ; sistema solar: AU en eclíptica J2000), en vez de un origen flotante único.
   Mapeo núcleo → Three: (x, y, z) → (x, z, −y) (`coordenadas.ts`). La geometría de la esfera de
   Three coincide con ECEF bajo ese mapeo; el globo se orienta con ECEF → EQJ de la fecha.
-- Escala visual: Sol ×10, planetas ×1500, marcador del bólido 60 km. Siempre etiquetada.
+- Escala visual: Sol ×10, planetas interiores ×1500, Júpiter ×150, meteoroide ~900 000 km en la
+  vista solar y 60 km en la terrestre, marcador del bólido 60 km. Siempre etiquetada.
+- Animación: `public/data/chelyabinsk-trayectoria.json` (`npm run datos:trayectoria`) es la
+  trayectoria N-cuerpos nominal del último año (pasos del integrador, densos cerca de la Tierra);
+  los 300 clones se mueven con Kepler (sin perturbaciones) solo como nube de posiciones.
+- Tiempo: `src/timeline/reloj.ts` (rango: 365 días antes del pico → pico). Secuencia
+  cinematográfica en `src/camera/coreografia.ts` + pasos en `main.ts`; con
+  `prefers-reduced-motion` se hace un corte directo. URL: `?pieza&t&vista&escala`.
+- `npm run datos` regenera reporte de validación y trayectoria.
 - Texturas en `public/texturas/` (Blue Marble reescalada: 4096 escritorio, 2048 móvil).
 - Vista previa: `.claude/launch.json` del proyecto (configuración `vite`, puerto 5173). La sesión
   de trabajo debe estar abierta en esta carpeta para que la herramienta de vista previa la lea.
@@ -119,8 +127,12 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
   (`npm run validacion:chelyabinsk`, ~35 s). 51 tests.
 - **Fase 1, etapa 4 (escena 3D): completa** — vistas Tierra y sistema solar, nube de 300 clones,
   interruptor de escala, bloom, etiquetas, descripciones textuales; e2e en escritorio y móvil.
-- Siguiente: Fase 1, etapa 5 — transición cinematográfica, línea de tiempo, reduced-motion y
-  estado en URL (esperando OK).
+- **Fase 1, etapa 5 (transición y línea de tiempo): completa** — recorrido de ~21 s, reloj
+  (×1 a ×10⁶), deslizador de fecha, movimiento reducido, estado en URL, atajos de teclado.
+  59 tests unitarios y 10 e2e.
+- Siguiente: Fase 1, etapa 6 — ficha de Chelyabinsk, atribuciones, accesibilidad (contraste AA,
+  revisión de teclado) y presupuesto de rendimiento (textura WebP/KTX2, división del bundle)
+  (esperando OK).
 
 ### Pendientes de datos
 

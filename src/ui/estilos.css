@@ -193,3 +193,55 @@ summary:focus-visible {
     transition: none;
   }
 }
+
+.fundido {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.linea-tiempo {
+  border-top: 1px solid var(--borde);
+  padding-top: 10px;
+  margin-bottom: 8px;
+}
+.linea-tiempo h2 {
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+.boton.principal {
+  border-color: var(--acento);
+  color: var(--acento);
+  font-weight: 600;
+}
+.selector {
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--texto);
+  background: #181b24;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  padding: 6px 8px;
+  min-height: 36px;
+}
+.deslizador {
+  width: 100%;
+  accent-color: var(--acento);
+  min-height: 28px;
+}
+.deslizador:focus-visible,
+.selector:focus-visible {
+  outline: 2px solid #8ec5ff;
+  outline-offset: 2px;
+}
+.fecha {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  font-variant-numeric: tabular-nums;
+}
+.creditos + .creditos {
+  margin-top: 6px;
+}

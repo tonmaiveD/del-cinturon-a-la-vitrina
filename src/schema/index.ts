@@ -98,6 +98,7 @@ export const Meteorito = z.object({
   metbull_id: z.number().int().positive().optional(),
   clase: Valor,
   masa_total: Valor.optional(), // kg recuperados
+  diametro_preatmosferico: Valor.optional(), // m
   fecha_caida: Valor, // ISO 8601 UTC
   /** Puede faltar mientras no haya fuente accesible; la UI no lo muestra entonces. */
   punto_caida: z.object({ lat: Valor, lon: Valor }).optional(),

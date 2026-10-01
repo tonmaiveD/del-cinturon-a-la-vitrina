@@ -24,6 +24,7 @@ import {
 } from 'three';
 import { ecefAEqj, eqjAEcef, estadoPuntoTerrestre, KM_POR_AU } from '../core/marcos';
 import { escala, norma, punto, suma, unitario, type Vec3 } from '../core/vector';
+import { indiceInferior, interpolar, type Muestra } from '../timeline/interpolacion';
 import { aThree } from './coordenadas';
 import { RADIO_TIERRA_KM } from './cuerpos';
 
@@ -65,18 +66,27 @@ const fragmentAtmosfera = /* glsl */ `
   }
 `;
 
-export function crearVistaTierra(bolido: DatosBolido, texturaUrl: string) {
+export function crearVistaTierra(
+  bolido: DatosBolido,
+  texturaUrl: string,
+  aproximacion: Muestra[],
+  radioMeteoroideKm?: number,
+) {
   const escena = new Scene();
   escena.background = new Color(0x000000);
   const t = Astro.MakeTime(bolido.fecha);
 
   // Globo: la geometría de Three ya coincide con ECEF bajo el mapeo (x, z, −y); se orienta con
-  // la matriz ECEF → EQJ de la fecha.
+  // la matriz ECEF → EQJ de cada instante.
   const globo = new Group();
-  const columna = (e: Vec3) => aThree(ecefAEqj(e, t));
-  // Ejes locales de Three (x, y, z) corresponden a ECEF (x, z, −y)
-  const m = new Matrix4().makeBasis(columna([1, 0, 0]), columna([0, 0, 1]), columna([0, -1, 0]));
-  globo.setRotationFromMatrix(m);
+  const m = new Matrix4();
+  function orientar(tt: Astro.AstroTime): void {
+    const columna = (e: Vec3) => aThree(ecefAEqj(e, tt));
+    // Ejes locales de Three (x, y, z) corresponden a ECEF (x, z, −y)
+    m.makeBasis(columna([1, 0, 0]), columna([0, 0, 1]), columna([0, -1, 0]));
+    globo.setRotationFromMatrix(m);
+  }
+  orientar(t);
   escena.add(globo);
 
   const textura = new TextureLoader().load(texturaUrl);
@@ -88,11 +98,15 @@ export function crearVistaTierra(bolido: DatosBolido, texturaUrl: string) {
   );
   globo.add(superficie);
 
-  // Luz solar real para la fecha (dirección geocéntrica del Sol)
-  const sol = Astro.GeoVector(Astro.Body.Sun, t, true);
-  const dirSol = aThree([sol.x, sol.y, sol.z]).normalize();
+  // Luz solar real (dirección geocéntrica del Sol en cada instante)
+  const dirSol = new Vector3();
   const luz = new DirectionalLight(0xffffff, 3);
-  luz.position.copy(dirSol.clone().multiplyScalar(10));
+  function iluminar(tt: Astro.AstroTime): void {
+    const sol = Astro.GeoVector(Astro.Body.Sun, tt, true);
+    dirSol.copy(aThree([sol.x, sol.y, sol.z])).normalize();
+    luz.position.copy(dirSol).multiplyScalar(10);
+  }
+  iluminar(t);
   escena.add(luz, new AmbientLight(0xffffff, 0.04));
 
   const atmosfera = new Mesh(
@@ -138,9 +152,43 @@ export function crearVistaTierra(bolido: DatosBolido, texturaUrl: string) {
 
   const posicionBolido = (): Vector3 => marcador.getWorldPosition(new Vector3());
 
+  // Aproximación final (N-cuerpos, geocéntrica EQJ): línea hasta el instante actual y meteoroide
+  const ptsAprox = aproximacion.map(([, x, y, z]) => aThree([x, y, z], kmAUnidad));
+  const geomAprox = new BufferGeometry().setFromPoints(ptsAprox);
+  const lineaAprox = new Line(
+    geomAprox,
+    new LineBasicMaterial({ color: 0xff9a3c, transparent: true, opacity: 0.85 }),
+  );
+  lineaAprox.frustumCulled = false;
+  escena.add(lineaAprox);
+  const meteoroide = new Mesh(
+    new SphereGeometry(1, 12, 6),
+    new MeshBasicMaterial({ color: new Color(5, 3, 1.2) }),
+  );
+  escena.add(meteoroide);
+  const dtMin = aproximacion[0]![0];
+
   function aplicarEscala(visual: boolean): void {
     // Real: 1 km de radio (aprox. tamaño de la bola de fuego); visual: 60 km para que se vea
     marcador.scale.setScalar((visual ? 60 : 1) * kmAUnidad);
+    // Meteoroide: radio real del dataset (si existe); visual: 60 km
+    meteoroide.scale.setScalar((visual ? 60 : (radioMeteoroideKm ?? 0.01)) * kmAUnidad);
+  }
+
+  /** Coloca globo, Sol y meteoroide en el instante dado. */
+  function actualizarTiempo(fecha: Date): void {
+    const tt = Astro.MakeTime(fecha);
+    orientar(tt);
+    iluminar(tt);
+    const dt = (fecha.getTime() - bolido.fecha.getTime()) / 86400000;
+    const visible = dt >= dtMin && dt <= 0;
+    lineaAprox.visible = visible;
+    meteoroide.visible = visible && dt < 0;
+    marcador.visible = dt >= -1 / 1440; // el pico de brillo se marca desde 1 min antes
+    if (!visible) return;
+    const i = indiceInferior(aproximacion, dt);
+    geomAprox.setDrawRange(0, i + 1);
+    meteoroide.position.copy(aThree(interpolar(aproximacion, dt), kmAUnidad));
   }
   aplicarEscala(true);
 
@@ -153,10 +201,11 @@ export function crearVistaTierra(bolido: DatosBolido, texturaUrl: string) {
   return {
     escena,
     globo,
+    marcador,
+    meteoroide,
     posicionBolido,
     aplicarEscala,
     actualizar,
-    dirSol,
-    longitudTrayectoriaKm: s,
+    actualizarTiempo,
   };
 }

@@ -13,7 +13,9 @@
     "format": "prettier --write .",
     "validate": "tsx pipeline/validate-data.ts",
     "schemas": "tsx pipeline/export-schemas.ts",
-    "validacion:chelyabinsk": "tsx pipeline/validacion-chelyabinsk.ts"
+    "validacion:chelyabinsk": "tsx pipeline/validacion-chelyabinsk.ts",
+    "datos:trayectoria": "tsx pipeline/trayectoria-chelyabinsk.ts",
+    "datos": "npm run validacion:chelyabinsk && npm run datos:trayectoria"
   },
   "license": "UNLICENSED",
   "type": "module",
