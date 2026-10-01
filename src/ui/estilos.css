@@ -1,7 +1,11 @@
 :root {
-  --fondo: #05060a;
-  --texto: #e8eaf0;
-  --texto-suave: #a9b0c2;
+  --fondo: #000;
+  --texto: #eef0f5;
+  --texto-suave: #b4bbcc;
+  --panel: rgba(12, 14, 20, 0.82);
+  --borde: rgba(255, 255, 255, 0.14);
+  --acento: #ffb25c;
+  --aviso: #ffd59a;
   font-family:
     system-ui,
     -apple-system,
@@ -17,6 +21,7 @@ body {
   height: 100%;
   background: var(--fondo);
   color: var(--texto);
+  overflow: hidden;
 }
 #escena {
   position: fixed;
@@ -24,22 +29,167 @@ body {
   width: 100%;
   height: 100%;
   display: block;
+  touch-action: none;
+}
+.capa-etiquetas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+.etiqueta {
+  color: var(--texto);
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.55);
+  white-space: nowrap;
+  transform: translateY(-14px);
+}
+.etiqueta.bolido {
+  color: var(--acento);
 }
 .cabecera {
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
   z-index: 1;
   padding: 16px;
-  max-width: 40rem;
+  max-width: 34rem;
+  pointer-events: none;
 }
 .cabecera h1 {
   margin: 0 0 4px;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
 }
 .cabecera p {
   margin: 0;
   color: var(--texto-suave);
+  font-size: 0.9rem;
 }
 .cabecera .estado {
-  margin-top: 8px;
-  font-size: 0.875rem;
+  margin-top: 6px;
+  font-size: 0.8rem;
+}
+.panel {
+  position: fixed;
+  z-index: 2;
+  right: 16px;
+  bottom: 16px;
+  width: min(24rem, calc(100vw - 32px));
+  max-height: 60vh;
+  overflow: auto;
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  padding: 12px 14px;
+  backdrop-filter: blur(6px);
+}
+.grupo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.rotulo {
+  color: var(--texto-suave);
+  font-size: 0.85rem;
+  margin-right: 4px;
+}
+.boton,
+.interruptor {
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--texto);
+  background: transparent;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+  min-height: 36px;
+}
+.boton[aria-pressed='true'] {
+  background: var(--acento);
+  color: #1a1206;
+  border-color: var(--acento);
+  font-weight: 600;
+}
+.boton:focus-visible,
+.interruptor:focus-visible,
+summary:focus-visible {
+  outline: 2px solid #8ec5ff;
+  outline-offset: 2px;
+}
+.interruptor {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.pista {
+  width: 30px;
+  height: 16px;
+  border-radius: 999px;
+  background: #555;
+  position: relative;
+  flex: none;
+}
+.pista::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  transition: left 0.15s;
+}
+.interruptor[aria-checked='true'] .pista {
+  background: var(--acento);
+}
+.interruptor[aria-checked='true'] .pista::after {
+  left: 16px;
+}
+.aviso {
+  margin: 0 0 8px;
+  font-size: 0.85rem;
+  color: var(--aviso);
+  border-left: 3px solid var(--aviso);
+  padding-left: 8px;
+}
+.descripcion {
+  margin: 0 0 8px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--texto);
+}
+.creditos {
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+}
+.creditos summary {
+  cursor: pointer;
+}
+@media (max-width: 640px) {
+  .cabecera {
+    padding: 12px 16px;
+  }
+  .cabecera h1 {
+    font-size: 1.15rem;
+  }
+  .cabecera p:not(.estado) {
+    display: none;
+  }
+  .panel {
+    right: 16px;
+    left: 16px;
+    bottom: 16px;
+    width: auto;
+    max-height: 45vh;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pista::after {
+    transition: none;
+  }
 }

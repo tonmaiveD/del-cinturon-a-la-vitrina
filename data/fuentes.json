@@ -89,5 +89,25 @@
     "consultado": "2026-10-01",
     "metadatos_verificados": false,
     "notas": "El 2026-10-01 el sitio respondió con una verificación anti-bots que no se intentó eludir; registro no leído."
+  },
+  {
+    "id": "nasa-blue-marble",
+    "tipo": "textura",
+    "cita": "NASA Earth Observatory. Blue Marble: Next Generation, topografía y batimetría, diciembre de 2004 (world.topo.bathy.200412.3x5400x2700.jpg).",
+    "url": "https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/base-topography-bathymetry",
+    "licencia": "Imagen de NASA; la página no declara licencia ni línea de crédito explícitas (pendiente de verificar en las directrices de medios de NASA)",
+    "consultado": "2026-10-01",
+    "metadatos_verificados": false,
+    "notas": "Reescalada a 4096×2048 (escritorio) y 2048×1024 (móvil) con sips en public/texturas/."
+  },
+  {
+    "id": "nasa-planetary-fact-sheet",
+    "tipo": "base-de-datos",
+    "cita": "Williams, D. R. NASA Planetary Fact Sheet (NSSDCA).",
+    "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+    "licencia": "Dato del Gobierno de EE. UU.",
+    "consultado": "2026-10-01",
+    "metadatos_verificados": true,
+    "notas": "Diámetros ecuatoriales (km): Mercurio 4879, Venus 12104, Tierra 12756, Marte 6792, Júpiter 142984. Usados solo para la escala visual/real de la escena."
   }
 ]

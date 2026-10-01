@@ -1,6 +1,26 @@
 {
   "app.titulo": "Del cinturón a la vitrina",
   "app.subtitulo": "El viaje de los meteoritos desde su origen hasta la Tierra",
-  "app.estado": "En construcción: fase 0 (andamiaje).",
-  "escena.descripcion": "Vista 3D vacía. Aquí aparecerán la Tierra y las órbitas de los meteoritos."
+  "app.estado": "Versión en desarrollo: Chelyabinsk (fase 1).",
+  "escena.descripcion": "Visualización 3D interactiva. La descripción textual de la vista está en el panel de controles.",
+  "vista.etiqueta": "Vista",
+  "vista.tierra": "Tierra",
+  "vista.sistema-solar": "Sistema solar",
+  "escala.etiqueta": "Escala visual",
+  "escala.visual.tierra": "Escala visual: el marcador del bólido está agrandado (60 km de radio). El brillo de la atmósfera es un efecto visual.",
+  "escala.visual.sistema-solar": "Escala visual: Sol ×{sol} y planetas ×{planetas} respecto a su tamaño real. Las distancias son reales.",
+  "escala.real": "Escala real: tamaños y distancias reales. Los planetas no se ven a esta distancia; usa las etiquetas.",
+  "desc.tierra": "La Tierra el {fecha} UTC, iluminada por el Sol de ese instante. La línea naranja es la trayectoria de entrada del bólido de Chelyabinsk desde 100 km de altura hasta el pico de brillo, a {alt} km sobre {lat}, {lon} (datos CNEOS). El punto de caída de los meteoritos está pendiente de verificación y no se muestra.",
+  "desc.sistema-solar": "Sistema solar interior el {fecha} UTC, en el plano de la eclíptica. La nube naranja reúne {n} órbitas posibles del meteoroide de Chelyabinsk, compatibles con la incertidumbre del vector de velocidad del CNEOS; la línea clara es la órbita nominal. Su perihelio está cerca de Venus y su afelio cerca del cinturón de asteroides.",
+  "etiqueta.bolido": "Pico de brillo (CNEOS)",
+  "etiqueta.sol": "Sol",
+  "planeta.mercurio": "Mercurio",
+  "planeta.venus": "Venus",
+  "planeta.tierra": "Tierra",
+  "planeta.marte": "Marte",
+  "planeta.jupiter": "Júpiter",
+  "creditos.titulo": "Fuentes y atribuciones",
+  "creditos.texto": "Textura terrestre: NASA Earth Observatory, Blue Marble Next Generation. Bólido: NASA/JPL CNEOS Fireball API. Efemérides: astronomy-engine (MIT). Órbitas de referencia: Popova et al. 2013 (Science); Emel'yanenko et al. 2014 (arXiv). Incertidumbre del CNEOS: Peña-Asensio et al. 2025 (A&A). Radios planetarios: NASA Planetary Fact Sheet.",
+  "cargando": "Cargando datos…",
+  "error.datos": "No se pudieron cargar los datos de la visualización."
 }

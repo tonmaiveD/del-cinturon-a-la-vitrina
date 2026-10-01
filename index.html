@@ -8,13 +8,36 @@
     <link rel="stylesheet" href="/src/ui/estilos.css" />
   </head>
   <body>
+    <canvas id="escena" role="img" data-i18n-aria="escena.descripcion"></canvas>
+    <div id="etiquetas" class="capa-etiquetas"></div>
     <header class="cabecera">
       <h1 data-i18n="app.titulo"></h1>
       <p data-i18n="app.subtitulo"></p>
       <p class="estado" data-i18n="app.estado"></p>
     </header>
-    <main>
-      <canvas id="escena" role="img" data-i18n-aria="escena.descripcion"></canvas>
+    <main class="panel" aria-label="Controles">
+      <div class="grupo" role="group" aria-labelledby="titulo-vista">
+        <span id="titulo-vista" class="rotulo" data-i18n="vista.etiqueta"></span>
+        <button type="button" class="boton" data-vista="tierra" data-i18n="vista.tierra"></button>
+        <button
+          type="button"
+          class="boton"
+          data-vista="sistema-solar"
+          data-i18n="vista.sistema-solar"
+        ></button>
+      </div>
+      <div class="grupo">
+        <button type="button" id="escala" class="interruptor" role="switch" aria-checked="true">
+          <span class="pista" aria-hidden="true"></span>
+          <span data-i18n="escala.etiqueta"></span>
+        </button>
+      </div>
+      <p id="aviso-escala" class="aviso"></p>
+      <p id="descripcion" class="descripcion" aria-live="polite" data-i18n="cargando"></p>
+      <details class="creditos">
+        <summary data-i18n="creditos.titulo"></summary>
+        <p data-i18n="creditos.texto"></p>
+      </details>
     </main>
     <script type="module" src="/src/main.ts"></script>
   </body>

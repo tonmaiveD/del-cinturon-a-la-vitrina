@@ -31,6 +31,14 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
 - Marcos: geocéntrico (km) y heliocéntrico (AU) con origen flotante para evitar jitter float32.
   Elementos orbitales en eclíptica y equinoccio J2000.
 - Hosting: pendiente de decidir al cerrar la Fase 1.
+- Escena (`src/scene/`): dos `Scene` independientes, cada una con sus unidades (Tierra: radios
+  terrestres en EQJ; sistema solar: AU en eclíptica J2000), en vez de un origen flotante único.
+  Mapeo núcleo → Three: (x, y, z) → (x, z, −y) (`coordenadas.ts`). La geometría de la esfera de
+  Three coincide con ECEF bajo ese mapeo; el globo se orienta con ECEF → EQJ de la fecha.
+- Escala visual: Sol ×10, planetas ×1500, marcador del bólido 60 km. Siempre etiquetada.
+- Texturas en `public/texturas/` (Blue Marble reescalada: 4096 escritorio, 2048 móvil).
+- Vista previa: la herramienta del navegador lee `.claude/launch.json` de la carpeta de la sesión
+  (`~/Downloads/apple_health_export`), donde hay una entrada `meteoritos-vite`.
 
 ## Núcleo orbital (`src/core/`)
 
@@ -103,8 +111,10 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
 - **Fase 1, etapa 2 (datos de Chelyabinsk): completa** con dos pendientes (ver abajo).
 - **Fase 1, etapa 3 (validación científica): APROBADA** — `docs/reportes/chelyabinsk.md`
   (`npm run validacion:chelyabinsk`, ~35 s). 51 tests.
-- Siguiente: Fase 1, etapa 4 — escena 3D (globo, atmósfera, bloom, sistema solar, nube orbital)
-  (esperando OK).
+- **Fase 1, etapa 4 (escena 3D): completa** — vistas Tierra y sistema solar, nube de 300 clones,
+  interruptor de escala, bloom, etiquetas, descripciones textuales; e2e en escritorio y móvil.
+- Siguiente: Fase 1, etapa 5 — transición cinematográfica, línea de tiempo, reduced-motion y
+  estado en URL (esperando OK).
 
 ### Pendientes de datos
 
@@ -116,4 +126,6 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
 
 ## Deuda técnica conocida
 
-- Bundle inicial ~524 kB (130 kB gzip), casi todo Three.js. Revisar presupuesto en Fase 1.
+- Carga inicial en móvil ≈ 183 kB gzip de JS + 524 kB de textura + 50 kB de órbitas. Con 4G
+  lento (1,6 Mbps) supera los 3 s: pasar la textura a WebP/KTX2 y dividir el bundle (etapa 6).
+- Rendimiento móvil solo medido en emulación (GPU de escritorio): falta medir en un móvil real.
