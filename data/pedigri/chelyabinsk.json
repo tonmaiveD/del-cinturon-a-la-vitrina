@@ -301,5 +301,43 @@
         "nota": "Valor de Borovička et al. 2013a citado por Peña-Asensio et al. 2025 (redondeado, sin incertidumbre). Pendiente de verificar en la Tabla 2 del original."
       }
     }
+  ],
+  "procedencia": [
+    {
+      "region": "resonancia-nu6",
+      "nombre": "Resonancia secular ν6",
+      "probabilidad": {
+        "valor": 62,
+        "unidad": "%",
+        "fuente": "popova-2013-science",
+        "ubicacion": "texto principal, sección \"Source and Evolution of the Chelyabinsk Meteoroid\"",
+        "estado": "verificado",
+        "nota": "Probabilidad según el modelo de Bottke et al. (ref. 33 de la fuente), aplicada por Popova et al. a la órbita de la Tabla 1."
+      }
+    },
+    {
+      "region": "resonancia-3-1",
+      "nombre": "Resonancia de movimiento medio 3:1 con Júpiter",
+      "probabilidad": {
+        "valor": 11,
+        "unidad": "%",
+        "fuente": "popova-2013-science",
+        "ubicacion": "texto principal, sección \"Source and Evolution of the Chelyabinsk Meteoroid\"",
+        "estado": "verificado",
+        "nota": "Probabilidad según el modelo de Bottke et al. (ref. 33 de la fuente), aplicada por Popova et al. a la órbita de la Tabla 1."
+      }
+    },
+    {
+      "region": "cruzadores-marte",
+      "nombre": "Región de cruzadores intermedios de Marte (IMC)",
+      "probabilidad": {
+        "valor": 25,
+        "unidad": "%",
+        "fuente": "popova-2013-science",
+        "ubicacion": "texto principal, sección \"Source and Evolution of the Chelyabinsk Meteoroid\"",
+        "estado": "verificado",
+        "nota": "Probabilidad según el modelo de Bottke et al. (ref. 33 de la fuente), aplicada por Popova et al. a la órbita de la Tabla 1."
+      }
+    }
   ]
 }

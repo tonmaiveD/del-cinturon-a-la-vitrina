@@ -34,7 +34,10 @@ const registro: RegistroBolido = {
 
 const { t, r, v } = estadoGeocentrico(registro, 'ecef-relativa');
 const tierra = Astro.HelioState(Astro.Body.Earth, t);
-const y0 = [...suma([tierra.x, tierra.y, tierra.z], r), ...suma([tierra.vx, tierra.vy, tierra.vz], v)];
+const y0 = [
+  ...suma([tierra.x, tierra.y, tierra.z], r),
+  ...suma([tierra.vx, tierra.vy, tierra.vz], v),
+];
 
 const muestras: { dt: number; y: Float64Array }[] = [{ dt: 0, y: Float64Array.from(y0) }];
 integrar(derivadaHeliocentrica(), t.ut, y0, t.ut - DIAS, {
@@ -57,7 +60,11 @@ const geo = muestras
   .filter(({ dt }) => dt >= -DIAS_GEO)
   .map(({ dt, y }) => {
     const e = Astro.HelioVector(Astro.Body.Earth, t.AddDays(dt));
-    const g: Vec3 = [(y[0]! - e.x) * KM_POR_AU, (y[1]! - e.y) * KM_POR_AU, (y[2]! - e.z) * KM_POR_AU];
+    const g: Vec3 = [
+      (y[0]! - e.x) * KM_POR_AU,
+      (y[1]! - e.y) * KM_POR_AU,
+      (y[2]! - e.z) * KM_POR_AU,
+    ];
     return [redondear(dt, 9), redondear(g[0], 2), redondear(g[1], 2), redondear(g[2], 2)];
   });
 

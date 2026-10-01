@@ -112,6 +112,10 @@ export const Meteorito = z.object({
     })
     .optional(),
   orbitas: z.array(Orbita),
+  /** Probabilidades de procedencia dinámica publicadas para esta órbita (modelo citado en la fuente). */
+  procedencia: z
+    .array(z.object({ region: idSlug, nombre: z.string(), probabilidad: Valor }))
+    .optional(),
 });
 export type Meteorito = z.infer<typeof Meteorito>;
 

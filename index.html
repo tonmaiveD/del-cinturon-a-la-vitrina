@@ -68,16 +68,33 @@
         />
         <output id="fecha-texto" for="fecha" class="fecha"></output>
       </section>
-      <p id="descripcion" class="descripcion" aria-live="polite" data-i18n="cargando"></p>
-      <details class="creditos">
-        <summary data-i18n="atajos.titulo"></summary>
-        <p data-i18n="atajos.texto"></p>
+      <details class="descripcion-plegable" open>
+        <summary data-i18n="desc.titulo"></summary>
+        <p id="descripcion" class="descripcion" aria-live="polite" data-i18n="cargando"></p>
       </details>
-      <details class="creditos">
-        <summary data-i18n="creditos.titulo"></summary>
-        <p data-i18n="creditos.texto"></p>
-      </details>
+      <div class="grupo pie">
+        <button type="button" id="abrir-ficha" class="boton" data-i18n="ficha.abrir"></button>
+        <button type="button" id="abrir-fuentes" class="boton" data-i18n="fuentes.abrir"></button>
+      </div>
     </main>
+    <dialog id="dialogo-ficha" class="dialogo" aria-labelledby="titulo-ficha">
+      <div class="cabeza">
+        <h2 id="titulo-ficha" data-i18n="ficha.titulo"></h2>
+        <button type="button" class="boton" data-cerrar data-i18n="cerrar"></button>
+      </div>
+      <div class="contenido"></div>
+    </dialog>
+    <dialog id="dialogo-fuentes" class="dialogo" aria-labelledby="titulo-fuentes">
+      <div class="cabeza">
+        <h2 id="titulo-fuentes" data-i18n="fuentes.titulo"></h2>
+        <button type="button" class="boton" data-cerrar data-i18n="cerrar"></button>
+      </div>
+      <div class="contenido">
+        <h3 data-i18n="atajos.titulo"></h3>
+        <p data-i18n="atajos.texto"></p>
+        <h3 data-i18n="fuentes.lista"></h3>
+      </div>
+    </dialog>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

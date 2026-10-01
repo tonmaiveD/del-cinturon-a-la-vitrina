@@ -245,3 +245,79 @@ summary:focus-visible {
 .creditos + .creditos {
   margin-top: 6px;
 }
+
+.descripcion-plegable summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  margin-bottom: 4px;
+}
+.pie {
+  margin: 8px 0 0;
+}
+.dialogo {
+  max-width: min(42rem, calc(100vw - 32px));
+  max-height: calc(100vh - 64px);
+  color: var(--texto);
+  background: #0f1219;
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  padding: 0;
+}
+.dialogo::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+.dialogo .cabeza {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--borde);
+  position: sticky;
+  top: 0;
+  background: #0f1219;
+}
+.dialogo h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+.dialogo .contenido {
+  padding: 4px 18px 18px;
+  line-height: 1.55;
+}
+.dialogo h3 {
+  font-size: 1rem;
+  margin: 18px 0 6px;
+}
+.dialogo a {
+  color: #9fd0ff;
+}
+.lista-fuentes {
+  padding-left: 18px;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+.lista-fuentes li {
+  margin-bottom: 8px;
+}
+.lista-fuentes .licencia {
+  display: block;
+  font-size: 0.8rem;
+}
+.lista-fuentes .pendiente {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--aviso);
+}
+.ficha p {
+  margin: 0 0 10px;
+}
+@media (max-width: 640px) {
+  .panel {
+    max-height: 52vh;
+  }
+  .descripcion-plegable:not([open]) {
+    margin-bottom: 4px;
+  }
+}

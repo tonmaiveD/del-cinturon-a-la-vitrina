@@ -19,3 +19,6 @@ jobs:
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: npm run e2e
+      # La medición de carga depende del hardware del runner: informativa, no bloqueante
+      - run: npm run e2e:rendimiento
+        continue-on-error: true

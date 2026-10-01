@@ -19,8 +19,6 @@
   "planeta.tierra": "Tierra",
   "planeta.marte": "Marte",
   "planeta.jupiter": "Júpiter",
-  "creditos.titulo": "Fuentes y atribuciones",
-  "creditos.texto": "Textura terrestre: NASA Earth Observatory, Blue Marble Next Generation. Bólido: NASA/JPL CNEOS Fireball API. Efemérides: astronomy-engine (MIT). Órbitas de referencia: Popova et al. 2013 (Science); Emel'yanenko et al. 2014 (arXiv). Incertidumbre del CNEOS: Peña-Asensio et al. 2025 (A&A). Radios planetarios: NASA Planetary Fact Sheet.",
   "cargando": "Cargando datos…",
   "error.datos": "No se pudieron cargar los datos de la visualización.",
   "tiempo.titulo": "Línea de tiempo",
@@ -48,5 +46,17 @@
   "narr.final": "Pico de brillo del bólido sobre los Urales, 15 de febrero de 2013. Puedes explorar la escena o mover la línea de tiempo.",
   "narr.reducido": "Movimiento reducido activo: se muestra la órbita completa sin animación. Usa la línea de tiempo para recorrerla.",
   "atajos.titulo": "Atajos de teclado",
-  "atajos.texto": "Espacio: reproducir o pausar. Flechas izquierda y derecha: un día atrás o adelante. I: ir al impacto. Escape: saltar la animación. Arrastrar o flechas sobre la escena: girar la cámara."
+  "atajos.texto": "Espacio: reproducir o pausar. Flechas izquierda y derecha: un día atrás o adelante. I: ir al impacto. Escape: saltar la animación. Arrastrar o flechas sobre la escena: girar la cámara.",
+  "desc.titulo": "Descripción de la escena",
+  "ficha.abrir": "Ficha de Chelyabinsk",
+  "ficha.titulo": "Chelyabinsk (2013)",
+  "ficha.borrador": "Borrador pendiente de revisión humana. Solo es visible en desarrollo; no se publica hasta que se apruebe.",
+  "ficha.fuentes": "Fuentes de los datos de esta ficha",
+  "fuentes.abrir": "Fuentes y créditos",
+  "fuentes.titulo": "Fuentes, licencias y atajos",
+  "fuentes.lista": "Fuentes y atribuciones",
+  "fuentes.enlace": "enlace",
+  "fuentes.licencia": "Licencia",
+  "fuentes.pendiente": "Metadatos pendientes de verificación",
+  "cerrar": "Cerrar"
 }

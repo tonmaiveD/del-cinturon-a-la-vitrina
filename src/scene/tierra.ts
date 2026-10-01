@@ -68,7 +68,8 @@ const fragmentAtmosfera = /* glsl */ `
 
 export function crearVistaTierra(
   bolido: DatosBolido,
-  texturaUrl: string,
+  /** Texturas de menor a mayor resolución: se muestra la primera y se sustituye al cargar la siguiente. */
+  texturasUrl: string[],
   aproximacion: Muestra[],
   radioMeteoroideKm?: number,
 ) {
@@ -89,13 +90,27 @@ export function crearVistaTierra(
   orientar(t);
   escena.add(globo);
 
-  const textura = new TextureLoader().load(texturaUrl);
-  textura.colorSpace = SRGBColorSpace;
-  textura.anisotropy = 8;
-  const superficie = new Mesh(
-    new SphereGeometry(1, 128, 64),
-    new MeshStandardMaterial({ map: textura, roughness: 0.95, metalness: 0 }),
-  );
+  const material = new MeshStandardMaterial({ roughness: 0.95, metalness: 0 });
+  let alCargarPrimera: (() => void) | undefined;
+  const primeraCargada = new Promise<void>((r) => (alCargarPrimera = r));
+  const cargador = new TextureLoader();
+  // Carga en cadena: la de mayor resolución no compite con la inicial por el ancho de banda
+  const cargar = (k: number): void => {
+    const url = texturasUrl[k];
+    if (!url) return;
+    cargador.load(url, (tex) => {
+      tex.colorSpace = SRGBColorSpace;
+      tex.anisotropy = 8;
+      material.map?.dispose();
+      material.map = tex;
+      material.needsUpdate = true;
+      if (k === 0) alCargarPrimera?.();
+      cargar(k + 1);
+    });
+  };
+  cargar(0);
+
+  const superficie = new Mesh(new SphereGeometry(1, 128, 64), material);
   globo.add(superficie);
 
   // Luz solar real (dirección geocéntrica del Sol en cada instante)
@@ -199,6 +214,7 @@ export function crearVistaTierra(
   }
 
   return {
+    primeraCargada,
     escena,
     globo,
     marcador,

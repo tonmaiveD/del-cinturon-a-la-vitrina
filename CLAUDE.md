@@ -49,7 +49,15 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
 - Tiempo: `src/timeline/reloj.ts` (rango: 365 días antes del pico → pico). Secuencia
   cinematográfica en `src/camera/coreografia.ts` + pasos en `main.ts`; con
   `prefers-reduced-motion` se hace un corte directo. URL: `?pieza&t&vista&escala`.
-- `npm run datos` regenera reporte de validación y trayectoria.
+- `npm run datos` regenera reporte de validación y trayectoria; `npm run datos:texturas` las WebP.
+- Fichas (`content/fichas/*.md`): plantillas con marcadores `{{clave}}` resueltos desde el dataset
+  (`src/ui/ficha-datos.ts`); un test prohíbe cifras escritas a mano. Solo se publican en
+  producción las `aprobada` con `revisado_por` y `fecha_revision`.
+- Carga: `main.ts` es ligero (textos, panel, diálogos) y precarga datos y textura de 1024;
+  `app3d.ts` (Three.js) se importa dinámicamente; la vista solar se construye bajo demanda.
+- e2e contra `pipeline/servidor-estatico.ts` (gzip, como un hosting real). `npm run e2e` y, aparte,
+  `npm run e2e:rendimiento` (4G lento + CPU ×4, un worker).
+- Archivos de trabajo temporales: `.trabajo/` (ignorado por git).
 - Texturas en `public/texturas/` (Blue Marble reescalada: 4096 escritorio, 2048 móvil).
 - Vista previa: `.claude/launch.json` del proyecto (configuración `vite`, puerto 5173). La sesión
   de trabajo debe estar abierta en esta carpeta para que la herramienta de vista previa la lea.
@@ -130,9 +138,8 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
 - **Fase 1, etapa 5 (transición y línea de tiempo): completa** — recorrido de ~21 s, reloj
   (×1 a ×10⁶), deslizador de fecha, movimiento reducido, estado en URL, atajos de teclado.
   59 tests unitarios y 10 e2e.
-- Siguiente: Fase 1, etapa 6 — ficha de Chelyabinsk, atribuciones, accesibilidad (contraste AA,
-  revisión de teclado) y presupuesto de rendimiento (textura WebP/KTX2, división del bundle)
-  (esperando OK).
+- **Fase 1, etapa 6 (cierre): completa** — ver `docs/cierres/fase-1.md`.
+- **Fase 1 cerrada, esperando confirmación del usuario** (y decisión de hosting) para la Fase 2.
 
 ### Pendientes de datos
 
@@ -144,6 +151,4 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
 
 ## Deuda técnica conocida
 
-- Carga inicial en móvil ≈ 183 kB gzip de JS + 524 kB de textura + 50 kB de órbitas. Con 4G
-  lento (1,6 Mbps) supera los 3 s: pasar la textura a WebP/KTX2 y dividir el bundle (etapa 6).
-- Rendimiento móvil solo medido en emulación (GPU de escritorio): falta medir en un móvil real.
+- Ver `docs/cierres/fase-1.md` (deuda técnica y riesgos).
