@@ -2,13 +2,9 @@
   {
     "id": "flora-nu6-ll",
     "nombre": "Familia Flora (borde interior del cinturón, junto a la resonancia ν6)",
-    "clases": [
-      "LL"
-    ],
+    "clases": ["LL"],
     "confianza": "medio",
     "justificacion": "Popova et al. (2013) calculan un 86 % de probabilidad de que las condritas LL lleguen por la resonancia ν6 (combinando las órbitas de Chelyabinsk e Itokawa) y lo presentan como apoyo a la hipótesis de un origen en la parte interior de la familia Flora, de tipo LL, que se extiende sobre esa resonancia. Es una hipótesis respaldada, no un consenso establecido; por eso la confianza es media.",
-    "fuentes": [
-      "popova-2013-science"
-    ]
+    "fuentes": ["popova-2013-science"]
   }
 ]

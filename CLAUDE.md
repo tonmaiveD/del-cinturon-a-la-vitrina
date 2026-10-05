@@ -49,6 +49,12 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
 - Tiempo: `src/timeline/reloj.ts` (rango: 365 días antes del pico → pico). Secuencia
   cinematográfica en `src/camera/coreografia.ts` + pasos en `main.ts`; con
   `prefers-reduced-motion` se hace un corte directo. URL: `?pieza&t&vista&escala`.
+- Dataset de pedigrí: Granvik & Brown 2018 recalcula las 25 órbitas desde los datos originales
+  (1σ). Sus tablas de trayectoria y procedencia no declaran nivel → `formal-sin-nivel`. La
+  clasificación es la compilada por ellos (cita la original). Nombres en "pendiente" hasta MetBull.
+  `punto_trayectoria` es la posición de referencia del bólido, **no** el punto de caída.
+- Un meteorito puede tener órbitas y probabilidades de varias fuentes: el código que muestre una
+  cifra atribuida a una fuente debe filtrar por `fuente` (test en `ficha.test.ts`).
 - `npm run datos` regenera reporte de validación y trayectoria; `npm run datos:texturas` las WebP.
 - Fichas (`content/fichas/*.md`): plantillas con marcadores `{{clave}}` resueltos desde el dataset
   (`src/ui/ficha-datos.ts`); un test prohíbe cifras escritas a mano. Solo se publican en
@@ -139,7 +145,11 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
   (×1 a ×10⁶), deslizador de fecha, movimiento reducido, estado en URL, atajos de teclado.
   59 tests unitarios y 10 e2e.
 - **Fase 1, etapa 6 (cierre): completa** — ver `docs/cierres/fase-1.md`.
-- **Fase 1 cerrada, esperando confirmación del usuario** (y decisión de hosting) para la Fase 2.
+- **Fase 1 cerrada** (2026-10-05). Hosting y ficha: pendientes de decisión del usuario.
+- **Fase 2, etapa 1 (dataset de pedigrí): completa** — 25 caídas desde Granvik & Brown 2018
+  (`npm run datos:granvik-brown`, lee el LaTeX de arXiv:1804.07229). 115 tests.
+- Siguiente: Fase 2, etapa 2 — verificación cruzada de ≥ 3 meteoritos con fuentes originales
+  independientes (esperando OK).
 
 ### Pendientes de datos
 

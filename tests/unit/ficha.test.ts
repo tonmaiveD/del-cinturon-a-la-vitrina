@@ -22,6 +22,10 @@ describe.each(fichas.map((f) => [f.pieza, f] as const))('ficha %s', (pieza, fich
   it('no contiene cifras escritas a mano fuera de los marcadores', () => {
     expect(cifrasFueraDeMarcadores(ficha.cuerpo)).toEqual([]);
   });
+  it('las probabilidades de procedencia vienen de la fuente que nombra el texto', () => {
+    for (const k of ['p_nu6', 'p_31', 'p_imc'])
+      expect(ctx[k]?.fuente, k).toBe('popova-2013-science');
+  });
   it('todos los marcadores se resuelven con datos verificados', () => {
     for (const k of marcadores(ficha.cuerpo)) expect(ctx[k], k).toBeDefined();
     const { html, fuentes } = renderizarFicha(ficha, ctx);

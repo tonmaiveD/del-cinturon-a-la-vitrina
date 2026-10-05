@@ -102,6 +102,8 @@ export const Meteorito = z.object({
   fecha_caida: Valor, // ISO 8601 UTC
   /** Puede faltar mientras no haya fuente accesible; la UI no lo muestra entonces. */
   punto_caida: z.object({ lat: Valor, lon: Valor }).optional(),
+  /** Posición de referencia de la trayectoria del bólido (no es el punto de caída). */
+  punto_trayectoria: z.object({ lat: Valor, lon: Valor }).optional(),
   /** Radiante geocéntrico y velocidades publicadas (para validar órbitas calculadas). */
   radiante_geocentrico: z
     .object({

@@ -18,7 +18,8 @@
     "datos": "npm run validacion:chelyabinsk && npm run datos:trayectoria",
     "datos:texturas": "tsx pipeline/texturas.ts",
     "e2e:rendimiento": "playwright test --project=rendimiento --workers=1",
-    "cierre:video": "tsx pipeline/grabar-recorrido.ts"
+    "cierre:video": "tsx pipeline/grabar-recorrido.ts",
+    "datos:granvik-brown": "tsx pipeline/importar-granvik-brown.ts"
   },
   "license": "UNLICENSED",
   "type": "module",

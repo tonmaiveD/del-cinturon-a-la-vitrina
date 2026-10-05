@@ -1,0 +1,277 @@
+{
+  "id": "kosice",
+  "nombre_oficial": {
+    "valor": "Košice",
+    "fuente": "granvik-brown-2018",
+    "ubicacion": "arXiv:1804.07229v1, tabla table:trajectorydata",
+    "estado": "pendiente",
+    "nota": "Nombre tal como lo da Granvik & Brown 2018; falta confirmarlo en MetBull."
+  },
+  "clase": {
+    "valor": "H5",
+    "fuente": "granvik-brown-2018",
+    "ubicacion": "arXiv:1804.07229v1, tabla table:geophysdata",
+    "estado": "verificado",
+    "nota": "Clasificación compilada por Granvik & Brown 2018 a partir de la referencia original citada en su tabla."
+  },
+  "fecha_caida": {
+    "valor": "2010-02-28T22:24:46.080Z",
+    "fuente": "granvik-brown-2018",
+    "ubicacion": "arXiv:1804.07229v1, tabla table:trajectorydata",
+    "estado": "verificado",
+    "unidad": "UTC",
+    "nota": "Instante de referencia del bólido según la tabla (fecha y hora decimal UTC)."
+  },
+  "punto_trayectoria": {
+    "lat": {
+      "valor": 20.705,
+      "fuente": "granvik-brown-2018",
+      "ubicacion": "arXiv:1804.07229v1, tabla table:trajectorydata",
+      "estado": "verificado",
+      "unidad": "grados",
+      "nota": "Posición de referencia de la trayectoria, no el punto de caída."
+    },
+    "lon": {
+      "valor": 48.667,
+      "fuente": "granvik-brown-2018",
+      "ubicacion": "arXiv:1804.07229v1, tabla table:trajectorydata",
+      "estado": "verificado",
+      "unidad": "grados"
+    }
+  },
+  "radiante_geocentrico": {
+    "ra": {
+      "valor": 114.3,
+      "unidad": "grados",
+      "sigma": 1.7,
+      "sigma_publicada": 1.7,
+      "nivel_sigma": "formal-sin-nivel",
+      "fuente": "granvik-brown-2018",
+      "ubicacion": "arXiv:1804.07229v1, tabla table:trajectorydata",
+      "estado": "verificado",
+      "nota": "Las tablas de trayectoria y procedencia no declaran el nivel de la incertidumbre; se asume 1σ."
+    },
+    "dec": {
+      "valor": 29,
+      "unidad": "grados",
+      "sigma": 3,
+      "sigma_publicada": 3,
+      "nivel_sigma": "formal-sin-nivel",
+      "fuente": "granvik-brown-2018",
+      "ubicacion": "arXiv:1804.07229v1, tabla table:trajectorydata",
+      "estado": "verificado",
+      "nota": "Las tablas de trayectoria y procedencia no declaran el nivel de la incertidumbre; se asume 1σ."
+    },
+    "v_geocentrica": {
+      "valor": 10.31,
+      "unidad": "km/s",
+      "sigma": 0.44,
+      "sigma_publicada": 0.44,
+      "nivel_sigma": "1-sigma",
+      "fuente": "granvik-brown-2018",
+      "ubicacion": "arXiv:1804.07229v1, tabla table:qcapqvgvh",
+      "estado": "verificado"
+    },
+    "v_entrada": {
+      "valor": 14.9,
+      "unidad": "km/s",
+      "sigma": 0.35,
+      "sigma_publicada": 0.35,
+      "nivel_sigma": "formal-sin-nivel",
+      "fuente": "granvik-brown-2018",
+      "ubicacion": "arXiv:1804.07229v1, tabla table:trajectorydata",
+      "estado": "verificado",
+      "nota": "Las tablas de trayectoria y procedencia no declaran el nivel de la incertidumbre; se asume 1σ."
+    }
+  },
+  "orbitas": [
+    {
+      "fuente": "granvik-brown-2018",
+      "ubicacion": "arXiv:1804.07229v1, tabla table:orbits y table:qcapqvgvh",
+      "marco": "ecliptica-J2000",
+      "epoca": {
+        "valor": "MJD 55255.933866 UTC (2010-02-28T22:24:46.022Z)",
+        "fuente": "granvik-brown-2018",
+        "ubicacion": "arXiv:1804.07229v1, tabla table:orbits",
+        "estado": "verificado",
+        "nota": "Época de osculación = instante del impacto."
+      },
+      "a": {
+        "valor": 2.73,
+        "unidad": "AU",
+        "sigma": 0.23,
+        "sigma_publicada": 0.23,
+        "nivel_sigma": "1-sigma",
+        "fuente": "granvik-brown-2018",
+        "ubicacion": "arXiv:1804.07229v1, tabla table:orbits",
+        "estado": "verificado"
+      },
+      "e": {
+        "valor": 0.65,
+        "sigma": 0.03,
+        "sigma_publicada": 0.03,
+        "nivel_sigma": "1-sigma",
+        "fuente": "granvik-brown-2018",
+        "ubicacion": "arXiv:1804.07229v1, tabla table:orbits",
+        "estado": "verificado"
+      },
+      "i": {
+        "valor": 1.99,
+        "unidad": "grados",
+        "sigma": 0.47,
+        "sigma_publicada": 0.47,
+        "nivel_sigma": "1-sigma",
+        "fuente": "granvik-brown-2018",
+        "ubicacion": "arXiv:1804.07229v1, tabla table:orbits",
+        "estado": "verificado"
+      },
+      "nodo": {
+        "valor": 340.0713,
+        "unidad": "grados",
+        "sigma": 0.0024,
+        "sigma_publicada": 0.0024,
+        "nivel_sigma": "1-sigma",
+        "fuente": "granvik-brown-2018",
+        "ubicacion": "arXiv:1804.07229v1, tabla table:orbits",
+        "estado": "verificado"
+      },
+      "omega": {
+        "valor": 204.2,
+        "unidad": "grados",
+        "sigma": 1.5,
+        "sigma_publicada": 1.5,
+        "nivel_sigma": "1-sigma",
+        "fuente": "granvik-brown-2018",
+        "ubicacion": "arXiv:1804.07229v1, tabla table:orbits",
+        "estado": "verificado"
+      },
+      "q": {
+        "valor": 0.9563,
+        "unidad": "AU",
+        "sigma": 0.0042,
+        "sigma_publicada": 0.0042,
+        "nivel_sigma": "1-sigma",
+        "fuente": "granvik-brown-2018",
+        "ubicacion": "arXiv:1804.07229v1, tabla table:qcapqvgvh",
+        "estado": "verificado"
+      },
+      "Q": {
+        "valor": 4.5,
+        "unidad": "AU",
+        "sigma": 0.47,
+        "sigma_publicada": 0.47,
+        "nivel_sigma": "1-sigma",
+        "fuente": "granvik-brown-2018",
+        "ubicacion": "arXiv:1804.07229v1, tabla table:qcapqvgvh",
+        "estado": "verificado"
+      }
+    }
+  ],
+  "procedencia": [
+    {
+      "region": "hungaria",
+      "nombre": "Región de Hungaria",
+      "probabilidad": {
+        "valor": 0.7,
+        "unidad": "%",
+        "sigma": 0.1,
+        "sigma_publicada": 0.1,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "granvik-brown-2018",
+        "ubicacion": "arXiv:1804.07229v1, tabla table:sourceregionslores",
+        "estado": "verificado",
+        "nota": "Las tablas de trayectoria y procedencia no declaran el nivel de la incertidumbre; se asume 1σ."
+      }
+    },
+    {
+      "region": "resonancia-nu6",
+      "nombre": "Resonancia secular ν6",
+      "probabilidad": {
+        "valor": 13,
+        "unidad": "%",
+        "sigma": 2,
+        "sigma_publicada": 2,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "granvik-brown-2018",
+        "ubicacion": "arXiv:1804.07229v1, tabla table:sourceregionslores",
+        "estado": "verificado",
+        "nota": "Las tablas de trayectoria y procedencia no declaran el nivel de la incertidumbre; se asume 1σ."
+      }
+    },
+    {
+      "region": "phocaea",
+      "nombre": "Región de Phocaea",
+      "probabilidad": {
+        "valor": 0,
+        "unidad": "%",
+        "sigma": 0.003,
+        "sigma_publicada": 0.003,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "granvik-brown-2018",
+        "ubicacion": "arXiv:1804.07229v1, tabla table:sourceregionslores",
+        "estado": "verificado",
+        "nota": "Las tablas de trayectoria y procedencia no declaran el nivel de la incertidumbre; se asume 1σ."
+      }
+    },
+    {
+      "region": "resonancia-3-1",
+      "nombre": "Resonancia de movimiento medio 3:1 con Júpiter",
+      "probabilidad": {
+        "valor": 37,
+        "unidad": "%",
+        "sigma": 4,
+        "sigma_publicada": 4,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "granvik-brown-2018",
+        "ubicacion": "arXiv:1804.07229v1, tabla table:sourceregionslores",
+        "estado": "verificado",
+        "nota": "Las tablas de trayectoria y procedencia no declaran el nivel de la incertidumbre; se asume 1σ."
+      }
+    },
+    {
+      "region": "resonancia-5-2",
+      "nombre": "Resonancia de movimiento medio 5:2 con Júpiter",
+      "probabilidad": {
+        "valor": 16,
+        "unidad": "%",
+        "sigma": 5,
+        "sigma_publicada": 5,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "granvik-brown-2018",
+        "ubicacion": "arXiv:1804.07229v1, tabla table:sourceregionslores",
+        "estado": "verificado",
+        "nota": "Las tablas de trayectoria y procedencia no declaran el nivel de la incertidumbre; se asume 1σ."
+      }
+    },
+    {
+      "region": "resonancia-2-1",
+      "nombre": "Resonancia de movimiento medio 2:1 con Júpiter",
+      "probabilidad": {
+        "valor": 0.08,
+        "unidad": "%",
+        "sigma": 0.09,
+        "sigma_publicada": 0.09,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "granvik-brown-2018",
+        "ubicacion": "arXiv:1804.07229v1, tabla table:sourceregionslores",
+        "estado": "verificado",
+        "nota": "Las tablas de trayectoria y procedencia no declaran el nivel de la incertidumbre; se asume 1σ."
+      }
+    },
+    {
+      "region": "cometas-jfc",
+      "nombre": "Cometas de la familia de Júpiter",
+      "probabilidad": {
+        "valor": 33,
+        "unidad": "%",
+        "sigma": 11,
+        "sigma_publicada": 11,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "granvik-brown-2018",
+        "ubicacion": "arXiv:1804.07229v1, tabla table:sourceregionslores",
+        "estado": "verificado",
+        "nota": "Las tablas de trayectoria y procedencia no declaran el nivel de la incertidumbre; se asume 1σ."
+      }
+    }
+  ]
+}

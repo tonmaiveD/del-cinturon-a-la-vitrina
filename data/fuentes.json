@@ -109,5 +109,16 @@
     "consultado": "2026-10-01",
     "metadatos_verificados": true,
     "notas": "Diámetros ecuatoriales (km): Mercurio 4879, Venus 12104, Tierra 12756, Marte 6792, Júpiter 142984. Usados solo para la escala visual/real de la escena."
+  },
+  {
+    "id": "granvik-brown-2018",
+    "tipo": "articulo",
+    "cita": "Granvik, M., Brown, P. (2018). Identification of meteorite source regions in the Solar System. Icarus.",
+    "doi": "10.1016/j.icarus.2018.04.012",
+    "url": "https://arxiv.org/abs/1804.07229",
+    "licencia": "Cita bibliográfica; preprint arXiv",
+    "consultado": "2026-10-05",
+    "metadatos_verificados": true,
+    "notas": "Leído el LaTeX original de arXiv:1804.07229v1. Recalcula desde los datos originales las órbitas de 25 caídas con órbita instrumental (1σ, §2) y estima probabilidades de región de escape con un modelo de órbitas de NEOs. Volumen y páginas de la versión publicada no verificados (DOI tomado de los metadatos de arXiv)."
   }
 ]

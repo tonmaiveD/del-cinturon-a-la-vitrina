@@ -85,7 +85,10 @@ export function contextoFicha(m: Meteorito, cneos: RegistroCneos, nClones: numbe
       dato(orbita.a, (v) => NIVEL[v.nivel_sigma ?? '1-sigma']!),
     );
   }
-  for (const p of m.procedencia ?? []) {
+  // La ficha atribuye estas probabilidades a Popova et al.: solo se usan las de esa fuente
+  for (const p of (m.procedencia ?? []).filter(
+    (x) => x.probabilidad.fuente === 'popova-2013-science',
+  )) {
     const clave = { 'resonancia-nu6': 'nu6', 'resonancia-3-1': '31', 'cruzadores-marte': 'imc' }[
       p.region
     ];
