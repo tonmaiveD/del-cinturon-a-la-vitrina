@@ -59,6 +59,9 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
   en la primera; validado contra JPL Horizons (D_D = 0,0003). Para estados de JPL usar el vector
   geocéntrico + la Tierra de astronomy-engine (nunca el heliocéntrico de JPL: difieren ~1000 km).
 - Transcripciones para verificación (no forman parte del dataset mostrado): `data/verificacion/`.
+- `orbita_principal` (meteorito) indica la órbita que se muestra; `discrepancia_documentada`
+  (órbita) es la única forma de que el test de compatibilidad entre órbitas admita una excepción.
+  `npm run datos:pedigri` reimporta Granvik & Brown y la órbita de JPL de 2008 TC3.
 - Un meteorito puede tener órbitas y probabilidades de varias fuentes: el código que muestre una
   cifra atribuida a una fuente debe filtrar por `fuente` (test en `ficha.test.ts`).
 - `npm run datos` regenera reporte de validación y trayectoria; `npm run datos:texturas` las WebP.
@@ -154,10 +157,12 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
 - **Fase 1 cerrada** (2026-10-05). Hosting y ficha: pendientes de decisión del usuario.
 - **Fase 2, etapa 1 (dataset de pedigrí): completa** — 25 caídas desde Granvik & Brown 2018
   (`npm run datos:granvik-brown`, lee el LaTeX de arXiv:1804.07229). 115 tests.
-- **Fase 2, etapa 2 (verificación cruzada): DETENIDA por el criterio de parada** —
-  `docs/reportes/cruzada.md` (`npm run verificacion:cruzada`). Almahata Sitta: la órbita de
-  Granvik & Brown discrepa ~140σ de la telescópica de JPL (Δa = 0,043 AU; D_D = 0,042). Esperando
-  decisión del usuario sobre qué órbita mostrar. Žďár, Annama y Chelyabinsk concuerdan (≤ 1,7σ).
+- **Fase 2, etapa 2 (verificación cruzada): completa y aprobada** — `docs/reportes/cruzada.md`
+  (`npm run verificacion:cruzada`). Žďár, Annama y Chelyabinsk concuerdan (≤ 1,7σ). Almahata
+  Sitta discrepaba ~140σ de la órbita telescópica de JPL: decisión del usuario (2026-10-05) →
+  órbita principal = JPL Horizons; Granvik & Brown secundaria con `discrepancia_documentada`.
+  No se amplían las incertidumbres de Granvik & Brown (solo se documenta).
+- Siguiente: Fase 2, etapa 3 — regiones de origen con nivel de confianza (esperando OK).
 
 ### Pendientes de datos
 

@@ -4,9 +4,11 @@
 
 ## Veredicto
 
-**CRITERIO DE PARADA ACTIVADO** en 1 par(es):
+**APROBADA.** Ningún par independiente sin documentar supera |z| > 3 en a, e, i, q ni D_D > 0,1.
 
-- Almahata Sitta (JPL Horizons, 2008 TC3 (órbita telescópica, 2008-09-07)): D_D = 0.042; z(a, e, i, q) = -143.9 | -245.9 | -61.1 | 128.2
+Discrepancias documentadas y resueltas:
+
+- Almahata Sitta: docs/reportes/cruzada.md §A: ~140σ frente a la órbita telescópica de JPL Horizons (Δa = 0,043 AU, D_D = 0,042). Decisión del usuario (2026-10-05): órbita principal = JPL.
 
 z = (fuente − Granvik & Brown) / √(σ₁² + σ₂²). D_D: Drummond (1981).
 

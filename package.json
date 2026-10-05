@@ -20,7 +20,9 @@
     "e2e:rendimiento": "playwright test --project=rendimiento --workers=1",
     "cierre:video": "tsx pipeline/grabar-recorrido.ts",
     "datos:granvik-brown": "tsx pipeline/importar-granvik-brown.ts",
-    "verificacion:cruzada": "tsx pipeline/verificacion-cruzada.ts"
+    "verificacion:cruzada": "tsx pipeline/verificacion-cruzada.ts",
+    "datos:jpl-2008tc3": "tsx pipeline/importar-jpl-2008tc3.ts",
+    "datos:pedigri": "npm run datos:granvik-brown && npm run datos:jpl-2008tc3"
   },
   "license": "UNLICENSED",
   "type": "module",

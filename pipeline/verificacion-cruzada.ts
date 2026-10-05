@@ -191,9 +191,18 @@ const pares: Par[] = [
     })),
 ];
 const resultadosA = pares.map((p) => ({ ...p, ...comparar(p.A, p.B) }));
-const fallos = resultadosA.filter(
-  (r) => r.dd > 0.1 || CLAVES.some((k) => Number.isFinite(r.z[k]) && Math.abs(r.z[k]) > 3),
-);
+const supera = (r: (typeof resultadosA)[number]) =>
+  r.dd > 0.1 || CLAVES.some((k) => Number.isFinite(r.z[k]) && Math.abs(r.z[k]) > 3);
+/** Discrepancias ya documentadas en el dataset (con decisión del usuario): no detienen. */
+const documentada = (r: (typeof resultadosA)[number]) => {
+  const id = [...meteoritos.values()].find(
+    (m) => String(m.nombre_oficial.valor) === r.meteorito,
+  )?.id;
+  return meteoritos.get(id ?? '')?.orbitas.find((o) => o.fuente === 'granvik-brown-2018')
+    ?.discrepancia_documentada;
+};
+const fallos = resultadosA.filter((r) => supera(r) && !documentada(r));
+const resueltas = resultadosA.filter((r) => supera(r) && documentada(r));
 
 // ---------- C. Compilación Borovička 2015 vs G&B ----------
 const idPorNombre = (n: string) =>
@@ -281,7 +290,13 @@ const informe = `# Verificación cruzada de órbitas con pedigrí
 
 ${
   fallos.length === 0
-    ? '**APROBADA.** Ningún par independiente supera |z| > 3 en a, e, i, q ni D_D > 0,1.'
+    ? `**APROBADA.** Ningún par independiente sin documentar supera |z| > 3 en a, e, i, q ni D_D > 0,1.${
+        resueltas.length
+          ? `\n\nDiscrepancias documentadas y resueltas:\n\n${resueltas
+              .map((r) => `- ${r.meteorito}: ${documentada(r)}`)
+              .join('\n')}`
+          : ''
+      }`
     : `**CRITERIO DE PARADA ACTIVADO** en ${fallos.length} par(es):\n\n${fallos
         .map(
           (r) => `- ${r.meteorito} (${r.fuente}): D_D = ${f(r.dd)}; z(a, e, i, q) = ${zTxt(r.z)}`,

@@ -27,10 +27,18 @@ describe.each(meteoritos.map((m) => [m.id, m] as const))('%s', (_id, m) => {
     },
   );
 
-  it('las órbitas publicadas son compatibles entre sí en a, e, i (3σ combinada)', () => {
+  it('orbita_principal, si existe, apunta a una órbita verificada', () => {
+    if (!m.orbita_principal) return;
+    const o = m.orbitas.find((x) => x.fuente === m.orbita_principal);
+    expect(o?.a.estado).toBe('verificado');
+  });
+
+  it('las órbitas publicadas son compatibles entre sí en a, e, i (3σ combinada), salvo discrepancias documentadas', () => {
     for (let x = 0; x < m.orbitas.length; x++)
       for (let y = x + 1; y < m.orbitas.length; y++)
         for (const k of ['a', 'e', 'i'] as const) {
+          if (m.orbitas[x]!.discrepancia_documentada || m.orbitas[y]!.discrepancia_documentada)
+            continue;
           const p = m.orbitas[x]![k];
           const q = m.orbitas[y]![k];
           expect(Math.abs(num(p) - num(q)), k).toBeLessThan(3 * Math.hypot(sig(p), sig(q)));

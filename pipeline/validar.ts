@@ -32,6 +32,13 @@ export function validarDataset(ds: Dataset): string[] {
   for (const a of ds.pedigri) {
     const m = Meteorito.safeParse(a.contenido);
     if (!m.success) errores.push(...erroresZod(a.ruta, m.error));
+    else if (
+      m.data.orbita_principal &&
+      !m.data.orbitas.some((o) => o.fuente === m.data.orbita_principal)
+    )
+      errores.push(
+        `${a.ruta}: orbita_principal "${m.data.orbita_principal}" no está entre sus órbitas`,
+      );
     archivos.push(a);
   }
 

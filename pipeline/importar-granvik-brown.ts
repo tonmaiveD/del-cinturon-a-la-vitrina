@@ -16,6 +16,11 @@ import { execFileSync } from 'node:child_process';
 import { Meteorito, type Valor } from '../src/schema';
 
 const FUENTE = 'granvik-brown-2018';
+/** Discrepancias verificadas frente a fuentes independientes (ver docs/reportes/cruzada.md). */
+const DISCREPANCIAS: Record<string, string> = {
+  'almahata-sitta':
+    'docs/reportes/cruzada.md §A: ~140σ frente a la órbita telescópica de JPL Horizons (Δa = 0,043 AU, D_D = 0,042). Decisión del usuario (2026-10-05): órbita principal = JPL.',
+};
 const TEX = '.trabajo/gb2018/meteorite_sources.tex';
 const NOTA_FORMAL =
   'Las tablas de trayectoria y procedencia no declaran el nivel de la incertidumbre; se asume 1σ.';
@@ -161,6 +166,7 @@ for (const [latex, [nombre, id]] of Object.entries(NOMBRES)) {
     omega: valor(orb[4]!, O, 'grados', '1-sigma'),
     q: valor(q!, V, 'AU', '1-sigma'),
     Q: valor(Q!, V, 'AU', '1-sigma'),
+    ...(DISCREPANCIAS[id] ? { discrepancia_documentada: DISCREPANCIAS[id] } : {}),
   };
   const nuevaProcedencia = REGIONES.map(([region, nombreRegion], k) => ({
     region,

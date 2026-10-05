@@ -542,5 +542,6 @@
       "estado": "verificado",
       "unidad": "grados"
     }
-  }
+  },
+  "orbita_principal": "popova-2013-science"
 }

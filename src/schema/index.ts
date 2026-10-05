@@ -89,6 +89,8 @@ export const Orbita = z.object({
   Q: Valor.optional(), // AU
   M: Valor.optional(), // anomalía media en la época, grados
   tiempo_perihelio: Valor.optional(),
+  /** Si esta órbita discrepa de otra más allá de su incertidumbre: dónde está documentado. */
+  discrepancia_documentada: z.string().optional(),
 });
 export type Orbita = z.infer<typeof Orbita>;
 
@@ -114,6 +116,8 @@ export const Meteorito = z.object({
     })
     .optional(),
   orbitas: z.array(Orbita),
+  /** Fuente de la órbita que se muestra por defecto (si falta, la primera verificada). */
+  orbita_principal: idSlug.optional(),
   /** Probabilidades de procedencia dinámica publicadas para esta órbita (modelo citado en la fuente). */
   procedencia: z
     .array(z.object({ region: idSlug, nombre: z.string(), probabilidad: Valor }))

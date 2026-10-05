@@ -86,6 +86,83 @@
   },
   "orbitas": [
     {
+      "fuente": "jpl-horizons",
+      "ubicacion": "Horizons API, 2008 TC3 (JPL#18), elementos osculadores heliocéntricos eclípticos, 2008-09-07 TDB",
+      "marco": "ecliptica-J2000",
+      "epoca": {
+        "valor": "JD 2454716.5 TDB (2008-09-07)",
+        "fuente": "jpl-horizons",
+        "ubicacion": "Horizons API, 2008 TC3 (JPL#18), elementos osculadores heliocéntricos eclípticos, 2008-09-07 TDB",
+        "estado": "verificado",
+        "nota": "Órbita previa al encuentro (Tierra a más de 0,3 AU). Validada con el método propio: D_D = 0,0003 frente a la retropropagación desde el vector geocéntrico."
+      },
+      "a": {
+        "valor": 1.265298465826829,
+        "unidad": "AU",
+        "sigma": 0.0000074156,
+        "sigma_publicada": 0.0000074156,
+        "nivel_sigma": "1-sigma",
+        "fuente": "jpl-horizons",
+        "ubicacion": "Horizons API, 2008 TC3 (JPL#18), elementos osculadores heliocéntricos eclípticos, 2008-09-07 TDB",
+        "estado": "verificado",
+        "nota": "σ formal de la solución JPL#18 tomada del SBDB en su época (2008-10-07 TDB); se usa como orden de magnitud para esta época."
+      },
+      "e": {
+        "valor": 0.2812902487871436,
+        "sigma": 0.0000047742,
+        "sigma_publicada": 0.0000047742,
+        "nivel_sigma": "1-sigma",
+        "fuente": "jpl-horizons",
+        "ubicacion": "Horizons API, 2008 TC3 (JPL#18), elementos osculadores heliocéntricos eclípticos, 2008-09-07 TDB",
+        "estado": "verificado",
+        "nota": "σ formal de la solución JPL#18 tomada del SBDB en su época (2008-10-07 TDB); se usa como orden de magnitud para esta época."
+      },
+      "i": {
+        "valor": 2.296678946932066,
+        "unidad": "grados",
+        "sigma": 0.000035374,
+        "sigma_publicada": 0.000035374,
+        "nivel_sigma": "1-sigma",
+        "fuente": "jpl-horizons",
+        "ubicacion": "Horizons API, 2008 TC3 (JPL#18), elementos osculadores heliocéntricos eclípticos, 2008-09-07 TDB",
+        "estado": "verificado",
+        "nota": "σ formal de la solución JPL#18 tomada del SBDB en su época (2008-10-07 TDB); se usa como orden de magnitud para esta época."
+      },
+      "nodo": {
+        "valor": 194.1875339851935,
+        "unidad": "grados",
+        "sigma": 0.0000014708,
+        "sigma_publicada": 0.0000014708,
+        "nivel_sigma": "1-sigma",
+        "fuente": "jpl-horizons",
+        "ubicacion": "Horizons API, 2008 TC3 (JPL#18), elementos osculadores heliocéntricos eclípticos, 2008-09-07 TDB",
+        "estado": "verificado",
+        "nota": "σ formal de la solución JPL#18 tomada del SBDB en su época (2008-10-07 TDB); se usa como orden de magnitud para esta época."
+      },
+      "omega": {
+        "valor": 233.8759275858754,
+        "unidad": "grados",
+        "sigma": 0.000055799,
+        "sigma_publicada": 0.000055799,
+        "nivel_sigma": "1-sigma",
+        "fuente": "jpl-horizons",
+        "ubicacion": "Horizons API, 2008 TC3 (JPL#18), elementos osculadores heliocéntricos eclípticos, 2008-09-07 TDB",
+        "estado": "verificado",
+        "nota": "σ formal de la solución JPL#18 tomada del SBDB en su época (2008-10-07 TDB); se usa como orden de magnitud para esta época."
+      },
+      "q": {
+        "valor": 0.9093823455844092,
+        "unidad": "AU",
+        "sigma": 0.0000011632,
+        "sigma_publicada": 0.0000011632,
+        "nivel_sigma": "1-sigma",
+        "fuente": "jpl-horizons",
+        "ubicacion": "Horizons API, 2008 TC3 (JPL#18), elementos osculadores heliocéntricos eclípticos, 2008-09-07 TDB",
+        "estado": "verificado",
+        "nota": "σ formal de la solución JPL#18 tomada del SBDB en su época (2008-10-07 TDB); se usa como orden de magnitud para esta época."
+      }
+    },
+    {
       "fuente": "granvik-brown-2018",
       "ubicacion": "arXiv:1804.07229v1, tabla table:orbits y table:qcapqvgvh",
       "marco": "ecliptica-J2000",
@@ -164,7 +241,8 @@
         "fuente": "granvik-brown-2018",
         "ubicacion": "arXiv:1804.07229v1, tabla table:qcapqvgvh",
         "estado": "verificado"
-      }
+      },
+      "discrepancia_documentada": "docs/reportes/cruzada.md §A: ~140σ frente a la órbita telescópica de JPL Horizons (Δa = 0,043 AU, D_D = 0,042). Decisión del usuario (2026-10-05): órbita principal = JPL."
     }
   ],
   "procedencia": [
@@ -273,5 +351,6 @@
         "nota": "Las tablas de trayectoria y procedencia no declaran el nivel de la incertidumbre; se asume 1σ."
       }
     }
-  ]
+  ],
+  "orbita_principal": "jpl-horizons"
 }
