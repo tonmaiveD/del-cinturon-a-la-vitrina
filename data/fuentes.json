@@ -120,5 +120,48 @@
     "consultado": "2026-10-05",
     "metadatos_verificados": true,
     "notas": "Leído el LaTeX original de arXiv:1804.07229v1. Recalcula desde los datos originales las órbitas de 25 caídas con órbita instrumental (1σ, §2) y estima probabilidades de región de escape con un modelo de órbitas de NEOs. Volumen y páginas de la versión publicada no verificados (DOI tomado de los metadatos de arXiv)."
+  },
+  {
+    "id": "borovicka-2015",
+    "tipo": "articulo",
+    "cita": "Borovička, J., Spurný, P., Brown, P. (2015). Small near-Earth asteroids as a source of meteorites. En Asteroids IV, University of Arizona Press.",
+    "doi": "10.2458/azu_uapress_9780816532131-ch014",
+    "url": "https://arxiv.org/abs/1502.03307",
+    "licencia": "Cita bibliográfica; preprint arXiv",
+    "consultado": "2026-10-05",
+    "metadatos_verificados": true,
+    "notas": "Leído el PDF de arXiv:1502.03307. Tabla 1: órbitas de 22 caídas; según el texto, el número de cifras se elige para que el error publicado esté en la última cifra (nivel no declarado). Para Almahata Sitta da los elementos osculadores telescópicos (no pre-atmosféricos)."
+  },
+  {
+    "id": "spurny-2020",
+    "tipo": "articulo",
+    "cita": "Spurný, P., Borovička, J., Shrbený, L. (2020). The Žďár nad Sázavou meteorite fall: Fireball trajectory, photometry, dynamics, fragmentation, orbit, and meteorite recovery. Meteoritics & Planetary Science.",
+    "doi": "10.1111/maps.13444",
+    "url": "https://arxiv.org/abs/1912.11784",
+    "licencia": "Cita bibliográfica; preprint arXiv",
+    "consultado": "2026-10-05",
+    "metadatos_verificados": true,
+    "notas": "Tabla 2: radiante y órbita (J2000.0); incertidumbres = desviaciones estándar formales."
+  },
+  {
+    "id": "trigo-rodriguez-2015",
+    "tipo": "articulo",
+    "cita": "Trigo-Rodríguez, J. M., Lyytinen, E., Gritsevich, M., Moreno-Ibáñez, M. et al. (2015). Orbit and dynamic origin of the recently recovered Annama's H5 chondrite. Monthly Notices of the Royal Astronomical Society.",
+    "doi": "10.1093/mnras/stv378",
+    "url": "https://arxiv.org/abs/1507.04342",
+    "licencia": "Cita bibliográfica; preprint arXiv",
+    "consultado": "2026-10-05",
+    "metadatos_verificados": true,
+    "notas": "Tabla 4: elementos orbitales de Annama, equinoccio 2000.0; nivel de la incertidumbre no declarado."
+  },
+  {
+    "id": "jpl-horizons",
+    "tipo": "api",
+    "cita": "NASA/JPL Solar System Dynamics. Horizons System (API). Solución JPL#18 de 2008 TC3 (2016-05-06), 575 observaciones.",
+    "url": "https://ssd-api.jpl.nasa.gov/doc/horizons.html",
+    "licencia": "Datos del Gobierno de EE. UU.",
+    "consultado": "2026-10-05",
+    "metadatos_verificados": true,
+    "notas": "Vectores geocéntricos ICRF y elementos osculadores heliocéntricos eclípticos de 2008 TC3 (precursor de Almahata Sitta)."
   }
 ]

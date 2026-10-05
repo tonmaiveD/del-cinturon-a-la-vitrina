@@ -53,6 +53,12 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
   (1σ). Sus tablas de trayectoria y procedencia no declaran nivel → `formal-sin-nivel`. La
   clasificación es la compilada por ellos (cita la original). Nombres en "pendiente" hasta MetBull.
   `punto_trayectoria` es la posición de referencia del bólido, **no** el punto de caída.
+- Definiciones de órbita que NO se pueden mezclar: "pre-atmosférica" (sin la deflexión terrestre,
+  en la época del impacto) frente a "osculadora" cerca de la Tierra (Jenniskens 2009 y Borovička
+  2015 dan esta para 2008 TC3). `elementosSinTierra` (core) convierte un estado cercano a la Tierra
+  en la primera; validado contra JPL Horizons (D_D = 0,0003). Para estados de JPL usar el vector
+  geocéntrico + la Tierra de astronomy-engine (nunca el heliocéntrico de JPL: difieren ~1000 km).
+- Transcripciones para verificación (no forman parte del dataset mostrado): `data/verificacion/`.
 - Un meteorito puede tener órbitas y probabilidades de varias fuentes: el código que muestre una
   cifra atribuida a una fuente debe filtrar por `fuente` (test en `ficha.test.ts`).
 - `npm run datos` regenera reporte de validación y trayectoria; `npm run datos:texturas` las WebP.
@@ -148,8 +154,10 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
 - **Fase 1 cerrada** (2026-10-05). Hosting y ficha: pendientes de decisión del usuario.
 - **Fase 2, etapa 1 (dataset de pedigrí): completa** — 25 caídas desde Granvik & Brown 2018
   (`npm run datos:granvik-brown`, lee el LaTeX de arXiv:1804.07229). 115 tests.
-- Siguiente: Fase 2, etapa 2 — verificación cruzada de ≥ 3 meteoritos con fuentes originales
-  independientes (esperando OK).
+- **Fase 2, etapa 2 (verificación cruzada): DETENIDA por el criterio de parada** —
+  `docs/reportes/cruzada.md` (`npm run verificacion:cruzada`). Almahata Sitta: la órbita de
+  Granvik & Brown discrepa ~140σ de la telescópica de JPL (Δa = 0,043 AU; D_D = 0,042). Esperando
+  decisión del usuario sobre qué órbita mostrar. Žďár, Annama y Chelyabinsk concuerdan (≤ 1,7σ).
 
 ### Pendientes de datos
 

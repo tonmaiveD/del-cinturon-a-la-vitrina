@@ -1,0 +1,99 @@
+{
+  "zdar-nad-sazavou": {
+    "fuente": "spurny-2020",
+    "ubicacion": "arXiv:1912.11784v1, Tabla 2",
+    "nivel": "formal (desviación estándar formal)",
+    "a": [2.093, 0.006],
+    "e": [0.6792, 0.001],
+    "q": [0.6715, 0.0002],
+    "Q": [3.514, 0.012],
+    "i": [2.796, 0.009],
+    "omega": [257.721, 0.014],
+    "nodo": [257.262, 0.01],
+    "radiante_g": {
+      "ra": [69.298, 0.01],
+      "dec": [26.963, 0.009],
+      "vg": [18.56, 0.02]
+    }
+  },
+  "annama": {
+    "fuente": "trigo-rodriguez-2015",
+    "ubicacion": "arXiv:1507.04342v1, Tabla 4",
+    "nivel": "no declarado",
+    "a": [1.99, 0.12],
+    "e": [0.69, 0.02],
+    "q": [0.634, 0.006],
+    "i": [14.65, 0.46],
+    "omega": [264.77, 0.55],
+    "nodo": [28.611, 0.001]
+  },
+  "almahata-sitta": {
+    "fuente": "jpl-horizons",
+    "ubicacion": "Horizons API, 2008 TC3 (JPL#18): elementos osculadores heliocéntricos eclípticos ICRF/J2000 (TDB) y vector geocéntrico ICRF",
+    "consulta_elementos": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&EPHEM_TYPE=ELEMENTS&CENTER='500@10'&REF_PLANE=ECLIPTIC&REF_SYSTEM=ICRF&OUT_UNITS=AU-D&CSV_FORMAT=YES&TLIST_TYPE=JD&TIME_TYPE=TDB&COMMAND='DES=2008 TC3;'&TLIST='2454686.5','2454716.5','2454736.5','2454744.5','2454746.0'",
+    "consulta_vector": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&EPHEM_TYPE=VECTORS&REF_PLANE=FRAME&REF_SYSTEM=ICRF&OUT_UNITS=AU-D&VEC_TABLE=2&CSV_FORMAT=YES&TLIST_TYPE=JD&TIME_TYPE=TDB&COMMAND='DES=2008 TC3;'&CENTER='500@399'&TLIST='2454745.5'",
+    "elementos": [
+      {
+        "jd_tdb": 2454686.5,
+        "fecha": "A.D. 2008-Aug-08 00:00:00.0000",
+        "e": 0.2812458862664156,
+        "q": 0.9094505371678253,
+        "i": 2.296286425164654,
+        "nodo": 194.1950108596899,
+        "omega": 233.860461254532,
+        "a": 1.265315244518969
+      },
+      {
+        "jd_tdb": 2454716.5,
+        "fecha": "A.D. 2008-Sep-07 00:00:00.0000",
+        "e": 0.2812902487871436,
+        "q": 0.9093823455844092,
+        "i": 2.296678946932066,
+        "nodo": 194.1875339851935,
+        "omega": 233.8759275858754,
+        "a": 1.265298465826829
+      },
+      {
+        "jd_tdb": 2454736.5,
+        "fecha": "A.D. 2008-Sep-27 00:00:00.0000",
+        "e": 0.2815518517988267,
+        "q": 0.9092325305834761,
+        "i": 2.299014338350762,
+        "nodo": 194.1703298622353,
+        "omega": 233.9026651630195,
+        "a": 1.265550663412499
+      },
+      {
+        "jd_tdb": 2454744.5,
+        "fecha": "A.D. 2008-Oct-05 00:00:00.0000",
+        "e": 0.2832811275405636,
+        "q": 0.9087021118911413,
+        "i": 2.312891347899555,
+        "nodo": 194.1433719425713,
+        "omega": 233.9362872153179,
+        "a": 1.267864077267716
+      },
+      {
+        "jd_tdb": 2454746.0,
+        "fecha": "A.D. 2008-Oct-06 12:00:00.0000",
+        "e": 0.2883468142709432,
+        "q": 0.9073244746735785,
+        "i": 2.352304229186664,
+        "nodo": 194.1232314726859,
+        "omega": 233.9751754073133,
+        "a": 1.274953155368883
+      }
+    ],
+    "vector_geocentrico": {
+      "jd_tdb": 2454745.5,
+      "x": 0.004211713233367271,
+      "y": -0.0008101489972255475,
+      "z": 0.0006034661095662351,
+      "vx": -0.003611989479248298,
+      "vy": 0.0007592313883514089,
+      "vz": -0.0004931230958005887,
+      "unidades": "AU, AU/día, ICRF"
+    },
+    "nota": "El elemento previo al encuentro de referencia es el del 2008-09-07 (Tierra a >0,3 AU). Incertidumbres formales de la solución del orden de 1e-5 o menores."
+  }
+}

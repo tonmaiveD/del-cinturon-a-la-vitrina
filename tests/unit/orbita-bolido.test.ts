@@ -5,6 +5,7 @@ import { montecarloBolido } from '../../src/core/montecarlo';
 import {
   orbitaAtraccionCenital,
   orbitaDesdeBolido,
+  orbitaDesdeRadianteGeocentrico,
   type RegistroBolido,
 } from '../../src/core/orbita-bolido';
 import { dDrummond, type ElementosAngulares } from '../../src/core/similitud';
@@ -67,5 +68,23 @@ describe('órbita desde un registro CNEOS', () => {
     const b = montecarloBolido(registro(chelyabinsk), inc, 3, 7).map((r) => r.elementos.a);
     expect(a).toEqual(b);
     expect(new Set(a).size).toBe(3);
+  });
+});
+
+describe('radiante geocéntrico → órbita (inverso de la atracción cenital)', () => {
+  it('ida y vuelta con Chelyabinsk: reproduce la órbita N-cuerpos (D_D < 0.01)', () => {
+    const reg = registro(chelyabinsk);
+    const directa = orbitaDesdeBolido(reg).elementos;
+    const { radiante } = orbitaAtraccionCenital(reg);
+    const inversa = orbitaDesdeRadianteGeocentrico({
+      fecha: reg.fecha,
+      latGrados: reg.latGrados,
+      lonGrados: reg.lonGrados,
+      alturaKm: reg.alturaKm,
+      raGrados: radiante.ra,
+      decGrados: radiante.dec,
+      vgKmS: radiante.vg,
+    });
+    expect(dDrummond(angEl(directa), angEl(inversa))).toBeLessThan(0.01);
   });
 });

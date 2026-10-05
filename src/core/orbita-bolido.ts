@@ -96,9 +96,30 @@ export function orbitaDesdeBolido(
   const { t, r, v } = estadoGeocentrico(reg, hipotesis);
   const tierra = estadoTierra(t);
   const y0 = [...suma(tierra.r, r), ...suma(tierra.v, v)];
+  const { elementos, vGeoSal, tSalida } = elementosSinTierra(y0, t.ut, t.ut, distanciaSalida, rtol);
 
-  // 3. Hacia atrás hasta salir de la influencia terrestre
-  const atras = integrar(derivadaHeliocentrica(), t.ut, y0, t.ut - 60, {
+  return {
+    elementos,
+    radiante: radianteDesde(vGeoSal),
+    vInercialKmS: (norma(v) * KM_POR_AU) / 86400,
+    diasRetro: t.ut - tSalida,
+  };
+}
+
+/**
+ * Elementos "pre-encuentro" de una partícula cerca de la Tierra: desde un estado heliocéntrico EQJ
+ * en `tEstadoUt`, retropropaga con N cuerpos hasta `distanciaSalida` AU de la Tierra y vuelve hacia
+ * adelante sin Tierra ni Luna hasta `tEpocaUt`. Devuelve elementos eclípticos J2000 en esa época.
+ * Es la definición de los elementos "pre-atmosféricos" publicados (sin la deflexión terrestre).
+ */
+export function elementosSinTierra(
+  y0: ArrayLike<number>,
+  tEstadoUt: number,
+  tEpocaUt: number,
+  distanciaSalida = DISTANCIA_SALIDA_AU,
+  rtol = 1e-11,
+): { elementos: Elementos; vGeoSal: Vec3; tSalida: number } {
+  const atras = integrar(derivadaHeliocentrica(), tEstadoUt, y0, tEstadoUt - 60, {
     rtol,
     atol: 1e-16,
     h0: 1e-6,
@@ -107,27 +128,22 @@ export function orbitaDesdeBolido(
       return Math.hypot(y[0]! - e.x, y[1]! - e.y, y[2]! - e.z) > distanciaSalida;
     },
   });
-  if (!atras.detenido) throw new Error('el bólido no salió de la influencia terrestre en 60 días');
+  if (!atras.detenido) throw new Error('el objeto no salió de la influencia terrestre en 60 días');
 
-  // Radiante geocéntrico: velocidad relativa a la Tierra en el punto de salida
-  const tSal = Astro.MakeTime(atras.t);
-  const tierraSal = estadoTierra(tSal);
+  // Velocidad relativa a la Tierra en el punto de salida (para el radiante geocéntrico)
+  const tierraSal = estadoTierra(Astro.MakeTime(atras.t));
   const vGeoSal = resta([atras.y[3]!, atras.y[4]!, atras.y[5]!], tierraSal.v);
 
-  // 4. Hacia adelante sin Tierra ni Luna hasta la época del impacto
-  const adelante = integrar(derivadaHeliocentrica(SIN_TIERRA), atras.t, atras.y, t.ut, {
+  const adelante = integrar(derivadaHeliocentrica(SIN_TIERRA), atras.t, atras.y, tEpocaUt, {
     rtol,
     atol: 1e-16,
   });
   const rH: Vec3 = [adelante.y[0]!, adelante.y[1]!, adelante.y[2]!];
   const vH: Vec3 = [adelante.y[3]!, adelante.y[4]!, adelante.y[5]!];
-  const elementos = elementosDesdeEstado({ r: eqjAEcl(rH), v: eqjAEcl(vH) }, MU_SOL, t.ut);
-
   return {
-    elementos,
-    radiante: radianteDesde(vGeoSal),
-    vInercialKmS: (norma(v) * KM_POR_AU) / 86400,
-    diasRetro: t.ut - atras.t,
+    elementos: elementosDesdeEstado({ r: eqjAEcl(rH), v: eqjAEcl(vH) }, MU_SOL, tEpocaUt),
+    vGeoSal,
+    tSalida: atras.t,
   };
 }
 
@@ -158,4 +174,48 @@ export function orbitaAtraccionCenital(
   const vH = suma(tierra.v, vGeo);
   const elementos = elementosDesdeEstado({ r: eqjAEcl(tierra.r), v: eqjAEcl(vH) }, MU_SOL, t.ut);
   return { elementos, radiante: radianteDesde(vGeo) };
+}
+
+/**
+ * Inverso de la atracción cenital: a partir de un radiante geocéntrico (α, δ J2000, grados) y la
+ * velocidad geocéntrica v_g (km/s), reconstruye el estado inercial en un punto de la trayectoria
+ * (lat/lon geodésicas, altura en km) y devuelve los elementos sin Tierra calculados con N cuerpos.
+ * Sirve para medir cuánto se aparta el método analítico de una integración numérica.
+ */
+export function orbitaDesdeRadianteGeocentrico(entrada: {
+  fecha: Date;
+  latGrados: number;
+  lonGrados: number;
+  alturaKm: number;
+  raGrados: number;
+  decGrados: number;
+  vgKmS: number;
+}): Elementos {
+  const t = Astro.MakeTime(entrada.fecha);
+  const r = estadoPuntoTerrestre(
+    entrada.latGrados,
+    entrada.lonGrados,
+    entrada.alturaKm * 1000,
+    t,
+  ).r;
+  const ra = (entrada.raGrados * Math.PI) / 180;
+  const dec = (entrada.decGrados * Math.PI) / 180;
+  const procedenciaG: Vec3 = [
+    Math.cos(dec) * Math.cos(ra),
+    Math.cos(dec) * Math.sin(ra),
+    Math.sin(dec),
+  ];
+  const vg = entrada.vgKmS * KMS_A_AUD;
+  const v = Math.sqrt(vg * vg + (2 * gm('Earth')) / norma(r));
+  const vertical = unitario(r);
+  const zg = Math.acos(punto(vertical, procedenciaG));
+  // z aparente: z_g = z + Δz, con tan(Δz/2) = (v − v_g)/(v + v_g)·tan(z/2) (iteración de punto fijo)
+  let z = zg;
+  for (let k = 0; k < 50; k++) z = zg - 2 * Math.atan(((v - vg) / (v + vg)) * Math.tan(z / 2));
+  const eje = unitario(resta(procedenciaG, escala(vertical, Math.cos(zg))));
+  const procedencia = suma(escala(vertical, Math.cos(z)), escala(eje, Math.sin(z)));
+  const vel = escala(procedencia, -v);
+  const tierra = estadoTierra(t);
+  const y0 = [...suma(tierra.r, r), ...suma(tierra.v, vel)];
+  return elementosSinTierra(y0, t.ut, t.ut).elementos;
 }
