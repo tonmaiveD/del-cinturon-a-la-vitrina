@@ -5,14 +5,22 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 
 ## Retomar aquí
 
-**Estado:** Fase 2 cerrada (`docs/cierres/fase-2.md`), pendiente de confirmación del usuario
-para empezar la Fase 3. 185 tests unitarios + 23 e2e en verde (+ 2 de rendimiento).
+**Estado:** Fase 2 cerrada y confirmada (2026-10-06). Publicado en
+https://tonmaived.github.io/del-cinturon-a-la-vitrina/ (repo público `tonmaiveD/del-cinturon-a-la-vitrina`;
+la CI publica desde `main` si pasan las pruebas). El usuario sube los cambios con GitHub Desktop
+("Push origin"); no hay `gh` ni credenciales de git en la terminal. Móvil real: «se ve bien».
 
-**Siguiente:** publicar en GitHub Pages (decidido: repositorio público, plan gratuito). El
-workflow `.github/workflows/ci.yml` verifica y luego publica desde `main` con
-`BASE_PUBLICA=/<repo>/` (ruta base de Vite). Falta que el usuario cree el repositorio y suba el
-código (no tiene `gh` ni Homebrew; se le guió con GitHub Desktop) y que active
-Settings → Pages → Source: «GitHub Actions». Después: medir en un móvil real con la URL.
+**Siguiente: Fase 3 (bólidos CNEOS)** — propuesta presentada, pendiente de OK y de la decisión
+sobre los eventos del grupo de baja calidad (ver propuesta en la conversación del 2026-10-06):
+API al 2026-10-06: 1073 eventos (1988–2026-09-15), 887 con ubicación, 361 con vector de velocidad
+(260 en el grupo de bajo D_D de Peña-Asensio —≥ 2018 o ≥ 0,45 kt— y 101 fuera de él, sin σ
+publicada para ese grupo). Etapas propuestas: E1 pipeline + órbitas MC incrementales; E2 escena
+(globo con todos los eventos, lista de eventos recientes, trayectoria 3D, nubes); E3 actualización
+diaria con GitHub Actions; E4 cierre.
+
+**Respaldo privado:** `.trabajo/RESPALDO-historial-git-con-gmail-2026-10-06.bundle` (historial
+anterior a la reescritura de email; contiene el gmail; no subir nunca). Ver
+`.trabajo/LEEME-RESPALDO-HISTORIAL.md`. Se conserva por decisión del usuario.
 
 **Licencias:** código MIT (`LICENSE`); datos, reportes y textos CC BY 4.0 (`data/LICENCIA.md`).
 Textura Blue Marble: directrices de medios de NASA (uso educativo e informativo, reconocer a

@@ -1,6 +1,6 @@
 # Cierre de la Fase 2: pedigrí completo
 
-Fecha: 2026-10-05. Estado: **completa, pendiente de tu confirmación** para pasar a la Fase 3.
+Fecha: 2026-10-05. Estado: **completa y confirmada** por el usuario el 2026-10-06; se pasa a la Fase 3.
 
 ## Criterios de aceptación
 
@@ -30,7 +30,7 @@ Antes de la auditoría, cuatro textos de la interfaz llevaban datos escritos a m
 
 ## Pendientes que requieren tu intervención
 
-- **Publicación**: crear el repositorio en GitHub y subir el proyecto (guía en el mensaje de cierre). Con la URL se podrá medir el rendimiento en un móvil real.
+- ~~Publicación~~: hecho el 2026-10-06 en https://tonmaived.github.io/del-cinturon-a-la-vitrina/ (repositorio `tonmaiveD/del-cinturon-a-la-vitrina`, público; historial reescrito para que los commits usen apaec@yahoo.com).
 - **Ficha de Chelyabinsk** en estado `borrador` (sin cambios desde la Fase 1).
 - **MetBull**: los 25 nombres siguen marcados «pendiente de verificación»; faltan masas y puntos de caída.
 - **Borovička et al. 2013, Tabla 2** (de pago).
@@ -40,13 +40,13 @@ Antes de la auditoría, cuatro textos de la interfaz llevaban datos escritos a m
 - **Recorrido animado solo para Chelyabinsk.** Las órbitas de Granvik y Brown no incluyen la anomalía en la época. Se podría derivar del encuentro con la Tierra en la fecha de caída (cálculo, no dato publicado); queda como propuesta.
 - **Covarianza.** Las nubes suponen elementos independientes porque las fuentes no publican la matriz de covarianza (declarado en la descripción). Para las órbitas muy precisas la nube se ve como una línea: es la incertidumbre real, no un error.
 - **Regiones aproximadas.** Hungaria y Phocaea se dibujan con sus rangos de a e i; no se representan la excentricidad ni la diferencia entre elementos propios (Phocaea) y osculadores. ν6 y los cometas de la familia de Júpiter no tienen geometría.
-- **Rendimiento gráfico.** En un navegador sin GPU, la vista solar baja de 24,7 a 18,7 fps con el catálogo; el coste es de relleno de píxeles. Falta la medición en GPU real.
+- **Rendimiento gráfico.** En un navegador sin GPU, la vista solar baja de 24,7 a 18,7 fps con el catálogo; el coste es de relleno de píxeles. En el móvil real del usuario (2026-10-06) «se ve bien»: valoración cualitativa, sin cifra de fps.
 - **Panel en móvil.** El panel inferior y el de pieza dejan poco espacio a la escena en pantallas pequeñas; conviene un diseño de pestañas o una hoja deslizable.
 - **Tamaño del módulo 3D** (aviso de Vite > 500 kB), como en la Fase 1.
 
 ## Riesgos
 
-- **Rendimiento en móviles reales**, ahora con 25 nubes además de la escena de Chelyabinsk. Es el riesgo principal antes de la Fase 3.
+- **Rendimiento en móviles**: comprobado de forma cualitativa en un solo teléfono (se ve bien). Sigue sin cifra de fps ni prueba en gama baja; la Fase 3 añade muchos bólidos.
 - **Interpretación de probabilidades**: un 72 % de ν6 describe la ruta de escape en un modelo dinámico, no el cuerpo de origen. Se separaron visualmente las dos capas y se explica en el panel, pero sigue siendo fácil de malinterpretar.
 - **Asociaciones especulativas** (Hebe, Gefion): se muestran con su confianza y su justificación, incluida la discrepancia de Gefion con las órbitas medidas.
 - **Repositorio público**: el código, los datos y el borrador de la ficha quedan visibles en GitHub (la ficha borrador no se publica en el sitio).
