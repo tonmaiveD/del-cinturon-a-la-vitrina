@@ -1,6 +1,13 @@
 /** Validación del dataset: esquemas + integridad referencial de fuentes. */
 import type { z } from 'zod';
-import { Fuentes, Meteorito, RegionOrigen, referenciasDeFuente, type Fuente } from '../src/schema';
+import {
+  Fuentes,
+  Meteorito,
+  RegionEscape,
+  RegionesOrigen,
+  referenciasDeFuente,
+  type Fuente,
+} from '../src/schema';
 
 export interface Archivo {
   ruta: string;
@@ -11,6 +18,7 @@ export interface Dataset {
   fuentes: unknown;
   regiones: unknown;
   pedigri: Archivo[];
+  escape?: unknown;
 }
 
 function erroresZod(ruta: string, error: z.ZodError): string[] {
@@ -25,10 +33,16 @@ export function validarDataset(ds: Dataset): string[] {
   if (!fuentes.success) return erroresZod('data/fuentes.json', fuentes.error);
   const porId = new Map<string, Fuente>(fuentes.data.map((f) => [f.id, f]));
 
-  const regiones = RegionOrigen.array().safeParse(ds.regiones);
+  const regiones = RegionesOrigen.safeParse(ds.regiones);
   if (!regiones.success) errores.push(...erroresZod('data/regiones-origen.json', regiones.error));
+  if (ds.escape !== undefined) {
+    const escape = RegionEscape.array().safeParse(ds.escape);
+    if (!escape.success) errores.push(...erroresZod('data/regiones-escape.json', escape.error));
+  }
 
   const archivos: Archivo[] = [{ ruta: 'data/regiones-origen.json', contenido: ds.regiones }];
+  if (ds.escape !== undefined)
+    archivos.push({ ruta: 'data/regiones-escape.json', contenido: ds.escape });
   for (const a of ds.pedigri) {
     const m = Meteorito.safeParse(a.contenido);
     if (!m.success) errores.push(...erroresZod(a.ruta, m.error));
@@ -40,6 +54,23 @@ export function validarDataset(ds: Dataset): string[] {
         `${a.ruta}: orbita_principal "${m.data.orbita_principal}" no está entre sus órbitas`,
       );
     archivos.push(a);
+  }
+
+  if (regiones.success) {
+    const ids = new Set(ds.pedigri.map((a) => (a.contenido as { id?: string }).id));
+    const vistos = new Map<string, number>();
+    const contar = (id: string) => vistos.set(id, (vistos.get(id) ?? 0) + 1);
+    regiones.data.asociaciones.forEach((r) => r.meteoritos.forEach(contar));
+    regiones.data.sin_asociacion.forEach((x) => contar(x.meteorito));
+    for (const [id, n] of vistos) {
+      if (!ids.has(id)) errores.push(`data/regiones-origen.json: meteorito inexistente "${id}"`);
+      if (n > 1) errores.push(`data/regiones-origen.json: "${id}" aparece ${n} veces`);
+    }
+    for (const id of ids)
+      if (id && !vistos.has(id))
+        errores.push(
+          `data/regiones-origen.json: "${id}" no tiene asociación ni motivo en sin_asociacion`,
+        );
   }
 
   for (const a of archivos) {

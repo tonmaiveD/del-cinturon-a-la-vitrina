@@ -59,6 +59,15 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
   en la primera; validado contra JPL Horizons (D_D = 0,0003). Para estados de JPL usar el vector
   geocéntrico + la Tierra de astronomy-engine (nunca el heliocéntrico de JPL: difieren ~1000 km).
 - Transcripciones para verificación (no forman parte del dataset mostrado): `data/verificacion/`.
+- Regiones: dos capas distintas que no se deben mezclar en la UI. (1) Región de escape del
+  cinturón (probabilidades por meteorito, Granvik & Brown). (2) Asociación con un progenitor
+  (Vesta, Flora, Hebe…) con confianza `alto|medio|especulativo`. Solo se dibujan como zona las
+  regiones con rangos publicados (Hungaria: Warner 2009; Phocaea: Novaković 2017, elementos
+  propios); 3:1, 5:2, 2:1 con su centro nominal calculado (`src/core/resonancias.ts`); ν6 y JFC
+  no tienen geometría publicada leída → solo texto y probabilidad.
+- Cada meteorito del dataset debe estar en una asociación o en `sin_asociacion` con motivo (el
+  validador lo exige). "alto" solo con fuentes de metadatos verificados (test).
+- Bibliografía: volúmenes, páginas y DOIs verificados en Crossref (2026-10-05).
 - `orbita_principal` (meteorito) indica la órbita que se muestra; `discrepancia_documentada`
   (órbita) es la única forma de que el test de compatibilidad entre órbitas admita una excepción.
   `npm run datos:pedigri` reimporta Granvik & Brown y la órbita de JPL de 2008 TC3.
@@ -162,7 +171,11 @@ Plan aprobado: fases 0–4 (ver "Estado"). Interfaz en español neutro, preparad
   Sitta discrepaba ~140σ de la órbita telescópica de JPL: decisión del usuario (2026-10-05) →
   órbita principal = JPL Horizons; Granvik & Brown secundaria con `discrepancia_documentada`.
   No se amplían las incertidumbres de Granvik & Brown (solo se documenta).
-- Siguiente: Fase 2, etapa 3 — regiones de origen con nivel de confianza (esperando OK).
+- **Fase 2, etapa 3 (regiones de origen): completa** — `data/regiones-escape.json` (7 regiones
+  del modelo de NEOs) y `data/regiones-origen.json` (asociaciones clase → procedencia con
+  confianza y lista explícita de meteoritos). 156 tests.
+- Siguiente: Fase 2, etapa 4 — escena con los 25 meteoritos (instancing/LOD), regiones y nubes
+  de procedencia (esperando OK).
 
 ### Pendientes de datos
 

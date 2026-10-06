@@ -1,0 +1,139 @@
+[
+  {
+    "id": "hungaria",
+    "nombre": "Región de Hungaria",
+    "tipo": "grupo-orbital",
+    "geometria": {
+      "a_min": {
+        "valor": 1.78,
+        "unidad": "AU",
+        "fuente": "warner-2009",
+        "ubicacion": "abstract y §1",
+        "estado": "verificado"
+      },
+      "a_max": {
+        "valor": 2.0,
+        "unidad": "AU",
+        "fuente": "warner-2009",
+        "ubicacion": "abstract y §1",
+        "estado": "verificado"
+      },
+      "i_min": {
+        "valor": 16,
+        "unidad": "grados",
+        "fuente": "warner-2009",
+        "ubicacion": "abstract y §1",
+        "estado": "verificado"
+      },
+      "i_max": {
+        "valor": 34,
+        "unidad": "grados",
+        "fuente": "warner-2009",
+        "ubicacion": "abstract y §1",
+        "estado": "verificado"
+      },
+      "e_max": {
+        "valor": 0.18,
+        "fuente": "warner-2009",
+        "ubicacion": "abstract y §1",
+        "estado": "verificado"
+      },
+      "elementos": "osculadores"
+    },
+    "descripcion": "Grupo de asteroides de alta inclinación en el borde interior del cinturón, limitado por las resonancias seculares ν5 y ν16 y por el cruce de la órbita de Marte (Warner et al. 2009). Los autores la llaman definición «aproximada».",
+    "fuentes": ["warner-2009", "granvik-2018-neo"]
+  },
+  {
+    "id": "phocaea",
+    "nombre": "Región de Phocaea",
+    "tipo": "grupo-orbital",
+    "geometria": {
+      "a_min": {
+        "valor": 2.1,
+        "unidad": "AU",
+        "fuente": "novakovic-2017",
+        "ubicacion": "nota 1 de §2",
+        "estado": "verificado"
+      },
+      "a_max": {
+        "valor": 2.5,
+        "unidad": "AU",
+        "fuente": "novakovic-2017",
+        "ubicacion": "nota 1 de §2",
+        "estado": "verificado"
+      },
+      "i_min": {
+        "valor": 17.46,
+        "unidad": "grados",
+        "fuente": "novakovic-2017",
+        "ubicacion": "nota 1 de §2",
+        "estado": "verificado",
+        "nota": "Derivado de sen i_p > 0,3."
+      },
+      "i_max": {
+        "valor": 30.0,
+        "unidad": "grados",
+        "fuente": "novakovic-2017",
+        "ubicacion": "nota 1 de §2",
+        "estado": "verificado",
+        "nota": "Derivado de sen i_p < 0,5."
+      },
+      "e_max": {
+        "valor": 0.4,
+        "fuente": "novakovic-2017",
+        "ubicacion": "nota 1 de §2",
+        "estado": "verificado"
+      },
+      "elementos": "propios"
+    },
+    "descripcion": "Parte de alta inclinación del cinturón interior, separada de los asteroides de baja inclinación por la resonancia secular ν6. Rangos en elementos propios: se dibujan como zona aproximada.",
+    "fuentes": ["novakovic-2017", "granvik-2018-neo"]
+  },
+  {
+    "id": "resonancia-nu6",
+    "nombre": "Resonancia secular ν6",
+    "tipo": "resonancia-secular",
+    "descripcion": "Resonancia secular con Saturno que delimita el borde interior del cinturón a baja inclinación y separa la región de Phocaea del resto. No hay en las fuentes leídas una geometría numérica, así que no se dibuja como zona: solo se muestra su probabilidad.",
+    "fuentes": ["novakovic-2017", "granvik-2018-neo"]
+  },
+  {
+    "id": "resonancia-3-1",
+    "nombre": "Resonancia 3:1 con Júpiter",
+    "tipo": "resonancia-movimiento-medio",
+    "resonancia": {
+      "p": 3,
+      "q": 1
+    },
+    "descripcion": "Resonancia de movimiento medio; Granvik et al. (2018) la sitúan «centrada en a ≈ 2,5 AU». En la escena se dibuja su centro nominal, calculado con la tercera ley de Kepler y el semieje de Júpiter (astronomy-engine).",
+    "fuentes": ["granvik-2018-neo", "astronomy-engine"]
+  },
+  {
+    "id": "resonancia-5-2",
+    "nombre": "Resonancia 5:2 con Júpiter",
+    "tipo": "resonancia-movimiento-medio",
+    "resonancia": {
+      "p": 5,
+      "q": 2
+    },
+    "descripcion": "Resonancia de movimiento medio del cinturón exterior. Centro nominal calculado con la tercera ley de Kepler.",
+    "fuentes": ["granvik-2018-neo", "astronomy-engine"]
+  },
+  {
+    "id": "resonancia-2-1",
+    "nombre": "Resonancia 2:1 con Júpiter",
+    "tipo": "resonancia-movimiento-medio",
+    "resonancia": {
+      "p": 2,
+      "q": 1
+    },
+    "descripcion": "Resonancia de movimiento medio en el borde exterior del cinturón principal. Centro nominal calculado con la tercera ley de Kepler.",
+    "fuentes": ["granvik-2018-neo", "astronomy-engine"]
+  },
+  {
+    "id": "cometas-jfc",
+    "nombre": "Cometas de la familia de Júpiter",
+    "tipo": "cometas",
+    "descripcion": "Población cometaria incluida en el modelo como posible fuente. No es una región del cinturón y no se dibuja como zona.",
+    "fuentes": ["granvik-2018-neo", "granvik-brown-2018"]
+  }
+]

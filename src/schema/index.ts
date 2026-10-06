@@ -125,15 +125,58 @@ export const Meteorito = z.object({
 });
 export type Meteorito = z.infer<typeof Meteorito>;
 
+/**
+ * Asociación de meteoritos con un cuerpo o población de procedencia, con confianza explícita.
+ * `meteoritos` lista los ids del dataset a los que se aplica (asignación explícita y revisable).
+ */
 export const RegionOrigen = z.object({
   id: idSlug,
   nombre: z.string(),
+  tipo: z.enum(['cuerpo-progenitor', 'familia', 'tipo-espectral', 'meteoroide-observado']),
   clases: z.array(z.string()),
   confianza: Confianza,
   justificacion: z.string(),
   fuentes: z.array(idSlug).min(1),
+  meteoritos: z.array(idSlug),
 });
 export type RegionOrigen = z.infer<typeof RegionOrigen>;
+
+export const RegionesOrigen = z.object({
+  asociaciones: z.array(RegionOrigen),
+  /** Meteoritos sin asociación, con el motivo (clasificación anómala, ambigua, sin propuesta). */
+  sin_asociacion: z.array(
+    z.object({ meteorito: idSlug, motivo: z.string(), fuentes: z.array(idSlug) }),
+  ),
+});
+export type RegionesOrigen = z.infer<typeof RegionesOrigen>;
+
+/**
+ * Región de escape del cinturón hacia la zona de NEOs (las 7 del modelo de Granvik et al. 2018).
+ * `geometria` solo existe si hay rangos publicados; las resonancias de movimiento medio se ubican
+ * con su centro nominal calculado (3.ª ley de Kepler con el semieje de Júpiter).
+ */
+export const RegionEscape = z.object({
+  id: idSlug,
+  nombre: z.string(),
+  tipo: z.enum(['grupo-orbital', 'resonancia-movimiento-medio', 'resonancia-secular', 'cometas']),
+  geometria: z
+    .object({
+      a_min: Valor,
+      a_max: Valor,
+      i_min: Valor.optional(),
+      i_max: Valor.optional(),
+      e_max: Valor.optional(),
+      elementos: z.enum(['osculadores', 'propios']),
+    })
+    .optional(),
+  /** Resonancia p:q con Júpiter: a = a_J · (q/p)^(2/3). */
+  resonancia: z
+    .object({ p: z.number().int().positive(), q: z.number().int().positive() })
+    .optional(),
+  descripcion: z.string(),
+  fuentes: z.array(idSlug).min(1),
+});
+export type RegionEscape = z.infer<typeof RegionEscape>;
 
 /** Recorre un objeto y devuelve todas las referencias a fuentes (claves `fuente`/`fuentes`). */
 export function referenciasDeFuente(obj: unknown, ruta = '$'): { ruta: string; id: string }[] {

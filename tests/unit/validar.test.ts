@@ -23,7 +23,10 @@ describe('validarDataset', () => {
   it('acepta un dataset coherente', () => {
     const ds = {
       fuentes: [fuente('f')],
-      regiones: [],
+      regiones: {
+        asociaciones: [],
+        sin_asociacion: [{ meteorito: 'prueba', motivo: 'test', fuentes: ['f'] }],
+      },
       pedigri: [{ ruta: 'm.json', contenido: meteorito('f') }],
     };
     expect(validarDataset(ds)).toEqual([]);
@@ -32,7 +35,10 @@ describe('validarDataset', () => {
   it('rechaza referencias a fuentes inexistentes', () => {
     const ds = {
       fuentes: [fuente('f')],
-      regiones: [],
+      regiones: {
+        asociaciones: [],
+        sin_asociacion: [{ meteorito: 'prueba', motivo: 'test', fuentes: ['f'] }],
+      },
       pedigri: [{ ruta: 'm.json', contenido: meteorito('otra') }],
     };
     expect(validarDataset(ds).join('\n')).toMatch(/fuente inexistente "otra"/);
@@ -43,7 +49,10 @@ describe('validarDataset', () => {
     m.clase = { valor: 'LL5', estado: 'verificado' };
     const ds = {
       fuentes: [fuente('f')],
-      regiones: [],
+      regiones: {
+        asociaciones: [],
+        sin_asociacion: [{ meteorito: 'prueba', motivo: 'test', fuentes: ['f'] }],
+      },
       pedigri: [{ ruta: 'm.json', contenido: m }],
     };
     expect(validarDataset(ds).length).toBeGreaterThan(0);
@@ -52,7 +61,10 @@ describe('validarDataset', () => {
   it('impide marcar como verificado un valor de fuente no verificada', () => {
     const ds = {
       fuentes: [fuente('f', false)],
-      regiones: [],
+      regiones: {
+        asociaciones: [],
+        sin_asociacion: [{ meteorito: 'prueba', motivo: 'test', fuentes: ['f'] }],
+      },
       pedigri: [{ ruta: 'm.json', contenido: meteorito('f') }],
     };
     expect(validarDataset(ds).join('\n')).toMatch(/sin metadatos verificados/);
@@ -61,14 +73,42 @@ describe('validarDataset', () => {
   it('permite valores pendientes de fuentes no verificadas', () => {
     const ds = {
       fuentes: [fuente('f', false)],
-      regiones: [],
+      regiones: {
+        asociaciones: [],
+        sin_asociacion: [{ meteorito: 'prueba', motivo: 'test', fuentes: ['f'] }],
+      },
       pedigri: [{ ruta: 'm.json', contenido: meteorito('f', 'pendiente') }],
     };
     expect(validarDataset(ds)).toEqual([]);
   });
 
   it('rechaza fuentes duplicadas', () => {
-    const ds = { fuentes: [fuente('f'), fuente('f')], regiones: [], pedigri: [] };
+    const ds = {
+      fuentes: [fuente('f'), fuente('f')],
+      regiones: { asociaciones: [], sin_asociacion: [] },
+      pedigri: [],
+    };
     expect(validarDataset(ds).join('\n')).toMatch(/duplicada/);
+  });
+});
+
+describe('cobertura de regiones de origen', () => {
+  const base = (sin: { meteorito: string; motivo: string; fuentes: string[] }[]) => ({
+    fuentes: [fuente('f')],
+    regiones: { asociaciones: [], sin_asociacion: sin },
+    pedigri: [{ ruta: 'm.json', contenido: meteorito('f') }],
+  });
+  it('exige que cada meteorito tenga asociación o motivo', () => {
+    expect(validarDataset(base([])).join('\n')).toMatch(/no tiene asociación/);
+  });
+  it('rechaza meteoritos inexistentes o repetidos', () => {
+    const dos = [
+      { meteorito: 'prueba', motivo: 'a', fuentes: ['f'] },
+      { meteorito: 'prueba', motivo: 'b', fuentes: ['f'] },
+      { meteorito: 'otro', motivo: 'c', fuentes: ['f'] },
+    ];
+    const errores = validarDataset(base(dos)).join('\n');
+    expect(errores).toMatch(/aparece 2 veces/);
+    expect(errores).toMatch(/inexistente "otro"/);
   });
 });

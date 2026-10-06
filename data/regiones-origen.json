@@ -1,10 +1,114 @@
-[
-  {
-    "id": "flora-nu6-ll",
-    "nombre": "Familia Flora (borde interior del cinturón, junto a la resonancia ν6)",
-    "clases": ["LL"],
-    "confianza": "medio",
-    "justificacion": "Popova et al. (2013) calculan un 86 % de probabilidad de que las condritas LL lleguen por la resonancia ν6 (combinando las órbitas de Chelyabinsk e Itokawa) y lo presentan como apoyo a la hipótesis de un origen en la parte interior de la familia Flora, de tipo LL, que se extiende sobre esa resonancia. Es una hipótesis respaldada, no un consenso establecido; por eso la confianza es media.",
-    "fuentes": ["popova-2013-science"]
-  }
-]
+{
+  "asociaciones": [
+    {
+      "id": "vesta-hed",
+      "nombre": "(4) Vesta",
+      "tipo": "cuerpo-progenitor",
+      "clases": ["howardita", "eucrita", "diogenita"],
+      "confianza": "alto",
+      "justificacion": "El vínculo de las HED con Vesta se basa en la similitud espectral y en la familia dinámica de los vestoides, que conecta Vesta con las resonancias de escape; los datos de la misión Dawn lo refuerzan (McSween et al. 2012). Ningún meteorito del dataset actual es una HED típica: Bunburra Rockhole es una eucrita anómala y no se asigna aquí.",
+      "fuentes": ["mcsween-2012"],
+      "meteoritos": []
+    },
+    {
+      "id": "flora-nu6-ll",
+      "nombre": "Familia Flora (borde interior del cinturón, junto a la resonancia ν6)",
+      "tipo": "familia",
+      "clases": ["LL"],
+      "confianza": "medio",
+      "justificacion": "La similitud espectral entre las condritas LL y (8) Flora, y la cercanía de esa familia a la resonancia ν6, se han propuesto como indicio de que Flora es su progenitor (citado por Granvik & Brown 2018). Popova et al. (2013) presentan la órbita de Chelyabinsk como apoyo a esa hipótesis. Es una hipótesis respaldada, no un consenso.",
+      "fuentes": ["popova-2013-science", "granvik-brown-2018"],
+      "meteoritos": ["chelyabinsk"]
+    },
+    {
+      "id": "hebe-h",
+      "nombre": "(6) Hebe u otros cuerpos del cinturón interior",
+      "tipo": "cuerpo-progenitor",
+      "clases": ["H"],
+      "confianza": "especulativo",
+      "justificacion": "Granvik & Brown (2018) encuentran que las condritas H con órbita medida escapan sobre todo por la resonancia 3:1 o por ν6, compatible con un origen en el cinturón interior «potencialmente vinculado» a (6) Hebe o a cuerpos menores de esa zona. Ejby y Košice muestran además probabilidades notables (con gran error) de origen cometario.",
+      "fuentes": ["granvik-brown-2018"],
+      "meteoritos": [
+        "pribram",
+        "lost-city",
+        "peekskill",
+        "moravka",
+        "buzzard-coulee",
+        "grimsby",
+        "kosice",
+        "mason-gully",
+        "krizevci",
+        "annama",
+        "ejby"
+      ]
+    },
+    {
+      "id": "gefion-l",
+      "nombre": "Familia Gefion (propuesta, en conflicto con las órbitas medidas)",
+      "tipo": "familia",
+      "clases": ["L"],
+      "confianza": "especulativo",
+      "justificacion": "Se ha propuesto que las condritas L provienen de la familia Gefion, en el cinturón exterior. Granvik & Brown (2018) señalan que las cinco órbitas L medidas apuntan a escapes del cinturón interior (ν6 y, en menor grado, 3:1), «algo en desacuerdo» con ese origen. Se muestra la propuesta junto con la discrepancia.",
+      "fuentes": ["granvik-brown-2018"],
+      "meteoritos": [
+        "park-forest",
+        "villalbeto-de-la-pena",
+        "jesenice",
+        "novato",
+        "zdar-nad-sazavou"
+      ]
+    },
+    {
+      "id": "cm-cinturon-medio",
+      "nombre": "Asteroides de tipo B o Ch/Cgh del cinturón medio",
+      "tipo": "tipo-espectral",
+      "clases": ["CM"],
+      "confianza": "especulativo",
+      "justificacion": "Las CM se han vinculado a asteroides de tipo B y Ch/Cgh. Granvik & Brown (2018) concluyen que Maribo y Sutter's Mill provienen «muy probablemente» de ese tipo de asteroides del cinturón medio, aunque con afinidad notable con los cometas de la familia de Júpiter. No hay un cuerpo progenitor concreto.",
+      "fuentes": ["granvik-brown-2018"],
+      "meteoritos": ["maribo", "sutters-mill"]
+    },
+    {
+      "id": "c-cinturon-interior",
+      "nombre": "Asteroide de tipo C del cinturón interior",
+      "tipo": "tipo-espectral",
+      "clases": ["C"],
+      "confianza": "especulativo",
+      "justificacion": "Granvik & Brown (2018) interpretan Tagish Lake (carbonácea no agrupada) como una muestra muy probable de un asteroide de tipo C del cinturón interior, en contraste con trabajos previos que daban más peso al cinturón exterior. Es el resultado de un estudio, con la mayor incertidumbre orbital de la muestra.",
+      "fuentes": ["granvik-brown-2018"],
+      "meteoritos": ["tagish-lake"]
+    },
+    {
+      "id": "asteroide-2008-tc3",
+      "nombre": "Asteroide 2008 TC3 (observado antes del impacto)",
+      "tipo": "meteoroide-observado",
+      "clases": ["ureilita"],
+      "confianza": "alto",
+      "justificacion": "2008 TC3 se descubrió con telescopio unas 20 horas antes de impactar; sus restos se recuperaron como los meteoritos Almahata Sitta (Borovička et al. 2015). Es el vínculo directo entre un asteroide observado y sus meteoritos, no la identificación del cuerpo progenitor de las ureilitas, que sigue sin establecerse.",
+      "fuentes": ["borovicka-2015", "jpl-horizons"],
+      "meteoritos": ["almahata-sitta"]
+    }
+  ],
+  "sin_asociacion": [
+    {
+      "meteorito": "bunburra-rockhole",
+      "motivo": "Eucrita anómala: su clasificación no permite asignarla a Vesta sin una fuente primaria específica, que no se ha leído. Su ruta de escape (ν6) sí está en el dataset.",
+      "fuentes": ["granvik-brown-2018"]
+    },
+    {
+      "meteorito": "innisfree",
+      "motivo": "Clasificación disputada (L5 o LL5 según la fuente, citado por Granvik & Brown 2018); no se asigna a ninguna familia.",
+      "fuentes": ["granvik-brown-2018"]
+    },
+    {
+      "meteorito": "benesov",
+      "motivo": "Caída heterogénea (H5/LL3.5); no se asigna a una sola familia.",
+      "fuentes": ["granvik-brown-2018", "borovicka-2015"]
+    },
+    {
+      "meteorito": "neuschwanstein",
+      "motivo": "Condrita de enstatita (EL6) sin propuesta de progenitor en las fuentes leídas.",
+      "fuentes": ["granvik-brown-2018"]
+    }
+  ]
+}

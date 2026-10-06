@@ -53,11 +53,12 @@
   {
     "id": "devillepoix-2019",
     "tipo": "articulo",
-    "cita": "Devillepoix, H. A. R. et al. (2019). Comparación de datos de sensores del Gobierno de EE. UU. con observaciones terrestres de bólidos.",
+    "cita": "Devillepoix, H. A. R., Bland, P. A., Sansom, E. K. et al. (2019). Observation of metre-scale impactors by the Desert Fireball Network. Monthly Notices of the Royal Astronomical Society, 483, 5166–5178.",
     "licencia": "Cita bibliográfica",
     "consultado": "2026-10-01",
-    "metadatos_verificados": false,
-    "notas": "Título, revista y DOI pendientes de verificación."
+    "metadatos_verificados": true,
+    "notas": "Metadatos verificados en Crossref y coincidentes con la cita de Peña-Asensio et al. 2025. Artículo no leído: las cifras que se le atribuyen (desviaciones de hasta 28 % en velocidad y ~90° en radiante) provienen de Peña-Asensio et al. 2025.",
+    "doi": "10.1093/mnras/sty3442"
   },
   {
     "id": "popova-2013-science",
@@ -68,7 +69,7 @@
     "licencia": "Cita bibliográfica; copia de repositorio institucional para uso personal",
     "consultado": "2026-10-01",
     "metadatos_verificados": true,
-    "notas": "Leída la copia completa del artículo (6 págs.). Tabla 1: trayectoria y órbita con incertidumbres a 2σ, equinoccio J2000.0. Páginas 1069–1073 por confirmar. La sección sobre el origen cita el modelo de procedencia de W. F. Bottke et al., Icarus 156, 339–433 (citado como 2000 en la fuente; metadatos de esa referencia no verificados)."
+    "notas": "Leída la copia completa del artículo (6 págs.). Tabla 1: trayectoria y órbita con incertidumbres a 2σ, equinoccio J2000.0. Páginas verificadas en Crossref. La sección sobre el origen cita el modelo de procedencia de Bottke et al. como «Icarus 156, 339–433 (2000)»; según Crossref ese artículo es Icarus 156, 399–433 (2002), doi:10.1006/icar.2001.6788 (errata en la cita de la fuente)."
   },
   {
     "id": "emelyanenko-2014-arxiv",
@@ -113,13 +114,13 @@
   {
     "id": "granvik-brown-2018",
     "tipo": "articulo",
-    "cita": "Granvik, M., Brown, P. (2018). Identification of meteorite source regions in the Solar System. Icarus.",
+    "cita": "Granvik, M., Brown, P. (2018). Identification of meteorite source regions in the Solar System. Icarus, 311, 271–287.",
     "doi": "10.1016/j.icarus.2018.04.012",
     "url": "https://arxiv.org/abs/1804.07229",
     "licencia": "Cita bibliográfica; preprint arXiv",
     "consultado": "2026-10-05",
     "metadatos_verificados": true,
-    "notas": "Leído el LaTeX original de arXiv:1804.07229v1. Recalcula desde los datos originales las órbitas de 25 caídas con órbita instrumental (1σ, §2) y estima probabilidades de región de escape con un modelo de órbitas de NEOs. Volumen y páginas de la versión publicada no verificados (DOI tomado de los metadatos de arXiv)."
+    "notas": "Leído el LaTeX original de arXiv:1804.07229v1. Recalcula desde los datos originales las órbitas de 25 caídas con órbita instrumental (1σ, §2) y estima probabilidades de región de escape con un modelo de órbitas de NEOs. Volumen y páginas verificados en Crossref."
   },
   {
     "id": "borovicka-2015",
@@ -135,7 +136,7 @@
   {
     "id": "spurny-2020",
     "tipo": "articulo",
-    "cita": "Spurný, P., Borovička, J., Shrbený, L. (2020). The Žďár nad Sázavou meteorite fall: Fireball trajectory, photometry, dynamics, fragmentation, orbit, and meteorite recovery. Meteoritics & Planetary Science.",
+    "cita": "Spurný, P., Borovička, J., Shrbený, L. (2020). The Žďár nad Sázavou meteorite fall: Fireball trajectory, photometry, dynamics, fragmentation, orbit, and meteorite recovery. Meteoritics & Planetary Science, 55, 376–401.",
     "doi": "10.1111/maps.13444",
     "url": "https://arxiv.org/abs/1912.11784",
     "licencia": "Cita bibliográfica; preprint arXiv",
@@ -146,7 +147,7 @@
   {
     "id": "trigo-rodriguez-2015",
     "tipo": "articulo",
-    "cita": "Trigo-Rodríguez, J. M., Lyytinen, E., Gritsevich, M., Moreno-Ibáñez, M. et al. (2015). Orbit and dynamic origin of the recently recovered Annama's H5 chondrite. Monthly Notices of the Royal Astronomical Society.",
+    "cita": "Trigo-Rodríguez, J. M., Lyytinen, E., Gritsevich, M., Moreno-Ibáñez, M. et al. (2015). Orbit and dynamic origin of the recently recovered Annama's H5 chondrite. Monthly Notices of the Royal Astronomical Society, 449, 2119–2127.",
     "doi": "10.1093/mnras/stv378",
     "url": "https://arxiv.org/abs/1507.04342",
     "licencia": "Cita bibliográfica; preprint arXiv",
@@ -163,5 +164,48 @@
     "consultado": "2026-10-05",
     "metadatos_verificados": true,
     "notas": "Vectores geocéntricos ICRF y elementos osculadores heliocéntricos eclípticos de 2008 TC3 (precursor de Almahata Sitta)."
+  },
+  {
+    "id": "warner-2009",
+    "tipo": "articulo",
+    "cita": "Warner, B. D., Harris, A. W., Vokrouhlický, D., Nesvorný, D., Bottke, W. F. (2009). Analysis of the Hungaria asteroid population. Icarus, 204, 172–182.",
+    "url": "https://boulder.swri.edu/~bottke/Reprints/Warner_2009_Hungaria_Review_Final.pdf",
+    "licencia": "Cita bibliográfica; versión de autor",
+    "consultado": "2026-10-05",
+    "metadatos_verificados": true,
+    "notas": "Leída la versión de autor (40 págs.). Define la región de Hungaria: 1,78 < a < 2,0 AU, e < 0,18, 16° < i < 34° (abstract y §1). Metadatos verificados en Crossref (2026-10-05).",
+    "doi": "10.1016/j.icarus.2009.06.004"
+  },
+  {
+    "id": "novakovic-2017",
+    "tipo": "articulo",
+    "cita": "Novaković, B., Tsirvoulis, G., Granvik, M., Todović, A. (2017). A dark asteroid family in the Phocaea region. The Astronomical Journal, 153, 266.",
+    "doi": "10.3847/1538-3881/aa6ea8",
+    "url": "https://arxiv.org/abs/1704.06088",
+    "licencia": "Cita bibliográfica; preprint arXiv",
+    "consultado": "2026-10-05",
+    "metadatos_verificados": true,
+    "notas": "Leído el LaTeX de arXiv:1704.06088. Define la región de Phocaea en elementos propios: 2,1 < a_p < 2,5 AU, 0 < e_p < 0,4, 0,3 < sen i_p < 0,5 (nota 1, §2); separada del cinturón de baja inclinación por la resonancia ν6 (§1)."
+  },
+  {
+    "id": "mcsween-2012",
+    "tipo": "articulo",
+    "cita": "McSween, H. Y., Mittlefehldt, D. W., Beck, A. W., McCoy, T., Marchi, S., De Sanctis, M. C. et al. (2012). Dawn and the Vesta-HED Connection. Resumen de congreso (NASA NTRS 20120001949).",
+    "url": "https://ntrs.nasa.gov/citations/20120001949",
+    "licencia": "Documento del Gobierno de EE. UU.",
+    "consultado": "2026-10-05",
+    "metadatos_verificados": true,
+    "notas": "Resumen leído en el registro de NTRS: el vínculo HED–Vesta se basa en similitud espectral y en la familia dinámica de los vestoides; los datos de Dawn lo refuerzan. Menciona una objeción previa (²⁶Al en diogenitas) que modelos térmicos recientes resolverían."
+  },
+  {
+    "id": "granvik-2018-neo",
+    "tipo": "articulo",
+    "cita": "Granvik, M., Morbidelli, A., Jedicke, R., Bolin, B., Bottke, W. F., Beshore, E., Vokrouhlický, D. et al. (2018). Debiased orbit and absolute-magnitude distributions for near-Earth objects. Icarus, 312, 181–207.",
+    "url": "https://arxiv.org/abs/1804.10265",
+    "licencia": "Cita bibliográfica; preprint arXiv",
+    "consultado": "2026-10-05",
+    "metadatos_verificados": true,
+    "notas": "Leído el LaTeX de arXiv:1804.10265. Define las 7 regiones de escape del modelo de forma empírica, sin rangos numéricos; la 3:1 con Júpiter está «centrada en a ≈ 2,5 AU». Metadatos verificados en Crossref.",
+    "doi": "10.1016/j.icarus.2018.04.018"
   }
 ]
