@@ -3,7 +3,7 @@ const BASE = import.meta.env.BASE_URL;
 
 export const urlTextura = (ancho: number) => `${BASE}texturas/tierra-${ancho}.webp`;
 
-async function cargarJson<T>(ruta: string): Promise<T> {
+export async function cargarJson<T>(ruta: string): Promise<T> {
   const r = await fetch(`${BASE}${ruta}`);
   if (!r.ok) throw new Error(`${ruta}: ${r.status}`);
   return r.json() as Promise<T>;

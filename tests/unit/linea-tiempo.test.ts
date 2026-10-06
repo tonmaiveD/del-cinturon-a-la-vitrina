@@ -17,6 +17,12 @@ describe('reloj de simulación', () => {
     r.irA(-5);
     expect(r.estado().t).toBe(0);
   });
+  it('fijarRango cambia el intervalo, recoloca el instante y pausa', () => {
+    const r = crearReloj(0, 10, 5);
+    r.reproducir(true);
+    r.fijarRango(100, 200, 50);
+    expect([r.min, r.max, r.estado().t, r.estado().reproduciendo]).toEqual([100, 200, 100, false]);
+  });
   it('reproducir desde el final reinicia al principio', () => {
     const r = crearReloj(0, 10, 10);
     r.reproducir(true);

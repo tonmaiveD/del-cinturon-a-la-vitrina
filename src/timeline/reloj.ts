@@ -14,8 +14,20 @@ export function crearReloj(min: number, max: number, inicial: number) {
   const emitir = () => oyentes.forEach((f) => f(estado));
 
   return {
-    min,
-    max,
+    get min() {
+      return min;
+    },
+    get max() {
+      return max;
+    },
+    /** Cambia el intervalo (al seleccionar otra pieza) y sitúa el reloj en `t`. */
+    fijarRango(nuevoMin: number, nuevoMax: number, t: number): void {
+      min = nuevoMin;
+      max = nuevoMax;
+      estado.t = fijar(t);
+      estado.reproduciendo = false;
+      emitir();
+    },
     estado: (): Readonly<EstadoReloj> => estado,
     /** Avanza `dtReal` segundos reales. Se detiene al llegar al final. */
     avanzar(dtReal: number): void {

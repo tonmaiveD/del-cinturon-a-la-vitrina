@@ -22,7 +22,8 @@
     "datos:granvik-brown": "tsx pipeline/importar-granvik-brown.ts",
     "verificacion:cruzada": "tsx pipeline/verificacion-cruzada.ts",
     "datos:jpl-2008tc3": "tsx pipeline/importar-jpl-2008tc3.ts",
-    "datos:pedigri": "npm run datos:granvik-brown && npm run datos:jpl-2008tc3"
+    "datos:pedigri": "npm run datos:granvik-brown && npm run datos:jpl-2008tc3 && npm run datos:catalogo",
+    "datos:catalogo": "tsx pipeline/generar-catalogo.ts"
   },
   "license": "UNLICENSED",
   "type": "module",

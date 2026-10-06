@@ -182,6 +182,9 @@ export function crearVistaTierra(
   );
   escena.add(meteoroide);
   const dtMin = aproximacion[0]![0];
+  /** Los objetos del bólido de Chelyabinsk solo se ven con esa pieza seleccionada. */
+  let conBolido = true;
+  let ultimaFecha = bolido.fecha;
 
   function aplicarEscala(visual: boolean): void {
     // Real: 1 km de radio (aprox. tamaño de la bola de fuego); visual: 60 km para que se vea
@@ -192,14 +195,17 @@ export function crearVistaTierra(
 
   /** Coloca globo, Sol y meteoroide en el instante dado. */
   function actualizarTiempo(fecha: Date): void {
+    ultimaFecha = fecha;
     const tt = Astro.MakeTime(fecha);
     orientar(tt);
     iluminar(tt);
     const dt = (fecha.getTime() - bolido.fecha.getTime()) / 86400000;
-    const visible = dt >= dtMin && dt <= 0;
+    const visible = conBolido && dt >= dtMin && dt <= 0;
+    trayectoria.visible = conBolido;
     lineaAprox.visible = visible;
     meteoroide.visible = visible && dt < 0;
-    marcador.visible = dt >= -1 / 1440; // el pico de brillo se marca desde 1 min antes
+    // El pico de brillo se marca desde 1 min antes
+    marcador.visible = conBolido && dt >= -1 / 1440;
     if (!visible) return;
     const i = indiceInferior(aproximacion, dt);
     geomAprox.setDrawRange(0, i + 1);
@@ -213,8 +219,14 @@ export function crearVistaTierra(
     mat.uniforms.uSol!.value.copy(dirSol).transformDirection(camara.matrixWorldInverse);
   }
 
+  function mostrarBolido(si: boolean): void {
+    conBolido = si;
+    actualizarTiempo(ultimaFecha);
+  }
+
   return {
     primeraCargada,
+    mostrarBolido,
     escena,
     globo,
     marcador,

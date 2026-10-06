@@ -1,15 +1,18 @@
-import { Vector3 } from 'three';
+import { Raycaster, Vector2, Vector3 } from 'three';
 import cneos from '../data/cneos/chelyabinsk.json';
 import pedigri from '../data/pedigri/chelyabinsk.json';
 import { crearSecuencia, type Paso } from './camera/coreografia';
 import { t } from './i18n';
 import { PLANETAS } from './scene/cuerpos';
+import { crearCatalogoSolar } from './scene/catalogo-solar';
+import { crearMarcadoresTierra } from './scene/catalogo-tierra';
 import { crearMotor, type NombreVista } from './scene/escena';
 import { crearVistaSistemaSolar, EXAGERACION, type DatosOrbitas } from './scene/sistema-solar';
 import { crearVistaTierra, type DatosBolido } from './scene/tierra';
 import type { Muestra } from './timeline/interpolacion';
 import { crearReloj, VELOCIDADES } from './timeline/reloj';
 import { escribirEstadoUrl, leerEstadoUrl } from './ui/estado-url';
+import { coordenada, nombrePieza, type PanelPieza } from './ui/panel-pieza';
 
 type Clave = Parameters<typeof t>[0];
 const DIA_MS = 86400000;
@@ -50,17 +53,22 @@ export interface DatosEscena {
 import { urlTextura } from './ui/recursos';
 
 /** Arranca la parte 3D (se carga con import() dinámico desde main.ts). */
-export async function iniciar3D(datosPromesa: Promise<DatosEscena>): Promise<void> {
+export async function iniciar3D(
+  datosPromesa: Promise<DatosEscena>,
+  panelPromesa: Promise<PanelPieza>,
+): Promise<void> {
   const $ = <T extends HTMLElement>(sel: string) => document.querySelector<T>(sel)!;
   const canvas = $<HTMLCanvasElement>('#escena');
   const descripcion = $('#descripcion');
   const bolido = registroCneos();
-  const impacto = bolido.fecha.getTime();
+  /** Instante de referencia de la pieza seleccionada (Chelyabinsk: pico de brillo CNEOS). */
+  let impacto = bolido.fecha.getTime();
 
   let orbitas: DatosOrbitas;
   let trayectoria: DatosEscena['trayectoria'];
+  let panel: PanelPieza;
   try {
-    ({ orbitas, trayectoria } = await datosPromesa);
+    [{ orbitas, trayectoria }, panel] = await Promise.all([datosPromesa, panelPromesa]);
   } catch {
     descripcion.textContent = t('error.datos');
     return;
@@ -78,10 +86,15 @@ export async function iniciar3D(datosPromesa: Promise<DatosEscena>): Promise<voi
   const camT = motor.registrar('tierra', tierra.escena, 1e-4, 2e3, (cam) => tierra.actualizar(cam));
   motor.etiqueta(t('etiqueta.bolido'), tierra.marcador, 'bolido');
   motor.etiqueta(t('etiqueta.meteoroide'), tierra.meteoroide, 'bolido');
+  const { catalogo } = panel;
+  const piezaDe = (id: string) => catalogo.piezas.find((p) => p.id === id)!;
+  const marcadores = crearMarcadoresTierra(tierra.globo, catalogo.piezas);
+  const etiquetaCaida = motor.etiqueta('', marcadores.resalte, 'seleccion');
 
   // Encuadres de referencia
   const aspecto = canvas.clientWidth / canvas.clientHeight;
-  const dirBolido = tierra.posicionBolido().normalize();
+  /** Dirección (EQJ) hacia la que mira la cámara de la vista terrestre. */
+  let dirBolido = tierra.posicionBolido().normalize();
   const medioFovH = Math.atan(Math.tan((camT.camara.fov * Math.PI) / 360) * Math.min(1, aspecto));
   const distTierra = Math.max(3.2, 1.25 / Math.sin(medioFovH));
   const ORIGEN = new Vector3();
@@ -90,7 +103,10 @@ export async function iniciar3D(datosPromesa: Promise<DatosEscena>): Promise<voi
     obj: ORIGEN.clone(),
   });
   const encuadreSolar = () => ({
-    pos: new Vector3(0, 2.6, 2.2).multiplyScalar(aspecto < 0.8 ? 1.9 : 1),
+    // Chelyabinsk: encuadre del recorrido; resto: más amplio, para ver el cinturón y las regiones
+    pos: new Vector3(0, 2.6, 2.2)
+      .multiplyScalar(aspecto < 0.8 ? 1.9 : 1)
+      .multiplyScalar(panel.actual() === 'chelyabinsk' ? 1 : 1.7),
     obj: ORIGEN.clone(),
   });
   function fijarCamara(vista: NombreVista, pos: Vector3, obj: Vector3): void {
@@ -104,7 +120,7 @@ export async function iniciar3D(datosPromesa: Promise<DatosEscena>): Promise<voi
 
   // Estado inicial (URL)
   const inicial = leerEstadoUrl(location.search, {
-    pieza: 'chelyabinsk',
+    pieza: panel.actual(),
     t: impacto,
     vista: 'tierra',
     escalaVisual: true,
@@ -117,17 +133,31 @@ export async function iniciar3D(datosPromesa: Promise<DatosEscena>): Promise<voi
   // Vista del sistema solar: se construye bajo demanda (o en reposo tras el primer cuadro) para
   // no retrasar la carga inicial con las 300 órbitas y las de los planetas.
   type VistaSolar = ReturnType<typeof crearVistaSistemaSolar>;
-  let solarCreada: { solar: VistaSolar; camS: ReturnType<typeof motor.registrar> } | undefined;
+  type CapaCatalogo = ReturnType<typeof crearCatalogoSolar>;
+  let solarCreada:
+    | {
+        solar: VistaSolar;
+        camS: ReturnType<typeof motor.registrar>;
+        cat: CapaCatalogo;
+        etiquetaNube: ReturnType<typeof motor.etiqueta>;
+      }
+    | undefined;
   function asegurarSolar() {
     if (solarCreada) return solarCreada;
     const solar = crearVistaSistemaSolar(bolido.fecha, orbitas, trayectoria.helio_ecl_au, radioMet);
+    const cat = crearCatalogoSolar(catalogo);
+    solar.escena.add(cat.grupo);
     const camS = motor.registrar('sistema-solar', solar.escena, 1e-6, 200);
     camS.controles.maxDistance = 30;
     motor.etiqueta(t('etiqueta.sol'), solar.sol);
     motor.etiqueta(t('etiqueta.meteoroide'), solar.meteoroide, 'bolido');
     for (const p of PLANETAS)
       motor.etiqueta(t(`planeta.${p.clave}` as Clave), solar.mallas.get(p.clave)!);
-    solarCreada = { solar, camS };
+    for (const a of cat.anclas) motor.etiqueta(t(`zona.${a.texto}` as Clave), a.objeto, 'region');
+    const etiquetaNube = motor.etiqueta('', cat.anclaSeleccion, 'seleccion');
+    solarCreada = { solar, camS, cat, etiquetaNube };
+    aplicarPiezaSolar();
+    cat.filtrar(panel.visibles());
     solarCreada?.solar.aplicarEscala(escalaVisual);
     solar.actualizarTiempo(new Date(reloj.estado().t));
     fijarCamara('sistema-solar', encuadreSolar().pos, ORIGEN);
@@ -147,6 +177,10 @@ export async function iniciar3D(datosPromesa: Promise<DatosEscena>): Promise<voi
   const deslizador = $<HTMLInputElement>('#fecha');
   const fechaTexto = $('#fecha-texto');
   const fundido = $('#fundido');
+  const notaRecorrido = $('#nota-recorrido');
+  const avisoMarcadores = $('#aviso-marcadores');
+  const bFicha = $<HTMLButtonElement>('#abrir-ficha');
+  const fichaDisponible = !bFicha.hidden;
   for (const v of VELOCIDADES)
     selVelocidad.add(new Option(t(`velocidad.${v}` as Clave), String(v)));
   selVelocidad.value = String(reloj.estado().velocidad);
@@ -155,10 +189,11 @@ export async function iniciar3D(datosPromesa: Promise<DatosEscena>): Promise<voi
 
   function textoFecha(ms: number): string {
     const dias = (impacto - ms) / DIA_MS;
+    const chely = panel.actual() === 'chelyabinsk';
     const rel =
       dias < 1 / 1440
-        ? t('tiempo.en-impacto')
-        : t('tiempo.antes', {
+        ? t(chely ? 'tiempo.en-impacto' : 'tiempo.en-referencia')
+        : t(chely ? 'tiempo.antes' : 'tiempo.antes-referencia', {
             dias:
               dias >= 1
                 ? `${dias.toLocaleString('es', { maximumFractionDigits: 1 })} d`
@@ -167,15 +202,42 @@ export async function iniciar3D(datosPromesa: Promise<DatosEscena>): Promise<voi
     return t('tiempo.relativo', { fecha: formatoFecha(new Date(ms)), rel });
   }
 
+  const fuenteCorta = (id: string) => catalogo.fuentes[id] ?? id;
+  function descripcionRegiones(): string {
+    const zona = (id: string) => catalogo.zonas.find((z) => z.id === id);
+    return t('desc.regiones', {
+      f_hungaria: (zona('hungaria')?.fuentes ?? []).map(fuenteCorta).join('; '),
+      f_phocaea: (zona('phocaea')?.fuentes ?? []).map(fuenteCorta).join('; '),
+      resonancias: catalogo.resonancias.map((r) => `${r.p}:${r.q}`).join(', '),
+    });
+  }
   function descripcionVista(): string {
-    return vista === 'tierra'
-      ? t('desc.tierra', {
-          fecha: formatoFecha(bolido.fecha),
-          alt: bolido.alturaKm.toLocaleString('es'),
-          lat: coord(bolido.latGrados, 'N', 'S'),
-          lon: coord(bolido.lonGrados, 'E', 'O'),
-        })
-      : t('desc.sistema-solar', { fecha: formatoFecha(bolido.fecha), n: orbitas.clones.length });
+    const p = piezaDe(panel.actual());
+    if (p.id === 'chelyabinsk')
+      return vista === 'tierra'
+        ? t('desc.tierra', {
+            fecha: formatoFecha(bolido.fecha),
+            alt: bolido.alturaKm.toLocaleString('es'),
+            lat: coord(bolido.latGrados, 'N', 'S'),
+            lon: coord(bolido.lonGrados, 'E', 'O'),
+          })
+        : `${t('desc.sistema-solar', { fecha: formatoFecha(bolido.fecha), n: orbitas.clones.length })} ${descripcionRegiones()}`;
+    const fecha = formatoFecha(new Date(impacto));
+    if (vista === 'tierra')
+      return t('desc.tierra.pieza', {
+        fecha,
+        nombre: nombrePieza(p),
+        lat: p.punto ? coordenada(p.punto.lat, 'N', 'S') : '—',
+        lon: p.punto ? coordenada(p.punto.lon, 'E', 'O') : '—',
+        n: panel.visibles().size,
+      });
+    return t('desc.sistema-solar.pieza', {
+      fecha,
+      nombre: nombrePieza(p),
+      n: solarCreada?.cat.nClonesSeleccion() ?? 0,
+      fuente: p.orbita ? fuenteCorta(p.orbita.fuente) : '—',
+      regiones: descripcionRegiones(),
+    });
   }
 
   let urlPendiente = 0;
@@ -183,7 +245,7 @@ export async function iniciar3D(datosPromesa: Promise<DatosEscena>): Promise<voi
     window.clearTimeout(urlPendiente);
     urlPendiente = window.setTimeout(() => {
       const q = escribirEstadoUrl({
-        pieza: 'chelyabinsk',
+        pieza: panel.actual(),
         t: Math.round(reloj.estado().t / 1000) * 1000,
         vista,
         escalaVisual,
@@ -206,8 +268,42 @@ export async function iniciar3D(datosPromesa: Promise<DatosEscena>): Promise<voi
           jupiter: EXAGERACION.jupiter,
         })
       : t('escala.real');
+    avisoMarcadores.hidden = vista !== 'tierra';
     if (!secuencia.activa()) descripcion.textContent = descripcionVista();
     guardarUrl();
+  }
+
+  // ---------- Selección de pieza ----------
+  function aplicarPiezaSolar(): void {
+    if (!solarCreada) return;
+    const p = piezaDe(panel.actual());
+    solarCreada.solar.mostrarBolido(p.id === 'chelyabinsk');
+    solarCreada.cat.seleccionar(p);
+    solarCreada.etiquetaNube.element.textContent = t('etiqueta.nube', { nombre: nombrePieza(p) });
+  }
+
+  /** Ajusta escena, reloj y panel a la pieza seleccionada; `t` opcional (estado de la URL). */
+  function aplicarPieza(id: string, tInicial?: number): void {
+    if (secuencia.activa()) terminarSecuencia();
+    const p = piezaDe(id);
+    const chely = id === 'chelyabinsk';
+    impacto = chely ? bolido.fecha.getTime() : Date.parse(p.fecha);
+    tierra.mostrarBolido(chely);
+    marcadores.seleccionar(id);
+    etiquetaCaida.element.textContent = t('etiqueta.caida', { nombre: nombrePieza(p) });
+    aplicarPiezaSolar();
+    reloj.fijarRango(impacto - 365 * DIA_MS, impacto, tInicial ?? impacto);
+    bRecorrido.disabled = !chely;
+    notaRecorrido.hidden = chely;
+    bFicha.hidden = !(chely && fichaDisponible);
+    // La cámara terrestre apunta al bólido seleccionado (orientación del globo en ese instante)
+    const dir = chely ? tierra.posicionBolido() : marcadores.posicionMundo(id);
+    if (dir) {
+      dirBolido = dir.normalize();
+      if (vista === 'tierra') fijarCamara('tierra', encuadreTierra().pos, ORIGEN);
+    }
+    if (solarCreada) fijarCamara('sistema-solar', encuadreSolar().pos, ORIGEN);
+    refrescarVista();
   }
 
   reloj.alCambiar((e) => {
@@ -400,8 +496,42 @@ export async function iniciar3D(datosPromesa: Promise<DatosEscena>): Promise<voi
     } else if (ev.key.toLowerCase() === 'i' && !enCampo) bImpacto.click();
   });
 
-  reloj.irA(reloj.estado().t);
-  refrescarVista();
+  panel.alSeleccionar((id) => aplicarPieza(id));
+  panel.alFiltrar((ids) => {
+    marcadores.filtrar(ids);
+    solarCreada?.cat.filtrar(ids);
+    if (!secuencia.activa()) descripcion.textContent = descripcionVista();
+  });
+  marcadores.filtrar(panel.visibles());
+  aplicarPieza(panel.actual(), inicial.t);
+
+  // Selección con el ratón: clic (sin arrastre) sobre un marcador del globo
+  const rayo = new Raycaster();
+  const ndc = new Vector2();
+  function piezaBajoPuntero(ev: PointerEvent): string | undefined {
+    if (vista !== 'tierra') return undefined;
+    const r = canvas.getBoundingClientRect();
+    ndc.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
+    rayo.setFromCamera(ndc, camT.camara);
+    const [hit] = rayo.intersectObject(marcadores.malla);
+    return hit?.instanceId !== undefined ? marcadores.piezaDeInstancia(hit.instanceId) : undefined;
+  }
+  let inicioPuntero: { x: number; y: number } | undefined;
+  canvas.addEventListener(
+    'pointerdown',
+    (ev) => (inicioPuntero = { x: ev.clientX, y: ev.clientY }),
+  );
+  canvas.addEventListener('pointerup', (ev) => {
+    const ini = inicioPuntero;
+    inicioPuntero = undefined;
+    if (!ini || Math.hypot(ev.clientX - ini.x, ev.clientY - ini.y) > 5) return;
+    const id = piezaBajoPuntero(ev);
+    if (id && id !== panel.actual()) panel.seleccionar(id);
+  });
+  canvas.addEventListener('pointermove', (ev) => {
+    if (ev.buttons) return;
+    canvas.classList.toggle('apuntando', piezaBajoPuntero(ev) !== undefined);
+  });
 
   // Marca de "listo": primera textura cargada y un cuadro dibujado (métrica de carga)
   void tierra.primeraCargada.then(() =>
@@ -414,5 +544,13 @@ export async function iniciar3D(datosPromesa: Promise<DatosEscena>): Promise<voi
   );
 
   // Expuesto para pruebas automáticas
-  (window as unknown as Record<string, unknown>).__app = { motor, reloj, secuencia };
+  (window as unknown as Record<string, unknown>).__app = {
+    motor,
+    reloj,
+    secuencia,
+    panel,
+    marcadores,
+    camT,
+    solar: () => solarCreada,
+  };
 }

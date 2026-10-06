@@ -5,22 +5,33 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 
 ## Retomar aquí
 
-**Estado:** Fase 1 cerrada (`docs/cierres/fase-1.md`). Fase 2, etapas 1–3 completas (último
-commit: "Fase 2, etapa 3"). 156 tests unitarios + 16 e2e en verde.
+**Estado:** Fase 1 cerrada (`docs/cierres/fase-1.md`). Fase 2, etapas 1–4 completas (último
+commit: "Fase 2, etapa 4"). 179 tests unitarios + 23 e2e en verde (+ 2 de rendimiento).
 
-**Siguiente: Fase 2, etapa 4 — escena con los 25 meteoritos.** Propuesta ya presentada al
-usuario, pendiente de su OK antes de implementar:
+**Siguiente: cierre de la Fase 2** (pendiente del OK del usuario): resumen, deuda, riesgos,
+capturas y video en `docs/cierres/fase-2.md`. No empezar la Fase 3 sin confirmación.
 
-1. Globo: los 25 bólidos en su `punto_trayectoria` (etiquetado como posición de referencia del
-   bólido, **no** punto de caída), con instancing, seleccionables con ratón y teclado.
-2. Sistema solar: órbita principal (`orbita_principal`) de cada meteorito como nube muestreada
-   con su σ publicada (LOD según distancia); Hungaria y Phocaea como volúmenes aproximados
-   etiquetados (Phocaea en elementos propios); anillos en el centro nominal de 3:1, 5:2, 2:1.
-3. Al seleccionar: probabilidades de región de escape (barras accesibles con texto) y, aparte,
-   la asociación con progenitor con su confianza bien visible. Nunca mezclar ambas capas.
-4. Filtros por clase y confianza; pieza seleccionada en la URL (`?pieza=`).
-5. Medir de nuevo carga (`npm run e2e:rendimiento`, objetivo < 3 s) y fps con 25 nubes.
-6. Chelyabinsk conserva su recorrido; para el resto, la misma secuencia si el rendimiento lo permite.
+**Etapa 4 (hecha), decisiones a recordar:**
+
+- `public/data/catalogo.json` (`npm run datos:catalogo`, incluido en `datos:pedigri`) resume las
+  25 piezas para el cliente; un test exige que esté al día con `data/`. Solo pasan valores
+  verificados; el nombre va marcado como pendiente (MetBull).
+- Globo: marcadores de tamaño fijo (símbolos, aviso en el panel) en `punto_trayectoria`,
+  rotulados "posición de referencia del bólido" (no punto de caída). Clic o lista para elegir.
+- Sistema solar: nube por pieza muestreada con σ 1σ, elementos independientes (supuesto
+  declarado en la descripción); LOD por distancia al Sol (`DISTANCIA_LOD` 6 AU); selección con
+  nube densa celeste. Mezcla **normal**, no aditiva (la aditiva satura el búfer HDR y el bloom
+  hace neblina). Hungaria/Phocaea solo como **contornos** (un relleno translúcido hacía neblina).
+- Panel lateral `aside.panel-pieza`: región de escape (barras por fuente, banda ±1σ) y
+  progenitor (insignia de confianza) en secciones separadas. Filtros por grupo de clase
+  (`grupoClase`) y por confianza. `?pieza=` en la URL; id desconocido → Chelyabinsk.
+- Recorrido animado solo para Chelyabinsk: las órbitas de Granvik & Brown no dan la anomalía en
+  la época. Se podría derivar del encuentro con la Tierra (propuesta, no hecha).
+- Medido: listo 2,72 s en 4G lento. fps en navegador sin GPU: 18,7 con catálogo y 24,7 sin él
+  (escritorio); el coste es de relleno de píxeles, no de segmentos. Falta GPU real.
+- Las etiquetas CSS2D ignoran `transform` en CSS (CSS2DRenderer lo escribe en línea): usar margin.
+- El navegador integrado de la app abre el `launch.json` de otro proyecto: verificar con
+  Playwright.
 
 **Pendientes que dependen del usuario:**
 
@@ -67,7 +78,7 @@ Flensburg, Novo Mesto, Winchcombe, Ribbeck…) desde sus artículos originales.
 - `npm run dev` · `npm test` · `npm run lint` · `npm run build` (incluye `validate`)
 - `npm run e2e` (escritorio + móvil) · `npm run e2e:rendimiento` (4G lento + CPU ×4, aislado)
 - Datos: `npm run datos` (validación Chelyabinsk + trayectoria), `npm run datos:pedigri`
-  (Granvik & Brown + JPL 2008 TC3), `npm run datos:texturas`, `npm run verificacion:cruzada`
+  (Granvik & Brown + JPL 2008 TC3 + catálogo), `npm run datos:texturas`, `npm run verificacion:cruzada`
 - `npm run cierre:video` (requiere `build`): video y capturas del recorrido en `docs/cierres/`.
 
 ## Arquitectura
@@ -158,5 +169,6 @@ Fase 0 andamiaje · F1-E1 núcleo orbital · F1-E2 datos Chelyabinsk · F1-E3 va
 (aprobada, `docs/reportes/chelyabinsk.md`) · F1-E4 escena 3D · F1-E5 recorrido y línea de
 tiempo · F1-E6 ficha, accesibilidad (axe WCAG 2.1 AA: 0 violaciones), rendimiento y cierre ·
 F2-E1 dataset de 25 caídas · F2-E2 verificación cruzada (aprobada, `docs/reportes/cruzada.md`;
-Almahata Sitta → JPL por decisión del usuario del 2026-10-05) · F2-E3 regiones de origen.
+Almahata Sitta → JPL por decisión del usuario del 2026-10-05) · F2-E3 regiones de origen ·
+F2-E4 escena con las 25 caídas (catálogo, filtros, nubes, regiones).
 Deuda técnica y riesgos: `docs/cierres/fase-1.md`.

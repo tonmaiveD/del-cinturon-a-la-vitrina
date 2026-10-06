@@ -221,6 +221,20 @@ export function crearVistaSistemaSolar(
   }
   aplicarEscala(true);
 
+  /** Objetos propios del bólido de Chelyabinsk (nube CNEOS, nominal, trayectoria). */
+  function mostrarBolido(si: boolean): void {
+    for (const o of [nube, nominal, estela, meteoroide, puntosClones]) o.visible = si;
+  }
+
   const posicionTierra = () => mallas.get('tierra')!.position.clone();
-  return { escena, aplicarEscala, posicionTierra, mallas, meteoroide, sol, actualizarTiempo };
+  return {
+    escena,
+    mostrarBolido,
+    aplicarEscala,
+    posicionTierra,
+    mallas,
+    meteoroide,
+    sol,
+    actualizarTiempo,
+  };
 }

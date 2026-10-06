@@ -16,6 +16,29 @@
       <p data-i18n="app.subtitulo"></p>
       <p class="estado" data-i18n="app.estado"></p>
     </header>
+    <aside class="panel panel-pieza" aria-labelledby="titulo-pieza">
+      <h2 id="titulo-pieza" class="rotulo" data-i18n="pieza.titulo"></h2>
+      <div class="grupo">
+        <label class="rotulo" for="pieza" data-i18n="pieza.elegir"></label>
+        <select id="pieza" class="selector ancho"></select>
+      </div>
+      <details class="plegable filtros">
+        <summary data-i18n="filtro.titulo"></summary>
+        <div class="grupo">
+          <label class="rotulo" for="filtro-grupo" data-i18n="filtro.grupo"></label>
+          <select id="filtro-grupo" class="selector"></select>
+        </div>
+        <div class="grupo">
+          <label class="rotulo" for="filtro-confianza" data-i18n="filtro.confianza"></label>
+          <select id="filtro-confianza" class="selector"></select>
+        </div>
+      </details>
+      <p id="pieza-cuenta" class="nota"></p>
+      <details class="plegable procedencia-plegable" open>
+        <summary data-i18n="procedencia.titulo"></summary>
+        <div id="procedencia" class="procedencia" aria-live="polite"></div>
+      </details>
+    </aside>
     <main class="panel" aria-label="Controles">
       <div class="grupo" role="group" aria-labelledby="titulo-vista">
         <span id="titulo-vista" class="rotulo" data-i18n="vista.etiqueta"></span>
@@ -34,6 +57,7 @@
         </button>
       </div>
       <p id="aviso-escala" class="aviso"></p>
+      <p id="aviso-marcadores" class="aviso" data-i18n="escala.marcadores"></p>
       <section class="linea-tiempo" aria-labelledby="titulo-tiempo">
         <h2 id="titulo-tiempo" class="rotulo" data-i18n="tiempo.titulo"></h2>
         <div class="grupo">
@@ -45,6 +69,7 @@
           ></button>
           <button type="button" id="saltar" class="boton" data-i18n="tiempo.saltar" hidden></button>
         </div>
+        <p id="nota-recorrido" class="nota" data-i18n="tiempo.solo-chelyabinsk" hidden></p>
         <div class="grupo">
           <button
             type="button"
@@ -68,7 +93,7 @@
         />
         <output id="fecha-texto" for="fecha" class="fecha"></output>
       </section>
-      <details class="descripcion-plegable" open>
+      <details class="plegable descripcion-plegable" open>
         <summary data-i18n="desc.titulo"></summary>
         <p id="descripcion" class="descripcion" aria-live="polite" data-i18n="cargando"></p>
       </details>

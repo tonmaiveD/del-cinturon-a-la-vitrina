@@ -246,7 +246,7 @@ summary:focus-visible {
   margin-top: 6px;
 }
 
-.descripcion-plegable summary {
+.plegable summary {
   cursor: pointer;
   font-size: 0.85rem;
   color: var(--texto-suave);
@@ -317,7 +317,154 @@ summary:focus-visible {
   .panel {
     max-height: 52vh;
   }
-  .descripcion-plegable:not([open]) {
+  .plegable:not([open]) {
     margin-bottom: 4px;
+  }
+}
+
+.panel-pieza {
+  left: 16px;
+  right: auto;
+  top: 112px;
+  bottom: auto;
+  width: min(23rem, calc(100vw - 32px));
+  max-height: calc(100vh - 128px);
+}
+.panel-pieza h2 {
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+.filtros {
+  margin-bottom: 6px;
+}
+.filtros .grupo {
+  margin: 6px 0;
+}
+.selector.ancho {
+  flex: 1;
+  min-width: 0;
+}
+.nota {
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--texto-suave);
+}
+.nota.pendiente {
+  color: var(--aviso);
+}
+.procedencia-plegable {
+  border-top: 1px solid var(--borde);
+  padding-top: 8px;
+}
+.pieza-titulo {
+  margin: 0 0 6px;
+  font-size: 0.92rem;
+}
+.capa {
+  border-left: 2px solid var(--borde);
+  padding-left: 10px;
+  margin: 10px 0;
+}
+.capa h3 {
+  margin: 0 0 4px;
+  font-size: 0.88rem;
+}
+.barras {
+  margin: 0 0 8px;
+}
+.barras figcaption {
+  font-size: 0.78rem;
+  color: var(--texto-suave);
+  margin-bottom: 4px;
+}
+.barras ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.barras li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 8px;
+  font-size: 0.8rem;
+  margin-bottom: 5px;
+}
+.barras .valor {
+  font-variant-numeric: tabular-nums;
+  color: var(--texto);
+}
+.barras .barra {
+  grid-column: 1 / -1;
+  position: relative;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.barras .barra > span:first-child {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: #6fd3ff;
+}
+.barras .barra .banda {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.35);
+}
+.asociacion {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+}
+.insignia {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+.confianza-alto {
+  color: #9be7a8;
+}
+.confianza-medio {
+  color: #ffd36b;
+}
+.confianza-especulativo {
+  color: #ff9e9e;
+}
+.etiqueta.region {
+  color: #d9c9ff;
+  font-size: 11px;
+}
+.etiqueta.seleccion {
+  color: #6fd3ff;
+  /* Debajo del marcador: en Chelyabinsk no tapa la etiqueta del pico de brillo (CNEOS).
+     CSS2DRenderer escribe su propio transform en línea, por eso se usa margin. */
+  margin-top: 34px;
+}
+#escena.apuntando {
+  cursor: pointer;
+}
+@media (max-width: 640px) {
+  .panel-pieza {
+    top: 64px;
+    bottom: auto;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    max-height: 30vh;
+    padding: 8px 12px;
+  }
+  .panel-pieza h2 {
+    display: none;
+  }
+  .panel-pieza .grupo {
+    margin-bottom: 4px;
+  }
+  #pieza-cuenta {
+    display: none;
   }
 }
