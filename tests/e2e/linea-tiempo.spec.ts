@@ -47,7 +47,9 @@ test.describe('línea de tiempo y estado en URL', () => {
 });
 
 test('recorrido cinematográfico completo', async ({ page }) => {
-  test.setTimeout(60_000);
+  // El paso por cuadro se limita a 0,1 s (src/scene/escena.ts): sin GPU (p. ej. los runners de
+  // GitHub) hay pocos fps y el recorrido de ~21 s dura bastante más en tiempo real
+  test.setTimeout(240_000);
   const errores: string[] = [];
   page.on('pageerror', (e) => errores.push(e.message));
   page.on('console', (m) => m.type() === 'error' && errores.push(m.text()));
@@ -67,7 +69,7 @@ test('recorrido cinematográfico completo', async ({ page }) => {
     await page.screenshot({ path: `${dir}/recorrido-${nombre}-${p}.png` });
   }
   await expect(page.locator('#descripcion')).toContainText('Pico de brillo del bólido', {
-    timeout: 15_000,
+    timeout: 180_000,
   });
   await expect(page.getByRole('button', { name: 'Tierra', exact: true })).toHaveAttribute(
     'aria-pressed',
