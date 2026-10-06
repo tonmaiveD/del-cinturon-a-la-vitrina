@@ -1,7 +1,7 @@
 {
   "app.titulo": "Del cinturón a la vitrina",
   "app.subtitulo": "El viaje de los meteoritos desde su origen hasta la Tierra",
-  "app.estado": "Versión en desarrollo: 25 caídas con pedigrí (fase 2).",
+  "app.estado": "Versión en desarrollo (fase 2).",
   "escena.descripcion": "Visualización 3D interactiva. La descripción textual de la vista está en el panel de controles.",
   "vista.etiqueta": "Vista",
   "vista.tierra": "Tierra",
@@ -43,13 +43,13 @@
   "narr.sistema": "Un año antes del impacto: el meteoroide recorre su órbita alrededor del Sol. La nube de puntos muestra dónde podría estar según la incertidumbre de la medición.",
   "narr.acercar": "Días antes del impacto, el meteoroide y la Tierra se acercan al mismo punto de sus órbitas.",
   "narr.llegada": "Último día: el meteoroide cae hacia la Tierra, acelerado por su gravedad.",
-  "narr.final": "Pico de brillo del bólido sobre los Urales, 15 de febrero de 2013. Puedes explorar la escena o mover la línea de tiempo.",
+  "narr.final": "Pico de brillo del bólido sobre los Urales, {fecha} UTC. Puedes explorar la escena o mover la línea de tiempo.",
   "narr.reducido": "Movimiento reducido activo: se muestra la órbita completa sin animación. Usa la línea de tiempo para recorrerla.",
   "atajos.titulo": "Atajos de teclado",
   "atajos.texto": "Espacio: reproducir o pausar. Flechas izquierda y derecha: un día atrás o adelante. I: ir al impacto. Escape: saltar la animación. Arrastrar o flechas sobre la escena: girar la cámara.",
   "desc.titulo": "Descripción de la escena",
   "ficha.abrir": "Ficha de Chelyabinsk",
-  "ficha.titulo": "Chelyabinsk (2013)",
+  "ficha.titulo": "{nombre} ({anio})",
   "ficha.borrador": "Borrador pendiente de revisión humana. Solo es visible en desarrollo; no se publica hasta que se apruebe.",
   "ficha.fuentes": "Fuentes de los datos de esta ficha",
   "fuentes.abrir": "Fuentes y créditos",
@@ -104,5 +104,6 @@
   "tiempo.solo-chelyabinsk": "El recorrido animado solo está disponible para Chelyabinsk: las demás órbitas publicadas no incluyen la posición del meteoroide en su órbita.",
   "tiempo.en-referencia": "instante de referencia del bólido",
   "tiempo.antes-referencia": "{dias} antes del bólido",
-  "filtro.titulo": "Filtros"
+  "filtro.titulo": "Filtros",
+  "escala.visual.tierra.pieza": "Escala visual: el brillo de la atmósfera es un efecto visual."
 }

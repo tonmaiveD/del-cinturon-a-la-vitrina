@@ -1,8 +1,12 @@
-name: CI
+name: CI y publicación
 on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   verificar:
@@ -16,9 +20,41 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm test
+      # Incluye validación del dataset y auditoría de trazabilidad
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: npm run e2e
       # La medición de carga depende del hardware del runner: informativa, no bloqueante
       - run: npm run e2e:rendimiento
         continue-on-error: true
+
+  # Solo se publica desde main y si todas las pruebas pasaron
+  publicar:
+    needs: verificar
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          BASE_PUBLICA: /${{ github.event.repository.name }}/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: despliegue
+        uses: actions/deploy-pages@v4

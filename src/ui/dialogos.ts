@@ -82,6 +82,10 @@ export function montarDialogos(): void {
     ficha,
     contextoFicha(pedigri as unknown as Meteorito, cneos, N_CLONES),
   );
+  dFicha.querySelector('#titulo-ficha')!.textContent = t('ficha.titulo', {
+    nombre: String(pedigri.nombre_oficial.valor),
+    anio: String(pedigri.fecha_caida.valor).slice(0, 4),
+  });
   const contenido = dFicha.querySelector('.contenido')!;
   if (ficha.estado === 'borrador') contenido.append(elemento('p', t('ficha.borrador'), 'aviso'));
   const cuerpo = elemento('div', undefined, 'ficha');

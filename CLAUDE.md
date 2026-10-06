@@ -5,11 +5,24 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 
 ## Retomar aquí
 
-**Estado:** Fase 1 cerrada (`docs/cierres/fase-1.md`). Fase 2, etapas 1–4 completas (último
-commit: "Fase 2, etapa 4"). 179 tests unitarios + 23 e2e en verde (+ 2 de rendimiento).
+**Estado:** Fase 2 cerrada (`docs/cierres/fase-2.md`), pendiente de confirmación del usuario
+para empezar la Fase 3. 185 tests unitarios + 23 e2e en verde (+ 2 de rendimiento).
 
-**Siguiente: cierre de la Fase 2** (pendiente del OK del usuario): resumen, deuda, riesgos,
-capturas y video en `docs/cierres/fase-2.md`. No empezar la Fase 3 sin confirmación.
+**Siguiente:** publicar en GitHub Pages (decidido: repositorio público, plan gratuito). El
+workflow `.github/workflows/ci.yml` verifica y luego publica desde `main` con
+`BASE_PUBLICA=/<repo>/` (ruta base de Vite). Falta que el usuario cree el repositorio y suba el
+código (no tiene `gh` ni Homebrew; se le guió con GitHub Desktop) y que active
+Settings → Pages → Source: «GitHub Actions». Después: medir en un móvil real con la URL.
+
+**Licencias:** código MIT (`LICENSE`); datos, reportes y textos CC BY 4.0 (`data/LICENCIA.md`).
+Textura Blue Marble: directrices de medios de NASA (uso educativo e informativo, reconocer a
+NASA), verificado el 2026-10-05.
+
+**Auditoría de trazabilidad** (`npm run auditoria`, parte del build): contrasta cada dato que
+muestra la interfaz con `data/` y falla ante discrepancias, pendientes mostrados como firmes o
+cifras escritas a mano en `src/i18n/es.json` (lista de excepciones con motivo en
+`CIFRAS_PERMITIDAS`, `pipeline/auditoria.ts`). Informe: `docs/reportes/trazabilidad.md`. Si se
+añade texto con una cifra, pasarla como parámetro desde el dataset o justificarla ahí.
 
 **Etapa 4 (hecha), decisiones a recordar:**
 
@@ -79,7 +92,8 @@ Flensburg, Novo Mesto, Winchcombe, Ribbeck…) desde sus artículos originales.
 - `npm run e2e` (escritorio + móvil) · `npm run e2e:rendimiento` (4G lento + CPU ×4, aislado)
 - Datos: `npm run datos` (validación Chelyabinsk + trayectoria), `npm run datos:pedigri`
   (Granvik & Brown + JPL 2008 TC3 + catálogo), `npm run datos:texturas`, `npm run verificacion:cruzada`
-- `npm run cierre:video` (requiere `build`): video y capturas del recorrido en `docs/cierres/`.
+- `npm run cierre:video` / `npm run cierre:fase-2` (requieren `build`): video y capturas en
+  `docs/cierres/`. `npm run auditoria`: trazabilidad.
 
 ## Arquitectura
 
@@ -170,5 +184,6 @@ Fase 0 andamiaje · F1-E1 núcleo orbital · F1-E2 datos Chelyabinsk · F1-E3 va
 tiempo · F1-E6 ficha, accesibilidad (axe WCAG 2.1 AA: 0 violaciones), rendimiento y cierre ·
 F2-E1 dataset de 25 caídas · F2-E2 verificación cruzada (aprobada, `docs/reportes/cruzada.md`;
 Almahata Sitta → JPL por decisión del usuario del 2026-10-05) · F2-E3 regiones de origen ·
-F2-E4 escena con las 25 caídas (catálogo, filtros, nubes, regiones).
+F2-E4 escena con las 25 caídas (catálogo, filtros, nubes, regiones) · Cierre F2 (auditoría de
+trazabilidad, licencias, publicación preparada).
 Deuda técnica y riesgos: `docs/cierres/fase-1.md`.

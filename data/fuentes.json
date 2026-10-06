@@ -96,10 +96,10 @@
     "tipo": "textura",
     "cita": "NASA Earth Observatory. Blue Marble: Next Generation, topografía y batimetría, diciembre de 2004 (world.topo.bathy.200412.3x5400x2700.jpg).",
     "url": "https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/base-topography-bathymetry",
-    "licencia": "Imagen de NASA; la página no declara licencia ni línea de crédito explícitas (pendiente de verificar en las directrices de medios de NASA)",
+    "licencia": "Contenido de NASA: en general no sujeto a copyright en EE. UU.; uso educativo e informativo (incluidas páginas web) permitido reconociendo a NASA como fuente",
     "consultado": "2026-10-01",
     "metadatos_verificados": false,
-    "notas": "Reescalada a 4096×2048 (escritorio) y 2048×1024 (móvil) con sips en public/texturas/."
+    "notas": "Licencia según las NASA Images and Media Usage Guidelines (https://www.nasa.gov/nasa-brand-center/images-and-media/, consultado 2026-10-05); la página de la imagen no declara licencia ni línea de crédito propias. Reescalada a 4096×2048 (escritorio), 2048×1024 (móvil) y 1024×512 (carga inicial), WebP, en public/texturas/."
   },
   {
     "id": "nasa-planetary-fact-sheet",

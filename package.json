@@ -4,7 +4,7 @@
   "description": "Del cinturón a la vitrina: el viaje de los meteoritos desde su origen hasta la Tierra",
   "scripts": {
     "dev": "vite",
-    "build": "npm run validate && tsc --noEmit && vite build",
+    "build": "npm run validate && npm run auditoria && tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -23,9 +23,11 @@
     "verificacion:cruzada": "tsx pipeline/verificacion-cruzada.ts",
     "datos:jpl-2008tc3": "tsx pipeline/importar-jpl-2008tc3.ts",
     "datos:pedigri": "npm run datos:granvik-brown && npm run datos:jpl-2008tc3 && npm run datos:catalogo",
-    "datos:catalogo": "tsx pipeline/generar-catalogo.ts"
+    "datos:catalogo": "tsx pipeline/generar-catalogo.ts",
+    "auditoria": "tsx pipeline/auditar.ts",
+    "cierre:fase-2": "tsx pipeline/grabar-fase-2.ts"
   },
-  "license": "UNLICENSED",
+  "license": "MIT",
   "type": "module",
   "dependencies": {
     "astronomy-engine": "^2.1.19",

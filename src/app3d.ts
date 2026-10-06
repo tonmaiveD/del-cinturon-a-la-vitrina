@@ -262,11 +262,16 @@ export async function iniciar3D(
     tierra.aplicarEscala(escalaVisual);
     solarCreada?.solar.aplicarEscala(escalaVisual);
     avisoEscala.textContent = escalaVisual
-      ? t(`escala.visual.${vista}` as Clave, {
-          sol: EXAGERACION.sol,
-          planetas: EXAGERACION.planetas,
-          jupiter: EXAGERACION.jupiter,
-        })
+      ? t(
+          (vista === 'tierra' && panel.actual() !== 'chelyabinsk'
+            ? 'escala.visual.tierra.pieza'
+            : `escala.visual.${vista}`) as Clave,
+          {
+            sol: EXAGERACION.sol,
+            planetas: EXAGERACION.planetas,
+            jupiter: EXAGERACION.jupiter,
+          },
+        )
       : t('escala.real');
     avisoMarcadores.hidden = vista !== 'tierra';
     if (!secuencia.activa()) descripcion.textContent = descripcionVista();
@@ -424,7 +429,7 @@ export async function iniciar3D(
     bSaltar.hidden = true;
     bRecorrido.disabled = false;
     refrescarVista();
-    narrar('narr.final');
+    descripcion.textContent = t('narr.final', { fecha: formatoFecha(bolido.fecha) });
   }
   const secuencia = crearSecuencia(pasos, terminarSecuencia);
 
