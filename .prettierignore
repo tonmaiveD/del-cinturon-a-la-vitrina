@@ -1,2 +1,6 @@
 public/data
 package-lock.json
+# Generados por los pipelines (respuesta cruda de la API y reportes automáticos)
+data/cneos/eventos.json
+docs/reportes/cneos.md
+docs/reportes/trazabilidad.md

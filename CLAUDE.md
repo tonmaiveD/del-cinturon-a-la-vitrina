@@ -10,13 +10,25 @@ https://tonmaived.github.io/del-cinturon-a-la-vitrina/ (repo público `tonmaiveD
 la CI publica desde `main` si pasan las pruebas). El usuario sube los cambios con GitHub Desktop
 ("Push origin"); no hay `gh` ni credenciales de git en la terminal. Móvil real: «se ve bien».
 
-**Siguiente: Fase 3 (bólidos CNEOS)** — propuesta presentada, pendiente de OK y de la decisión
-sobre los eventos del grupo de baja calidad (ver propuesta en la conversación del 2026-10-06):
-API al 2026-10-06: 1073 eventos (1988–2026-09-15), 887 con ubicación, 361 con vector de velocidad
-(260 en el grupo de bajo D_D de Peña-Asensio —≥ 2018 o ≥ 0,45 kt— y 101 fuera de él, sin σ
-publicada para ese grupo). Etapas propuestas: E1 pipeline + órbitas MC incrementales; E2 escena
-(globo con todos los eventos, lista de eventos recientes, trayectoria 3D, nubes); E3 actualización
-diaria con GitHub Actions; E4 cierre.
+**Fase 3 en curso.** Decisión del usuario (2026-10-06): opción (a), los eventos del grupo de
+alto D_D se muestran **sin órbita** y con nota («no verificable de antemano»).
+
+**F3-E1 hecha (datos y órbitas).** Pendiente: OK del usuario para la E2 (escena).
+
+- `npm run datos:cneos` = `datos:cneos:descargar` (respuesta cruda completa a
+  `data/cneos/eventos.json`, solo se reescribe si cambian los datos) + `datos:cneos:orbitas`
+  (`public/data/cneos/eventos.json` resumen + `public/data/cneos/orbitas/<id>.json`, 200 clones,
+  incremental por huella; `CNEOS_FRAGMENTO=k/n` reparte el cálculo en procesos paralelos y una
+  pasada final sin la variable escribe el resumen). Primera pasada: ~45 min en 7 procesos.
+- `src/cneos/eventos.ts`: `leerEventos`, `grupoBajoDd` (año ≥ 2018 o E_i ≥ 0,45 kt, Tabla 4
+  de Peña-Asensio 2025, guardada en `data/calibracion/pena-asensio-2025-tabla4.json`), clases
+  `orbita | orbita-no-fiable | sin-altura | sin-vector | sin-ubicacion`.
+- Con los 18 calibrados la regla es conservadora: 0 falsos positivos; Košice y Baird Bay quedan
+  «sin órbita» pese a tener D_D bajo (por eso la nota dice «no verificable», no «errónea»).
+- Al 2026-10-06: 258 con órbita (2 no calculables: la retropropagación no sale de la influencia
+  terrestre en 60 días; se guardan con `error`), 100 no fiables, 3 sin altura, 526 sin vector,
+  186 sin ubicación. 5 nominales hiperbólicas; 10 eventos con > 10 % de clones descartados (nube
+  posiblemente sesgada: avisar en la UI). Reporte: `npm run reporte:cneos` → `docs/reportes/cneos.md`.
 
 **Respaldo privado:** `.trabajo/RESPALDO-historial-git-con-gmail-2026-10-06.bundle` (historial
 anterior a la reescritura de email; contiene el gmail; no subir nunca). Ver

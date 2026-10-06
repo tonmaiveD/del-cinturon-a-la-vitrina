@@ -10,6 +10,10 @@ const errores = validarDataset({
   fuentes: leer('data/fuentes.json'),
   regiones: leer('data/regiones-origen.json'),
   escape: leer('data/regiones-escape.json'),
+  cneos: {
+    eventos: leer('data/cneos/eventos.json'),
+    calidad: leer('data/calibracion/pena-asensio-2025-tabla4.json'),
+  },
   pedigri: readdirSync(dirPedigri)
     .filter((f) => f.endsWith('.json'))
     .map((f) => ({ ruta: join(dirPedigri, f), contenido: leer(join(dirPedigri, f)) })),

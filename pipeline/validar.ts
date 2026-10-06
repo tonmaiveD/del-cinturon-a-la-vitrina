@@ -1,10 +1,12 @@
 /** Validación del dataset: esquemas + integridad referencial de fuentes. */
 import type { z } from 'zod';
 import {
+  CalidadCneos,
   Fuentes,
   Meteorito,
   RegionEscape,
   RegionesOrigen,
+  RespuestaCneos,
   referenciasDeFuente,
   type Fuente,
 } from '../src/schema';
@@ -19,6 +21,8 @@ export interface Dataset {
   regiones: unknown;
   pedigri: Archivo[];
   escape?: unknown;
+  /** data/cneos/eventos.json y data/calibracion/pena-asensio-2025-tabla4.json */
+  cneos?: { eventos: unknown; calidad: unknown };
 }
 
 function erroresZod(ruta: string, error: z.ZodError): string[] {
@@ -43,6 +47,17 @@ export function validarDataset(ds: Dataset): string[] {
   const archivos: Archivo[] = [{ ruta: 'data/regiones-origen.json', contenido: ds.regiones }];
   if (ds.escape !== undefined)
     archivos.push({ ruta: 'data/regiones-escape.json', contenido: ds.escape });
+  if (ds.cneos) {
+    const ev = RespuestaCneos.safeParse(ds.cneos.eventos);
+    if (!ev.success) errores.push(...erroresZod('data/cneos/eventos.json', ev.error));
+    const cal = CalidadCneos.safeParse(ds.cneos.calidad);
+    if (!cal.success)
+      errores.push(...erroresZod('data/calibracion/pena-asensio-2025-tabla4.json', cal.error));
+    archivos.push(
+      { ruta: 'data/cneos/eventos.json', contenido: ds.cneos.eventos },
+      { ruta: 'data/calibracion/pena-asensio-2025-tabla4.json', contenido: ds.cneos.calidad },
+    );
+  }
   for (const a of ds.pedigri) {
     const m = Meteorito.safeParse(a.contenido);
     if (!m.success) errores.push(...erroresZod(a.ruta, m.error));

@@ -1,0 +1,34 @@
+{
+  "fuente": "pena-asensio-2025",
+  "ubicacion": "arXiv:2508.01454v3, Tabla 4 y su nota; resumen",
+  "consultado": "2026-10-06",
+  "nota": "Medianas y desviaciones (superior e inferior) de los errores de los 18 eventos calibrados del CNEOS, por grupo. Los grupos se separan por D_D = 0,1; la nota de la tabla los describe como eventos «after late 2017 or with impact energies exceeding 0.45 kt» y las cabeceras dan la condición exacta usada aquí: bajo D_D = año ≥ 2018 o E_i ≥ 0,45 kt; alto D_D = año < 2018 y E_i < 0,45 kt.",
+  "grupos": [
+    {
+      "id": "bajo-dd",
+      "condicion": "anio >= 2018 || impacto_kt >= 0.45",
+      "dd": { "mediana": 0.03, "mas": 0.02, "menos": 0.01 },
+      "v_kms": { "mediana": 0.55, "mas": 0.37, "menos": 0.45 },
+      "alfa_g_grados": { "mediana": 1.35, "mas": 1.12, "menos": 0.79 },
+      "delta_g_grados": { "mediana": 0.84, "mas": 1.0, "menos": 0.79 },
+      "a_au": { "mediana": 0.04, "mas": 0.3, "menos": 0.04 },
+      "e": { "mediana": 0.02, "mas": 0.04, "menos": 0.01 },
+      "i_grados": { "mediana": 1.07, "mas": 0.26, "menos": 0.86 },
+      "omega_grados": { "mediana": 1.25, "mas": 3.55, "menos": 0.66 },
+      "nodo_grados": { "mediana": 0.028, "mas": 0.225, "menos": 0.018 }
+    },
+    {
+      "id": "alto-dd",
+      "condicion": "anio < 2018 && impacto_kt < 0.45",
+      "dd": { "mediana": 0.31, "mas": 0.39, "menos": 0.05 },
+      "v_kms": { "mediana": 6.05, "mas": 1.44, "menos": 2.21 },
+      "alfa_g_grados": { "mediana": 67.24, "mas": 69.99, "menos": 56.2 },
+      "delta_g_grados": { "mediana": 11.71, "mas": 8.78, "menos": 4.47 },
+      "a_au": { "mediana": 1.58, "mas": 3.29, "menos": 0.92 },
+      "e": { "mediana": 0.27, "mas": 0.17, "menos": 0.19 },
+      "i_grados": { "mediana": 11.74, "mas": 4.68, "menos": 7.26 },
+      "omega_grados": { "mediana": 83.07, "mas": 81.44, "menos": 69.9 },
+      "nodo_grados": { "mediana": 0.009, "mas": 0.01, "menos": 0.005 }
+    }
+  ]
+}

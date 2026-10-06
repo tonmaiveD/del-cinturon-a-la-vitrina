@@ -222,3 +222,46 @@ export const Calibracion = z.object({
 });
 export type Calibracion = z.infer<typeof Calibracion>;
 export type EventoCalibrado = Calibracion['eventos'][number];
+
+/** Mediana del error con sus desviaciones superior e inferior (tal como la publica la fuente). */
+const MedianaError = z.object({ mediana: z.number(), mas: z.number(), menos: z.number() });
+
+/** Errores típicos de las órbitas CNEOS por grupo de calidad (Peña-Asensio et al. 2025, Tabla 4). */
+export const CalidadCneos = z.object({
+  fuente: idSlug,
+  ubicacion: z.string(),
+  consultado: z.iso.date(),
+  nota: z.string(),
+  grupos: z
+    .array(
+      z.object({
+        id: z.enum(['bajo-dd', 'alto-dd']),
+        condicion: z.string(),
+        dd: MedianaError,
+        v_kms: MedianaError,
+        alfa_g_grados: MedianaError,
+        delta_g_grados: MedianaError,
+        a_au: MedianaError,
+        e: MedianaError,
+        i_grados: MedianaError,
+        omega_grados: MedianaError,
+        nodo_grados: MedianaError,
+      }),
+    )
+    .length(2),
+});
+export type CalidadCneos = z.infer<typeof CalidadCneos>;
+
+/** Respuesta cruda de la API Fireball del CNEOS, guardada con su fecha de consulta. */
+export const RespuestaCneos = z.object({
+  fuente: idSlug,
+  url: z.url(),
+  consultado: z.iso.datetime(),
+  respuesta: z.object({
+    signature: z.object({ source: z.string(), version: z.string() }),
+    count: z.union([z.string(), z.number()]),
+    fields: z.array(z.string()),
+    data: z.array(z.array(z.string().nullable())),
+  }),
+});
+export type RespuestaCneos = z.infer<typeof RespuestaCneos>;

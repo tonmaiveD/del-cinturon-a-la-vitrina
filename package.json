@@ -25,7 +25,11 @@
     "datos:pedigri": "npm run datos:granvik-brown && npm run datos:jpl-2008tc3 && npm run datos:catalogo",
     "datos:catalogo": "tsx pipeline/generar-catalogo.ts",
     "auditoria": "tsx pipeline/auditar.ts",
-    "cierre:fase-2": "tsx pipeline/grabar-fase-2.ts"
+    "cierre:fase-2": "tsx pipeline/grabar-fase-2.ts",
+    "datos:cneos:descargar": "tsx pipeline/cneos-descargar.ts",
+    "datos:cneos:orbitas": "tsx pipeline/cneos-orbitas.ts",
+    "datos:cneos": "npm run datos:cneos:descargar && npm run datos:cneos:orbitas",
+    "reporte:cneos": "tsx pipeline/reporte-cneos.ts"
   },
   "license": "MIT",
   "type": "module",
