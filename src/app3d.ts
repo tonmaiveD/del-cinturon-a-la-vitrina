@@ -121,7 +121,8 @@ export async function iniciar3D(
   // Estado inicial (URL)
   const inicial = leerEstadoUrl(location.search, {
     pieza: panel.actual(),
-    t: impacto,
+    // Sin `t` en la URL, cada pieza arranca en su propio instante de impacto (aplicarPieza)
+    t: undefined,
     vista: 'tierra',
     escalaVisual: true,
   });

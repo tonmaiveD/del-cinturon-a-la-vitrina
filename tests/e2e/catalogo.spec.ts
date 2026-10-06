@@ -85,6 +85,12 @@ test('clic en un marcador del globo selecciona la pieza', async ({ page }, info)
   await expect(page).toHaveURL(/pieza=pribram/);
 });
 
+test('sin fecha en la URL, la pieza arranca en su instante de impacto', async ({ page }) => {
+  await page.goto('/?pieza=zdar-nad-sazavou');
+  await listo(page);
+  await expect(page.locator('#fecha-texto')).toContainText('instante de referencia del bólido');
+});
+
 test('pieza desconocida en la URL → Chelyabinsk', async ({ page }) => {
   await page.goto('/?pieza=no-existe');
   await listo(page);
