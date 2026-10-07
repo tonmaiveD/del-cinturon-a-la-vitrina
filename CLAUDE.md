@@ -13,8 +13,8 @@ la CI publica desde `main` si pasan las pruebas). El usuario sube los cambios co
 **Fase 3 en curso.** Decisión del usuario (2026-10-06): opción (a), los eventos del grupo de
 alto D_D se muestran **sin órbita** y con nota («no verificable de antemano»).
 
-**F3-E1 (datos y órbitas), F3-E2 (escena) y F3-E3 (actualización diaria) hechas.** Siguiente:
-E4, cierre de la Fase 3 (pendiente de OK del usuario).
+**F3-E1 (datos y órbitas), F3-E2 (escena) y F3-E3 (actualización diaria) hechas y
+verificadas en producción.** Siguiente: E4, cierre de la Fase 3 (pendiente de OK del usuario).
 
 **F3-E3:** `.github/workflows/cneos-diario.yml` (07:30 UTC y manual): descarga; si cambió
 `data/cneos/eventos.json`, órbitas incrementales + reporte; lint, tests y build (con auditoría)
@@ -23,6 +23,9 @@ E4, cierre de la Fase 3 (pendiente de OK del usuario).
 GITHUB_TOKEN no dispara workflows) para e2e y publicación. Si algo falla no se guarda ni publica
 nada (p. ej. si el CNEOS revisa Chelyabinsk, falla el test de coherencia con la Fase 1 y se para).
 Ensayo local del 2026-10-07: 1 evento nuevo y 1 revisado (vector añadido), 2 órbitas en 6 s.
+Primera ejecución real (2026-10-07, manual): OK; commit `2ead4d4` del bot, 1074 eventos.
+**El bot hace commits en `main`: antes de trabajar en local, `git pull --ff-only origin main`**
+(y el usuario, «Fetch/Pull origin» en GitHub Desktop antes de «Push origin»).
 La «última actualización» mostrada es la de la última consulta con cambios. Riesgo: GitHub
 desactiva los workflows programados tras 60 días sin actividad en el repositorio.
 
