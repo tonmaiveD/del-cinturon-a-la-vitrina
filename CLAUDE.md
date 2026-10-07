@@ -63,6 +63,11 @@ como órbita `borovicka-2013-nature`: osculadora **60 días antes del impacto** 
 σ «±» sin nivel declarado. Sustituye a la cita indirecta vía Peña-Asensio 2025. Validación de
 Chelyabinsk y verificación cruzada regeneradas: aprobadas (D_D 0,016 frente a la órbita CNEOS).
 
+**Push rechazado con «Internal Server Error» (2026-10-07):** GitHub rechazaba los push de commits
+firmados con apaec@yahoo.com tras cambios en la privacidad de emails de la cuenta; se resolvió
+cuando el usuario añadió apaec@yahoo.com a su cuenta de GitHub. Si reaparece, revisar
+https://github.com/settings/emails antes de sospechar del contenido.
+
 **Respaldo privado:** `.trabajo/RESPALDO-historial-git-con-gmail-2026-10-06.bundle` (historial
 anterior a la reescritura de email; contiene el gmail; no subir nunca). Ver
 `.trabajo/LEEME-RESPALDO-HISTORIAL.md`. Se conserva por decisión del usuario.
