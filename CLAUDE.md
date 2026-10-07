@@ -30,6 +30,12 @@ alto D_D se muestran **sin órbita** y con nota («no verificable de antemano»)
   186 sin ubicación. 5 nominales hiperbólicas; 10 eventos con > 10 % de clones descartados (nube
   posiblemente sesgada: avisar en la UI). Reporte: `npm run reporte:cneos` → `docs/reportes/cneos.md`.
 
+**Borovička et al. 2013 (Nature):** PDF aportado por el usuario el 2026-10-07 en `revision/`
+(carpeta local fuera de git; no redistribuir). Tabla 2 transcrita en `data/pedigri/chelyabinsk.json`
+como órbita `borovicka-2013-nature`: osculadora **60 días antes del impacto** (no pre-atmosférica),
+σ «±» sin nivel declarado. Sustituye a la cita indirecta vía Peña-Asensio 2025. Validación de
+Chelyabinsk y verificación cruzada regeneradas: aprobadas (D_D 0,016 frente a la órbita CNEOS).
+
 **Respaldo privado:** `.trabajo/RESPALDO-historial-git-con-gmail-2026-10-06.bundle` (historial
 anterior a la reescritura de email; contiene el gmail; no subir nunca). Ver
 `.trabajo/LEEME-RESPALDO-HISTORIAL.md`. Se conserva por decisión del usuario.
@@ -72,7 +78,6 @@ añade texto con una cifra, pasarla como parámetro desde el dataset o justifica
 - Decidir hosting (recomendado: GitHub Pages; ver `docs/cierres/fase-1.md`).
 - MetBull: el sitio exige verificación anti-bots (no se elude). Nombres oficiales, masas y puntos
   de caída siguen "pendiente" hasta que el usuario aporte el registro (Chelyabinsk: 57165).
-- Borovička et al. 2013 (Nature) Tabla 2: de pago, no leída.
 - Medir rendimiento en un móvil real (solo hay emulación).
 
 **Mejoras opcionales ya identificadas:** añadir caídas posteriores a 2016 (Hamburg, Motopi Pan,

@@ -185,7 +185,10 @@ const pares: Par[] = [
     .map((o) => ({
       meteorito: 'Chelyabinsk',
       fuente: o.fuente,
-      definicion: 'pre-atmosférica',
+      definicion:
+        o.fuente === 'borovicka-2013-nature'
+          ? 'osculadora 60 días antes del impacto'
+          : 'pre-atmosférica',
       A: deDataset(o),
       B: gb('chelyabinsk'),
     })),

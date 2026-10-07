@@ -35,9 +35,9 @@
     "cita": "Borovička, J., Spurný, P., Brown, P., Wiegert, P., Kalenda, P., Clark, D., Shrbený, L. (2013). The trajectory, structure and origin of the Chelyabinsk asteroidal impactor. Nature, 503, 235–237.",
     "doi": "10.1038/nature12671",
     "licencia": "Cita bibliográfica",
-    "consultado": "2026-10-01",
+    "consultado": "2026-10-07",
     "metadatos_verificados": true,
-    "notas": "Autores y DOI verificados en nature.com y en la página del coautor P. Wiegert. Los elementos orbitales están en la Tabla 2 del artículo (acceso de pago, no leída). El suplemento (de acceso libre) sí se leyó: describe un Monte Carlo de 1000 clones integrados hacia atrás con Tierra, Luna y planetas.",
+    "notas": "Leído el PDF completo del artículo (13 págs., incluidos Extended Data), aportado por el usuario el 2026-10-07; no se redistribuye. Tabla 2: órbita previa al impacto con incertidumbres «±» sin nivel declarado, osculadora 60 días antes del impacto (integración RADAU), equinoccio J2000.0. Nota de la Tabla 2: radiante geocéntrico α_g = 332,82 ± 0,11°, δ_g = 10,28 ± 0,14°, v_g = 15,14 ± 0,16 km/s. Tabla 1: trayectoria; el primer punto (64,477° E, 54,454° N, 95,0 km) coincide con el punto de trayectoria de Granvik & Brown 2018. Autores y DOI verificados en nature.com y en la página del coautor P. Wiegert.",
     "url": "https://www.nature.com/articles/nature12671"
   },
   {

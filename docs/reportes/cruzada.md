@@ -1,6 +1,6 @@
 # Verificación cruzada de órbitas con pedigrí
 
-> Generado por `npm run verificacion:cruzada` el 2026-10-05. No editar a mano.
+> Generado por `npm run verificacion:cruzada` el 2026-10-07. No editar a mano.
 
 ## Veredicto
 
@@ -20,9 +20,10 @@ z = (fuente − Granvik & Brown) / √(σ₁² + σ₂²). D_D: Drummond (1981).
 | Annama           | Trigo-Rodríguez et al. 2015, Tabla 4                    | pre-atmosférica                                       | 0.010 | -0.5   | 0.0    | 0.6   | -1.2  |
 | Almahata Sitta   | JPL Horizons, 2008 TC3 (órbita telescópica, 2008-09-07) | osculadora antes del encuentro (sin efecto terrestre) | 0.042 | -143.9 | -245.9 | -61.1 | 128.2 |
 | Chelyabinsk      | popova-2013-science                                     | pre-atmosférica                                       | 0.005 | -0.1   | 0.2    | 0.5   | -0.6  |
+| Chelyabinsk      | borovicka-2013-nature                                   | osculadora 60 días antes del impacto                  | 0.010 | -1.7   | -1.0   | 1.1   | -2.3  |
 | Chelyabinsk      | emelyanenko-2014-arxiv                                  | pre-atmosférica                                       | 0.027 | 1.5    | 1.6    | 2.6   | -0.2  |
 
-Valores: Granvik & Brown → Žďár nad Sázavou (Spurný et al. 2020): a 2.093 vs 2.102, e 0.6792 vs 0.6808, i 2.80° vs 2.81°; Annama (Trigo-Rodríguez et al. 2015): a 1.990 vs 2.080, e 0.6900 vs 0.6900, i 14.65° vs 14.23°; Almahata Sitta (JPL Horizons): a 1.265 vs 1.308, e 0.2813 vs 0.3060, i 2.30° vs 2.44°; Chelyabinsk (popova-2013-science): a 1.760 vs 1.770, e 0.5810 vs 0.5792, i 4.93° vs 4.78°; Chelyabinsk (emelyanenko-2014-arxiv): a 1.880 vs 1.770, e 0.6090 vs 0.5792, i 5.94° vs 4.78°.
+Valores: Granvik & Brown → Žďár nad Sázavou (Spurný et al. 2020): a 2.093 vs 2.102, e 0.6792 vs 0.6808, i 2.80° vs 2.81°; Annama (Trigo-Rodríguez et al. 2015): a 1.990 vs 2.080, e 0.6900 vs 0.6900, i 14.65° vs 14.23°; Almahata Sitta (JPL Horizons): a 1.265 vs 1.308, e 0.2813 vs 0.3060, i 2.30° vs 2.44°; Chelyabinsk (popova-2013-science): a 1.760 vs 1.770, e 0.5810 vs 0.5792, i 4.93° vs 4.78°; Chelyabinsk (borovicka-2013-nature): a 1.720 vs 1.770, e 0.5710 vs 0.5792, i 4.98° vs 4.78°; Chelyabinsk (emelyanenko-2014-arxiv): a 1.880 vs 1.770, e 0.6090 vs 0.5792, i 5.94° vs 4.78°.
 
 ## B. Validación del método propio con JPL Horizons (2008 TC3)
 

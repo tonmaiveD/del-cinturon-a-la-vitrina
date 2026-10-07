@@ -73,7 +73,7 @@ const angDeOrbita = (o: Orbita): ElementosAngulares => ({
   omega: num(o.omega) * GRAD,
 });
 const nombreOrbita = (o: Orbita) =>
-  o.fuente === 'pena-asensio-2025' ? 'Borovička et al. 2013 (vía Peña-Asensio 2025)' : o.fuente;
+  o.fuente === 'borovicka-2013-nature' ? 'borovicka-2013-nature (osculadora 60 d antes)' : o.fuente;
 
 interface Estadistica {
   media: number;
@@ -335,7 +335,7 @@ Grupo de bajo D_D (n = ${bajos.length}), medianas: frente a la referencia terres
 
 ## Limitaciones
 
-- La Tabla 2 de Borovička et al. 2013 (Nature) no se leyó (acceso de pago); su órbita se usa solo vía Peña-Asensio et al. 2025, sin incertidumbres, y no entra en el criterio de parada.
+- La Tabla 2 de Borovička et al. 2013 (Nature) se leyó en el original (2026-10-07). Su órbita es osculadora 60 días antes del impacto, no pre-atmosférica en el instante del impacto, y sus incertidumbres no declaran nivel (se asumen 1σ): la comparación con la órbita calculada desde el CNEOS es orientativa, aunque entra en el criterio de parada como las demás.
 - σ independientes y gaussianas: la Tabla 4 da medianas y percentiles asimétricos de una muestra de 18 eventos.
 - No se modela la desaceleración atmosférica antes del pico de brillo.
 - Las incertidumbres de Emel'yanenko et al. son formales, sin nivel declarado; se asumen 1σ.

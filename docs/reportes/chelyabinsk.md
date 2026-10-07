@@ -1,6 +1,6 @@
 # Validación científica: Chelyabinsk (CNEOS → órbita heliocéntrica)
 
-> Generado por `npm run validacion:chelyabinsk` el 2026-10-05. No editar a mano.
+> Generado por `npm run validacion:chelyabinsk` el 2026-10-07. No editar a mano.
 
 ## Veredicto
 
@@ -42,16 +42,16 @@ Fuente: Peña-Asensio, Socas-Navarro & Seligman 2025, A&A 701, A202 (arXiv:2508.
 
 Órbitas publicadas (σ a 1σ; Popova et al. publica a 2σ, aquí convertida):
 
-| Fuente                                                    | a (AU)        | e             | q (AU)        | i (°)       | ω (°)         | Ω (°)             |     |
-| --------------------------------------------------------- | ------------- | ------------- | ------------- | ----------- | ------------- | ----------------- | --- |
-| popova-2013-science (verificado)                          | 1.760 ± 0.080 | 0.581 ± 0.009 | 0.739 ± 0.010 | 4.93 ± 0.24 | 108.30 ± 1.90 | 326.4422 ± 0.0014 | —   |
-| emelyanenko-2014-arxiv (verificado)                       | 1.880 ± 0.068 | 0.609 ± 0.017 | 0.735         | 5.94 ± 0.43 | 108.93 ± 0.54 | 326.4459 ± 0.0020 | —   |
-| Borovička et al. 2013 (vía Peña-Asensio 2025) (pendiente) | 1.720         | 0.570         | 0.740         | 4.98        | 107.67        | 326.4600          | —   |
-| granvik-brown-2018 (verificado)                           | 1.770 ± 0.022 | 0.579 ± 0.006 | 0.745 ± 0.002 | 4.78 ± 0.13 | 109.22 ± 0.18 | 326.4136 ± 0.0003 | —   |
+| Fuente                                                     | a (AU)        | e             | q (AU)        | i (°)       | ω (°)         | Ω (°)             |     |
+| ---------------------------------------------------------- | ------------- | ------------- | ------------- | ----------- | ------------- | ----------------- | --- |
+| popova-2013-science (verificado)                           | 1.760 ± 0.080 | 0.581 ± 0.009 | 0.739 ± 0.010 | 4.93 ± 0.24 | 108.30 ± 1.90 | 326.4422 ± 0.0014 | —   |
+| borovicka-2013-nature (osculadora 60 d antes) (verificado) | 1.720 ± 0.020 | 0.571 ± 0.006 | 0.738 ± 0.002 | 4.98 ± 0.12 | 107.67 ± 0.17 | 326.4590 ± 0.0010 | —   |
+| emelyanenko-2014-arxiv (verificado)                        | 1.880 ± 0.068 | 0.609 ± 0.017 | 0.735         | 5.94 ± 0.43 | 108.93 ± 0.54 | 326.4459 ± 0.0020 | —   |
+| granvik-brown-2018 (verificado)                            | 1.770 ± 0.022 | 0.579 ± 0.006 | 0.745 ± 0.002 | 4.78 ± 0.13 | 109.22 ± 0.18 | 326.4136 ± 0.0003 | —   |
 
 Radiante geocéntrico de Popova et al. 2013 (1σ): α = 333.2 ± 0.8°, δ = 0.3 ± 0.9°, Vg = 15.3 ± 0.2 km/s.
 
-Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1000 clones): 35.8 s.
+Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1000 clones): 34.5 s.
 
 ## Monte Carlo
 
@@ -69,8 +69,8 @@ Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1
 | Órbita publicada                              | D_D (nominal) | D_D mediana (clones) | z(a)  | z(e) | z(i) | z(q)  |
 | --------------------------------------------- | ------------- | -------------------- | ----- | ---- | ---- | ----- |
 | popova-2013-science                           | 0.021         | 0.034                | 0.16  | 0.45 | 0.72 | -0.64 |
+| borovicka-2013-nature (osculadora 60 d antes) | 0.016         | 0.034                | -0.08 | 0.20 | 0.76 | -0.69 |
 | emelyanenko-2014-arxiv                        | 0.045         | 0.048                | 0.89  | 1.14 | 1.68 | -0.82 |
-| Borovička et al. 2013 (vía Peña-Asensio 2025) | 0.015         | 0.034                | -0.08 | 0.18 | 0.76 | -0.60 |
 | granvik-brown-2018                            | 0.018         | 0.033                | 0.22  | 0.40 | 0.57 | -0.34 |
 
 #### Sensibilidad: ECEF-relativa, σ = mediana
@@ -87,8 +87,8 @@ Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1
 | Órbita publicada                              | D_D (nominal) | D_D mediana (clones) | z(a)  | z(e) | z(i) | z(q)  |
 | --------------------------------------------- | ------------- | -------------------- | ----- | ---- | ---- | ----- |
 | popova-2013-science                           | 0.021         | 0.026                | 0.34  | 0.69 | 1.10 | -0.97 |
+| borovicka-2013-nature (osculadora 60 d antes) | 0.016         | 0.025                | -0.02 | 0.33 | 1.17 | -1.04 |
 | emelyanenko-2014-arxiv                        | 0.045         | 0.045                | 1.46  | 1.72 | 2.52 | -1.25 |
-| Borovička et al. 2013 (vía Peña-Asensio 2025) | 0.015         | 0.025                | -0.02 | 0.29 | 1.17 | -0.92 |
 | granvik-brown-2018                            | 0.018         | 0.024                | 0.44  | 0.63 | 0.88 | -0.53 |
 
 #### Hipótesis inercial, σ = mediana / 0.6745
@@ -105,8 +105,8 @@ Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1
 | Órbita publicada                              | D_D (nominal) | D_D mediana (clones) | z(a)  | z(e)  | z(i) | z(q)  |
 | --------------------------------------------- | ------------- | -------------------- | ----- | ----- | ---- | ----- |
 | popova-2013-science                           | 0.011         | 0.032                | -0.15 | 0.10  | 0.60 | -0.51 |
+| borovicka-2013-nature (osculadora 60 d antes) | 0.012         | 0.033                | -0.37 | -0.14 | 0.65 | -0.57 |
 | emelyanenko-2014-arxiv                        | 0.033         | 0.039                | 0.53  | 0.79  | 1.57 | -0.71 |
-| Borovička et al. 2013 (vía Peña-Asensio 2025) | 0.012         | 0.033                | -0.37 | -0.17 | 0.65 | -0.48 |
 | granvik-brown-2018                            | 0.007         | 0.031                | -0.09 | 0.06  | 0.46 | -0.22 |
 
 ## ¿Qué marco usa CNEOS? Prueba con los 18 eventos calibrados
@@ -143,7 +143,7 @@ Grupo de bajo D_D (n = 12), medianas: frente a la referencia terrestre, ECEF-rel
 
 ## Limitaciones
 
-- La Tabla 2 de Borovička et al. 2013 (Nature) no se leyó (acceso de pago); su órbita se usa solo vía Peña-Asensio et al. 2025, sin incertidumbres, y no entra en el criterio de parada.
+- La Tabla 2 de Borovička et al. 2013 (Nature) se leyó en el original (2026-10-07). Su órbita es osculadora 60 días antes del impacto, no pre-atmosférica en el instante del impacto, y sus incertidumbres no declaran nivel (se asumen 1σ): la comparación con la órbita calculada desde el CNEOS es orientativa, aunque entra en el criterio de parada como las demás.
 - σ independientes y gaussianas: la Tabla 4 da medianas y percentiles asimétricos de una muestra de 18 eventos.
 - No se modela la desaceleración atmosférica antes del pico de brillo.
 - Las incertidumbres de Emel'yanenko et al. son formales, sin nivel declarado; se asumen 1σ.

@@ -173,6 +173,95 @@
       }
     },
     {
+      "fuente": "borovicka-2013-nature",
+      "ubicacion": "Nature 503, 235–237, Tabla 2 y su nota",
+      "marco": "ecliptica-J2000",
+      "epoca": {
+        "valor": "60 días antes del impacto (≈ 2012-12-17)",
+        "unidad": "texto",
+        "fuente": "borovicka-2013-nature",
+        "ubicacion": "nota de la Tabla 2",
+        "estado": "verificado",
+        "nota": "«The orbit was obtained by numerical integration back in time to 60 d pre-impact, with the RADAU integrator»: elementos osculadores 60 días antes del impacto, no en el instante del impacto. La fecha aproximada se deduce de la del impacto (15 de febrero de 2013). Equinoccio J2000.0."
+      },
+      "a": {
+        "valor": 1.72,
+        "unidad": "AU",
+        "sigma": 0.02,
+        "sigma_publicada": 0.02,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "borovicka-2013-nature",
+        "ubicacion": "Nature 503, 235–237, Tabla 2",
+        "estado": "verificado",
+        "nota": "Incertidumbre publicada como «±» sin nivel declarado en el artículo; se asume 1σ."
+      },
+      "e": {
+        "valor": 0.571,
+        "sigma": 0.006,
+        "sigma_publicada": 0.006,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "borovicka-2013-nature",
+        "ubicacion": "Nature 503, 235–237, Tabla 2",
+        "estado": "verificado",
+        "nota": "Incertidumbre publicada como «±» sin nivel declarado en el artículo; se asume 1σ."
+      },
+      "i": {
+        "valor": 4.98,
+        "unidad": "grados",
+        "sigma": 0.12,
+        "sigma_publicada": 0.12,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "borovicka-2013-nature",
+        "ubicacion": "Nature 503, 235–237, Tabla 2",
+        "estado": "verificado",
+        "nota": "Incertidumbre publicada como «±» sin nivel declarado en el artículo; se asume 1σ."
+      },
+      "nodo": {
+        "valor": 326.459,
+        "unidad": "grados",
+        "sigma": 0.001,
+        "sigma_publicada": 0.001,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "borovicka-2013-nature",
+        "ubicacion": "Nature 503, 235–237, Tabla 2",
+        "estado": "verificado",
+        "nota": "Incertidumbre publicada como «±» sin nivel declarado en el artículo; se asume 1σ."
+      },
+      "omega": {
+        "valor": 107.67,
+        "unidad": "grados",
+        "sigma": 0.17,
+        "sigma_publicada": 0.17,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "borovicka-2013-nature",
+        "ubicacion": "Nature 503, 235–237, Tabla 2",
+        "estado": "verificado",
+        "nota": "Incertidumbre publicada como «±» sin nivel declarado en el artículo; se asume 1σ."
+      },
+      "q": {
+        "valor": 0.738,
+        "unidad": "AU",
+        "sigma": 0.002,
+        "sigma_publicada": 0.002,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "borovicka-2013-nature",
+        "ubicacion": "Nature 503, 235–237, Tabla 2",
+        "estado": "verificado",
+        "nota": "Incertidumbre publicada como «±» sin nivel declarado en el artículo; se asume 1σ."
+      },
+      "tiempo_perihelio": {
+        "valor": "2012-12-31.39",
+        "unidad": "fecha decimal",
+        "sigma": 0.17,
+        "sigma_publicada": 0.17,
+        "nivel_sigma": "formal-sin-nivel",
+        "fuente": "borovicka-2013-nature",
+        "ubicacion": "Nature 503, 235–237, Tabla 2",
+        "estado": "verificado",
+        "nota": "Incertidumbre publicada como «±» sin nivel declarado en el artículo; se asume 1σ. σ en días."
+      }
+    },
+    {
       "fuente": "emelyanenko-2014-arxiv",
       "ubicacion": "Tabla 1",
       "marco": "ecliptica-J2000",
@@ -247,58 +336,6 @@
         "ubicacion": "Tabla 1",
         "estado": "verificado",
         "nota": "Incertidumbre formal de mínimos cuadrados; la fuente no declara el nivel. Se asume 1σ."
-      }
-    },
-    {
-      "fuente": "pena-asensio-2025",
-      "ubicacion": "arXiv:2508.01454v3, Tabla 3, fila Chelyabinsk / Borovička et al. (2013a)",
-      "marco": "ecliptica-J2000",
-      "epoca": {
-        "valor": "2013-02-15",
-        "unidad": "fecha (sin hora en la fuente)",
-        "fuente": "pena-asensio-2025",
-        "ubicacion": "arXiv:2508.01454v3, Tabla 3",
-        "estado": "pendiente",
-        "nota": "Valor de Borovička et al. 2013a citado por Peña-Asensio et al. 2025 (redondeado, sin incertidumbre). Pendiente de verificar en la Tabla 2 del original."
-      },
-      "a": {
-        "valor": 1.72,
-        "unidad": "AU",
-        "fuente": "pena-asensio-2025",
-        "ubicacion": "arXiv:2508.01454v3, Tabla 3",
-        "estado": "pendiente",
-        "nota": "Valor de Borovička et al. 2013a citado por Peña-Asensio et al. 2025 (redondeado, sin incertidumbre). Pendiente de verificar en la Tabla 2 del original."
-      },
-      "e": {
-        "valor": 0.57,
-        "fuente": "pena-asensio-2025",
-        "ubicacion": "arXiv:2508.01454v3, Tabla 3",
-        "estado": "pendiente",
-        "nota": "Valor de Borovička et al. 2013a citado por Peña-Asensio et al. 2025 (redondeado, sin incertidumbre). Pendiente de verificar en la Tabla 2 del original."
-      },
-      "i": {
-        "valor": 4.98,
-        "unidad": "grados",
-        "fuente": "pena-asensio-2025",
-        "ubicacion": "arXiv:2508.01454v3, Tabla 3",
-        "estado": "pendiente",
-        "nota": "Valor de Borovička et al. 2013a citado por Peña-Asensio et al. 2025 (redondeado, sin incertidumbre). Pendiente de verificar en la Tabla 2 del original."
-      },
-      "omega": {
-        "valor": 107.67,
-        "unidad": "grados",
-        "fuente": "pena-asensio-2025",
-        "ubicacion": "arXiv:2508.01454v3, Tabla 3",
-        "estado": "pendiente",
-        "nota": "Valor de Borovička et al. 2013a citado por Peña-Asensio et al. 2025 (redondeado, sin incertidumbre). Pendiente de verificar en la Tabla 2 del original."
-      },
-      "nodo": {
-        "valor": 326.46,
-        "unidad": "grados",
-        "fuente": "pena-asensio-2025",
-        "ubicacion": "arXiv:2508.01454v3, Tabla 3",
-        "estado": "pendiente",
-        "nota": "Valor de Borovička et al. 2013a citado por Peña-Asensio et al. 2025 (redondeado, sin incertidumbre). Pendiente de verificar en la Tabla 2 del original."
       }
     },
     {
