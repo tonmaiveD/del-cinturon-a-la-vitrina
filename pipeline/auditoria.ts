@@ -6,6 +6,9 @@
  * lista de convenciones (con su motivo).
  */
 import { semiejeResonancia } from '../src/core/resonancias';
+import { CORTE_FECHA, leerEventos, UMBRAL_KT } from '../src/cneos/eventos';
+import type { OrbitaCneos, ResumenCneos } from '../src/cneos/resumen';
+import type { CalidadCneos, RespuestaCneos } from '../src/schema';
 import type { Fuente, Meteorito, RegionEscape, RegionesOrigen, Valor } from '../src/schema';
 import type { Catalogo, NumSigma } from '../src/ui/catalogo';
 import { leerFicha, marcadores } from '../src/ui/ficha';
@@ -27,7 +30,7 @@ export interface Fila {
  * cifra es un error: los datos se pasan como parámetros desde el dataset.
  */
 export const CIFRAS_PERMITIDAS: Record<string, { cifras: string[]; motivo: string }> = {
-  'app.estado': { cifras: ['2'], motivo: 'número de fase del proyecto' },
+  'app.estado': { cifras: ['3'], motivo: 'número de fase del proyecto' },
   'escena.descripcion': { cifras: ['3'], motivo: 'nombre del tipo de visualización («3D»)' },
   'escala.visual.tierra': {
     cifras: ['60'],
@@ -56,6 +59,23 @@ export const CIFRAS_PERMITIDAS: Record<string, { cifras: string[]; motivo: strin
   'zona.resonancia-5-2': { cifras: ['5', '2'], motivo: 'nombre de la resonancia p:q' },
   'zona.resonancia-2-1': { cifras: ['2', '1'], motivo: 'nombre de la resonancia p:q' },
   'desc.regiones': { cifras: ['6'], motivo: 'nombre de la resonancia secular («ν6»)' },
+  'cneos.evento.energia': {
+    cifras: ['10'],
+    motivo: 'unidad en que la API publica la energía radiada (10¹⁰ J)',
+  },
+  'cneos.orbita.calculada': {
+    cifras: ['68', '16', '84'],
+    motivo: 'definición del rango mostrado (percentiles 16 y 84 de la nube)',
+  },
+  'cneos.orbita.hiperbolicas': {
+    cifras: ['1'],
+    motivo: 'definición de órbita hiperbólica (excentricidad ≥ 1)',
+  },
+  'cneos.orbita.metodo': { cifras: ['2025'], motivo: 'año de la cita (Peña-Asensio et al. 2025)' },
+  'cneos.orbita.no-verificable': {
+    cifras: ['2025'],
+    motivo: 'año de la cita (Peña-Asensio et al. 2025)',
+  },
 };
 
 export interface EntradaAuditoria {
@@ -68,6 +88,13 @@ export interface EntradaAuditoria {
   ficha?: { cruda: string; cneos: Parameters<typeof contextoFicha>[1]; nClones: number };
   cneos: { fuente: string; respuesta: { fields: string[]; data: string[][] } };
   radioVisualMeteoroideKm: number;
+  /** Modo CNEOS: respuesta cruda, resumen publicado, Tabla 4 y lector de archivos de órbita. */
+  bolidos?: {
+    crudo: RespuestaCneos;
+    resumen: ResumenCneos;
+    tabla4: CalidadCneos;
+    leerOrbita: (id: string) => OrbitaCneos;
+  };
 }
 
 export function auditar(e: EntradaAuditoria): Fila[] {
@@ -267,6 +294,89 @@ export function auditar(e: EntradaAuditoria): Fila[] {
         ...(ficha.estado === 'borrador' && { nota: 'borrador: no se publica en producción' }),
       });
     }
+  }
+
+  // ---------- F. Bólidos del CNEOS ----------
+  if (e.bolidos) {
+    const { crudo, resumen, tabla4, leerOrbita } = e.bolidos;
+    const s = 'Bólidos del CNEOS (modo CNEOS)';
+    const fila = (
+      elemento: string,
+      valor: string,
+      ok: boolean,
+      nota: string,
+      fuente = crudo.fuente,
+    ) =>
+      filas.push({
+        seccion: s,
+        elemento,
+        valor,
+        fuente,
+        estado: ok ? 'verificado' : 'error',
+        nota,
+      });
+    const leidos = leerEventos(crudo.respuesta);
+    const publicados = resumen.eventos.map((x) =>
+      Object.fromEntries(Object.entries(x).filter(([k]) => k !== 'orbita')),
+    );
+    fila(
+      'eventos mostrados (fecha, posición, altura, velocidad, energías, calidad)',
+      `${resumen.eventos.length} eventos`,
+      JSON.stringify(publicados) === JSON.stringify(leidos),
+      'el resumen publicado coincide campo a campo con la respuesta cruda guardada',
+    );
+    fila(
+      'fecha de «última actualización»',
+      resumen.consultado,
+      resumen.consultado === crudo.consultado,
+      'es la fecha de la consulta guardada con la respuesta cruda (nunca «en vivo»)',
+    );
+    const alto = tabla4.grupos.find((g) => g.id === 'alto-dd')!;
+    fila(
+      'criterio de «órbita no verificable» y errores mostrados',
+      `año < ${resumen.criterio.corte_fecha.slice(0, 4)} y < ${resumen.criterio.umbral_kt} kt`,
+      resumen.criterio.corte_fecha === CORTE_FECHA &&
+        resumen.criterio.umbral_kt === UMBRAL_KT &&
+        JSON.stringify(resumen.criterio.alto_dd) === JSON.stringify(alto),
+      'coincide con la Tabla 4 guardada (data/calibracion/pena-asensio-2025-tabla4.json)',
+      tabla4.fuente,
+    );
+    const bajo = tabla4.grupos.find((g) => g.id === 'bajo-dd')!;
+    let malos = 0;
+    let conNube = 0;
+    for (const ev of resumen.eventos.filter((x) => x.calidad === 'orbita')) {
+      const o = leerOrbita(ev.id);
+      const r = ev.orbita;
+      if ('error' in o) {
+        if (!r || !('error' in r) || r.error !== o.error) malos++;
+        continue;
+      }
+      conNube++;
+      const sigmaOk =
+        Math.abs(o.metodo.sigma.v_kms - bajo.v_kms.mediana / 0.6744897501960817) < 1e-3 &&
+        Math.abs(o.metodo.sigma.alfa_grados - bajo.alfa_g_grados.mediana / 0.6744897501960817) <
+          1e-3 &&
+        Math.abs(o.metodo.sigma.delta_grados - bajo.delta_g_grados.mediana / 0.6744897501960817) <
+          1e-3;
+      const resumenOk =
+        !!r &&
+        !('error' in r) &&
+        r.n === o.clones.length &&
+        r.descartados === o.metodo.clones_fallidos &&
+        JSON.stringify(r.radiante) === JSON.stringify(o.radiante);
+      if (!sigmaOk || !resumenOk) malos++;
+    }
+    filas.push({
+      seccion: s,
+      elemento: 'órbitas y nubes calculadas',
+      valor: `${conNube} nubes`,
+      fuente: `cálculo propio; σ de ${tabla4.fuente}`,
+      estado: malos === 0 ? 'calculado' : 'error',
+      nota:
+        malos === 0
+          ? 'σ = mediana de la Tabla 4 / 0,6745 en todas; el resumen mostrado coincide con cada archivo'
+          : `${malos} órbitas no coinciden con su archivo o con la σ de la Tabla 4`,
+    });
   }
 
   // ---------- E. Cifras escritas en los textos de la interfaz ----------

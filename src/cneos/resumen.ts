@@ -8,6 +8,8 @@ export type Percentiles = [number, number, number];
 export interface ResumenOrbita {
   radiante: { ra: number; dec: number; vg: number };
   n: number;
+  /** Clones cuya integración falló (no forman parte de la nube). */
+  descartados: number;
   hiperbolicas: number;
   /** Solo de los clones elípticos (null si no hay ninguno). */
   a: Percentiles | null;

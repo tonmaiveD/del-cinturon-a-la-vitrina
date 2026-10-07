@@ -53,6 +53,7 @@ describe('interpolación', () => {
 
 describe('estado en la URL', () => {
   const base: EstadoUrl = {
+    modo: 'pedigri',
     pieza: 'chelyabinsk',
     t: undefined,
     vista: 'tierra',
@@ -60,6 +61,7 @@ describe('estado en la URL', () => {
   };
   it('ida y vuelta', () => {
     const e: EstadoUrl = {
+      modo: 'pedigri',
       pieza: 'chelyabinsk',
       t: Date.parse('2013-02-15T03:20:26Z'),
       vista: 'sistema-solar',
@@ -69,6 +71,12 @@ describe('estado en la URL', () => {
     expect(escribirEstadoUrl(e)).toBe(
       '?pieza=chelyabinsk&t=2013-02-15T03%3A20%3A26Z&vista=sistema-solar&escala=real',
     );
+  });
+  it('modo CNEOS: guarda el evento y no la pieza', () => {
+    const e: EstadoUrl = { ...base, modo: 'cneos', evento: 'cneos-20250101-000000' };
+    const q = escribirEstadoUrl(e);
+    expect(q).toBe('?modo=cneos&evento=cneos-20250101-000000&vista=tierra&escala=visual');
+    expect(leerEstadoUrl(q, base)).toEqual(e);
   });
   it('ignora valores inválidos', () => {
     expect(leerEstadoUrl('?vista=marte&t=ayer', base)).toEqual(base);

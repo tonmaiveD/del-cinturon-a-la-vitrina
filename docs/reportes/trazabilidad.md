@@ -3,10 +3,10 @@
 Generado por `npm run auditoria` (también se ejecuta en `npm run build`, que falla si hay
 errores). Cada dato que muestra la interfaz se contrasta con su valor de origen en `data/`.
 
-- Verificados: 469
+- Verificados: 472
 - Pendientes mostrados con aviso: 25
-- Calculados con método documentado: 4
-- Convenciones visuales o de notación: 18
+- Calculados con método documentado: 5
+- Convenciones visuales o de notación: 23
 - **Errores: 0**
 
 ## Pieza: almahata-sitta
@@ -657,11 +657,20 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | {{i_sigma}} | 0,48 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{nivel_orbita}} | 2σ | popova-2013-science | verificado | borrador: no se publica en producción |
 
+## Bólidos del CNEOS (modo CNEOS)
+
+| Elemento | Valor | Fuente | Estado | Nota |
+| --- | --- | --- | --- | --- |
+| eventos mostrados (fecha, posición, altura, velocidad, energías, calidad) | 1073 eventos | cneos-fireball-api | verificado | el resumen publicado coincide campo a campo con la respuesta cruda guardada |
+| fecha de «última actualización» | 2026-10-06T18:21:07Z | cneos-fireball-api | verificado | es la fecha de la consulta guardada con la respuesta cruda (nunca «en vivo») |
+| criterio de «órbita no verificable» y errores mostrados | año < 2018 y < 0.45 kt | pena-asensio-2025 | verificado | coincide con la Tabla 4 guardada (data/calibracion/pena-asensio-2025-tabla4.json) |
+| órbitas y nubes calculadas | 256 nubes | cálculo propio; σ de pena-asensio-2025 | calculado | σ = mediana de la Tabla 4 / 0,6745 en todas; el resumen mostrado coincide con cada archivo |
+
 ## Cifras en los textos de la interfaz
 
 | Elemento | Valor | Fuente | Estado | Nota |
 | --- | --- | --- | --- | --- |
-| app.estado | 2 | src/i18n/es.json | convencion | número de fase del proyecto |
+| app.estado | 3 | src/i18n/es.json | convencion | número de fase del proyecto |
 | escena.descripcion | 3 | src/i18n/es.json | convencion | nombre del tipo de visualización («3D») |
 | escala.visual.tierra | 60 | src/i18n/es.json | convencion | convención visual: radio dibujado del marcador en escala visual (src/scene/tierra.ts) |
 | escala.visual.sistema-solar | 900 000 | src/i18n/es.json | convencion | convención visual: RADIO_VISUAL_METEOROIDE_AU ≈ 900 000 km (se comprueba abajo) |
@@ -678,4 +687,9 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | zona.resonancia-2-1 | 2 1 | src/i18n/es.json | convencion | nombre de la resonancia p:q |
 | desc.sistema-solar.pieza | 1 | src/i18n/es.json | convencion | notación («1σ») |
 | desc.regiones | 6 | src/i18n/es.json | convencion | nombre de la resonancia secular («ν6») |
+| cneos.evento.energia | 10 | src/i18n/es.json | convencion | unidad en que la API publica la energía radiada (10¹⁰ J) |
+| cneos.orbita.calculada | 68 16 84 | src/i18n/es.json | convencion | definición del rango mostrado (percentiles 16 y 84 de la nube) |
+| cneos.orbita.hiperbolicas | 1 | src/i18n/es.json | convencion | definición de órbita hiperbólica (excentricidad ≥ 1) |
+| cneos.orbita.metodo | 2025 | src/i18n/es.json | convencion | año de la cita (Peña-Asensio et al. 2025) |
+| cneos.orbita.no-verificable | 2025 | src/i18n/es.json | convencion | año de la cita (Peña-Asensio et al. 2025) |
 | radio visual del meteoroide | 897587 km | src/scene/sistema-solar.ts | convencion | el texto dice «~900 000 km» |

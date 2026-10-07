@@ -46,7 +46,7 @@ try {
   await page.getByRole('button', { name: 'Sistema solar' }).click();
   await page.waitForTimeout(2500);
   await captura(page, 'sistema-solar-park-forest');
-  await page.getByText('Filtros', { exact: true }).click();
+  await page.locator('#seccion-pedigri').getByText('Filtros', { exact: true }).click();
   await page.locator('#filtro-grupo').selectOption('L');
   await page.waitForTimeout(2500);
   await captura(page, 'filtro-condritas-l');

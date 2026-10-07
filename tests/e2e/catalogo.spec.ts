@@ -64,7 +64,7 @@ test('selección de pieza: lista, procedencia en dos capas, URL y vista solar', 
 test('filtros por clase y por confianza', async ({ page }) => {
   await page.goto('/?pieza=chelyabinsk');
   await listo(page);
-  await page.getByText('Filtros', { exact: true }).click();
+  await page.locator('#seccion-pedigri').getByText('Filtros', { exact: true }).click();
   await page.locator('#filtro-confianza').selectOption('ninguna');
   await expect(page.locator('#pieza-cuenta')).toContainText('4 de 25');
   // La pieza seleccionada sigue en la lista aunque quede fuera del filtro

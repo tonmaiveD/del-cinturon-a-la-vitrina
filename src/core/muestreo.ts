@@ -61,3 +61,34 @@ export function puntosForma(f: FormaOrbita, n: number): [number, number, number]
     ];
   });
 }
+
+/**
+ * Puntos de una cónica cualquiera (elipse o hipérbola) en el marco eclíptico (AU), por anomalía
+ * verdadera. Para la hipérbola solo se dibuja la rama con r ≤ rMax (abierta: `cerrada` = false).
+ */
+export function puntosConica(
+  f: FormaOrbita,
+  n: number,
+  rMax = 6,
+): { puntos: [number, number, number][]; cerrada: boolean } {
+  if (f.e < 1) return { puntos: puntosForma(f, n), cerrada: true };
+  const r = Math.PI / 180;
+  const p = f.a * (1 - f.e * f.e); // a < 0 y e > 1 → p > 0
+  // r(ν) = p / (1 + e cos ν) ≤ rMax  ⇔  cos ν ≥ (p / rMax − 1) / e
+  const nuMax = Math.acos(Math.max(-1, Math.min(1, (p / rMax - 1) / f.e)));
+  const [cO, sO] = [Math.cos(f.nodo * r), Math.sin(f.nodo * r)];
+  const [cw, sw] = [Math.cos(f.omega * r), Math.sin(f.omega * r)];
+  const [ci, si] = [Math.cos(f.i * r), Math.sin(f.i * r)];
+  const puntos = Array.from({ length: n }, (_, k): [number, number, number] => {
+    const nu = -nuMax + (2 * nuMax * k) / (n - 1);
+    const rad = p / (1 + f.e * Math.cos(nu));
+    const X = rad * Math.cos(nu);
+    const Y = rad * Math.sin(nu);
+    return [
+      (cO * cw - sO * sw * ci) * X + (-cO * sw - sO * cw * ci) * Y,
+      (sO * cw + cO * sw * ci) * X + (-sO * sw + cO * cw * ci) * Y,
+      sw * si * X + cw * si * Y,
+    ];
+  });
+  return { puntos, cerrada: false };
+}

@@ -4,14 +4,20 @@ import pedigri from '../data/pedigri/chelyabinsk.json';
 import { crearSecuencia, type Paso } from './camera/coreografia';
 import { t } from './i18n';
 import { PLANETAS } from './scene/cuerpos';
+import type { PanelCneos } from './cneos/panel';
+import type { OrbitaCneos } from './cneos/resumen';
 import { crearCatalogoSolar } from './scene/catalogo-solar';
+import { crearBolidosTierra, type BolidosTierra } from './scene/cneos-tierra';
+import { crearNubeCneos } from './scene/cneos-solar';
+import { ALTURA_INICIO_KM } from './scene/trayectoria-entrada';
 import { crearMarcadoresTierra } from './scene/catalogo-tierra';
 import { crearMotor, type NombreVista } from './scene/escena';
 import { crearVistaSistemaSolar, EXAGERACION, type DatosOrbitas } from './scene/sistema-solar';
 import { crearVistaTierra, type DatosBolido } from './scene/tierra';
 import type { Muestra } from './timeline/interpolacion';
 import { crearReloj, VELOCIDADES } from './timeline/reloj';
-import { escribirEstadoUrl, leerEstadoUrl } from './ui/estado-url';
+import { escribirEstadoUrl, leerEstadoUrl, type Modo } from './ui/estado-url';
+import type { ControlModo } from './ui/modo';
 import { coordenada, nombrePieza, type PanelPieza } from './ui/panel-pieza';
 
 type Clave = Parameters<typeof t>[0];
@@ -50,12 +56,13 @@ export interface DatosEscena {
   trayectoria: { helio_ecl_au: Muestra[]; geo_eqj_km: Muestra[] };
 }
 
-import { urlTextura } from './ui/recursos';
+import { cargarJson, urlTextura } from './ui/recursos';
 
 /** Arranca la parte 3D (se carga con import() dinámico desde main.ts). */
 export async function iniciar3D(
   datosPromesa: Promise<DatosEscena>,
   panelPromesa: Promise<PanelPieza>,
+  cneosCtl: { modo: ControlModo; asegurarCneos: () => Promise<PanelCneos> },
 ): Promise<void> {
   const $ = <T extends HTMLElement>(sel: string) => document.querySelector<T>(sel)!;
   const canvas = $<HTMLCanvasElement>('#escena');
@@ -106,7 +113,7 @@ export async function iniciar3D(
     // Chelyabinsk: encuadre del recorrido; resto: más amplio, para ver el cinturón y las regiones
     pos: new Vector3(0, 2.6, 2.2)
       .multiplyScalar(aspecto < 0.8 ? 1.9 : 1)
-      .multiplyScalar(panel.actual() === 'chelyabinsk' ? 1 : 1.7),
+      .multiplyScalar(modo === 'pedigri' && panel.actual() === 'chelyabinsk' ? 1 : 1.7),
     obj: ORIGEN.clone(),
   });
   function fijarCamara(vista: NombreVista, pos: Vector3, obj: Vector3): void {
@@ -128,6 +135,14 @@ export async function iniciar3D(
   });
   const reloj = crearReloj(impacto - 365 * DIA_MS, impacto, inicial.t ?? impacto);
   let vista: NombreVista = inicial.vista;
+  /** Modo de la escena: meteoritos con pedigrí o bólidos del CNEOS (se activa al cargar sus datos). */
+  let modo: Modo = 'pedigri';
+  let panelCneos: PanelCneos | undefined;
+  let bolidos: BolidosTierra | undefined;
+  let etiquetaBolido: ReturnType<typeof motor.etiqueta> | undefined;
+  /** Clones dibujados en la nube del bólido seleccionado (para la descripción). */
+  let nClonesCneos = 0;
+  let pedidoOrbita = 0;
   let escalaVisual = inicial.escalaVisual;
   fijarCamara('tierra', encuadreTierra().pos, ORIGEN);
 
@@ -141,6 +156,7 @@ export async function iniciar3D(
         camS: ReturnType<typeof motor.registrar>;
         cat: CapaCatalogo;
         etiquetaNube: ReturnType<typeof motor.etiqueta>;
+        nubeCneos: ReturnType<typeof crearNubeCneos>;
       }
     | undefined;
   function asegurarSolar() {
@@ -156,8 +172,13 @@ export async function iniciar3D(
       motor.etiqueta(t(`planeta.${p.clave}` as Clave), solar.mallas.get(p.clave)!);
     for (const a of cat.anclas) motor.etiqueta(t(`zona.${a.texto}` as Clave), a.objeto, 'region');
     const etiquetaNube = motor.etiqueta('', cat.anclaSeleccion, 'seleccion');
-    solarCreada = { solar, camS, cat, etiquetaNube };
+    const nubeCneos = crearNubeCneos();
+    nubeCneos.grupo.visible = false;
+    solar.escena.add(nubeCneos.grupo);
+    motor.etiqueta(t('etiqueta.nube.cneos'), nubeCneos.ancla, 'seleccion');
+    solarCreada = { solar, camS, cat, etiquetaNube, nubeCneos };
     aplicarPiezaSolar();
+    if (modo === 'cneos') aplicarModoSolar();
     cat.filtrar(panel.visibles());
     solarCreada?.solar.aplicarEscala(escalaVisual);
     solar.actualizarTiempo(new Date(reloj.estado().t));
@@ -190,7 +211,8 @@ export async function iniciar3D(
 
   function textoFecha(ms: number): string {
     const dias = (impacto - ms) / DIA_MS;
-    const chely = panel.actual() === 'chelyabinsk';
+    // Chelyabinsk y los bólidos del CNEOS tienen pico de brillo; las demás piezas, instante de referencia
+    const chely = modo === 'cneos' || panel.actual() === 'chelyabinsk';
     const rel =
       dias < 1 / 1440
         ? t(chely ? 'tiempo.en-impacto' : 'tiempo.en-referencia')
@@ -212,7 +234,25 @@ export async function iniciar3D(
       resonancias: catalogo.resonancias.map((r) => `${r.p}:${r.q}`).join(', '),
     });
   }
+  function descripcionCneos(): string {
+    const ev = panelCneos!.evento(panelCneos!.actual())!;
+    const fecha = formatoFecha(new Date(impacto));
+    if (vista === 'tierra')
+      return t('desc.tierra.cneos', {
+        fecha,
+        n: panelCneos!.visibles().size,
+        tray:
+          ev.v_ecef_kms && ev.alt_km !== undefined
+            ? t('desc.tierra.cneos.tray', { alto: ALTURA_INICIO_KM })
+            : '',
+        consultado: formatoFecha(new Date(panelCneos!.resumen.consultado)),
+      });
+    return nClonesCneos > 0
+      ? t('desc.sistema-solar.cneos', { fecha, n: nClonesCneos })
+      : t('desc.sistema-solar.cneos.sin', { fecha });
+  }
   function descripcionVista(): string {
+    if (modo === 'cneos' && panelCneos) return descripcionCneos();
     const p = piezaDe(panel.actual());
     if (p.id === 'chelyabinsk')
       return vista === 'tierra'
@@ -246,7 +286,9 @@ export async function iniciar3D(
     window.clearTimeout(urlPendiente);
     urlPendiente = window.setTimeout(() => {
       const q = escribirEstadoUrl({
+        modo,
         pieza: panel.actual(),
+        ...(modo === 'cneos' && panelCneos && { evento: panelCneos.actual() }),
         t: Math.round(reloj.estado().t / 1000) * 1000,
         vista,
         escalaVisual,
@@ -255,6 +297,8 @@ export async function iniciar3D(
     }, 400);
   }
 
+  /** El meteoroide y el marcador del bólido solo se dibujan para Chelyabinsk en modo pedigrí. */
+  const conMeteoroide = () => modo === 'pedigri' && panel.actual() === 'chelyabinsk';
   function refrescarVista(): void {
     if (vista === 'sistema-solar') asegurarSolar();
     motor.activar(vista);
@@ -264,9 +308,13 @@ export async function iniciar3D(
     solarCreada?.solar.aplicarEscala(escalaVisual);
     avisoEscala.textContent = escalaVisual
       ? t(
-          (vista === 'tierra' && panel.actual() !== 'chelyabinsk'
-            ? 'escala.visual.tierra.pieza'
-            : `escala.visual.${vista}`) as Clave,
+          (vista === 'tierra'
+            ? conMeteoroide()
+              ? 'escala.visual.tierra'
+              : 'escala.visual.tierra.pieza'
+            : conMeteoroide()
+              ? 'escala.visual.sistema-solar'
+              : 'escala.visual.sistema-solar.sin-meteoroide') as Clave,
           {
             sol: EXAGERACION.sol,
             planetas: EXAGERACION.planetas,
@@ -275,13 +323,16 @@ export async function iniciar3D(
         )
       : t('escala.real');
     avisoMarcadores.hidden = vista !== 'tierra';
+    avisoMarcadores.textContent = t(
+      modo === 'cneos' ? 'escala.marcadores.cneos' : 'escala.marcadores',
+    );
     if (!secuencia.activa()) descripcion.textContent = descripcionVista();
     guardarUrl();
   }
 
   // ---------- Selección de pieza ----------
   function aplicarPiezaSolar(): void {
-    if (!solarCreada) return;
+    if (!solarCreada || modo === 'cneos') return;
     const p = piezaDe(panel.actual());
     solarCreada.solar.mostrarBolido(p.id === 'chelyabinsk');
     solarCreada.cat.seleccionar(p);
@@ -301,6 +352,7 @@ export async function iniciar3D(
     reloj.fijarRango(impacto - 365 * DIA_MS, impacto, tInicial ?? impacto);
     bRecorrido.disabled = !chely;
     notaRecorrido.hidden = chely;
+    notaRecorrido.textContent = t('tiempo.solo-chelyabinsk');
     bFicha.hidden = !(chely && fichaDisponible);
     // La cámara terrestre apunta al bólido seleccionado (orientación del globo en ese instante)
     const dir = chely ? tierra.posicionBolido() : marcadores.posicionMundo(id);
@@ -310,6 +362,101 @@ export async function iniciar3D(
     }
     if (solarCreada) fijarCamara('sistema-solar', encuadreSolar().pos, ORIGEN);
     refrescarVista();
+  }
+
+  // ---------- Modo CNEOS ----------
+  /** Capas de la vista solar según el modo (catálogo de pedigrí o nube del bólido CNEOS). */
+  function aplicarModoSolar(): void {
+    if (!solarCreada) return;
+    const cneosActivo = modo === 'cneos';
+    solarCreada.cat.grupo.visible = !cneosActivo;
+    solarCreada.nubeCneos.grupo.visible = cneosActivo && nClonesCneos > 0;
+    if (cneosActivo) solarCreada.solar.mostrarBolido(false);
+    else aplicarPiezaSolar();
+  }
+
+  async function cargarNubeCneos(id: string): Promise<void> {
+    const pedido = ++pedidoOrbita;
+    const ev = panelCneos!.evento(id)!;
+    nClonesCneos = 0;
+    solarCreada?.nubeCneos.vaciar();
+    aplicarModoSolar();
+    if (!ev.orbita || 'error' in ev.orbita) return;
+    try {
+      const o = await cargarJson<OrbitaCneos>(`data/cneos/orbitas/${id}.json`);
+      if (pedido !== pedidoOrbita || 'error' in o) return; // llegó tarde o sin nube
+      nClonesCneos = o.clones.length;
+      asegurarSolar().nubeCneos.fijar(o.clones, o.nominal);
+      aplicarModoSolar();
+      if (!secuencia.activa()) descripcion.textContent = descripcionVista();
+    } catch {
+      if (pedido === pedidoOrbita) descripcion.textContent = t('error.datos');
+    }
+  }
+
+  function aplicarEvento(id: string, tInicial?: number): void {
+    const ev = panelCneos?.evento(id);
+    if (!ev || !bolidos) return;
+    impacto = Date.parse(ev.fecha);
+    bolidos.seleccionar(id);
+    etiquetaBolido!.element.textContent = t('etiqueta.cneos', {
+      fecha: new Intl.DateTimeFormat('es', { dateStyle: 'medium', timeZone: 'UTC' }).format(
+        new Date(ev.fecha),
+      ),
+    });
+    reloj.fijarRango(impacto - 365 * DIA_MS, impacto, tInicial ?? impacto);
+    bRecorrido.disabled = true;
+    notaRecorrido.hidden = false;
+    notaRecorrido.textContent = t('tiempo.solo-chelyabinsk.cneos');
+    bFicha.hidden = true;
+    const dir = bolidos.posicionMundo(id);
+    if (dir) {
+      dirBolido = dir.normalize();
+      if (vista === 'tierra') fijarCamara('tierra', encuadreTierra().pos, ORIGEN);
+    }
+    if (solarCreada) fijarCamara('sistema-solar', encuadreSolar().pos, ORIGEN);
+    void cargarNubeCneos(id);
+    refrescarVista();
+  }
+
+  async function cambiarModo(nuevo: Modo, tInicial?: number): Promise<void> {
+    if (secuencia.activa()) terminarSecuencia();
+    if (nuevo === 'pedigri') {
+      modo = 'pedigri';
+      bolidos?.mostrar(false);
+      marcadores.malla.visible = true;
+      aplicarModoSolar();
+      aplicarPieza(panel.actual(), tInicial);
+      return;
+    }
+    descripcion.textContent = t('cneos.cargando');
+    let pc: PanelCneos;
+    try {
+      pc = await cneosCtl.asegurarCneos();
+    } catch {
+      descripcion.textContent = t('error.datos');
+      return;
+    }
+    if (cneosCtl.modo.actual() !== 'cneos') return; // se volvió al otro modo mientras cargaba
+    modo = 'cneos';
+    if (!panelCneos) {
+      panelCneos = pc;
+      bolidos = crearBolidosTierra(tierra.globo, pc.resumen.eventos);
+      etiquetaBolido = motor.etiqueta('', bolidos.resalte, 'seleccion');
+      motor.activar(motor.activa()); // etiqueta nueva: visible solo en su vista
+      bolidos.filtrar(pc.visibles());
+      pc.alSeleccionar((id) => modo === 'cneos' && aplicarEvento(id));
+      pc.alFiltrar((ids) => {
+        bolidos!.filtrar(ids);
+        if (modo === 'cneos' && !secuencia.activa()) descripcion.textContent = descripcionVista();
+      });
+    }
+    bolidos!.mostrar(true);
+    marcadores.malla.visible = false;
+    marcadores.resalte.visible = false;
+    tierra.mostrarBolido(false);
+    aplicarModoSolar();
+    aplicarEvento(pc.actual(), tInicial);
   }
 
   reloj.alCambiar((e) => {
@@ -502,7 +649,7 @@ export async function iniciar3D(
     } else if (ev.key.toLowerCase() === 'i' && !enCampo) bImpacto.click();
   });
 
-  panel.alSeleccionar((id) => aplicarPieza(id));
+  panel.alSeleccionar((id) => modo === 'pedigri' && aplicarPieza(id));
   panel.alFiltrar((ids) => {
     marcadores.filtrar(ids);
     solarCreada?.cat.filtrar(ids);
@@ -510,6 +657,8 @@ export async function iniciar3D(
   });
   marcadores.filtrar(panel.visibles());
   aplicarPieza(panel.actual(), inicial.t);
+  cneosCtl.modo.alCambiar((m) => void cambiarModo(m));
+  if (cneosCtl.modo.actual() === 'cneos') void cambiarModo('cneos', inicial.t);
 
   // Selección con el ratón: clic (sin arrastre) sobre un marcador del globo
   const rayo = new Raycaster();
@@ -519,6 +668,12 @@ export async function iniciar3D(
     const r = canvas.getBoundingClientRect();
     ndc.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
     rayo.setFromCamera(ndc, camT.camara);
+    if (modo === 'cneos' && bolidos) {
+      const [hitB] = rayo.intersectObject(bolidos.malla);
+      return hitB?.instanceId !== undefined
+        ? bolidos.eventoDeInstancia(hitB.instanceId)
+        : undefined;
+    }
     const [hit] = rayo.intersectObject(marcadores.malla);
     return hit?.instanceId !== undefined ? marcadores.piezaDeInstancia(hit.instanceId) : undefined;
   }
@@ -532,7 +687,10 @@ export async function iniciar3D(
     inicioPuntero = undefined;
     if (!ini || Math.hypot(ev.clientX - ini.x, ev.clientY - ini.y) > 5) return;
     const id = piezaBajoPuntero(ev);
-    if (id && id !== panel.actual()) panel.seleccionar(id);
+    if (!id) return;
+    if (modo === 'cneos') {
+      if (id !== panelCneos?.actual()) panelCneos?.seleccionar(id);
+    } else if (id !== panel.actual()) panel.seleccionar(id);
   });
   canvas.addEventListener('pointermove', (ev) => {
     if (ev.buttons) return;
@@ -558,5 +716,6 @@ export async function iniciar3D(
     marcadores,
     camT,
     solar: () => solarCreada,
+    cneos: () => ({ modo, panel: panelCneos, bolidos, nClones: nClonesCneos }),
   };
 }

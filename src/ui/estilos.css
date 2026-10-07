@@ -468,3 +468,63 @@ summary:focus-visible {
     display: none;
   }
 }
+
+.modo {
+  margin-bottom: 8px;
+}
+.leyenda {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  font-size: 0.8rem;
+}
+.leyenda li {
+  margin-bottom: 3px;
+}
+.punto {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.lista-eventos {
+  list-style: none;
+  margin: 4px 0 8px;
+  padding: 0;
+}
+.lista-eventos .evento {
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--texto);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 4px 6px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  min-height: 32px;
+}
+.lista-eventos .evento:hover {
+  border-color: var(--borde);
+}
+.lista-eventos .evento[aria-pressed='true'] {
+  border-color: #6fd3ff;
+  background: rgba(111, 211, 255, 0.12);
+}
+.lista-eventos .evento:focus-visible {
+  outline: 2px solid #8ec5ff;
+  outline-offset: 2px;
+}
+.datos-orbita {
+  margin: 0 0 6px;
+  padding-left: 18px;
+  font-size: 0.8rem;
+}
+
+.boton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

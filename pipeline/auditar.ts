@@ -2,7 +2,15 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { KM_POR_AU } from '../src/core/marcos';
 import { RADIO_VISUAL_METEOROIDE_AU } from '../src/scene/sistema-solar';
-import { Fuentes, Meteorito, RegionEscape, RegionesOrigen } from '../src/schema';
+import type { OrbitaCneos, ResumenCneos } from '../src/cneos/resumen';
+import {
+  CalidadCneos,
+  Fuentes,
+  Meteorito,
+  RegionEscape,
+  RegionesOrigen,
+  RespuestaCneos,
+} from '../src/schema';
 import type { Catalogo } from '../src/ui/catalogo';
 import { auditar, informe } from './auditoria';
 
@@ -24,6 +32,12 @@ const filas = auditar({
   },
   cneos,
   radioVisualMeteoroideKm: RADIO_VISUAL_METEOROIDE_AU * KM_POR_AU,
+  bolidos: {
+    crudo: RespuestaCneos.parse(leer('data/cneos/eventos.json')),
+    resumen: leer<ResumenCneos>('public/data/cneos/eventos.json'),
+    tabla4: CalidadCneos.parse(leer('data/calibracion/pena-asensio-2025-tabla4.json')),
+    leerOrbita: (id) => leer<OrbitaCneos>(`public/data/cneos/orbitas/${id}.json`),
+  },
 });
 
 writeFileSync('docs/reportes/trazabilidad.md', informe(filas));

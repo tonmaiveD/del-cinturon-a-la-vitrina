@@ -13,7 +13,24 @@ la CI publica desde `main` si pasan las pruebas). El usuario sube los cambios co
 **Fase 3 en curso.** Decisión del usuario (2026-10-06): opción (a), los eventos del grupo de
 alto D_D se muestran **sin órbita** y con nota («no verificable de antemano»).
 
-**F3-E1 hecha (datos y órbitas).** Pendiente: OK del usuario para la E2 (escena).
+**F3-E1 (datos y órbitas) y F3-E2 (escena) hechas.** Siguiente: E3 (actualización diaria con
+GitHub Actions), pendiente de OK del usuario.
+
+**F3-E2, decisiones a recordar:**
+
+- Modo «Bólidos del CNEOS» (`src/ui/modo.ts`, `?modo=cneos&evento=<id>`): los datos
+  (`public/data/cneos/eventos.json`, ~240 kB) y `src/cneos/panel.ts` se cargan solo al entrar
+  en el modo (carga inicial intacta: listo 2,73 s; cambio de modo 1,45 s en 4G lento).
+- Globo: 887 eventos con ubicación (`src/scene/cneos-tierra.ts`), color por grupo de leyenda
+  (`COLOR_LEYENDA` en `src/cneos/formato.ts`, compartido con el panel), tamaño ∝ log(energía);
+  trayectoria de entrada solo con vector y altura (`src/scene/trayectoria-entrada.ts`, común con
+  Chelyabinsk). Vista solar: nube del evento (`src/scene/cneos-solar.ts`), también los clones
+  hiperbólicos (rama con r ≤ 6 AU, `puntosConica`).
+- Panel: «No son en tiempo real» + fecha de consulta; comparación de energía solo con
+  Chelyabinsk del mismo registro; avisos de órbita no verificable, no calculable, hiperbólica y
+  nube sesgada (> 10 % de clones descartados).
+- Auditoría ampliada (sección F): resumen = respuesta cruda, fecha de actualización = consulta,
+  criterio = Tabla 4, σ y resúmenes = archivos de órbita. Test: ningún texto dice «en vivo».
 
 - `npm run datos:cneos` = `datos:cneos:descargar` (respuesta cruda completa a
   `data/cneos/eventos.json`, solo se reescribe si cambian los datos) + `datos:cneos:orbitas`

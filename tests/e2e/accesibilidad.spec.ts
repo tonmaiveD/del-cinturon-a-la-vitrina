@@ -20,6 +20,16 @@ test('sin violaciones WCAG 2.1 AA en la página principal y en el diálogo de fu
   expect(dialogo.violations.map((v) => `${v.id}: ${v.nodes.length}`)).toEqual([]);
 });
 
+test('sin violaciones WCAG 2.1 AA en el modo CNEOS (con filtros y detalle abiertos)', async ({
+  page,
+}) => {
+  await page.goto('/?modo=cneos');
+  await expect(page.locator('#cneos-evento')).toContainText('Bólido del');
+  await page.locator('#seccion-cneos').getByText('Filtros', { exact: true }).click();
+  const r = await auditar(page).analyze();
+  expect(r.violations.map((v) => `${v.id}: ${v.nodes.length}`)).toEqual([]);
+});
+
 test('todos los controles son alcanzables con el teclado y el diálogo devuelve el foco', async ({
   page,
 }) => {

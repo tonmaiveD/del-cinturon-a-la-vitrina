@@ -121,6 +121,7 @@ function estadisticas(o: OrbitaCalculada) {
   const q = o.clones.map((c) => c[0]! * (1 - c[1]!));
   return {
     n: o.clones.length,
+    descartados: o.metodo.clones_fallidos,
     hiperbolicas: o.clones.length - el.length,
     a: percentiles(el.map((c) => c[0]!)),
     e: percentiles(o.clones.map((c) => c[1]!)),

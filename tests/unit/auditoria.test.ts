@@ -5,6 +5,8 @@ import { KM_POR_AU } from '../../src/core/marcos';
 import { RADIO_VISUAL_METEOROIDE_AU } from '../../src/scene/sistema-solar';
 import { Fuentes, Meteorito, RegionEscape, RegionesOrigen } from '../../src/schema';
 import type { Catalogo } from '../../src/ui/catalogo';
+import type { OrbitaCneos, ResumenCneos } from '../../src/cneos/resumen';
+import { CalidadCneos, RespuestaCneos } from '../../src/schema';
 
 const leer = <T = unknown>(r: string): T => JSON.parse(readFileSync(r, 'utf8')) as T;
 const entrada = (): EntradaAuditoria => {
@@ -25,6 +27,12 @@ const entrada = (): EntradaAuditoria => {
     },
     cneos,
     radioVisualMeteoroideKm: RADIO_VISUAL_METEOROIDE_AU * KM_POR_AU,
+    bolidos: {
+      crudo: RespuestaCneos.parse(leer('data/cneos/eventos.json')),
+      resumen: leer<ResumenCneos>('public/data/cneos/eventos.json'),
+      tabla4: CalidadCneos.parse(leer('data/calibracion/pena-asensio-2025-tabla4.json')),
+      leerOrbita: (id) => leer<OrbitaCneos>(`public/data/cneos/orbitas/${id}.json`),
+    },
   };
 };
 const errores = (e: EntradaAuditoria) => auditar(e).filter((f) => f.estado === 'error');
@@ -67,5 +75,29 @@ describe('auditoría de trazabilidad', () => {
     const a = pieza(e, 'chelyabinsk').asociacion;
     if ('confianza' in a) a.confianza = 'alto';
     expect(errores(e).map((f) => f.elemento)).toEqual(['asociación con progenitor']);
+  });
+
+  it('CNEOS: detecta un evento alterado, una fecha de actualización falsa y una σ distinta', () => {
+    const e1 = entrada();
+    e1.bolidos!.resumen.eventos[0]!.impacto_kt *= 2;
+    expect(errores(e1).map((f) => f.elemento)).toEqual([
+      'eventos mostrados (fecha, posición, altura, velocidad, energías, calidad)',
+    ]);
+    const e2 = entrada();
+    e2.bolidos!.resumen.consultado = new Date().toISOString();
+    expect(errores(e2).map((f) => f.elemento)).toEqual(['fecha de «última actualización»']);
+    const e3 = entrada();
+    const leerOriginal = e3.bolidos!.leerOrbita;
+    e3.bolidos!.leerOrbita = (id) => {
+      const o = leerOriginal(id);
+      if (!('error' in o)) o.metodo.sigma.v_kms *= 2;
+      return o;
+    };
+    expect(errores(e3).map((f) => f.elemento)).toEqual(['órbitas y nubes calculadas']);
+  });
+
+  it('ningún texto de la interfaz dice «en vivo» (los datos del CNEOS no son en tiempo real)', () => {
+    for (const [clave, texto] of Object.entries(entrada().textos))
+      expect(texto, clave).not.toMatch(/en vivo|live/i);
   });
 });

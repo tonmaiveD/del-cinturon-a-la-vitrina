@@ -22,11 +22,12 @@ import {
   TextureLoader,
   Vector3,
 } from 'three';
-import { ecefAEqj, eqjAEcef, estadoPuntoTerrestre, KM_POR_AU } from '../core/marcos';
-import { escala, norma, punto, suma, unitario, type Vec3 } from '../core/vector';
+import { ecefAEqj } from '../core/marcos';
+import type { Vec3 } from '../core/vector';
 import { indiceInferior, interpolar, type Muestra } from '../timeline/interpolacion';
 import { aThree } from './coordenadas';
 import { RADIO_TIERRA_KM } from './cuerpos';
+import { localGlobo, trayectoriaEntradaEcefKm } from './trayectoria-entrada';
 
 export interface DatosBolido {
   fecha: Date;
@@ -35,9 +36,6 @@ export interface DatosBolido {
   alturaKm: number;
   vEcefKmS: Vec3;
 }
-
-/** Altura de inicio dibujada para la trayectoria de entrada (km): solo referencia visual. */
-const ALTURA_INICIO_KM = 100;
 
 const vertexAtmosfera = /* glsl */ `
   varying vec3 vNormal;
@@ -140,16 +138,14 @@ export function crearVistaTierra(
 
   // Bólido: punto del pico de brillo y trayectoria de entrada, en ECEF (hijos del globo)
   const kmAUnidad = 1 / RADIO_TIERRA_KM;
-  const p = estadoPuntoTerrestre(bolido.latGrados, bolido.lonGrados, bolido.alturaKm * 1000, t);
-  const pEcefKm = escala(eqjAEcef(p.r, t), KM_POR_AU);
-  const subida = unitario(escala(bolido.vEcefKmS, -1));
-  // Distancia s a lo largo de la subida hasta ALTURA_INICIO_KM sobre el radio local
-  const radioLocal = norma(pEcefKm) - bolido.alturaKm;
-  const objetivo = radioLocal + ALTURA_INICIO_KM;
-  const b = punto(pEcefKm, subida);
-  const s = -b + Math.sqrt(b * b - (punto(pEcefKm, pEcefKm) - objetivo * objetivo));
-  const inicio = suma(pEcefKm, escala(subida, s));
-  const local = (v: Vec3) => new Vector3(v[0] * kmAUnidad, v[2] * kmAUnidad, -v[1] * kmAUnidad);
+  const { inicio, pico: pEcefKm } = trayectoriaEntradaEcefKm(
+    bolido.latGrados,
+    bolido.lonGrados,
+    bolido.alturaKm,
+    bolido.vEcefKmS,
+    t,
+  );
+  const local = localGlobo;
 
   const trayectoria = new Line(
     new BufferGeometry().setFromPoints([local(inicio), local(pEcefKm)]),

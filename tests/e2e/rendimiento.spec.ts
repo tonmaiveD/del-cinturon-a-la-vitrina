@@ -63,3 +63,28 @@ test('fps con las 25 nubes de órbitas (vista solar, nivel de detalle cercano)',
   // móvil se mide en dispositivo real
   expect(fps).toBeGreaterThan(0);
 });
+
+test('cambio al modo CNEOS en 4G lento (datos descargados bajo demanda)', async ({
+  page,
+  browserName,
+}, info) => {
+  test.skip(browserName !== 'chromium', 'la emulación de red usa CDP');
+  await page.goto('/');
+  await page.waitForFunction(() => (window as unknown as { __listo?: number }).__listo);
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send('Network.enable');
+  await cdp.send('Network.emulateNetworkConditions', {
+    offline: false,
+    latency: 150,
+    downloadThroughput: (1.6 * 1024 * 1024) / 8,
+    uploadThroughput: (750 * 1024) / 8,
+  });
+  await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 });
+  const t0 = Date.now();
+  await page.getByRole('button', { name: 'Bólidos del CNEOS' }).click();
+  await page.locator('#cneos-evento').getByText('Bólido del').waitFor({ timeout: 30_000 });
+  const ms = Date.now() - t0;
+  info.annotations.push({ type: 'modo CNEOS', description: `${ms} ms` });
+  console.log(`[${info.project.name}] modo CNEOS listo en ${ms} ms`);
+  expect(ms).toBeLessThan(3000);
+});
