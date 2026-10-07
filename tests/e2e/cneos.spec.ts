@@ -1,4 +1,12 @@
+import { readFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
+
+/** Eventos con ubicación en los datos publicados (cambia con cada actualización diaria). */
+const conUbicacion = (
+  JSON.parse(readFileSync('public/data/cneos/eventos.json', 'utf8')) as {
+    eventos: { lat?: number }[];
+  }
+).eventos.filter((e) => e.lat !== undefined).length;
 
 const listo = (page: Page) =>
   page.waitForFunction(() => (window as unknown as { __listo?: number }).__listo !== undefined);
@@ -65,10 +73,10 @@ test('modo CNEOS: un evento antiguo de baja energía no tiene órbita y lo expli
 test('modo CNEOS: filtros y vuelta al modo pedigrí', async ({ page }) => {
   await page.goto('/?modo=cneos');
   await listo(page);
-  await expect(page.locator('#cneos-cuenta')).toContainText('de 887');
+  await expect(page.locator('#cneos-cuenta')).toContainText(`de ${conUbicacion}`);
   await page.locator('#seccion-cneos').getByText('Filtros', { exact: true }).click();
   await page.locator('#cneos-energia').selectOption('10');
-  await expect(page.locator('#cneos-cuenta')).not.toContainText(/^887 /);
+  await expect(page.locator('#cneos-cuenta')).not.toContainText(new RegExp(`^${conUbicacion} `));
   await page.getByRole('button', { name: 'Meteoritos con pedigrí' }).click();
   await expect(page.locator('#seccion-pedigri')).toBeVisible();
   await expect(page).toHaveURL(/pieza=/);

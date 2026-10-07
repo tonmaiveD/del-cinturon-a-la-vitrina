@@ -19,6 +19,13 @@ región de escape y la asociación propuesta con su cuerpo progenitor.
 - Validaciones científicas: [`docs/reportes/chelyabinsk.md`](docs/reportes/chelyabinsk.md) y
   [`docs/reportes/cruzada.md`](docs/reportes/cruzada.md).
 
+## Actualización de los datos del CNEOS
+
+Un workflow diario de GitHub Actions (`.github/workflows/cneos-diario.yml`) descarga la API
+Fireball del CNEOS, calcula las órbitas de los eventos nuevos, valida el dataset, pasa las
+pruebas y la auditoría, y solo entonces guarda los datos y publica. Los datos no son en tiempo
+real: la web muestra la fecha de la última actualización.
+
 ## Desarrollo
 
 ```
