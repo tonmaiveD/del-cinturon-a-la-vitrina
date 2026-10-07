@@ -1,0 +1,71 @@
+name: Actualización diaria del CNEOS
+# Descarga la API Fireball; si hay cambios, calcula solo las órbitas nuevas, valida y audita, y
+# solo entonces guarda los datos y llama a la CI completa (e2e + publicación). Si algo falla, no
+# se guarda ni se publica nada. Los datos del CNEOS no son en tiempo real: la web muestra la
+# fecha de la última consulta que trajo cambios.
+on:
+  schedule:
+    - cron: '30 7 * * *' # todos los días, 07:30 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: cneos-diario
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: write
+    outputs:
+      cambio: ${{ steps.guardar.outputs.cambio }}
+      ref: ${{ steps.guardar.outputs.ref }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Descargar la API del CNEOS
+        run: npm run datos:cneos:descargar
+      - name: Órbitas nuevas, catálogo y reporte (solo si cambiaron los datos)
+        run: |
+          if git diff --quiet -- data/cneos/eventos.json; then
+            echo "Sin cambios en el CNEOS."
+          else
+            npm run datos:cneos:orbitas
+            npm run reporte:cneos
+          fi
+      # Antes de guardar: esquema, tests unitarios y build (incluye la auditoría de trazabilidad)
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - id: guardar
+        name: Guardar los datos nuevos
+        run: |
+          if git diff --quiet; then
+            echo "cambio=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/cneos public/data/cneos docs/reportes/cneos.md docs/reportes/trazabilidad.md
+          git commit -m "Datos del CNEOS actualizados ($(date -u +%Y-%m-%d))"
+          git push origin HEAD:main
+          echo "cambio=true" >> "$GITHUB_OUTPUT"
+          echo "ref=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  verificar-y-publicar:
+    needs: actualizar
+    if: needs.actualizar.outputs.cambio == 'true'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ needs.actualizar.outputs.ref }}
