@@ -14,3 +14,13 @@ Generado por `npm run datos:trayectorias`. Cada trayectoria parte del radiante g
 | pribram | a | granvik-brown-2018 | 0.0001 | 0.05 | 0.08 | 0.29 | sí |
 | tagish-lake | a | granvik-brown-2018 | 0.0007 | 0.02 | 0.01 | -0.01 | sí |
 | villalbeto-de-la-pena | a | granvik-brown-2018 | 0.0011 | 0.00 | -0.02 | -0.03 | sí |
+| bunburra-rockhole | b | granvik-brown-2018 | 0.0008 | -0.32 | 0.24 | 0.18 | sí |
+| buzzard-coulee | b | granvik-brown-2018 | 0.0006 | -0.05 | -0.01 | 0.01 | sí |
+| grimsby | b | granvik-brown-2018 | 0.0005 | 0.02 | -0.02 | 0.01 | sí |
+| jesenice | b | granvik-brown-2018 | 0.0004 | 0.02 | 0.00 | 0.00 | sí |
+| kosice | b | granvik-brown-2018 | 0.0005 | 0.02 | 0.00 | 0.01 | sí |
+| krizevci | b | granvik-brown-2018 | 0.0002 | 0.10 | 0.07 | 0.01 | sí |
+| maribo | b | granvik-brown-2018 | 0.0017 | 0.02 | 0.04 | -0.02 | sí |
+| mason-gully | b | granvik-brown-2018 | 0.0005 | 0.46 | 0.45 | -0.02 | sí |
+| novato | b | granvik-brown-2018 | 0.0006 | 0.00 | -0.02 | 0.02 | sí |
+| sutters-mill | b | granvik-brown-2018 | 0.0019 | 0.02 | -0.01 | 0.01 | sí |

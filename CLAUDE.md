@@ -46,7 +46,7 @@ desactiva los workflows programados tras 60 días sin actividad en el repositori
   criterio = Tabla 4, σ y resúmenes = archivos de órbita. Test: ningún texto dice «en vivo».
 
 **Etapa extra: recorrido animado de las 25 piezas con pedigrí, por lotes** (decisión del
-2026-10-08). Lote A hecho; siguientes: B (10) y C (4: Almahata Sitta —partir del estado de JPL,
+2026-10-08). Lotes A y B hechos (B: D_D ≤ 0,0019); siguiente: C (4: Almahata Sitta —partir del estado de JPL,
 no del radiante—, Annama, Žďár, Ejby), cada uno con OK del usuario. `npm run datos:trayectorias -- <a|b|c>`
 (`pipeline/trayectorias-pedigri.ts`, `LOTES`): estado desde el radiante geocéntrico y v_g de
 Granvik & Brown con **altura convencional de 100 km** (la fuente no la publica; declarada en el

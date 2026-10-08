@@ -52,3 +52,14 @@ test('al volver a Chelyabinsk se restaura su trayectoria del CNEOS', async ({ pa
   await expect(page.locator('#descripcion')).toContainText('trayectoria de entrada');
   await expect(page.getByRole('button', { name: 'Ver el recorrido' })).toBeEnabled();
 });
+
+test('todas las piezas con trayectoria habilitan su recorrido', async ({ page }) => {
+  test.setTimeout(180_000);
+  await page.goto('/');
+  await listo(page);
+  for (const id of indice) {
+    await page.locator('#pieza').selectOption(id);
+    await expect(page.getByRole('button', { name: 'Ver el recorrido' }), id).toBeEnabled();
+    await expect(page.locator('#descripcion'), id).toContainText('altura convencional');
+  }
+});
