@@ -59,3 +59,12 @@ npm run reporte:cneos
 npm test && npm run build && npm run e2e && npm run e2e:rendimiento
 npm run cierre:fase-3          # video y capturas de este cierre
 ```
+
+## Actualización posterior al cierre (2026-10-08)
+
+- **Resuelta la deuda «recorrido animado solo para Chelyabinsk»**: las 25 piezas con pedigrí
+  tienen recorrido (lotes A, B y C). Detalle y validación en `docs/reportes/trayectorias.md`.
+- **Prueba e2e intermitente identificada y corregida**: la de accesibilidad con teclado se
+  quedaba sin tiempo en GitHub (ahora 90 s), y otra pulsaba un botón antes de cargar la escena.
+- **Retiradas dos copias del video de este cierre** (`fase-3-cneos 2.webm`, `fase-3-cneos 3.webm`)
+  creadas por la sincronización de iCloud; el video válido es `fase-3-cneos.webm`.

@@ -5,133 +5,166 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 
 ## Retomar aquí
 
-**Estado:** Fase 2 cerrada y confirmada (2026-10-06). Publicado en
-https://tonmaived.github.io/del-cinturon-a-la-vitrina/ (repo público `tonmaiveD/del-cinturon-a-la-vitrina`;
-la CI publica desde `main` si pasan las pruebas). El usuario sube los cambios con GitHub Desktop
-("Push origin"); no hay `gh` ni credenciales de git en la terminal. Móvil real: «se ve bien».
+### Estado (2026-10-08)
 
-**Fase 3 cerrada** (`docs/cierres/fase-3.md`, 2026-10-08), pendiente de confirmación del
-usuario para empezar la Fase 4 (colección y fichas con la API de Claude en build). Decisión del
-usuario (2026-10-06): opción (a), los eventos del grupo de alto D_D se muestran **sin órbita** y
-con nota («no verificable de antemano»). Cierre: detalle del evento al principio del panel y
-energías tal como las publica el CNEOS (sin redondear); `npm run cierre:fase-3`.
+- **Fases 0–3 cerradas** (`docs/cierres/fase-1.md`, `fase-2.md`, `fase-3.md`) y **etapa extra
+  de recorridos animados** hecha: las 25 piezas con pedigrí tienen recorrido. La Fase 3 está
+  pendiente de confirmación explícita del usuario (pidió antes el plan de la Fase 4).
+- Publicado en https://tonmaived.github.io/del-cinturon-a-la-vitrina/ (repo público
+  `tonmaiveD/del-cinturon-a-la-vitrina`). La CI (`ci.yml`) publica desde `main` si pasan
+  lint, tests, build (con validación y auditoría) y e2e. Actualización diaria del CNEOS
+  automática (`cneos-diario.yml`, 07:30 UTC; GitHub puede retrasarla horas).
+- Verificación al cierre: 234 tests unitarios, 41 e2e (escritorio + móvil), axe 0 violaciones,
+  auditoría 549 datos / 0 errores, carga inicial 2,7–2,9 s en 4G lento, modo CNEOS 1,5–2,2 s.
 
-**F3-E3:** `.github/workflows/cneos-diario.yml` (07:30 UTC y manual): descarga; si cambió
-`data/cneos/eventos.json`, órbitas incrementales + reporte; lint, tests y build (con auditoría)
-**antes** de guardar; commit como `github-actions[bot]` (nunca el email del usuario) y push a
-`main`; luego llama a `ci.yml` (`workflow_call` con `ref` del commit nuevo: un push con
-GITHUB_TOKEN no dispara workflows) para e2e y publicación. Si algo falla no se guarda ni publica
-nada (p. ej. si el CNEOS revisa Chelyabinsk, falla el test de coherencia con la Fase 1 y se para).
-Ensayo local del 2026-10-07: 1 evento nuevo y 1 revisado (vector añadido), 2 órbitas en 6 s.
-Primera ejecución real (2026-10-07, manual): OK; commit `2ead4d4` del bot, 1074 eventos.
-**El bot hace commits en `main`: antes de trabajar en local, `git pull --ff-only origin main`**
-(y el usuario, «Fetch/Pull origin» en GitHub Desktop antes de «Push origin»).
-La «última actualización» mostrada es la de la última consulta con cambios. Riesgo: GitHub
-desactiva los workflows programados tras 60 días sin actividad en el repositorio.
+### Siguiente: Fase 4 (colección y fichas con la API de Claude)
 
-**F3-E2, decisiones a recordar:**
+Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan detallado.
 
-- Modo «Bólidos del CNEOS» (`src/ui/modo.ts`, `?modo=cneos&evento=<id>`): los datos
-  (`public/data/cneos/eventos.json`, ~240 kB) y `src/cneos/panel.ts` se cargan solo al entrar
-  en el modo (carga inicial intacta: listo 2,73 s; cambio de modo 1,45 s en 4G lento).
-- Globo: 887 eventos con ubicación (`src/scene/cneos-tierra.ts`), color por grupo de leyenda
-  (`COLOR_LEYENDA` en `src/cneos/formato.ts`, compartido con el panel), tamaño ∝ log(energía);
-  trayectoria de entrada solo con vector y altura (`src/scene/trayectoria-entrada.ts`, común con
-  Chelyabinsk). Vista solar: nube del evento (`src/scene/cneos-solar.ts`), también los clones
-  hiperbólicos (rama con r ≤ 6 AU, `puntosConica`).
-- Panel: «No son en tiempo real» + fecha de consulta; comparación de energía solo con
-  Chelyabinsk del mismo registro; avisos de órbita no verificable, no calculable, hiperbólica y
-  nube sesgada (> 10 % de clones descartados).
-- Auditoría ampliada (sección F): resumen = respuesta cruda, fecha de actualización = consulta,
-  criterio = Tabla 4, σ y resúmenes = archivos de órbita. Test: ningún texto dice «en vivo».
+1. **Colección del usuario**: él aporta la lista de sus piezas (nombre, masa del ejemplar,
+   número de catálogo, procedencia, fotos opcionales; formato planilla/CSV o JSON con esquema
+   zod en `data/coleccion/`). Validación de nombres contra MetBull (bloqueado por anti-bots: no
+   se elude) con respaldo en NASA Meteorite Landings. Si la pieza es de un meteorito con órbita,
+   se enlaza con su recorrido; si no, «nube de procedencia» por clase (capa de asociación con
+   progenitor ya existente), nunca una órbita inventada.
+2. **Fichas narrativas** generadas con la API de Claude **en build** (nunca en el navegador;
+   clave como secreto de GitHub, principio 5), estado `borrador` hasta revisión del usuario;
+   el control de cifras (`cifrasFueraDeMarcadores`, auditoría) se aplica igual. Antes de
+   generar, calcular el coste con la tarifa vigente (skill `claude-api`), no de memoria.
+3. **Decisiones que necesita el usuario antes de empezar:** (a) colección **pública o
+   privada** (hoy el repo es público: todo lo subido es visible; si privada → Cloudflare Pages o
+   Netlify con repo privado y, si hace falta, acceso con contraseña); (b) la lista de piezas;
+   (c) crear la API key de Anthropic y guardarla como secreto (pasos a darle en su momento).
+4. Esfuerzo estimado: ~2 sesiones largas (colección; fichas), por etapas con OK.
 
-**Etapa extra: recorrido animado de las 25 piezas con pedigrí, por lotes** (decisión del
-2026-10-08). **Las 25 piezas tienen recorrido animado.** Almahata Sitta (opción A del usuario, 2026-10-08): parte del vector de estado de JPL (27 h antes, `DESDE_JPL`, `calcularDesdeJpl`), llega a 63 km sobre 20,84° N 31,72° E y se valida **solo con D_D** (0,00028; z = 17, 32, 5,7σ porque la σ formal de JPL es menor que la precisión de astronomy-engine), explicado en la descripción de la escena, el reporte y la auditoría. Lote C original (4: Almahata Sitta —partir del estado de JPL,
-no del radiante—, Annama, Žďár, Ejby), cada uno con OK del usuario. `npm run datos:trayectorias -- <a|b|c>`
-(`pipeline/trayectorias-pedigri.ts`, `LOTES`): estado desde el radiante geocéntrico y v_g de
-Granvik & Brown con **altura convencional de 100 km** (la fuente no la publica; declarada en el
-archivo y en la UI), N cuerpos 365 d hacia atrás (`pipeline/trayectoria-comun.ts`, común con
-Chelyabinsk). Criterio de parada: D_D > 0,1 o |z| > 3 frente a la órbita principal (lote A:
-D_D ≤ 0,0011). Salidas: `public/data/trayectorias/<id>.json` + `indice.json`,
-`docs/reportes/trayectorias.md`. Escena: `tierra.fijarBolido` y `solar.fijarTrayectoria`
-(intercambiables), carga por pieza en `app3d.ts` (`cargarTrayectoriaPieza`); durante el recorrido
-solo se ve la nube de la pieza. Auditoría sección G. Prueba intermitente identificada: teclado
-en accesibilidad (timeout en CI) → 90 s.
+### Pendientes del usuario (sin urgencia)
 
-**F3-E1 (datos y órbitas):**
+- **Ficha de Chelyabinsk** (`content/fichas/chelyabinsk.md`, `borrador`): versión legible en
+  `revision/ficha-chelyabinsk-para-revisar.md` (regenerar con `.trabajo/ficha-legible.ts` si
+  cambia). Respuesta esperada: «apruebo» + nombre del revisor (→ `estado: aprobada`,
+  `revisado_por`, `fecha_revision`) o cambios en sus palabras.
+- **MetBull**: PDF de cada registro en `revision/metbull/` (instrucciones dadas: buscar en
+  https://www.lpi.usra.edu/meteor/metbull.php, Archivo → Imprimir → Guardar como PDF). Con ellos:
+  nombres oficiales (hoy los 25 «pendiente»), masa recuperada y punto de caída. Chelyabinsk: 57165.
+- **Decidir** si se añaden caídas posteriores a 2016 (Hamburg, Flensburg, Novo Mesto,
+  Winchcombe, Ribbeck…) desde sus artículos originales; recomendado después de la Fase 4.
+- **Rutina de publicación**: «Fetch origin» (y «Pull origin» si aparece) antes de «Push origin»
+  en GitHub Desktop, porque el bot del CNEOS hace commits en `main`.
 
-- `npm run datos:cneos` = `datos:cneos:descargar` (respuesta cruda completa a
-  `data/cneos/eventos.json`, solo se reescribe si cambian los datos) + `datos:cneos:orbitas`
-  (`public/data/cneos/eventos.json` resumen + `public/data/cneos/orbitas/<id>.json`, 200 clones,
-  incremental por huella; `CNEOS_FRAGMENTO=k/n` reparte el cálculo en procesos paralelos y una
-  pasada final sin la variable escribe el resumen). Primera pasada: ~45 min en 7 procesos.
-- `src/cneos/eventos.ts`: `leerEventos`, `grupoBajoDd` (año ≥ 2018 o E_i ≥ 0,45 kt, Tabla 4
-  de Peña-Asensio 2025, guardada en `data/calibracion/pena-asensio-2025-tabla4.json`), clases
-  `orbita | orbita-no-fiable | sin-altura | sin-vector | sin-ubicacion`.
-- Con los 18 calibrados la regla es conservadora: 0 falsos positivos; Košice y Baird Bay quedan
-  «sin órbita» pese a tener D_D bajo (por eso la nota dice «no verificable», no «errónea»).
-- Al 2026-10-06: 258 con órbita (2 no calculables: la retropropagación no sale de la influencia
-  terrestre en 60 días; se guardan con `error`), 100 no fiables, 3 sin altura, 526 sin vector,
-  186 sin ubicación. 5 nominales hiperbólicas; 10 eventos con > 10 % de clones descartados (nube
-  posiblemente sesgada: avisar en la UI). Reporte: `npm run reporte:cneos` → `docs/reportes/cneos.md`.
+### Decisiones del usuario (no reabrir)
 
-**Borovička et al. 2013 (Nature):** PDF aportado por el usuario el 2026-10-07 en `revision/`
-(carpeta local fuera de git; no redistribuir). Tabla 2 transcrita en `data/pedigri/chelyabinsk.json`
-como órbita `borovicka-2013-nature`: osculadora **60 días antes del impacto** (no pre-atmosférica),
-σ «±» sin nivel declarado. Sustituye a la cita indirecta vía Peña-Asensio 2025. Validación de
-Chelyabinsk y verificación cruzada regeneradas: aprobadas (D_D 0,016 frente a la órbita CNEOS).
+- 2026-10-01: proyecto en `~/Documents/del-cinturon-a-la-vitrina`; todo en esta carpeta.
+- 2026-10-05: Almahata Sitta → órbita principal JPL (telescópica); incertidumbres de Granvik &
+  Brown solo documentadas, no infladas.
+- 2026-10-06: hosting GitHub Pages, repo público; licencias MIT (código) y CC BY 4.0 (datos y
+  textos); email de commits apaec@yahoo.com (historial reescrito; gmail fuera de GitHub).
+- 2026-10-06: CNEOS grupo de alto D_D → **sin órbita** con nota (opción a).
+- 2026-10-07: el PDF de Borovička 2013 se usa (en `revision/`, sin redistribuir).
+- 2026-10-08: recorridos de las 25 piezas por lotes; **altura convencional de 100 km**
+  declarada; Almahata Sitta desde el estado de JPL con **criterio solo D_D** explicado en
+  pantalla (opción A). Conservar el respaldo con el gmail (`.trabajo/`, ver abajo).
 
-**Push rechazado con «Internal Server Error» (2026-10-07):** GitHub rechazaba los push de commits
-firmados con apaec@yahoo.com tras cambios en la privacidad de emails de la cuenta; se resolvió
-cuando el usuario añadió apaec@yahoo.com a su cuenta de GitHub. Si reaparece, revisar
-https://github.com/settings/emails antes de sospechar del contenido.
+### Deuda técnica
 
-**Respaldo privado:** `.trabajo/RESPALDO-historial-git-con-gmail-2026-10-06.bundle` (historial
-anterior a la reescritura de email; contiene el gmail; no subir nunca). Ver
-`.trabajo/LEEME-RESPALDO-HISTORIAL.md`. Se conserva por decisión del usuario.
+- Panel en móvil: deja poco espacio a la escena (pestañas u hoja deslizable).
+- Módulo 3D > 500 kB (aviso de Vite): imports más finos de Three o worker de efemérides.
+- Recorrido animado de los bólidos del CNEOS: barato ahora (escena generalizada; las órbitas
+  guardan la anomalía media); no hecho.
+- No se modela la deceleración atmosférica antes del pico/punto de referencia.
+- Incertidumbres de órbitas publicadas como gaussianas independientes (sin covarianza);
+  clones de Chelyabinsk movidos con Kepler (solo la nominal con N cuerpos).
+- Regiones de escape aproximadas (Hungaria/Phocaea sin excentricidad; ν6 y JFC sin geometría).
+- fps en GPU real sin cifra (solo «se ve bien» en un teléfono); navegador sin GPU: 18,7 fps
+  con catálogo, 24,7 sin él.
+- Pruebas e2e lentas en GitHub: reintento 1 y reporter `github` (anotaciones públicas
+  legibles con la API de check-runs) para identificar inestables.
 
-**Licencias:** código MIT (`LICENSE`); datos, reportes y textos CC BY 4.0 (`data/LICENCIA.md`).
-Textura Blue Marble: directrices de medios de NASA (uso educativo e informativo, reconocer a
-NASA), verificado el 2026-10-05.
+### Riesgos
 
-**Auditoría de trazabilidad** (`npm run auditoria`, parte del build): contrasta cada dato que
-muestra la interfaz con `data/` y falla ante discrepancias, pendientes mostrados como firmes o
-cifras escritas a mano en `src/i18n/es.json` (lista de excepciones con motivo en
-`CIFRAS_PERMITIDAS`, `pipeline/auditoria.ts`). Informe: `docs/reportes/trazabilidad.md`. Si se
-añade texto con una cifra, pasarla como parámetro desde el dataset o justificarla ahí.
+- Cambios de formato o revisiones en la API del CNEOS (mitigado: se detiene sin publicar).
+- GitHub desactiva los workflows programados tras 60 días sin actividad.
+- Lectura sensacionalista de las 5 órbitas hiperbólicas (llevan aviso).
+- Criterio de fiabilidad del CNEOS basado en 18 eventos calibrados.
+- Rendimiento en móviles de gama baja sin medir.
+- La carpeta Documentos se sincroniza con **iCloud**: puede crear copias «archivo 2.ext»
+  (pasó con el video de la Fase 3, retiradas el 2026-10-08). Revisar `git status` antes de
+  cada commit y no añadir archivos con ese patrón.
 
-**Etapa 4 (hecha), decisiones a recordar:**
+### Notas operativas
 
-- `public/data/catalogo.json` (`npm run datos:catalogo`, incluido en `datos:pedigri`) resume las
-  25 piezas para el cliente; un test exige que esté al día con `data/`. Solo pasan valores
-  verificados; el nombre va marcado como pendiente (MetBull).
-- Globo: marcadores de tamaño fijo (símbolos, aviso en el panel) en `punto_trayectoria`,
-  rotulados "posición de referencia del bólido" (no punto de caída). Clic o lista para elegir.
-- Sistema solar: nube por pieza muestreada con σ 1σ, elementos independientes (supuesto
-  declarado en la descripción); LOD por distancia al Sol (`DISTANCIA_LOD` 6 AU); selección con
-  nube densa celeste. Mezcla **normal**, no aditiva (la aditiva satura el búfer HDR y el bloom
-  hace neblina). Hungaria/Phocaea solo como **contornos** (un relleno translúcido hacía neblina).
-- Panel lateral `aside.panel-pieza`: región de escape (barras por fuente, banda ±1σ) y
-  progenitor (insignia de confianza) en secciones separadas. Filtros por grupo de clase
-  (`grupoClase`) y por confianza. `?pieza=` en la URL; id desconocido → Chelyabinsk.
-- Recorrido animado solo para Chelyabinsk: las órbitas de Granvik & Brown no dan la anomalía en
-  la época. Se podría derivar del encuentro con la Tierra (propuesta, no hecha).
-- Medido: listo 2,72 s en 4G lento. fps en navegador sin GPU: 18,7 con catálogo y 24,7 sin él
-  (escritorio); el coste es de relleno de píxeles, no de segmentos. Falta GPU real.
-- Las etiquetas CSS2D ignoran `transform` en CSS (CSS2DRenderer lo escribe en línea): usar margin.
+- El usuario sube con **GitHub Desktop**; en la terminal no hay `gh` ni credenciales de push.
+  Para leer estado de la CI: API pública (`/actions/runs`, `/check-runs/<id>/annotations`);
+  el registro completo exige sesión.
+- **Push rechazado con «Internal Server Error»** (2026-10-07): era el email de los commits no
+  asociado a la cuenta; resuelto al añadir apaec@yahoo.com a GitHub. Si reaparece, revisar
+  https://github.com/settings/emails antes de sospechar del contenido.
+- **Respaldo privado**: `.trabajo/RESPALDO-historial-git-con-gmail-2026-10-06.bundle`
+  (contiene el gmail; no subir nunca; ver `.trabajo/LEEME-RESPALDO-HISTORIAL.md`).
+- `revision/` (ignorada por git): material del usuario (PDF de Nature, ficha legible, MetBull).
 - El navegador integrado de la app abre el `launch.json` de otro proyecto: verificar con
-  Playwright.
+  Playwright. Claude in Chrome: la pestaña del grupo puede estar en uso por el usuario; no
+  tocar pestañas ajenas.
+- Etiquetas CSS2D: CSS2DRenderer escribe `transform` en línea → desplazar con `margin`.
 
-**Pendientes que dependen del usuario:**
+### Notas técnicas por etapa
 
-- Revisar la ficha `content/fichas/chelyabinsk.md` (estado `borrador`; no se publica en producción).
-- Decidir hosting (recomendado: GitHub Pages; ver `docs/cierres/fase-1.md`).
-- MetBull: el sitio exige verificación anti-bots (no se elude). Nombres oficiales, masas y puntos
-  de caída siguen "pendiente" hasta que el usuario aporte el registro (Chelyabinsk: 57165).
-- Medir rendimiento en un móvil real (solo hay emulación).
+**Recorridos de las piezas (2026-10-08):** `npm run datos:trayectorias -- <a|b|c>`
+(`pipeline/trayectorias-pedigri.ts`, `LOTES`, `DESDE_JPL`). Estado desde el radiante
+geocéntrico y v_g de Granvik & Brown con altura convencional de 100 km; Almahata Sitta desde el
+vector geocéntrico de JPL (`data/verificacion/originales.json`, 27 h antes) integrado hasta el
+instante de referencia (llega a 63 km sobre 20,84° N 31,72° E). N cuerpos 365 d hacia atrás
+(`pipeline/trayectoria-comun.ts`, común con Chelyabinsk). Criterio: D_D ≤ 0,1 y |z| ≤ 3
+(`dd-y-z`) o solo D_D (`solo-dd`, Almahata: D_D 0,00028; z = 17, 32, 5,7σ por la σ formal de
+JPL). Resto: D_D ≤ 0,0019. Salidas `public/data/trayectorias/<id>.json` + `indice.json`,
+`docs/reportes/trayectorias.md`. Escena: `tierra.fijarBolido`, `solar.fijarTrayectoria`,
+`mostrarNubeChelyabinsk`/`mostrarTrayectoria`; `cargarTrayectoriaPieza` en `app3d.ts`; durante
+el recorrido solo se ve la nube de la pieza. Auditoría sección G. Panel: `conSigma` redondea
+según σ sin añadir cifras.
 
-**Mejoras opcionales ya identificadas:** añadir caídas posteriores a 2016 (Hamburg, Motopi Pan,
-Flensburg, Novo Mesto, Winchcombe, Ribbeck…) desde sus artículos originales.
+**Borovička et al. 2013 (Nature):** Tabla 2 en `data/pedigri/chelyabinsk.json` como
+`borovicka-2013-nature`: osculadora **60 días antes del impacto**, σ «±» sin nivel. Sustituye
+a la cita vía Peña-Asensio 2025. Validación y verificación cruzada aprobadas (D_D 0,016).
+
+**F3-E3, actualización diaria:** `cneos-diario.yml` descarga; si cambió
+`data/cneos/eventos.json`, órbitas incrementales + reporte; lint, tests y build **antes** de
+guardar; commit `github-actions[bot]` y push a `main`; luego llama a `ci.yml` (`workflow_call`
+con `ref`: un push con GITHUB_TOKEN no dispara workflows). Si algo falla no se guarda ni publica
+(p. ej. si el CNEOS revisa Chelyabinsk falla el test de coherencia con la Fase 1). La «última
+actualización» mostrada es la de la última consulta con cambios. **Antes de trabajar en local:
+`git pull --ff-only origin main`.**
+
+**F3-E2, modo CNEOS:** `src/ui/modo.ts`, `?modo=cneos&evento=<id>`; datos y `src/cneos/panel.ts`
+solo al entrar en el modo. Globo (`src/scene/cneos-tierra.ts`): color por grupo
+(`COLOR_LEYENDA`, `src/cneos/formato.ts`), tamaño ∝ log(energía); trayectoria de entrada con
+vector y altura (`src/scene/trayectoria-entrada.ts`). Nube del evento
+(`src/scene/cneos-solar.ts`), también hiperbólicas (`puntosConica`, r ≤ 6 AU). Panel: «No son
+en tiempo real» + fecha; detalle arriba; energías sin redondear; comparación solo con
+Chelyabinsk del mismo registro; avisos no verificable / no calculable / hiperbólica / nube
+sesgada (> 10 % descartados). Auditoría sección F; test: ningún texto dice «en vivo».
+
+**F3-E1, datos y órbitas del CNEOS:** `npm run datos:cneos` = descarga cruda
+(`data/cneos/eventos.json`, solo si cambia) + órbitas (`public/data/cneos/eventos.json` y
+`orbitas/<id>.json`, 200 clones, incremental por huella; `CNEOS_FRAGMENTO=k/n` en paralelo; la
+primera pasada tardó ~45 min en 7 procesos). `grupoBajoDd`: año ≥ 2018 o E_i ≥ 0,45 kt (Tabla 4
+en `data/calibracion/pena-asensio-2025-tabla4.json`); conservadora con los 18 calibrados (0
+falsos positivos; Košice y Baird Bay quedan sin órbita). Al 2026-10-07: 1074 eventos, 888 con
+ubicación, 260 con órbita (2 no calculables, guardadas con `error`), 100 no fiables, 3 sin
+altura. Reporte: `npm run reporte:cneos`.
+
+**F2-E4, escena de las 25 caídas:** `public/data/catalogo.json` (`npm run datos:catalogo`);
+marcadores de tamaño fijo en `punto_trayectoria` («posición de referencia», no punto de caída);
+nubes por pieza (σ 1σ, elementos independientes, declarado), LOD (`DISTANCIA_LOD` 6 AU), mezcla
+**normal** (la aditiva satura el HDR); Hungaria/Phocaea solo contornos; panel con región de
+escape y progenitor separados; filtros por clase y confianza; `?pieza=`.
+
+**Auditoría de trazabilidad** (`npm run auditoria`, parte del build): contrasta cada dato de la
+interfaz con `data/`; falla ante discrepancias, pendientes mostrados como firmes o cifras escritas
+a mano en `src/i18n/es.json` (excepciones con motivo en `CIFRAS_PERMITIDAS`). Informe:
+`docs/reportes/trazabilidad.md`. Una cifra nueva en un texto: pasarla como parámetro desde el
+dataset o justificarla ahí.
+
+**Licencias:** código MIT (`LICENSE`); datos, reportes y textos CC BY 4.0 (`data/LICENCIA.md`);
+textura Blue Marble según las directrices de medios de NASA (verificado el 2026-10-05).
 
 ## Principios no negociables
 
@@ -157,9 +190,9 @@ Flensburg, Novo Mesto, Winchcombe, Ribbeck…) desde sus artículos originales.
   metadatos bibliográficos en Crossref.
 - Commits: git no tiene identidad global →
   `git -c user.name="Pablo Hoffenberg" -c user.email="apaec@yahoo.com" commit ...`
-- Vista previa en el navegador integrado: `.claude/launch.json` (configuración `vite`, puerto
-  5173); solo funciona si la sesión está abierta en esta carpeta. Si no, verificar con Playwright
-  (capturas en `tests/e2e/.resultados/`).
+- Verificación visual con Playwright (capturas en `tests/e2e/.resultados/`); el navegador
+  integrado de la app no sirve (abre el `launch.json` de otro proyecto).
+- Antes de trabajar: `git pull --ff-only origin main` (commits diarios del bot).
 
 ## Comandos
 
@@ -167,8 +200,10 @@ Flensburg, Novo Mesto, Winchcombe, Ribbeck…) desde sus artículos originales.
 - `npm run e2e` (escritorio + móvil) · `npm run e2e:rendimiento` (4G lento + CPU ×4, aislado)
 - Datos: `npm run datos` (validación Chelyabinsk + trayectoria), `npm run datos:pedigri`
   (Granvik & Brown + JPL 2008 TC3 + catálogo), `npm run datos:texturas`, `npm run verificacion:cruzada`
-- `npm run cierre:video` / `npm run cierre:fase-2` (requieren `build`): video y capturas en
-  `docs/cierres/`. `npm run auditoria`: trazabilidad.
+- CNEOS: `npm run datos:cneos` (descarga + órbitas), `npm run reporte:cneos`.
+  Recorridos: `npm run datos:trayectorias -- <a|b|c>`.
+- `npm run cierre:video` / `cierre:fase-2` / `cierre:fase-3` (requieren `build`): video y
+  capturas en `docs/cierres/`. `npm run auditoria`: trazabilidad.
 
 ## Arquitectura
 
@@ -182,12 +217,14 @@ Flensburg, Novo Mesto, Winchcombe, Ribbeck…) desde sus artículos originales.
   (vista solar) y 60 km (vista terrestre), marcador del bólido 60 km.
 - Carga: `main.ts` ligero (textos, panel, diálogos, precarga de datos y textura de 1024);
   `app3d.ts` con Three.js por `import()` dinámico; la vista solar se construye bajo demanda.
-  Medido: texto 0,41 s, escena lista 2,57 s en 4G lento.
+  Medido: texto ~0,45 s, escena lista 2,7–2,9 s en 4G lento (los datos del CNEOS y las
+  trayectorias de las piezas se cargan bajo demanda).
 - Tiempo: `src/timeline/reloj.ts` (365 días antes del pico → pico); secuencia en
   `src/camera/coreografia.ts` + pasos en `app3d.ts`; `prefers-reduced-motion` → corte directo.
-  URL: `?pieza&t&vista&escala` (`src/ui/estado-url.ts`).
-- Animación de Chelyabinsk: `public/data/chelyabinsk-trayectoria.json` (N cuerpos nominal);
-  los 300 clones se mueven con Kepler solo como nube de posiciones.
+  URL: `?pieza&t&vista&escala` o `?modo=cneos&evento&t&vista&escala` (`src/ui/estado-url.ts`).
+- Animación: Chelyabinsk con `public/data/chelyabinsk-trayectoria.json` (N cuerpos desde el
+  CNEOS; los 300 clones se mueven con Kepler solo como nube de posiciones); las otras 24 piezas
+  con `public/data/trayectorias/<id>.json`.
 - Fichas: `content/fichas/*.md`, plantillas con `{{clave}}` resueltas desde el dataset
   (`src/ui/ficha-datos.ts`); un test prohíbe cifras escritas a mano. Solo se publican las
   `aprobada` con `revisado_por` y `fecha_revision`. En Fase 4 se generarán con la API de Claude
@@ -243,7 +280,7 @@ Flensburg, Novo Mesto, Winchcombe, Ribbeck…) desde sus artículos originales.
 - Velocidad en el pico de brillo, no al tope de la atmósfera.
 - Monte Carlo: Tabla 4 de Peña-Asensio 2025 da **medianas** de error del grupo de bajo D_D
   (≥ 2018 o ≥ 0,45 kt): 0,55 km/s, 1,35° (α_g), 0,84° (δ_g) → σ = mediana/0,6745 (principal).
-  Grupo pre-2018 y < 0,45 kt: D_D mediana 0,31 (decidir en Fase 3 cómo mostrarlo).
+  Grupo pre-2018 y < 0,45 kt: D_D mediana 0,31 → se muestra sin órbita (decisión del usuario).
 - Chelyabinsk: CNEOS da 03:20:26 UTC y 23,3 km; Popova 03:20:32,2 y 29,7 km (documentado).
 
 ## Convenciones
@@ -261,5 +298,6 @@ F2-E1 dataset de 25 caídas · F2-E2 verificación cruzada (aprobada, `docs/repo
 Almahata Sitta → JPL por decisión del usuario del 2026-10-05) · F2-E3 regiones de origen ·
 F2-E4 escena con las 25 caídas (catálogo, filtros, nubes, regiones) · Cierre F2 (auditoría de
 trazabilidad, licencias, publicación preparada) · F3-E1 datos y órbitas del CNEOS · F3-E2 modo
-CNEOS · F3-E3 actualización diaria · Cierre F3 (`docs/cierres/fase-3.md`).
-Deuda técnica y riesgos: `docs/cierres/fase-1.md`.
+CNEOS · F3-E3 actualización diaria · Cierre F3 (`docs/cierres/fase-3.md`) · Recorridos
+animados de las 25 piezas (lotes A, B, C; 2026-10-08).
+Deuda técnica y riesgos vigentes: sección «Retomar aquí»; históricos en `docs/cierres/`.
