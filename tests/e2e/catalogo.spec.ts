@@ -41,8 +41,9 @@ test('selección de pieza: lista, procedencia en dos capas, URL y vista solar', 
   await expect(page.locator('#procedencia')).toContainText('Especulativa');
   await expect(page.locator('#procedencia')).toContainText('No es el punto de caída');
   await expect(page.locator('#descripcion')).toContainText('no es el punto de caída');
-  await expect(page.locator('#recorrido')).toBeDisabled();
-  await expect(page.locator('#nota-recorrido')).toBeVisible();
+  // Žďár tiene trayectoria animada (lote C): el recorrido se habilita al cargarla
+  await expect(page.locator('#recorrido')).toBeEnabled();
+  await expect(page.locator('#nota-recorrido')).toBeHidden();
   await expect(page.locator('#abrir-ficha')).toBeHidden();
   await expect(page).toHaveURL(/pieza=zdar-nad-sazavou/);
   await expect(page.locator('#fecha-texto')).toContainText('2014');

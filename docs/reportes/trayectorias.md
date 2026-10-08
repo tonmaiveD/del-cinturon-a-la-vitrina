@@ -24,3 +24,6 @@ Generado por `npm run datos:trayectorias`. Cada trayectoria parte del radiante g
 | mason-gully | b | granvik-brown-2018 | 0.0005 | 0.46 | 0.45 | -0.02 | sí |
 | novato | b | granvik-brown-2018 | 0.0006 | 0.00 | -0.02 | 0.02 | sí |
 | sutters-mill | b | granvik-brown-2018 | 0.0019 | 0.02 | -0.01 | 0.01 | sí |
+| annama | c | granvik-brown-2018 | 0.0009 | 0.02 | 0.04 | -0.03 | sí |
+| ejby | c | granvik-brown-2018 | 0.0004 | 0.05 | 0.04 | 0.07 | sí |
+| zdar-nad-sazavou | c | granvik-brown-2018 | 0.0001 | 0.02 | 0.06 | 0.06 | sí |

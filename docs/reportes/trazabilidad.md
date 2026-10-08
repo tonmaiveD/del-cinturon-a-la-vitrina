@@ -5,7 +5,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 
 - Verificados: 472
 - Pendientes mostrados con aviso: 25
-- Calculados con método documentado: 25
+- Calculados con método documentado: 28
 - Convenciones visuales o de notación: 23
 - **Errores: 0**
 
@@ -661,9 +661,11 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 
 | Elemento | Valor | Fuente | Estado | Nota |
 | --- | --- | --- | --- | --- |
+| annama | D_D 0.0009 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
 | benesov | D_D 0.0002 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
 | bunburra-rockhole | D_D 0.0008 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
 | buzzard-coulee | D_D 0.0006 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| ejby | D_D 0.0004 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
 | grimsby | D_D 0.0005 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
 | innisfree | D_D 0.0004 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
 | jesenice | D_D 0.0004 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
@@ -681,6 +683,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | sutters-mill | D_D 0.0019 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
 | tagish-lake | D_D 0.0007 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
 | villalbeto-de-la-pena | D_D 0.0011 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| zdar-nad-sazavou | D_D 0.0001 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
 
 ## Bólidos del CNEOS (modo CNEOS)
 
