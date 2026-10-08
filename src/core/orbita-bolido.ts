@@ -182,7 +182,7 @@ export function orbitaAtraccionCenital(
  * (lat/lon geodésicas, altura en km) y devuelve los elementos sin Tierra calculados con N cuerpos.
  * Sirve para medir cuánto se aparta el método analítico de una integración numérica.
  */
-export function orbitaDesdeRadianteGeocentrico(entrada: {
+export interface EntradaRadiante {
   fecha: Date;
   latGrados: number;
   lonGrados: number;
@@ -190,7 +190,16 @@ export function orbitaDesdeRadianteGeocentrico(entrada: {
   raGrados: number;
   decGrados: number;
   vgKmS: number;
-}): Elementos {
+}
+
+/**
+ * Estado heliocéntrico (EQJ, AU y AU/día) en el punto de referencia, a partir del radiante
+ * geocéntrico y v_g (inverso de la atracción cenital). `t` es el instante de referencia.
+ */
+export function estadoDesdeRadianteGeocentrico(entrada: EntradaRadiante): {
+  t: Astro.AstroTime;
+  y0: number[];
+} {
   const t = Astro.MakeTime(entrada.fecha);
   const r = estadoPuntoTerrestre(
     entrada.latGrados,
@@ -216,6 +225,10 @@ export function orbitaDesdeRadianteGeocentrico(entrada: {
   const procedencia = suma(escala(vertical, Math.cos(z)), escala(eje, Math.sin(z)));
   const vel = escala(procedencia, -v);
   const tierra = estadoTierra(t);
-  const y0 = [...suma(tierra.r, r), ...suma(tierra.v, vel)];
+  return { t, y0: [...suma(tierra.r, r), ...suma(tierra.v, vel)] };
+}
+
+export function orbitaDesdeRadianteGeocentrico(entrada: EntradaRadiante): Elementos {
+  const { t, y0 } = estadoDesdeRadianteGeocentrico(entrada);
   return elementosSinTierra(y0, t.ut, t.ut).elementos;
 }

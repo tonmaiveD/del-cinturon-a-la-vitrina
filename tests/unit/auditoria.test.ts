@@ -6,6 +6,7 @@ import { RADIO_VISUAL_METEOROIDE_AU } from '../../src/scene/sistema-solar';
 import { Fuentes, Meteorito, RegionEscape, RegionesOrigen } from '../../src/schema';
 import type { Catalogo } from '../../src/ui/catalogo';
 import type { OrbitaCneos, ResumenCneos } from '../../src/cneos/resumen';
+import { ALTURA_CONVENCIONAL_KM, type TrayectoriaPieza } from '../../pipeline/trayectorias-pedigri';
 import { CalidadCneos, RespuestaCneos } from '../../src/schema';
 
 const leer = <T = unknown>(r: string): T => JSON.parse(readFileSync(r, 'utf8')) as T;
@@ -27,6 +28,11 @@ const entrada = (): EntradaAuditoria => {
     },
     cneos,
     radioVisualMeteoroideKm: RADIO_VISUAL_METEOROIDE_AU * KM_POR_AU,
+    trayectorias: {
+      indice: leer<{ piezas: string[] }>('public/data/trayectorias/indice.json').piezas,
+      leer: (id) => leer<TrayectoriaPieza>(`public/data/trayectorias/${id}.json`),
+      alturaConvencionalKm: ALTURA_CONVENCIONAL_KM,
+    },
     bolidos: {
       crudo: RespuestaCneos.parse(leer('data/cneos/eventos.json')),
       resumen: leer<ResumenCneos>('public/data/cneos/eventos.json'),
@@ -99,5 +105,21 @@ describe('auditoría de trazabilidad', () => {
   it('ningún texto de la interfaz dice «en vivo» (los datos del CNEOS no son en tiempo real)', () => {
     for (const [clave, texto] of Object.entries(entrada().textos))
       expect(texto, clave).not.toMatch(/en vivo|live/i);
+  });
+
+  it('trayectorias: detecta un radiante alterado y una altura no declarada como convencional', () => {
+    const e = entrada();
+    const leerOriginal = e.trayectorias!.leer;
+    e.trayectorias!.leer = (id) => {
+      const tr = leerOriginal(id);
+      if (id === 'pribram') tr.radiante.ra += 1;
+      if (id === 'peekskill') tr.punto.altura_km = 50;
+      return tr;
+    };
+    expect(
+      errores(e)
+        .map((f) => f.elemento)
+        .sort(),
+    ).toEqual(['peekskill', 'pribram']);
   });
 });

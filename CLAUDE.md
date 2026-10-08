@@ -45,6 +45,19 @@ desactiva los workflows programados tras 60 días sin actividad en el repositori
 - Auditoría ampliada (sección F): resumen = respuesta cruda, fecha de actualización = consulta,
   criterio = Tabla 4, σ y resúmenes = archivos de órbita. Test: ningún texto dice «en vivo».
 
+**Etapa extra: recorrido animado de las 25 piezas con pedigrí, por lotes** (decisión del
+2026-10-08). Lote A hecho; siguientes: B (10) y C (4: Almahata Sitta —partir del estado de JPL,
+no del radiante—, Annama, Žďár, Ejby), cada uno con OK del usuario. `npm run datos:trayectorias -- <a|b|c>`
+(`pipeline/trayectorias-pedigri.ts`, `LOTES`): estado desde el radiante geocéntrico y v_g de
+Granvik & Brown con **altura convencional de 100 km** (la fuente no la publica; declarada en el
+archivo y en la UI), N cuerpos 365 d hacia atrás (`pipeline/trayectoria-comun.ts`, común con
+Chelyabinsk). Criterio de parada: D_D > 0,1 o |z| > 3 frente a la órbita principal (lote A:
+D_D ≤ 0,0011). Salidas: `public/data/trayectorias/<id>.json` + `indice.json`,
+`docs/reportes/trayectorias.md`. Escena: `tierra.fijarBolido` y `solar.fijarTrayectoria`
+(intercambiables), carga por pieza en `app3d.ts` (`cargarTrayectoriaPieza`); durante el recorrido
+solo se ve la nube de la pieza. Auditoría sección G. Prueba intermitente identificada: teclado
+en accesibilidad (timeout en CI) → 90 s.
+
 **F3-E1 (datos y órbitas):**
 
 - `npm run datos:cneos` = `datos:cneos:descargar` (respuesta cruda completa a

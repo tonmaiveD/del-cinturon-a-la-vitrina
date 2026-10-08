@@ -36,6 +36,8 @@ test.describe('línea de tiempo y estado en URL', () => {
   test('movimiento reducido: corte directo sin animación', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');
+    // El botón responde cuando la escena 3D terminó de cargar
+    await page.waitForFunction(() => (window as unknown as { __listo?: number }).__listo);
     await page.getByRole('button', { name: 'Ver el recorrido' }).click();
     await expect(page.getByRole('button', { name: 'Sistema solar' })).toHaveAttribute(
       'aria-pressed',

@@ -158,8 +158,9 @@ export function crearVistaSistemaSolar(
   escena.add(nominal);
 
   // Meteoroide sobre la trayectoria N-cuerpos nominal, con estela hasta el instante actual
-  const ptsTray = trayectoria.map(([, x, y, z]) => aThree([x, y, z]));
-  const geomEstela = new BufferGeometry().setFromPoints(ptsTray);
+  let tray: Muestra[] = trayectoria;
+  let tRef = 0; // días UT de J2000 del instante de referencia de la trayectoria
+  let geomEstela = new BufferGeometry();
   const estela = new Line(geomEstela, new LineBasicMaterial({ color: 0xffd08a }));
   estela.frustumCulled = false;
   escena.add(estela);
@@ -187,14 +188,31 @@ export function crearVistaSistemaSolar(
   );
   puntosClones.frustumCulled = false;
   escena.add(puntosClones);
-  const epocaUt = orbitas.nominal.epoca_ut_j2000;
+  let radioMet = radioMeteoroideKm;
+  let escalaVisual = true;
+  let ultima = fecha;
+
+  /** Trayectoria N cuerpos que siguen la estela y el meteoroide (dt relativo a `referencia`). */
+  function fijarTrayectoria(muestras: Muestra[], referencia: Date, radioKm?: number): void {
+    tray = muestras;
+    tRef = Astro.MakeTime(referencia).ut;
+    radioMet = radioKm ?? 0.01;
+    geomEstela.dispose();
+    geomEstela = new BufferGeometry().setFromPoints(
+      muestras.map(([, x, y, z]) => aThree([x, y, z])),
+    );
+    estela.geometry = geomEstela;
+    aplicarEscala(escalaVisual);
+    actualizarTiempo(ultima);
+  }
 
   function actualizarTiempo(f: Date): void {
+    ultima = f;
     const tt = Astro.MakeTime(f);
     for (const p of PLANETAS) mallas.get(p.clave)!.position.copy(aThree(helioEcl(p.cuerpo, tt)));
-    const dt = tt.ut - epocaUt;
-    geomEstela.setDrawRange(0, indiceInferior(trayectoria, dt) + 1);
-    meteoroide.position.copy(aThree(interpolar(trayectoria, dt)));
+    const dt = tt.ut - tRef;
+    geomEstela.setDrawRange(0, indiceInferior(tray, dt) + 1);
+    meteoroide.position.copy(aThree(interpolar(tray, dt)));
     elClones.forEach((el, k) => {
       const r = estadoDesdeElementos(el, MU_SOL, tt.ut).r;
       const v = aThree(r);
@@ -202,10 +220,9 @@ export function crearVistaSistemaSolar(
     });
     geomPuntos.attributes.position!.needsUpdate = true;
   }
-  actualizarTiempo(fecha);
-
   const radioSolAU = RADIO_SOL_KM / KM_POR_AU;
   function aplicarEscala(visual: boolean): void {
+    escalaVisual = visual;
     sol.scale.setScalar(radioSolAU * (visual ? EXAGERACION.sol : 1));
     for (const m of mallas.values())
       m.scale.setScalar(
@@ -217,19 +234,31 @@ export function crearVistaSistemaSolar(
             : 1),
       );
     // Meteoroide: en escala visual, del tamaño aparente de un planeta pequeño
-    meteoroide.scale.setScalar(visual ? RADIO_VISUAL_METEOROIDE_AU : radioMeteoroideKm / KM_POR_AU);
+    meteoroide.scale.setScalar(visual ? RADIO_VISUAL_METEOROIDE_AU : radioMet / KM_POR_AU);
   }
   aplicarEscala(true);
+  fijarTrayectoria(trayectoria, fecha, radioMeteoroideKm);
 
-  /** Objetos propios del bólido de Chelyabinsk (nube CNEOS, nominal, trayectoria). */
+  /** Nube Monte Carlo del CNEOS y órbita nominal: propias de Chelyabinsk. */
+  function mostrarNubeChelyabinsk(si: boolean): void {
+    for (const o of [nube, nominal, puntosClones]) o.visible = si;
+  }
+  /** Estela y meteoroide de la trayectoria actual. */
+  function mostrarTrayectoria(si: boolean): void {
+    for (const o of [estela, meteoroide]) o.visible = si;
+  }
   function mostrarBolido(si: boolean): void {
-    for (const o of [nube, nominal, estela, meteoroide, puntosClones]) o.visible = si;
+    mostrarNubeChelyabinsk(si);
+    mostrarTrayectoria(si);
   }
 
   const posicionTierra = () => mallas.get('tierra')!.position.clone();
   return {
     escena,
     mostrarBolido,
+    mostrarNubeChelyabinsk,
+    mostrarTrayectoria,
+    fijarTrayectoria,
     aplicarEscala,
     posicionTierra,
     mallas,

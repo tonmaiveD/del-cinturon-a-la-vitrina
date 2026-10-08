@@ -13,6 +13,7 @@ import {
 } from '../src/schema';
 import type { Catalogo } from '../src/ui/catalogo';
 import { auditar, informe } from './auditoria';
+import { ALTURA_CONVENCIONAL_KM, type TrayectoriaPieza } from './trayectorias-pedigri';
 
 const leer = <T = unknown>(ruta: string): T => JSON.parse(readFileSync(ruta, 'utf8')) as T;
 const cneos = leer<Parameters<typeof auditar>[0]['cneos']>('data/cneos/chelyabinsk.json');
@@ -32,6 +33,11 @@ const filas = auditar({
   },
   cneos,
   radioVisualMeteoroideKm: RADIO_VISUAL_METEOROIDE_AU * KM_POR_AU,
+  trayectorias: {
+    indice: leer<{ piezas: string[] }>('public/data/trayectorias/indice.json').piezas,
+    leer: (id) => leer<TrayectoriaPieza>(`public/data/trayectorias/${id}.json`),
+    alturaConvencionalKm: ALTURA_CONVENCIONAL_KM,
+  },
   bolidos: {
     crudo: RespuestaCneos.parse(leer('data/cneos/eventos.json')),
     resumen: leer<ResumenCneos>('public/data/cneos/eventos.json'),

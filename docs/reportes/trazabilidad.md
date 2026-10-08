@@ -5,7 +5,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 
 - Verificados: 472
 - Pendientes mostrados con aviso: 25
-- Calculados con método documentado: 5
+- Calculados con método documentado: 15
 - Convenciones visuales o de notación: 23
 - **Errores: 0**
 
@@ -656,6 +656,21 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | {{a_sigma}} | 0,16 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{i_sigma}} | 0,48 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{nivel_orbita}} | 2σ | popova-2013-science | verificado | borrador: no se publica en producción |
+
+## Trayectorias animadas (piezas con pedigrí)
+
+| Elemento | Valor | Fuente | Estado | Nota |
+| --- | --- | --- | --- | --- |
+| benesov | D_D 0.0002 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| innisfree | D_D 0.0004 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| lost-city | D_D 0.0005 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| moravka | D_D 0.001 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| neuschwanstein | D_D 0.0001 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| park-forest | D_D 0.001 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| peekskill | D_D 0.0003 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| pribram | D_D 0.0001 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| tagish-lake | D_D 0.0007 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| villalbeto-de-la-pena | D_D 0.0011 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
 
 ## Bólidos del CNEOS (modo CNEOS)
 

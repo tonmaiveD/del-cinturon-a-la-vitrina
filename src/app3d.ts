@@ -140,6 +140,21 @@ export async function iniciar3D(
   let panelCneos: PanelCneos | undefined;
   let bolidos: BolidosTierra | undefined;
   let etiquetaBolido: ReturnType<typeof motor.etiqueta> | undefined;
+  // Trayectorias animadas de las piezas con pedigrí (calculadas en el pipeline, una por archivo)
+  interface TrayectoriaPieza {
+    id: string;
+    instante_referencia: string;
+    punto: { lat: number; lon: number; altura_km: number };
+    helio_ecl_au: Muestra[];
+    geo_eqj_km: Muestra[];
+  }
+  let indiceTray = new Set<string>();
+  const cacheTray = new Map<string, Promise<TrayectoriaPieza>>();
+  /** Trayectoria de la pieza seleccionada (no Chelyabinsk), ya cargada. */
+  let trayPieza: TrayectoriaPieza | null = null;
+  /** La escena tiene cargada una trayectoria distinta de la de Chelyabinsk. */
+  let escenaConOtra = false;
+  let pedidoTray = 0;
   /** Clones dibujados en la nube del bólido seleccionado (para la descripción). */
   let nClonesCneos = 0;
   let pedidoOrbita = 0;
@@ -264,14 +279,26 @@ export async function iniciar3D(
           })
         : `${t('desc.sistema-solar', { fecha: formatoFecha(bolido.fecha), n: orbitas.clones.length })} ${descripcionRegiones()}`;
     const fecha = formatoFecha(new Date(impacto));
+    const animada = trayPieza?.id === p.id;
     if (vista === 'tierra')
-      return t('desc.tierra.pieza', {
+      return (
+        t('desc.tierra.pieza', {
+          fecha,
+          nombre: nombrePieza(p),
+          lat: p.punto ? coordenada(p.punto.lat, 'N', 'S') : '—',
+          lon: p.punto ? coordenada(p.punto.lon, 'E', 'O') : '—',
+          n: panel.visibles().size,
+        }) +
+        (animada ? ` ${t('desc.tierra.pieza.aprox', { alto: trayPieza!.punto.altura_km })}` : '')
+      );
+    if (animada)
+      return `${t('desc.sistema-solar.pieza', {
         fecha,
         nombre: nombrePieza(p),
-        lat: p.punto ? coordenada(p.punto.lat, 'N', 'S') : '—',
-        lon: p.punto ? coordenada(p.punto.lon, 'E', 'O') : '—',
-        n: panel.visibles().size,
-      });
+        n: solarCreada?.cat.nClonesSeleccion() ?? 0,
+        fuente: p.orbita ? fuenteCorta(p.orbita.fuente) : '—',
+        regiones: '',
+      }).trimEnd()}${t('desc.sistema-solar.pieza.tray')} ${descripcionRegiones()}`;
     return t('desc.sistema-solar.pieza', {
       fecha,
       nombre: nombrePieza(p),
@@ -298,7 +325,8 @@ export async function iniciar3D(
   }
 
   /** El meteoroide y el marcador del bólido solo se dibujan para Chelyabinsk en modo pedigrí. */
-  const conMeteoroide = () => modo === 'pedigri' && panel.actual() === 'chelyabinsk';
+  const conMeteoroide = () =>
+    modo === 'pedigri' && (panel.actual() === 'chelyabinsk' || trayPieza?.id === panel.actual());
   function refrescarVista(): void {
     if (vista === 'sistema-solar') asegurarSolar();
     motor.activar(vista);
@@ -334,7 +362,13 @@ export async function iniciar3D(
   function aplicarPiezaSolar(): void {
     if (!solarCreada || modo === 'cneos') return;
     const p = piezaDe(panel.actual());
-    solarCreada.solar.mostrarBolido(p.id === 'chelyabinsk');
+    const chely = p.id === 'chelyabinsk';
+    const { solar } = solarCreada;
+    solar.mostrarNubeChelyabinsk(chely);
+    if (chely) solar.fijarTrayectoria(trayectoria.helio_ecl_au, bolido.fecha, radioMet);
+    else if (trayPieza)
+      solar.fijarTrayectoria(trayPieza.helio_ecl_au, new Date(trayPieza.instante_referencia));
+    solar.mostrarTrayectoria(chely || trayPieza !== null);
     solarCreada.cat.seleccionar(p);
     solarCreada.etiquetaNube.element.textContent = t('etiqueta.nube', { nombre: nombrePieza(p) });
   }
@@ -345,14 +379,29 @@ export async function iniciar3D(
     const p = piezaDe(id);
     const chely = id === 'chelyabinsk';
     impacto = chely ? bolido.fecha.getTime() : Date.parse(p.fecha);
+    trayPieza = null;
+    pedidoTray++;
+    if (chely && escenaConOtra) {
+      // Vuelve a la trayectoria de Chelyabinsk (vector del CNEOS)
+      tierra.fijarBolido({
+        fecha: bolido.fecha,
+        aproximacion: trayectoria.geo_eqj_km,
+        punto: bolido,
+        vEcefKmS: bolido.vEcefKmS,
+        radioMeteoroideKm: radioMet,
+      });
+      escenaConOtra = false;
+    }
     tierra.mostrarBolido(chely);
+    if (!chely && indiceTray.has(id)) void cargarTrayectoriaPieza(id);
     marcadores.seleccionar(id);
     etiquetaCaida.element.textContent = t('etiqueta.caida', { nombre: nombrePieza(p) });
     aplicarPiezaSolar();
     reloj.fijarRango(impacto - 365 * DIA_MS, impacto, tInicial ?? impacto);
+    // Sin trayectoria cargada aún, el recorrido se habilita al terminar la carga
     bRecorrido.disabled = !chely;
-    notaRecorrido.hidden = chely;
-    notaRecorrido.textContent = t('tiempo.solo-chelyabinsk');
+    notaRecorrido.hidden = chely || indiceTray.has(id);
+    notaRecorrido.textContent = t('tiempo.sin-trayectoria');
     bFicha.hidden = !(chely && fichaDisponible);
     // La cámara terrestre apunta al bólido seleccionado (orientación del globo en ese instante)
     const dir = chely ? tierra.posicionBolido() : marcadores.posicionMundo(id);
@@ -362,6 +411,34 @@ export async function iniciar3D(
     }
     if (solarCreada) fijarCamara('sistema-solar', encuadreSolar().pos, ORIGEN);
     refrescarVista();
+  }
+
+  async function cargarTrayectoriaPieza(id: string): Promise<void> {
+    const pedido = pedidoTray;
+    let tr: TrayectoriaPieza;
+    try {
+      if (!cacheTray.has(id))
+        cacheTray.set(id, cargarJson<TrayectoriaPieza>(`data/trayectorias/${id}.json`));
+      tr = await cacheTray.get(id)!;
+    } catch {
+      cacheTray.delete(id);
+      if (pedido === pedidoTray) descripcion.textContent = t('error.datos');
+      return;
+    }
+    // Llegó tarde: se eligió otra pieza o se cambió de modo
+    if (pedido !== pedidoTray || modo !== 'pedigri' || panel.actual() !== id) return;
+    trayPieza = tr;
+    escenaConOtra = true;
+    tierra.fijarBolido({
+      fecha: new Date(tr.instante_referencia),
+      aproximacion: tr.geo_eqj_km,
+      punto: { latGrados: tr.punto.lat, lonGrados: tr.punto.lon, alturaKm: tr.punto.altura_km },
+    });
+    tierra.mostrarBolido(true);
+    aplicarPiezaSolar();
+    bRecorrido.disabled = false;
+    notaRecorrido.hidden = true;
+    if (!secuencia.activa()) refrescarVista();
   }
 
   // ---------- Modo CNEOS ----------
@@ -576,8 +653,13 @@ export async function iniciar3D(
     if (solarCreada) solarCreada.camS.controles.enabled = true;
     bSaltar.hidden = true;
     bRecorrido.disabled = false;
+    solarCreada?.cat.filtrar(panel.visibles());
     refrescarVista();
-    descripcion.textContent = t('narr.final', { fecha: formatoFecha(bolido.fecha) });
+    const p = piezaDe(panel.actual());
+    descripcion.textContent =
+      p.id === 'chelyabinsk'
+        ? t('narr.final', { fecha: formatoFecha(bolido.fecha) })
+        : t('narr.final.pieza', { nombre: nombrePieza(p), fecha: formatoFecha(new Date(impacto)) });
   }
   const secuencia = crearSecuencia(pasos, terminarSecuencia);
 
@@ -594,6 +676,8 @@ export async function iniciar3D(
     }
     camT.controles.enabled = false;
     asegurarSolar().camS.controles.enabled = false;
+    // Durante el recorrido solo se ve la nube de la pieza que se sigue
+    asegurarSolar().cat.filtrar(new Set([panel.actual()]));
     bSaltar.hidden = false;
     bRecorrido.disabled = true;
     secuencia.iniciar();
@@ -658,6 +742,17 @@ export async function iniciar3D(
   marcadores.filtrar(panel.visibles());
   aplicarPieza(panel.actual(), inicial.t);
   cneosCtl.modo.alCambiar((m) => void cambiarModo(m));
+  // Índice de piezas con trayectoria animada (archivo pequeño; no retrasa la escena)
+  void cargarJson<{ piezas: string[] }>('data/trayectorias/indice.json')
+    .then((i) => {
+      indiceTray = new Set(i.piezas);
+      const id = panel.actual();
+      if (modo === 'pedigri' && id !== 'chelyabinsk' && indiceTray.has(id)) {
+        notaRecorrido.hidden = true;
+        void cargarTrayectoriaPieza(id);
+      }
+    })
+    .catch(() => undefined); // sin índice: solo Chelyabinsk tiene recorrido
   if (cneosCtl.modo.actual() === 'cneos') void cambiarModo('cneos', inicial.t);
 
   // Selección con el ratón: clic (sin arrastre) sobre un marcador del globo

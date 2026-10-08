@@ -22,7 +22,7 @@ import {
   TextureLoader,
   Vector3,
 } from 'three';
-import { ecefAEqj } from '../core/marcos';
+import { ecefAEqj, eqjAEcef, estadoPuntoTerrestre, KM_POR_AU } from '../core/marcos';
 import type { Vec3 } from '../core/vector';
 import { indiceInferior, interpolar, type Muestra } from '../timeline/interpolacion';
 import { aThree } from './coordenadas';
@@ -136,36 +136,23 @@ export function crearVistaTierra(
   );
   escena.add(atmosfera);
 
-  // Bólido: punto del pico de brillo y trayectoria de entrada, en ECEF (hijos del globo)
+  // Bólido: punto final (pico de brillo o posición de referencia) y, si se conoce el vector de
+  // velocidad, trayectoria de entrada; en ECEF (hijos del globo). Se fijan con fijarBolido().
   const kmAUnidad = 1 / RADIO_TIERRA_KM;
-  const { inicio, pico: pEcefKm } = trayectoriaEntradaEcefKm(
-    bolido.latGrados,
-    bolido.lonGrados,
-    bolido.alturaKm,
-    bolido.vEcefKmS,
-    t,
-  );
-  const local = localGlobo;
-
-  const trayectoria = new Line(
-    new BufferGeometry().setFromPoints([local(inicio), local(pEcefKm)]),
-    new LineBasicMaterial({ color: 0xffc46b }),
-  );
+  const trayectoria = new Line(new BufferGeometry(), new LineBasicMaterial({ color: 0xffc46b }));
   globo.add(trayectoria);
 
-  // Marcador del pico: exagerado en escala visual
+  // Marcador del punto final: exagerado en escala visual
   const marcador = new Mesh(
     new SphereGeometry(1, 16, 8),
     new MeshBasicMaterial({ color: new Color(4, 2.4, 1) }),
   );
-  marcador.position.copy(local(pEcefKm));
   globo.add(marcador);
 
   const posicionBolido = (): Vector3 => marcador.getWorldPosition(new Vector3());
 
   // Aproximación final (N-cuerpos, geocéntrica EQJ): línea hasta el instante actual y meteoroide
-  const ptsAprox = aproximacion.map(([, x, y, z]) => aThree([x, y, z], kmAUnidad));
-  const geomAprox = new BufferGeometry().setFromPoints(ptsAprox);
+  let geomAprox = new BufferGeometry();
   const lineaAprox = new Line(
     geomAprox,
     new LineBasicMaterial({ color: 0xff9a3c, transparent: true, opacity: 0.85 }),
@@ -177,16 +164,75 @@ export function crearVistaTierra(
     new MeshBasicMaterial({ color: new Color(5, 3, 1.2) }),
   );
   escena.add(meteoroide);
-  const dtMin = aproximacion[0]![0];
-  /** Los objetos del bólido de Chelyabinsk solo se ven con esa pieza seleccionada. */
+
+  /** Estado del bólido actual (Chelyabinsk al crear la vista). */
+  let fechaRef = bolido.fecha.getTime();
+  let aprox: Muestra[] = aproximacion;
+  let dtMin = aprox[0]![0];
+  let radioMet = radioMeteoroideKm;
+  let conEntrada = true;
+  /** Los objetos del bólido solo se ven con una pieza que tenga trayectoria. */
   let conBolido = true;
   let ultimaFecha = bolido.fecha;
+  let escalaVisual = true;
+
+  /**
+   * Fija el bólido que se dibuja. Con `entrada` (vector de velocidad y altura publicados) se
+   * dibuja la trayectoria de entrada hasta el pico de brillo; sin ella, solo la aproximación hasta
+   * el punto final indicado.
+   */
+  function fijarBolido(b: {
+    fecha: Date;
+    aproximacion: Muestra[];
+    punto: { latGrados: number; lonGrados: number; alturaKm: number };
+    vEcefKmS?: Vec3;
+    radioMeteoroideKm?: number;
+  }): void {
+    fechaRef = b.fecha.getTime();
+    aprox = b.aproximacion;
+    dtMin = aprox[0]![0];
+    radioMet = b.radioMeteoroideKm;
+    const tt = Astro.MakeTime(b.fecha);
+    if (b.vEcefKmS) {
+      const { inicio, pico } = trayectoriaEntradaEcefKm(
+        b.punto.latGrados,
+        b.punto.lonGrados,
+        b.punto.alturaKm,
+        b.vEcefKmS,
+        tt,
+      );
+      trayectoria.geometry.dispose();
+      trayectoria.geometry = new BufferGeometry().setFromPoints([
+        localGlobo(inicio),
+        localGlobo(pico),
+      ]);
+      marcador.position.copy(localGlobo(pico));
+      conEntrada = true;
+    } else {
+      const r = estadoPuntoTerrestre(
+        b.punto.latGrados,
+        b.punto.lonGrados,
+        b.punto.alturaKm * 1000,
+        tt,
+      ).r;
+      marcador.position.copy(localGlobo(eqjAEcef(r, tt).map((c) => c * KM_POR_AU) as Vec3));
+      conEntrada = false;
+    }
+    geomAprox.dispose();
+    geomAprox = new BufferGeometry().setFromPoints(
+      aprox.map(([, x, y, z]) => aThree([x, y, z], kmAUnidad)),
+    );
+    lineaAprox.geometry = geomAprox;
+    aplicarEscala(escalaVisual);
+    actualizarTiempo(ultimaFecha);
+  }
 
   function aplicarEscala(visual: boolean): void {
+    escalaVisual = visual;
     // Real: 1 km de radio (aprox. tamaño de la bola de fuego); visual: 60 km para que se vea
     marcador.scale.setScalar((visual ? 60 : 1) * kmAUnidad);
     // Meteoroide: radio real del dataset (si existe); visual: 60 km
-    meteoroide.scale.setScalar((visual ? 60 : (radioMeteoroideKm ?? 0.01)) * kmAUnidad);
+    meteoroide.scale.setScalar((visual ? 60 : (radioMet ?? 0.01)) * kmAUnidad);
   }
 
   /** Coloca globo, Sol y meteoroide en el instante dado. */
@@ -195,19 +241,25 @@ export function crearVistaTierra(
     const tt = Astro.MakeTime(fecha);
     orientar(tt);
     iluminar(tt);
-    const dt = (fecha.getTime() - bolido.fecha.getTime()) / 86400000;
+    const dt = (fecha.getTime() - fechaRef) / 86400000;
     const visible = conBolido && dt >= dtMin && dt <= 0;
-    trayectoria.visible = conBolido;
+    trayectoria.visible = conBolido && conEntrada;
     lineaAprox.visible = visible;
     meteoroide.visible = visible && dt < 0;
     // El pico de brillo se marca desde 1 min antes
     marcador.visible = conBolido && dt >= -1 / 1440;
     if (!visible) return;
-    const i = indiceInferior(aproximacion, dt);
+    const i = indiceInferior(aprox, dt);
     geomAprox.setDrawRange(0, i + 1);
-    meteoroide.position.copy(aThree(interpolar(aproximacion, dt), kmAUnidad));
+    meteoroide.position.copy(aThree(interpolar(aprox, dt), kmAUnidad));
   }
-  aplicarEscala(true);
+  fijarBolido({
+    fecha: bolido.fecha,
+    aproximacion,
+    punto: bolido,
+    vEcefKmS: bolido.vEcefKmS,
+    radioMeteoroideKm,
+  });
 
   function actualizar(camara: Camera): void {
     // El shader trabaja en espacio de vista: se transforma la dirección del Sol
@@ -223,6 +275,7 @@ export function crearVistaTierra(
   return {
     primeraCargada,
     mostrarBolido,
+    fijarBolido,
     escena,
     globo,
     marcador,

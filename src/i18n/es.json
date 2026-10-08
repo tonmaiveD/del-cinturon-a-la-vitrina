@@ -154,5 +154,9 @@
   "desc.sistema-solar.cneos.sin": "Sistema solar interior el {fecha} UTC. El bólido seleccionado no tiene órbita calculada; el motivo está en el panel.",
   "escala.visual.sistema-solar.sin-meteoroide": "Escala visual: Sol ×{sol}, planetas interiores ×{planetas} y Júpiter ×{jupiter}. Las distancias y las órbitas son reales.",
   "tiempo.solo-chelyabinsk.cneos": "El recorrido animado solo está disponible para Chelyabinsk, en el modo de meteoritos con pedigrí.",
-  "cneos.leyenda.titulo": "Leyenda"
+  "cneos.leyenda.titulo": "Leyenda",
+  "tiempo.sin-trayectoria": "El recorrido animado de esta pieza todavía no está disponible.",
+  "narr.final.pieza": "Llegada del meteoroide de {nombre} a la atmósfera, {fecha} UTC. Puedes explorar la escena o mover la línea de tiempo.",
+  "desc.tierra.pieza.aprox": "La línea naranja es su aproximación final, calculada a partir del radiante publicado; termina en la posición de referencia a una altura convencional de {alto} km, porque la fuente no publica la altura.",
+  "desc.sistema-solar.pieza.tray": " La estela clara es la trayectoria del meteoroide durante el año previo, calculada con N cuerpos a partir del radiante publicado."
 }

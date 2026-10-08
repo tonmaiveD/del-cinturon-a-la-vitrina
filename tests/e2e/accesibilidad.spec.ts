@@ -33,10 +33,12 @@ test('sin violaciones WCAG 2.1 AA en el modo CNEOS (con filtros y detalle abiert
 test('todos los controles son alcanzables con el teclado y el diálogo devuelve el foco', async ({
   page,
 }) => {
+  // En GitHub (sin GPU) cada pulsación tarda más: con 30 s se agotaba el tiempo (2026-10-08)
+  test.setTimeout(90_000);
   await page.goto('/');
   await expect(page.locator('#descripcion')).toContainText('trayectoria de entrada');
   const vistos = new Set<string>();
-  for (let k = 0; k < 20; k++) {
+  for (let k = 0; k < 30; k++) {
     await page.keyboard.press('Tab');
     const nombre = await page.evaluate(() => {
       const el = document.activeElement as HTMLElement | null;
@@ -63,7 +65,7 @@ test('todos los controles son alcanzables con el teclado y el diálogo devuelve 
   await expect(page.getByRole('dialog')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).toBeHidden();
-  await expect(boton).toBeFocused();
+  await expect(boton).toBeFocused({ timeout: 15_000 });
 });
 
 test('en producción la ficha en borrador no se publica', async ({ page }) => {

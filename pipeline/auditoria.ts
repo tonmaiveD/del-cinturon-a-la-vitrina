@@ -8,6 +8,7 @@
 import { semiejeResonancia } from '../src/core/resonancias';
 import { CORTE_FECHA, leerEventos, UMBRAL_KT } from '../src/cneos/eventos';
 import type { OrbitaCneos, ResumenCneos } from '../src/cneos/resumen';
+import type { TrayectoriaPieza } from './trayectorias-pedigri';
 import type { CalidadCneos, RespuestaCneos } from '../src/schema';
 import type { Fuente, Meteorito, RegionEscape, RegionesOrigen, Valor } from '../src/schema';
 import type { Catalogo, NumSigma } from '../src/ui/catalogo';
@@ -88,6 +89,12 @@ export interface EntradaAuditoria {
   ficha?: { cruda: string; cneos: Parameters<typeof contextoFicha>[1]; nClones: number };
   cneos: { fuente: string; respuesta: { fields: string[]; data: string[][] } };
   radioVisualMeteoroideKm: number;
+  /** Trayectorias animadas de las piezas con pedigrí (índice y lector de archivos). */
+  trayectorias?: {
+    indice: string[];
+    leer: (id: string) => TrayectoriaPieza;
+    alturaConvencionalKm: number;
+  };
   /** Modo CNEOS: respuesta cruda, resumen publicado, Tabla 4 y lector de archivos de órbita. */
   bolidos?: {
     crudo: RespuestaCneos;
@@ -292,6 +299,43 @@ export function auditar(e: EntradaAuditoria): Fila[] {
         fuente: d?.fuente ?? '—',
         estado: d && fuentes.has(d.fuente) ? 'verificado' : 'error',
         ...(ficha.estado === 'borrador' && { nota: 'borrador: no se publica en producción' }),
+      });
+    }
+  }
+
+  // ---------- G. Trayectorias animadas de las piezas ----------
+  if (e.trayectorias) {
+    const { indice, leer, alturaConvencionalKm } = e.trayectorias;
+    for (const id of indice) {
+      const m = meteoritos.get(id);
+      const tr = leer(id);
+      const fallos: string[] = [];
+      const r = m?.radiante_geocentrico;
+      const pt = m?.punto_trayectoria;
+      if (!m || !r || !pt) fallos.push('pieza sin radiante o posición en el dataset');
+      else {
+        if (tr.radiante.ra !== r.ra.valor || tr.radiante.dec !== r.dec.valor)
+          fallos.push('radiante distinto del dataset');
+        if (tr.radiante.vg !== r.v_geocentrica.valor) fallos.push('v_g distinta del dataset');
+        if (![r.ra, r.dec, r.v_geocentrica].every((v) => v.estado === 'verificado'))
+          fallos.push('radiante o v_g sin verificar');
+        if (tr.punto.lat !== pt.lat.valor || tr.punto.lon !== pt.lon.valor)
+          fallos.push('posición distinta del dataset');
+        if (Date.parse(tr.instante_referencia) !== Date.parse(String(m.fecha_caida.valor)))
+          fallos.push('instante distinto del dataset');
+      }
+      if (!tr.punto.altura_convencional || tr.punto.altura_km !== alturaConvencionalKm)
+        fallos.push('altura no declarada como convencional');
+      if (!tr.validacion.aprobada) fallos.push('no supera el criterio de parada');
+      filas.push({
+        seccion: 'Trayectorias animadas (piezas con pedigrí)',
+        elemento: id,
+        valor: `D_D ${tr.validacion.dd} frente a ${tr.validacion.fuente_orbita}`,
+        fuente: `cálculo propio desde ${tr.radiante.fuente}`,
+        estado: fallos.length ? 'error' : 'calculado',
+        nota: fallos.length
+          ? fallos.join('; ')
+          : `radiante, v_g, posición e instante del dataset; altura convencional de ${alturaConvencionalKm} km declarada`,
       });
     }
   }
