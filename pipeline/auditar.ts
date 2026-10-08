@@ -37,6 +37,28 @@ const filas = auditar({
     indice: leer<{ piezas: string[] }>('public/data/trayectorias/indice.json').piezas,
     leer: (id) => leer<TrayectoriaPieza>(`public/data/trayectorias/${id}.json`),
     alturaConvencionalKm: ALTURA_CONVENCIONAL_KM,
+    vectoresJpl: Object.fromEntries(
+      Object.entries(
+        leer<
+          Record<
+            string,
+            {
+              vector_geocentrico?: {
+                jd_tdb: number;
+                x: number;
+                y: number;
+                z: number;
+                vx: number;
+                vy: number;
+                vz: number;
+              };
+            }
+          >
+        >('data/verificacion/originales.json'),
+      )
+        .filter(([, v]) => v.vector_geocentrico)
+        .map(([k, v]) => [k, v.vector_geocentrico!]),
+    ),
   },
   bolidos: {
     crudo: RespuestaCneos.parse(leer('data/cneos/eventos.json')),

@@ -94,6 +94,11 @@ export interface EntradaAuditoria {
     indice: string[];
     leer: (id: string) => TrayectoriaPieza;
     alturaConvencionalKm: number;
+    /** Vectores de estado de JPL guardados (data/verificacion/originales.json), por pieza. */
+    vectoresJpl?: Record<
+      string,
+      { jd_tdb: number; x: number; y: number; z: number; vx: number; vy: number; vz: number }
+    >;
   };
   /** Modo CNEOS: respuesta cruda, resumen publicado, Tabla 4 y lector de archivos de órbita. */
   bolidos?: {
@@ -305,37 +310,58 @@ export function auditar(e: EntradaAuditoria): Fila[] {
 
   // ---------- G. Trayectorias animadas de las piezas ----------
   if (e.trayectorias) {
-    const { indice, leer, alturaConvencionalKm } = e.trayectorias;
+    const { indice, leer, alturaConvencionalKm, vectoresJpl } = e.trayectorias;
     for (const id of indice) {
       const m = meteoritos.get(id);
       const tr = leer(id);
       const fallos: string[] = [];
-      const r = m?.radiante_geocentrico;
-      const pt = m?.punto_trayectoria;
-      if (!m || !r || !pt) fallos.push('pieza sin radiante o posición en el dataset');
-      else {
-        if (tr.radiante.ra !== r.ra.valor || tr.radiante.dec !== r.dec.valor)
-          fallos.push('radiante distinto del dataset');
-        if (tr.radiante.vg !== r.v_geocentrica.valor) fallos.push('v_g distinta del dataset');
-        if (![r.ra, r.dec, r.v_geocentrica].every((v) => v.estado === 'verificado'))
-          fallos.push('radiante o v_g sin verificar');
-        if (tr.punto.lat !== pt.lat.valor || tr.punto.lon !== pt.lon.valor)
-          fallos.push('posición distinta del dataset');
-        if (Date.parse(tr.instante_referencia) !== Date.parse(String(m.fecha_caida.valor)))
-          fallos.push('instante distinto del dataset');
+      if (!m) fallos.push('pieza inexistente en el dataset');
+      else if (Date.parse(tr.instante_referencia) !== Date.parse(String(m.fecha_caida.valor)))
+        fallos.push('instante distinto del dataset');
+      let nota: string;
+      if (tr.origen === 'jpl') {
+        const v = vectoresJpl?.[id];
+        const guardado = tr.estado_jpl?.vector_geocentrico;
+        if (
+          !v ||
+          !guardado ||
+          v.jd_tdb !== tr.estado_jpl!.jd_tdb ||
+          JSON.stringify([v.x, v.y, v.z, v.vx, v.vy, v.vz]) !== JSON.stringify(guardado)
+        )
+          fallos.push('el estado inicial no coincide con el vector de JPL guardado');
+        if (tr.validacion.criterio !== 'solo-dd' || tr.validacion.fuente_orbita !== 'jpl-horizons')
+          fallos.push('criterio de validación no documentado para JPL');
+        nota = `estado de JPL (data/verificacion/originales.json); criterio solo D_D (σ formal de JPL menor que la precisión de las efemérides; decisión del 2026-10-08), declarado en pantalla`;
+      } else {
+        const r = m?.radiante_geocentrico;
+        const pt = m?.punto_trayectoria;
+        const rad = tr.radiante;
+        if (!r || !pt || !rad) fallos.push('pieza sin radiante o posición en el dataset');
+        else {
+          if (rad.ra !== r.ra.valor || rad.dec !== r.dec.valor)
+            fallos.push('radiante distinto del dataset');
+          if (rad.vg !== r.v_geocentrica.valor) fallos.push('v_g distinta del dataset');
+          if (![r.ra, r.dec, r.v_geocentrica].every((x) => x.estado === 'verificado'))
+            fallos.push('radiante o v_g sin verificar');
+          if (tr.punto.lat !== pt.lat.valor || tr.punto.lon !== pt.lon.valor)
+            fallos.push('posición distinta del dataset');
+        }
+        if (!tr.punto.altura_convencional || tr.punto.altura_km !== alturaConvencionalKm)
+          fallos.push('altura no declarada como convencional');
+        if (tr.validacion.criterio !== 'dd-y-z') fallos.push('criterio de validación relajado');
+        nota = `radiante, v_g, posición e instante del dataset; altura convencional de ${alturaConvencionalKm} km declarada`;
       }
-      if (!tr.punto.altura_convencional || tr.punto.altura_km !== alturaConvencionalKm)
-        fallos.push('altura no declarada como convencional');
       if (!tr.validacion.aprobada) fallos.push('no supera el criterio de parada');
       filas.push({
         seccion: 'Trayectorias animadas (piezas con pedigrí)',
         elemento: id,
         valor: `D_D ${tr.validacion.dd} frente a ${tr.validacion.fuente_orbita}`,
-        fuente: `cálculo propio desde ${tr.radiante.fuente}`,
+        fuente:
+          tr.origen === 'jpl'
+            ? 'cálculo propio desde el estado de jpl-horizons'
+            : `cálculo propio desde ${tr.radiante?.fuente ?? '—'}`,
         estado: fallos.length ? 'error' : 'calculado',
-        nota: fallos.length
-          ? fallos.join('; ')
-          : `radiante, v_g, posición e instante del dataset; altura convencional de ${alturaConvencionalKm} km declarada`,
+        nota: fallos.length ? fallos.join('; ') : nota,
       });
     }
   }

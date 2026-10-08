@@ -158,5 +158,7 @@
   "tiempo.sin-trayectoria": "El recorrido animado de esta pieza todavía no está disponible.",
   "narr.final.pieza": "Llegada del meteoroide de {nombre} a la atmósfera, {fecha} UTC. Puedes explorar la escena o mover la línea de tiempo.",
   "desc.tierra.pieza.aprox": "La línea naranja es su aproximación final, calculada a partir del radiante publicado; termina en la posición de referencia a una altura convencional de {alto} km, porque la fuente no publica la altura.",
-  "desc.sistema-solar.pieza.tray": " La estela clara es la trayectoria del meteoroide durante el año previo, calculada con N cuerpos a partir del radiante publicado."
+  "desc.sistema-solar.pieza.tray": " La estela clara es la trayectoria del meteoroide durante el año previo, calculada con N cuerpos a partir del radiante publicado.",
+  "desc.tierra.pieza.aprox.jpl": "La línea naranja es su aproximación final, calculada a partir del estado del asteroide que JPL determinó con observaciones telescópicas antes del impacto; en el instante de referencia llega a unos {alto} km de altura.",
+  "desc.sistema-solar.pieza.tray.jpl": " La estela clara es la trayectoria del meteoroide durante el año previo, calculada con N cuerpos desde ese estado de JPL. Validación: coincide con la órbita telescópica de JPL según el criterio de Drummond (D_D = {dd}). No se compara elemento a elemento en múltiplos de su incertidumbre, porque la incertidumbre formal de JPL es menor que la precisión de las efemérides que usa esta visualización."
 }

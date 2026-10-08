@@ -32,6 +32,28 @@ const entrada = (): EntradaAuditoria => {
       indice: leer<{ piezas: string[] }>('public/data/trayectorias/indice.json').piezas,
       leer: (id) => leer<TrayectoriaPieza>(`public/data/trayectorias/${id}.json`),
       alturaConvencionalKm: ALTURA_CONVENCIONAL_KM,
+      vectoresJpl: Object.fromEntries(
+        Object.entries(
+          leer<
+            Record<
+              string,
+              {
+                vector_geocentrico?: {
+                  jd_tdb: number;
+                  x: number;
+                  y: number;
+                  z: number;
+                  vx: number;
+                  vy: number;
+                  vz: number;
+                };
+              }
+            >
+          >('data/verificacion/originales.json'),
+        )
+          .filter(([, v]) => v.vector_geocentrico)
+          .map(([k, v]) => [k, v.vector_geocentrico!]),
+      ),
     },
     bolidos: {
       crudo: RespuestaCneos.parse(leer('data/cneos/eventos.json')),
@@ -112,7 +134,7 @@ describe('auditoría de trazabilidad', () => {
     const leerOriginal = e.trayectorias!.leer;
     e.trayectorias!.leer = (id) => {
       const tr = leerOriginal(id);
-      if (id === 'pribram') tr.radiante.ra += 1;
+      if (id === 'pribram') tr.radiante!.ra += 1;
       if (id === 'peekskill') tr.punto.altura_km = 50;
       return tr;
     };

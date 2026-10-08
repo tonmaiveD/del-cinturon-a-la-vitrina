@@ -60,6 +60,21 @@ test('todas las piezas con trayectoria habilitan su recorrido', async ({ page })
   for (const id of indice) {
     await page.locator('#pieza').selectOption(id);
     await expect(page.getByRole('button', { name: 'Ver el recorrido' }), id).toBeEnabled();
-    await expect(page.locator('#descripcion'), id).toContainText('altura convencional');
+    await expect(page.locator('#descripcion'), id).toContainText(
+      /altura convencional|observaciones telescópicas/,
+    );
   }
+});
+
+test('Almahata Sitta: trayectoria desde el estado de JPL con el criterio explicado en pantalla', async ({
+  page,
+}) => {
+  await page.goto('/?pieza=almahata-sitta&vista=sistema-solar');
+  await listo(page);
+  await expect(page.getByRole('button', { name: 'Ver el recorrido' })).toBeEnabled();
+  await expect(page.locator('#descripcion')).toContainText('criterio de Drummond');
+  await expect(page.locator('#descripcion')).toContainText('incertidumbre formal de JPL');
+  await page.getByRole('button', { name: 'Tierra', exact: true }).click();
+  await expect(page.locator('#descripcion')).toContainText('observaciones telescópicas');
+  await expect(page.locator('#descripcion')).not.toContainText('altura convencional');
 });

@@ -5,7 +5,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 
 - Verificados: 472
 - Pendientes mostrados con aviso: 25
-- Calculados con método documentado: 28
+- Calculados con método documentado: 29
 - Convenciones visuales o de notación: 23
 - **Errores: 0**
 
@@ -661,29 +661,30 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 
 | Elemento | Valor | Fuente | Estado | Nota |
 | --- | --- | --- | --- | --- |
-| annama | D_D 0.0009 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| benesov | D_D 0.0002 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| bunburra-rockhole | D_D 0.0008 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| buzzard-coulee | D_D 0.0006 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| ejby | D_D 0.0004 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| almahata-sitta | D_D 0.00028 frente a jpl-horizons | cálculo propio desde el estado de jpl-horizons | calculado | estado de JPL (data/verificacion/originales.json); criterio solo D_D (σ formal de JPL menor que la precisión de las efemérides; decisión del 2026-10-08), declarado en pantalla |
+| annama | D_D 0.00091 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| benesov | D_D 0.00017 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| bunburra-rockhole | D_D 0.00082 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| buzzard-coulee | D_D 0.00057 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| ejby | D_D 0.00041 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
 | grimsby | D_D 0.0005 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| innisfree | D_D 0.0004 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| jesenice | D_D 0.0004 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| kosice | D_D 0.0005 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| krizevci | D_D 0.0002 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| lost-city | D_D 0.0005 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| maribo | D_D 0.0017 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| mason-gully | D_D 0.0005 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| moravka | D_D 0.001 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| neuschwanstein | D_D 0.0001 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| novato | D_D 0.0006 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| park-forest | D_D 0.001 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| peekskill | D_D 0.0003 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| pribram | D_D 0.0001 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| sutters-mill | D_D 0.0019 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| tagish-lake | D_D 0.0007 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| villalbeto-de-la-pena | D_D 0.0011 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| zdar-nad-sazavou | D_D 0.0001 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| innisfree | D_D 0.00043 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| jesenice | D_D 0.00037 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| kosice | D_D 0.00052 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| krizevci | D_D 0.00025 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| lost-city | D_D 0.00048 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| maribo | D_D 0.00166 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| mason-gully | D_D 0.00051 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| moravka | D_D 0.00099 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| neuschwanstein | D_D 0.00013 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| novato | D_D 0.00061 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| park-forest | D_D 0.00105 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| peekskill | D_D 0.00033 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| pribram | D_D 0.00005 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| sutters-mill | D_D 0.00185 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| tagish-lake | D_D 0.00074 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| villalbeto-de-la-pena | D_D 0.00105 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| zdar-nad-sazavou | D_D 0.00011 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
 
 ## Bólidos del CNEOS (modo CNEOS)
 

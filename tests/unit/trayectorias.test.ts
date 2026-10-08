@@ -22,7 +22,17 @@ describe('trayectorias animadas de las piezas con pedigrí', () => {
   it.each(indice)('%s: año previo completo y llegada a la posición de referencia', (id) => {
     const tr = leer<TrayectoriaPieza>(`public/data/trayectorias/${id}.json`);
     expect(tr.validacion.aprobada).toBe(true);
-    expect(tr.punto.altura_km).toBe(ALTURA_CONVENCIONAL_KM);
+    if (tr.origen === 'jpl') {
+      // Estado telescópico de JPL: altura calculada (no convencional), validación solo por D_D
+      expect(tr.punto.altura_convencional).toBe(false);
+      expect(tr.punto.altura_km).toBeGreaterThan(20);
+      expect(tr.punto.altura_km).toBeLessThan(150);
+      expect(tr.validacion.criterio).toBe('solo-dd');
+      expect(tr.validacion.dd).toBeLessThan(0.01);
+    } else {
+      expect(tr.punto.altura_km).toBe(ALTURA_CONVENCIONAL_KM);
+      expect(tr.validacion.criterio).toBe('dd-y-z');
+    }
     // Heliocéntrica: de −365 días a 0
     expect(tr.helio_ecl_au[0]![0]).toBeCloseTo(-365, 3);
     expect(tr.helio_ecl_au.at(-1)![0]).toBe(0);
@@ -36,9 +46,10 @@ describe('trayectorias animadas de las piezas con pedigrí', () => {
       ultimo[2]! - ref[1] * KM_POR_AU,
       ultimo[3]! - ref[2] * KM_POR_AU,
     );
-    expect(d).toBeLessThan(1); // km
-    // Comprobación del marco: la misma posición en ECEF está a ~100 km sobre el elipsoide
+    // JPL: la posición se redondea a 0,001° y 1 km al guardarla
+    expect(d).toBeLessThan(tr.origen === 'jpl' ? 2 : 1); // km
+    // Comprobación del marco: la misma posición en ECEF está sobre el elipsoide
     const ecef = eqjAEcef(ref, t).map((c) => c * KM_POR_AU);
-    expect(Math.hypot(...ecef)).toBeGreaterThan(6356 + 90);
+    expect(Math.hypot(...ecef)).toBeGreaterThan(6356 + tr.punto.altura_km - 10);
   });
 });

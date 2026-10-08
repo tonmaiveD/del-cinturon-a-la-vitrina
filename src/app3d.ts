@@ -144,7 +144,9 @@ export async function iniciar3D(
   interface TrayectoriaPieza {
     id: string;
     instante_referencia: string;
+    origen: 'radiante' | 'jpl';
     punto: { lat: number; lon: number; altura_km: number };
+    validacion: { dd: number; criterio: 'dd-y-z' | 'solo-dd' };
     helio_ecl_au: Muestra[];
     geo_eqj_km: Muestra[];
   }
@@ -289,7 +291,9 @@ export async function iniciar3D(
           lon: p.punto ? coordenada(p.punto.lon, 'E', 'O') : '—',
           n: panel.visibles().size,
         }) +
-        (animada ? ` ${t('desc.tierra.pieza.aprox', { alto: trayPieza!.punto.altura_km })}` : '')
+        (animada
+          ? ` ${t(trayPieza!.origen === 'jpl' ? 'desc.tierra.pieza.aprox.jpl' : 'desc.tierra.pieza.aprox', { alto: trayPieza!.punto.altura_km })}`
+          : '')
       );
     if (animada)
       return `${t('desc.sistema-solar.pieza', {
@@ -298,7 +302,13 @@ export async function iniciar3D(
         n: solarCreada?.cat.nClonesSeleccion() ?? 0,
         fuente: p.orbita ? fuenteCorta(p.orbita.fuente) : '—',
         regiones: '',
-      }).trimEnd()}${t('desc.sistema-solar.pieza.tray')} ${descripcionRegiones()}`;
+      }).trimEnd()}${
+        trayPieza!.origen === 'jpl'
+          ? t('desc.sistema-solar.pieza.tray.jpl', {
+              dd: trayPieza!.validacion.dd.toLocaleString('es', { maximumFractionDigits: 5 }),
+            })
+          : t('desc.sistema-solar.pieza.tray')
+      } ${descripcionRegiones()}`;
     return t('desc.sistema-solar.pieza', {
       fecha,
       nombre: nombrePieza(p),

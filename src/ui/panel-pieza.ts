@@ -34,8 +34,17 @@ function decimales(x: number): number {
 }
 export const numero = (x: number, dec = decimales(x)) =>
   x.toLocaleString('es', { minimumFractionDigits: dec, maximumFractionDigits: dec });
-const conSigma = (x: NumSigma, unidad = '') =>
-  x.s === undefined ? `${numero(x.v)}${unidad}` : `${numero(x.v)} ± ${numero(x.s)}${unidad}`;
+/**
+ * «valor ± σ» sin precisión ficticia: cada número conserva como máximo sus decimales publicados y
+ * como máximo los que corresponden a dos cifras significativas de σ (nunca se añaden cifras).
+ */
+export function conSigma(x: NumSigma, unidad = ''): string {
+  if (x.s === undefined || x.s <= 0) return `${numero(x.v)}${unidad}`;
+  const decSigma = Math.max(0, 1 - Math.floor(Math.log10(x.s)));
+  const v = numero(x.v, Math.min(decimales(x.v), decSigma));
+  const s = numero(x.s, Math.min(decimales(x.s), decSigma));
+  return `${v} ± ${s}${unidad}`;
+}
 
 export const nombrePieza = (p: PiezaCatalogo) => p.nombre.valor;
 export const anioPieza = (p: PiezaCatalogo) => p.fecha.slice(0, 4);

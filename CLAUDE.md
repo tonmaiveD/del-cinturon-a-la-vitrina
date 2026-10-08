@@ -46,7 +46,7 @@ desactiva los workflows programados tras 60 días sin actividad en el repositori
   criterio = Tabla 4, σ y resúmenes = archivos de órbita. Test: ningún texto dice «en vivo».
 
 **Etapa extra: recorrido animado de las 25 piezas con pedigrí, por lotes** (decisión del
-2026-10-08). Lotes A, B y C hechos salvo Almahata Sitta (24 de 25 animadas). **Almahata, pendiente de decisión del usuario**: desde el vector de JPL (27 h antes) se llega a ~62 km sobre 20,71° N 31,72° E (a 17 km del punto publicado) y D_D 0,00028 con la órbita de JPL, pero z(a, e, i) = 17, 32 y 5,7σ porque la σ formal de JPL (~1e-6) es menor que la precisión de las efemérides de astronomy-engine (mismo resultado aceptado en la Fase 2, cruzada.md §B); desde el radiante, D_D 0,035 (rechazada). Lote C original (4: Almahata Sitta —partir del estado de JPL,
+2026-10-08). **Las 25 piezas tienen recorrido animado.** Almahata Sitta (opción A del usuario, 2026-10-08): parte del vector de estado de JPL (27 h antes, `DESDE_JPL`, `calcularDesdeJpl`), llega a 63 km sobre 20,84° N 31,72° E y se valida **solo con D_D** (0,00028; z = 17, 32, 5,7σ porque la σ formal de JPL es menor que la precisión de astronomy-engine), explicado en la descripción de la escena, el reporte y la auditoría. Lote C original (4: Almahata Sitta —partir del estado de JPL,
 no del radiante—, Annama, Žďár, Ejby), cada uno con OK del usuario. `npm run datos:trayectorias -- <a|b|c>`
 (`pipeline/trayectorias-pedigri.ts`, `LOTES`): estado desde el radiante geocéntrico y v_g de
 Granvik & Brown con **altura convencional de 100 km** (la fuente no la publica; declarada en el
