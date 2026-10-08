@@ -10,11 +10,11 @@ https://tonmaived.github.io/del-cinturon-a-la-vitrina/ (repo público `tonmaiveD
 la CI publica desde `main` si pasan las pruebas). El usuario sube los cambios con GitHub Desktop
 ("Push origin"); no hay `gh` ni credenciales de git en la terminal. Móvil real: «se ve bien».
 
-**Fase 3 en curso.** Decisión del usuario (2026-10-06): opción (a), los eventos del grupo de
-alto D_D se muestran **sin órbita** y con nota («no verificable de antemano»).
-
-**F3-E1 (datos y órbitas), F3-E2 (escena) y F3-E3 (actualización diaria) hechas y
-verificadas en producción.** Siguiente: E4, cierre de la Fase 3 (pendiente de OK del usuario).
+**Fase 3 cerrada** (`docs/cierres/fase-3.md`, 2026-10-08), pendiente de confirmación del
+usuario para empezar la Fase 4 (colección y fichas con la API de Claude en build). Decisión del
+usuario (2026-10-06): opción (a), los eventos del grupo de alto D_D se muestran **sin órbita** y
+con nota («no verificable de antemano»). Cierre: detalle del evento al principio del panel y
+energías tal como las publica el CNEOS (sin redondear); `npm run cierre:fase-3`.
 
 **F3-E3:** `.github/workflows/cneos-diario.yml` (07:30 UTC y manual): descarga; si cambió
 `data/cneos/eventos.json`, órbitas incrementales + reporte; lint, tests y build (con auditoría)
@@ -44,6 +44,8 @@ desactiva los workflows programados tras 60 días sin actividad en el repositori
   nube sesgada (> 10 % de clones descartados).
 - Auditoría ampliada (sección F): resumen = respuesta cruda, fecha de actualización = consulta,
   criterio = Tabla 4, σ y resúmenes = archivos de órbita. Test: ningún texto dice «en vivo».
+
+**F3-E1 (datos y órbitas):**
 
 - `npm run datos:cneos` = `datos:cneos:descargar` (respuesta cruda completa a
   `data/cneos/eventos.json`, solo se reescribe si cambian los datos) + `datos:cneos:orbitas`
@@ -245,5 +247,6 @@ tiempo · F1-E6 ficha, accesibilidad (axe WCAG 2.1 AA: 0 violaciones), rendimien
 F2-E1 dataset de 25 caídas · F2-E2 verificación cruzada (aprobada, `docs/reportes/cruzada.md`;
 Almahata Sitta → JPL por decisión del usuario del 2026-10-05) · F2-E3 regiones de origen ·
 F2-E4 escena con las 25 caídas (catálogo, filtros, nubes, regiones) · Cierre F2 (auditoría de
-trazabilidad, licencias, publicación preparada).
+trazabilidad, licencias, publicación preparada) · F3-E1 datos y órbitas del CNEOS · F3-E2 modo
+CNEOS · F3-E3 actualización diaria · Cierre F3 (`docs/cierres/fase-3.md`).
 Deuda técnica y riesgos: `docs/cierres/fase-1.md`.

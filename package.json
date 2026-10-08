@@ -29,7 +29,8 @@
     "datos:cneos:descargar": "tsx pipeline/cneos-descargar.ts",
     "datos:cneos:orbitas": "tsx pipeline/cneos-orbitas.ts",
     "datos:cneos": "npm run datos:cneos:descargar && npm run datos:cneos:orbitas",
-    "reporte:cneos": "tsx pipeline/reporte-cneos.ts"
+    "reporte:cneos": "tsx pipeline/reporte-cneos.ts",
+    "cierre:fase-3": "tsx pipeline/grabar-fase-3.ts"
   },
   "license": "MIT",
   "type": "module",

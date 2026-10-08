@@ -8,7 +8,6 @@ import {
   COLOR_LEYENDA,
   comparacionChelyabinsk,
   cumpleFiltroCneos,
-  dosCifras,
   grupoLeyenda,
   rango,
   recientes,
@@ -33,6 +32,8 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, texto?: string, clase
 }
 const num = (x: number, dec: number) =>
   x.toLocaleString('es', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+/** Valor tal como lo publica el CNEOS (sin redondear; solo formato local). */
+const publicado = (x: number) => x.toLocaleString('es', { maximumFractionDigits: 6 });
 export const fechaUtc = (iso: string, conHora = true) =>
   new Intl.DateTimeFormat('es', {
     dateStyle: 'long',
@@ -81,8 +82,8 @@ function detalle(ev: Evento, r: ResumenCneos, ktChely: number | undefined): HTML
     el(
       'p',
       t('cneos.evento.energia', {
-        e: dosCifras(ev.energia_radiada_e10j),
-        kt: dosCifras(ev.impacto_kt),
+        e: publicado(ev.energia_radiada_e10j),
+        kt: publicado(ev.impacto_kt),
       }),
       'nota',
     ),
@@ -95,7 +96,7 @@ function detalle(ev: Evento, r: ResumenCneos, ktChely: number | undefined): HTML
         c
           ? t(c.menor ? 'cneos.evento.comparacion.menor' : 'cneos.evento.comparacion.mayor', {
               factor: c.factor,
-              ref: ktChely.toLocaleString('es'), // tal como lo publica el CNEOS
+              ref: publicado(ktChely),
             })
           : t('cneos.evento.comparacion.igual'),
         'nota',
@@ -229,7 +230,7 @@ export function montarPanelCneos(resumen: ResumenCneos, inicial?: string) {
       const punto = el('span', undefined, 'punto');
       punto.style.background = COLOR_LEYENDA[grupoLeyenda(e.calidad)];
       punto.setAttribute('aria-hidden', 'true');
-      b.append(punto, `${fechaUtc(e.fecha, false)} · ${dosCifras(e.impacto_kt)} kt`);
+      b.append(punto, `${fechaUtc(e.fecha, false)} · ${publicado(e.impacto_kt)} kt`);
       b.addEventListener('click', () => seleccionar(e.id));
       li.append(b);
       lista.append(li);
@@ -237,6 +238,7 @@ export function montarPanelCneos(resumen: ResumenCneos, inicial?: string) {
     oyentesFiltro.forEach((f) => f(ids));
   }
 
+  let primera = true;
   function seleccionar(id: string): void {
     if (!existe(id)) return;
     actual = id;
@@ -248,6 +250,9 @@ export function montarPanelCneos(resumen: ResumenCneos, inicial?: string) {
         ktChely,
       ),
     );
+    // El detalle está arriba del panel: al elegir desde la lista o el globo se lleva a la vista
+    if (!primera) caja.scrollIntoView({ block: 'nearest' });
+    primera = false;
     poblarLista();
     oyentes.forEach((f) => f(id));
   }

@@ -528,3 +528,8 @@ summary:focus-visible {
   opacity: 0.45;
   cursor: not-allowed;
 }
+
+#cneos-evento {
+  border-bottom: 1px solid var(--borde);
+  margin-bottom: 8px;
+}
