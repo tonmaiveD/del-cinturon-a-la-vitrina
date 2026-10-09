@@ -41,6 +41,8 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
 
   const vistas = new Map<NombreVista, Vista>();
   let activa: NombreVista = 'tierra';
+  /** Último tamaño del lienzo con el que se dimensionaron los búferes («ancho×alto»). */
+  let tamano = '';
 
   function registrar(
     nombre: NombreVista,
@@ -68,6 +70,7 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
       ),
     );
     vistas.set(nombre, { escena, camara, controles, composer, alCuadro });
+    tamano = ''; // vista nueva: sus búferes se dimensionan una vez
     ajustar();
     return { camara, controles };
   }
@@ -89,8 +92,15 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
   function ajustar(): void {
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
-    renderer.setSize(w, h, false);
-    etiquetas.setSize(w, h);
+    // Los búferes (render y postprocesado) solo se recrean si cambia el tamaño del lienzo; un
+    // cambio de la zona libre (la hoja móvil sube o baja) solo mueve el encuadre.
+    const nuevoTamano = `${w}x${h}`;
+    const cambiaTamano = nuevoTamano !== tamano;
+    tamano = nuevoTamano;
+    if (cambiaTamano) {
+      renderer.setSize(w, h, false);
+      etiquetas.setSize(w, h);
+    }
     // El centro de la proyección se lleva al centro de la zona libre (hoja móvil abierta, etc.)
     const a = areaLibre();
     const dx = a ? w / 2 - (a.izquierda + a.derecha) / 2 : 0;
@@ -100,7 +110,7 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
       if (Math.abs(dx) > 1 || Math.abs(dy) > 1) v.camara.setViewOffset(w, h, dx, dy, w, h);
       else v.camara.clearViewOffset();
       v.camara.updateProjectionMatrix();
-      v.composer.setSize(w, h, false);
+      if (cambiaTamano) v.composer.setSize(w, h, false);
     }
   }
   function fijarAreaLibre(f: () => AreaLibre | null): void {

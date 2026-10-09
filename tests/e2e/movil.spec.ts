@@ -13,7 +13,8 @@ const medir = (page: Page) =>
       scrollHorizontal: document.documentElement.scrollWidth > innerWidth,
     };
   });
-const altura = (page: Page) => page.locator('#hoja').getAttribute('data-altura');
+/** La altura de la hoja (atributo): con toHaveAttribute la aserción espera a que cambie. */
+const hoja = (page: Page) => page.locator('#hoja');
 
 test.describe('hoja de paneles en móvil (M02, estilo Mapas de Apple)', () => {
   test.skip(({ isMobile }) => !isMobile, 'solo con emulación táctil');
@@ -27,7 +28,7 @@ test.describe('hoja de paneles en móvil (M02, estilo Mapas de Apple)', () => {
       await page.setViewportSize({ width: w, height: h });
       await page.goto('/');
       await listo(page);
-      expect(await altura(page)).toBe('compacta');
+      await expect(hoja(page)).toHaveAttribute('data-altura', 'compacta');
       const m = await medir(page);
       expect(m.libre).toBeGreaterThanOrEqual(0.6);
       expect(m.scrollHorizontal).toBe(false);
@@ -43,7 +44,7 @@ test.describe('hoja de paneles en móvil (M02, estilo Mapas de Apple)', () => {
     await listo(page);
     // Una pestaña desde la altura compacta sube la hoja y muestra solo su sección
     await page.getByRole('button', { name: 'Escena' }).click();
-    expect(await altura(page)).toBe('media');
+    await expect(hoja(page)).toHaveAttribute('data-altura', 'media');
     await expect(page.getByRole('button', { name: 'Girar a la izquierda' })).toBeVisible();
     await expect(page.getByLabel('Pieza')).toBeHidden();
     await page.getByRole('button', { name: 'Explorar' }).click();
@@ -53,10 +54,10 @@ test.describe('hoja de paneles en móvil (M02, estilo Mapas de Apple)', () => {
     // El asa recorre las alturas
     const asa = page.locator('#hoja-asa');
     await asa.click();
-    expect(await altura(page)).toBe('completa');
-    expect((await medir(page)).libre).toBeLessThan(0.15);
+    await expect(hoja(page)).toHaveAttribute('data-altura', 'completa');
+    await expect.poll(async () => (await medir(page)).libre).toBeLessThan(0.15);
     await asa.click();
-    expect(await altura(page)).toBe('compacta');
+    await expect(hoja(page)).toHaveAttribute('data-altura', 'compacta');
 
     // «Ver órbitas» cambia de vista y la etiqueta pasa a «Ver el globo»
     await page.getByRole('button', { name: 'Ver órbitas' }).click();
@@ -76,9 +77,9 @@ test.describe('hoja de paneles en móvil (M02, estilo Mapas de Apple)', () => {
     await page.mouse.down();
     await page.mouse.move(x, y - 200, { steps: 5 });
     await page.mouse.up();
-    expect(await altura(page)).toBe('media');
+    await expect(hoja(page)).toHaveAttribute('data-altura', 'media');
     await page.getByRole('button', { name: 'Ver el recorrido' }).click();
-    expect(await altura(page)).toBe('compacta');
+    await expect(hoja(page)).toHaveAttribute('data-altura', 'compacta');
     await expect(page.getByRole('button', { name: 'Saltar animación' })).toBeVisible();
   });
 
@@ -104,7 +105,8 @@ test.describe('hoja de paneles en móvil (M02, estilo Mapas de Apple)', () => {
     expect(r.x).toBeGreaterThan(900 * 0.5);
     expect((await medir(page)).scrollHorizontal).toBe(false);
     await page.getByRole('button', { name: 'Explorar' }).click();
-    const r2 = (await page.locator('#hoja').boundingBox())!;
-    expect(r2.height).toBeGreaterThan(390);
+    await expect
+      .poll(async () => (await page.locator('#hoja').boundingBox())!.height)
+      .toBeGreaterThan(390);
   });
 });
