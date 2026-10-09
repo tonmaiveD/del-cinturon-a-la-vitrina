@@ -80,7 +80,47 @@ Plan original:
 | M28       | Mantener visible la descripción del método tras el recorrido (no reemplazarla por el mensaje de llegada)                                            | P2                                 |
 | Doc amigo | Corregir: 2008 TC3 «el primero», el alcance del control automático, «leídas en el original», el teclado, la salvedad de Pages, el título «Untitled» | P1 (M23, M24, M10, M40)            |
 
-### Etapa B · Móvil y accesibilidad real (2–3 sesiones, M)
+### Etapa B · Móvil y accesibilidad real · **hecha el 2026-10-09**
+
+Resultado, en cuatro commits:
+
+- **M02.** `src/ui/hoja.ts`: en pantallas de hasta 640 px de ancho, o en horizontal con poca
+  altura, los dos paneles van en una sola hoja inferior (lateral en horizontal). La hoja tiene
+  accesos a Datos y Controles y botones Ampliar y Ocultar. La cámara se centra en la zona libre
+  (`motor.fijarAreaLibre`, con `ResizeObserver`). Zona libre medida: 57 % de la altura en
+  320×568 y 58 % en 390×844 (prueba: `tests/e2e/movil.spec.ts`). Escritorio sin cambios.
+- **M04.** Botones de Cámara (girar en cuatro direcciones, acercar, alejar, restablecer).
+  Además, la escena se puede enfocar con Tab (`role="application"`): con el foco en ella, las
+  flechas giran la cámara sin mover el reloj, más y menos acercan o alejan, y cero restablece
+  la vista. Prueba: `tests/e2e/camara.spec.ts`, que comprueba que la cámara se mueve, no solo
+  el foco.
+- **M03.** La lista del CNEOS contiene ahora los 1074 registros, paginados de 15 en 15. Se puede
+  buscar por fecha, y cada evento dice su tipo en texto. Los 186 registros sin ubicación se
+  abren con su explicación, y la leyenda tiene un grupo «sin ubicación» (antes se contaban
+  como «solo posición»). El contador distingue los eventos de la lista de los situados en el
+  globo.
+- **M07.** `src/ui/avisos.ts` muestra un aviso fijo, también visible en móvil, con
+  «Reintentar» en estos casos:
+  - fallo de los datos del CNEOS (la promesa fallida ya no queda guardada);
+  - nube de órbitas;
+  - recorrido de una pieza;
+  - índice de recorridos;
+  - textura (el globo queda liso y la escena se puede usar);
+  - pérdida del contexto WebGL, con recuperación automática.
+
+  Sin WebGL, el aviso lo explica y los paneles siguen funcionando. `cargarJson` tiene un
+  tiempo límite de 30 s y rechaza respuestas que no sean un objeto JSON. Prueba:
+  `tests/e2e/fallos.spec.ts`, con 404, JSON inválido, red cortada, contexto perdido y sin
+  WebGL.
+
+Verificación: 238 tests unitarios, 69 e2e (7 omitidas por proyecto) y auditoría sin errores.
+La carga inicial en 4G lento fue de 2,75 s. Los fps informativos de la vista solar (13,5)
+salieron más bajos que antes porque la máquina estaba cargada por la sincronización de iCloud.
+
+Pendiente de esta área (no bloqueante): probar en un teléfono real, con lector de pantalla
+real y con zoom del navegador al 200–400 % (M21).
+
+Plan original:
 
 | Id  | Qué                                                                                                                                       | Nuestra prioridad |
 | --- | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |

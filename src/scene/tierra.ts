@@ -70,6 +70,8 @@ export function crearVistaTierra(
   texturasUrl: string[],
   aproximacion: Muestra[],
   radioMeteoroideKm?: number,
+  /** Fallo de la textura inicial: el globo queda sin imagen y se ofrece reintentar. */
+  alFallarTextura?: (reintentar: () => void) => void,
 ) {
   const escena = new Scene();
   escena.background = new Color(0x000000);
@@ -96,15 +98,28 @@ export function crearVistaTierra(
   const cargar = (k: number): void => {
     const url = texturasUrl[k];
     if (!url) return;
-    cargador.load(url, (tex) => {
-      tex.colorSpace = SRGBColorSpace;
-      tex.anisotropy = 8;
-      material.map?.dispose();
-      material.map = tex;
-      material.needsUpdate = true;
-      if (k === 0) alCargarPrimera?.();
-      cargar(k + 1);
-    });
+    cargador.load(
+      url,
+      (tex) => {
+        tex.colorSpace = SRGBColorSpace;
+        tex.anisotropy = 8;
+        material.map?.dispose();
+        material.map = tex;
+        material.color.set(0xffffff);
+        material.needsUpdate = true;
+        if (k === 0) alCargarPrimera?.();
+        cargar(k + 1);
+      },
+      undefined,
+      () => {
+        // La de mayor resolución es una mejora: si falla, se conserva la inicial
+        if (k > 0) return;
+        // Sin imagen: globo liso (sin inventar continentes) y la escena sigue siendo usable
+        material.color.set(0x29415e);
+        alCargarPrimera?.();
+        alFallarTextura?.(() => cargar(0));
+      },
+    );
   };
   cargar(0);
 

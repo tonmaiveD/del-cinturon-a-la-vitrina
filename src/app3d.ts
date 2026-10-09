@@ -18,6 +18,7 @@ import type { Muestra } from './timeline/interpolacion';
 import { crearReloj, VELOCIDADES } from './timeline/reloj';
 import { escribirEstadoUrl, leerEstadoUrl, type Modo } from './ui/estado-url';
 import type { ControlModo } from './ui/modo';
+import { avisarError, quitarAviso } from './ui/avisos';
 import { areaLibre } from './ui/hoja';
 import { coordenada, nombrePieza, type PanelPieza } from './ui/panel-pieza';
 
@@ -79,6 +80,7 @@ export async function iniciar3D(
     [{ orbitas, trayectoria }, panel] = await Promise.all([datosPromesa, panelPromesa]);
   } catch {
     descripcion.textContent = t('error.datos');
+    avisarError('inicio', t('error.inicio'), () => location.reload());
     return;
   }
 
@@ -93,6 +95,10 @@ export async function iniciar3D(
     [urlTextura(1024), urlTextura(movil ? 2048 : 4096)],
     trayectoria.geo_eqj_km,
     radioMet,
+    (reintentar) => avisarError('textura', t('error.textura'), reintentar),
+  );
+  motor.alContexto((perdido) =>
+    perdido ? avisarError('contexto', t('error.contexto')) : quitarAviso('contexto'),
   );
   const camT = motor.registrar('tierra', tierra.escena, 1e-4, 2e3, (cam) => tierra.actualizar(cam));
   motor.etiqueta(t('etiqueta.bolido'), tierra.marcador, 'bolido');
@@ -444,9 +450,11 @@ export async function iniciar3D(
       tr = await cacheTray.get(id)!;
     } catch {
       cacheTray.delete(id);
-      if (pedido === pedidoTray) descripcion.textContent = t('error.datos');
+      if (pedido === pedidoTray)
+        avisarError('trayectoria', t('error.trayectoria'), () => void cargarTrayectoriaPieza(id));
       return;
     }
+    quitarAviso('trayectoria');
     // Llegó tarde: se eligió otra pieza o se cambió de modo
     if (pedido !== pedidoTray || modo !== 'pedigri' || panel.actual() !== id) return;
     trayPieza = tr;
@@ -484,12 +492,14 @@ export async function iniciar3D(
     try {
       const o = await cargarJson<OrbitaCneos>(`data/cneos/orbitas/${id}.json`);
       if (pedido !== pedidoOrbita || 'error' in o) return; // llegó tarde o sin nube
+      quitarAviso('orbita');
       nClonesCneos = o.clones.length;
       asegurarSolar().nubeCneos.fijar(o.clones, o.nominal);
       aplicarModoSolar();
       if (!secuencia.activa()) descripcion.textContent = descripcionVista();
     } catch {
-      if (pedido === pedidoOrbita) descripcion.textContent = t('error.datos');
+      if (pedido === pedidoOrbita)
+        avisarError('orbita', t('error.orbita'), () => void cargarNubeCneos(id));
     }
   }
 
@@ -533,9 +543,13 @@ export async function iniciar3D(
     try {
       pc = await cneosCtl.asegurarCneos();
     } catch {
+      // El modo de pedigrí sigue funcionando; el reintento vuelve a pedir los datos
+      if (cneosCtl.modo.actual() === 'cneos')
+        avisarError('cneos', t('error.cneos'), () => void cambiarModo('cneos', tInicial));
       descripcion.textContent = t('error.datos');
       return;
     }
+    quitarAviso('cneos');
     if (cneosCtl.modo.actual() !== 'cneos') return; // se volvió al otro modo mientras cargaba
     modo = 'cneos';
     if (!panelCneos) {
@@ -809,16 +823,20 @@ export async function iniciar3D(
   aplicarPieza(panel.actual(), inicial.t);
   cneosCtl.modo.alCambiar((m) => void cambiarModo(m));
   // Índice de piezas con trayectoria animada (archivo pequeño; no retrasa la escena)
-  void cargarJson<{ piezas: string[] }>('data/trayectorias/indice.json')
-    .then((i) => {
-      indiceTray = new Set(i.piezas);
-      const id = panel.actual();
-      if (modo === 'pedigri' && id !== 'chelyabinsk' && indiceTray.has(id)) {
-        notaRecorrido.hidden = true;
-        void cargarTrayectoriaPieza(id);
-      }
-    })
-    .catch(() => undefined); // sin índice: solo Chelyabinsk tiene recorrido
+  const cargarIndiceTray = () =>
+    cargarJson<{ piezas: string[] }>('data/trayectorias/indice.json')
+      .then((i) => {
+        quitarAviso('indice');
+        indiceTray = new Set(i.piezas);
+        const id = panel.actual();
+        if (modo === 'pedigri' && id !== 'chelyabinsk' && indiceTray.has(id)) {
+          notaRecorrido.hidden = true;
+          void cargarTrayectoriaPieza(id);
+        }
+      })
+      // Sin índice solo Chelyabinsk tiene recorrido: se avisa y se puede reintentar
+      .catch(() => avisarError('indice', t('error.indice'), () => void cargarIndiceTray()));
+  void cargarIndiceTray();
   if (cneosCtl.modo.actual() === 'cneos') void cambiarModo('cneos', inicial.t);
 
   // Selección con el ratón: clic (sin arrastre) sobre un marcador del globo

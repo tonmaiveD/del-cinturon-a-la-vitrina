@@ -6,7 +6,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 - Verificados: 472
 - Pendientes mostrados con aviso: 25
 - Calculados con método documentado: 29
-- Convenciones visuales o de notación: 23
+- Convenciones visuales o de notación: 25
 - **Errores: 0**
 
 ## Pieza: almahata-sitta
@@ -721,4 +721,6 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | cneos.orbita.hiperbolicas | 1 | src/i18n/es.json | convencion | definición de órbita hiperbólica (excentricidad ≥ 1) |
 | cneos.orbita.metodo | 2025 | src/i18n/es.json | convencion | año de la cita (Peña-Asensio et al. 2025) |
 | cneos.orbita.no-verificable | 2025 | src/i18n/es.json | convencion | año de la cita (Peña-Asensio et al. 2025) |
+| error.webgl | 3 | src/i18n/es.json | convencion | nombre del tipo de visualización («3D») |
+| error.contexto | 3 | src/i18n/es.json | convencion | nombre del tipo de visualización («3D») |
 | radio visual del meteoroide | 897587 km | src/scene/sistema-solar.ts | convencion | el texto dice «~900 000 km» |

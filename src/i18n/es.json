@@ -196,5 +196,14 @@
   "cneos.evento.sin-ubicacion": "El CNEOS no publica la ubicación de este evento: no aparece en el globo.",
   "cneos.orbita.sin-ubicacion": "Sin órbita ni trayectoria: sin ubicación publicada no se pueden calcular.",
   "desc.tierra.cneos.sin-ubicacion": " El evento seleccionado no tiene ubicación publicada, así que no aparece en el globo.",
-  "cneos.orbita.pendiente": "La órbita de este evento todavía no se ha calculado."
+  "cneos.orbita.pendiente": "La órbita de este evento todavía no se ha calculado.",
+  "error.reintentar": "Reintentar",
+  "error.inicio": "No se pudieron cargar los datos básicos de la visualización. Comprueba la conexión y vuelve a intentarlo.",
+  "error.webgl": "Este navegador o dispositivo no puede mostrar la escena 3D (WebGL no disponible). Los paneles, los datos y las fuentes siguen disponibles.",
+  "error.cneos": "No se pudieron cargar los bólidos del CNEOS. El modo de meteoritos con pedigrí sigue disponible.",
+  "error.orbita": "No se pudo cargar la nube de órbitas de este bólido.",
+  "error.trayectoria": "No se pudo cargar el recorrido animado de esta pieza.",
+  "error.indice": "No se pudo comprobar qué piezas tienen recorrido animado.",
+  "error.textura": "No se pudo cargar la imagen de la Tierra: el globo se muestra sin ella.",
+  "error.contexto": "La escena 3D se interrumpió porque el navegador liberó la tarjeta gráfica. Debería recuperarse sola en unos segundos; si no, recarga la página."
 }

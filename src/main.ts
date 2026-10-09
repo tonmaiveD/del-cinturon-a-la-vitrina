@@ -4,6 +4,7 @@
  */
 import { t } from './i18n';
 import { montarDialogos } from './ui/dialogos';
+import { avisarError, hayWebgl } from './ui/avisos';
 import { montarHoja } from './ui/hoja';
 import type { Catalogo } from './ui/catalogo';
 import { leerEstadoUrl } from './ui/estado-url';
@@ -43,14 +44,25 @@ function asegurarCneos(): Promise<PanelCneos> {
   panelCneos ??= Promise.all([
     cargarJson<ResumenCneos>('data/cneos/eventos.json'),
     import('./cneos/panel'),
-  ]).then(([r, { montarPanelCneos }]) => montarPanelCneos(r, estado.evento));
+  ])
+    .then(([r, { montarPanelCneos }]) => montarPanelCneos(r, estado.evento))
+    .catch((e: unknown) => {
+      panelCneos = undefined; // un fallo no queda guardado: el reintento vuelve a pedirlo
+      throw e;
+    });
   return panelCneos;
 }
 if (modo.actual() === 'cneos') void asegurarCneos();
 modo.alCambiar((m) => m === 'cneos' && void asegurarCneos());
 
-import('./app3d')
-  .then(({ iniciar3D }) => iniciar3D(datos, panel, { modo, asegurarCneos }))
-  .catch(() => {
-    document.querySelector('#descripcion')!.textContent = t('error.datos');
-  });
+// Sin WebGL no se intenta la escena: los paneles (selección, procedencia, fuentes) siguen
+if (!hayWebgl()) {
+  document.querySelector('#descripcion')!.textContent = t('error.webgl');
+  avisarError('webgl', t('error.webgl'));
+} else
+  import('./app3d')
+    .then(({ iniciar3D }) => iniciar3D(datos, panel, { modo, asegurarCneos }))
+    .catch(() => {
+      document.querySelector('#descripcion')!.textContent = t('error.datos');
+      avisarError('inicio', t('error.inicio'), () => location.reload());
+    });

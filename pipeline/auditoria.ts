@@ -33,6 +33,8 @@ export interface Fila {
 export const CIFRAS_PERMITIDAS: Record<string, { cifras: string[]; motivo: string }> = {
   'app.estado': { cifras: ['3'], motivo: 'número de fase del proyecto' },
   'escena.descripcion': { cifras: ['3'], motivo: 'nombre del tipo de visualización («3D»)' },
+  'error.webgl': { cifras: ['3'], motivo: 'nombre del tipo de visualización («3D»)' },
+  'error.contexto': { cifras: ['3'], motivo: 'nombre del tipo de visualización («3D»)' },
   'escala.visual.tierra': {
     cifras: ['60'],
     motivo: 'convención visual: radio dibujado del marcador en escala visual (src/scene/tierra.ts)',

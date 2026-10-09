@@ -16,6 +16,8 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   automática (`cneos-diario.yml`, 07:30 UTC; GitHub puede retrasarla horas).
 - Verificación al cierre: 234 tests unitarios, 41 e2e (escritorio + móvil), axe 0 violaciones,
   auditoría 549 datos / 0 errores, carga inicial 2,7–2,9 s en 4G lento, modo CNEOS 1,5–2,2 s.
+- 2026-10-09: etapas A y B de la deuda técnica (auditoría externa) hechas; ver
+  `docs/deuda-tecnica.md`. Ahora: 238 unitarios, 69 e2e, carga inicial 2,75 s.
 
 ### Siguiente: Etapa A de deuda técnica y/o Fase 4 (colección y fichas con la API de Claude)
 
@@ -72,9 +74,11 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
 **Fuente única: `docs/deuda-tecnica.md`** (consolida la deuda previa con la auditoría externa
 del 2026-10-09, M01–M42, verificada contra el código; copia de la auditoría en `revision/`).
 Etapas: **A** correcciones rápidas (M01 borradores fuera del build, M05 tecla I, M06 estado
-vacío CNEOS, M24–M26, M28, documento del amigo) **hecha el 2026-10-09**; **B** móvil y accesibilidad (M02–M04, M07); **C** rigor CNEOS (M18 → M09
+vacío CNEOS, M24–M26, M28, documento del amigo) **hecha el 2026-10-09**; **B** móvil y
+accesibilidad (M02 hoja móvil, M04 cámara con teclado, M03 lista completa CNEOS, M07 fallos
+recuperables) **hecha el 2026-10-09**; **C** rigor CNEOS (M18 → M09
 radiante geocéntrico + cobertura, M08, M27); **D** CI (M20, M19, M30). Siguiente: elegir
-entre B y la Fase 4.
+entre C, D y la Fase 4.
 
 ### Riesgos
 

@@ -132,7 +132,18 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
   // Medición de fps (promedio móvil) para verificación de rendimiento
   let fps = 0;
   let ultimo = performance.now();
-  renderer.setAnimationLoop(() => {
+  const oyentesContexto = new Set<(perdido: boolean) => void>();
+  canvas.addEventListener('webglcontextlost', (e) => {
+    e.preventDefault(); // permite que el navegador lo restaure
+    renderer.setAnimationLoop(null);
+    oyentesContexto.forEach((f) => f(true));
+  });
+  canvas.addEventListener('webglcontextrestored', () => {
+    renderer.setAnimationLoop(bucle);
+    oyentesContexto.forEach((f) => f(false));
+  });
+  renderer.setAnimationLoop(bucle);
+  function bucle(): void {
     const ahora = performance.now();
     const dt = Math.min(0.1, (ahora - ultimo) / 1000);
     fps = fps * 0.95 + (1000 / Math.max(1, ahora - ultimo)) * 0.05;
@@ -144,7 +155,7 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
     v.alCuadro?.(v.camara);
     v.composer.render();
     etiquetas.render(v.escena, v.camara);
-  });
+  }
 
   const vista = (n: NombreVista) => vistas.get(n)!;
   return {
@@ -155,6 +166,7 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
     vista,
     ajustar,
     fijarAreaLibre,
+    alContexto: (f: (perdido: boolean) => void) => oyentesContexto.add(f),
     activa: () => activa,
     fps: () => fps,
   };

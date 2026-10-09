@@ -3,10 +3,15 @@ const BASE = import.meta.env.BASE_URL;
 
 export const urlTextura = (ancho: number) => `${BASE}texturas/tierra-${ancho}.webp`;
 
+/** Tiempo máximo de una descarga de datos (ms): una red colgada no deja la carga pendiente. */
+const TIEMPO_MAXIMO_MS = 30_000;
+
 export async function cargarJson<T>(ruta: string): Promise<T> {
-  const r = await fetch(`${BASE}${ruta}`);
+  const r = await fetch(`${BASE}${ruta}`, { signal: AbortSignal.timeout?.(TIEMPO_MAXIMO_MS) });
   if (!r.ok) throw new Error(`${ruta}: ${r.status}`);
-  return r.json() as Promise<T>;
+  const datos: unknown = await r.json(); // lanza si el JSON es inválido
+  if (typeof datos !== 'object' || datos === null) throw new Error(`${ruta}: no es un objeto`);
+  return datos as T;
 }
 
 /**
