@@ -1,6 +1,6 @@
 # Cierre de la Fase 3: bólidos del CNEOS
 
-Fecha: 2026-10-08. Estado: **completa, pendiente de tu confirmación** para pasar a la Fase 4.
+Fecha: 2026-10-08. Estado: **cerrada**, confirmada por el usuario el 2026-10-09.
 
 Publicado en https://tonmaived.github.io/del-cinturon-a-la-vitrina/ (modo «Bólidos del CNEOS»).
 

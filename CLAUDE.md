@@ -5,11 +5,14 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 
 ## Retomar aquí
 
-### Estado (2026-10-08)
+### Estado (2026-10-09)
 
-- **Fases 0–3 cerradas** (`docs/cierres/fase-1.md`, `fase-2.md`, `fase-3.md`) y **etapa extra
-  de recorridos animados** hecha: las 25 piezas con pedigrí tienen recorrido. La Fase 3 está
-  pendiente de confirmación explícita del usuario (pidió antes el plan de la Fase 4).
+- **Fases 0–3 cerradas** (`docs/cierres/fase-1.md`, `fase-2.md`, `fase-3.md`); la Fase 3
+  confirmada por el usuario el 2026-10-09. **Etapa extra de recorridos animados** hecha: las 25
+  piezas con pedigrí tienen recorrido.
+- **Ubicación:** `~/Proyectos/del-cinturon-a-la-vitrina` desde el 2026-10-09, fuera de iCloud.
+  Hasta que el usuario la borre, queda una copia antigua en `~/Documents/del-cinturon-a-la-vitrina`
+  (iCloud); **no trabajar en ella**.
 - Publicado en https://tonmaived.github.io/del-cinturon-a-la-vitrina/ (repo público
   `tonmaiveD/del-cinturon-a-la-vitrina`). La CI (`ci.yml`) publica desde `main` si pasan
   lint, tests, build (con validación y auditoría) y e2e. Actualización diaria del CNEOS
@@ -26,7 +29,9 @@ objetivo (la web de la tienda del amigo: confianza, presentación, uso) dividido
 Lo que depende del usuario corre en paralelo, y la Fase 4 se adelanta si llegan sus datos.
 
 0. **Hoy:** confirmar que la CI publicó la hoja móvil, que el usuario la pruebe en su iPhone
-   16 Pro Max, cierre formal de la Fase 3 y decisión sobre sacar el proyecto de iCloud.
+   16 Pro Max (pendiente: la CI de la hoja aún no publicó), cierre formal de la Fase 3 (hecho)
+   y sacar el proyecto de iCloud (hecho: copiado a `~/Proyectos`; falta que el usuario
+   señale la carpeta nueva en GitHub Desktop y borre la antigua).
 1. **Arreglos rápidos (1 sesión):**
    - control de duración del recorrido: hoy dura unos 21 s fijos y el selector de velocidad
      solo afecta a «Reproducir» (medido: 21,6 s frente a 21,7 s);
@@ -91,6 +96,9 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
 ### Decisiones del usuario (no reabrir)
 
 - 2026-10-01: proyecto en `~/Documents/del-cinturon-a-la-vitrina`; todo en esta carpeta.
+  **Sustituida el 2026-10-09:** el proyecto vive en `~/Proyectos/del-cinturon-a-la-vitrina`,
+  fuera de iCloud, para que la sincronización no ralentice las pruebas ni suba a iCloud el
+  respaldo con el gmail. Todo sigue en esta carpeta.
 - 2026-10-05: Almahata Sitta → órbita principal JPL (telescópica); incertidumbres de Granvik &
   Brown solo documentadas, no infladas.
 - 2026-10-06: hosting GitHub Pages, repo público; licencias MIT (código) y CC BY 4.0 (datos y
@@ -119,9 +127,9 @@ entre C, D y la Fase 4.
 - Lectura sensacionalista de las 5 órbitas hiperbólicas (llevan aviso).
 - Criterio de fiabilidad del CNEOS basado en 18 eventos calibrados.
 - Rendimiento en móviles de gama baja sin medir.
-- La carpeta Documentos se sincroniza con **iCloud**: puede crear copias «archivo 2.ext»
-  (pasó con el video de la Fase 3, retiradas el 2026-10-08). Revisar `git status` antes de
-  cada commit y no añadir archivos con ese patrón.
+- Hasta el 2026-10-09 el proyecto estuvo en Documentos, que iCloud sincroniza. iCloud creaba
+  copias «archivo 2.ext» (el video de la Fase 3 y `.git/index 2`/`3`). Fuera de iCloud ya no
+  debería pasar, pero conviene revisar `git status` antes de cada commit.
 
 ### Notas operativas
 
@@ -138,9 +146,12 @@ entre C, D y la Fase 4.
   Playwright. Claude in Chrome: la pestaña del grupo puede estar en uso por el usuario; no
   tocar pestañas ajenas.
 - Etiquetas CSS2D: CSS2DRenderer escribe `transform` en línea → desplazar con `margin`.
-- **e2e locales con la máquina cargada** (iCloud `bird`/`fileproviderd` y Spotlight `mds_stores`
-  reaccionan a cada build en Documentos): fallos por tiempo agotado que desaparecen al repetir.
-  Usar `--workers=2` y repetir de uno en uno lo que falle antes de buscar un error de código.
+- **e2e locales con la máquina cargada** (Spotlight `mds_stores` y, mientras estuvo en
+  Documentos, iCloud `bird`/`fileproviderd`): fallos por tiempo agotado que desaparecen al
+  repetir. Usar `--workers=2` y repetir de uno en uno lo que falle antes de buscar un error de
+  código.
+- **CI sin GPU:** la escena va a unos 4 fps en GitHub. El límite por prueba en la CI es de
+  90 s (`playwright.config.ts`); en local, 30 s.
 - **Hoja móvil** (`src/ui/hoja.ts`): en móvil los controles están en pestañas; las pruebas
   e2e abren la correcta con `abrirPestana` (`tests/e2e/hoja.ts`) antes de interactuar.
 
