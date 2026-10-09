@@ -1,4 +1,5 @@
 import { expect, test, type Page, type Route } from '@playwright/test';
+import { abrirPestana } from './hoja';
 
 const listo = (page: Page) =>
   page.waitForFunction(() => (window as unknown as { __listo?: number }).__listo !== undefined);
@@ -16,6 +17,7 @@ test.describe('fallos recuperables (M07)', () => {
     await page.route('**/data/cneos/eventos.json', fallarPrimeras(1, error500));
     await page.goto('/');
     await listo(page);
+    await abrirPestana(page, 'explorar');
     await page.getByRole('button', { name: 'Bólidos del CNEOS' }).click();
     await expect(aviso(page)).toContainText('No se pudieron cargar los bólidos del CNEOS');
     await page.getByRole('button', { name: 'Reintentar' }).click();
@@ -27,12 +29,15 @@ test.describe('fallos recuperables (M07)', () => {
     await page.route('**/data/cneos/eventos.json', error500);
     await page.goto('/');
     await listo(page);
+    await abrirPestana(page, 'explorar');
     await page.getByRole('button', { name: 'Bólidos del CNEOS' }).click();
     await expect(aviso(page)).toContainText('No se pudieron cargar los bólidos del CNEOS');
+    await abrirPestana(page, 'explorar');
     await page.getByRole('button', { name: 'Meteoritos con pedigrí' }).click();
+    await abrirPestana(page, 'explorar');
     await page.getByLabel('Pieza').selectOption('pribram');
     await expect(page).toHaveURL(/pieza=pribram/);
-    await expect(page.getByRole('button', { name: 'Ver el recorrido' })).toBeEnabled();
+    await expect(page.locator('#recorrido')).toBeEnabled();
   });
 
   test('JSON inválido en la nube de un bólido: aviso y reintento', async ({ page }) => {
@@ -58,9 +63,9 @@ test.describe('fallos recuperables (M07)', () => {
     await page.goto('/?pieza=pribram');
     await listo(page);
     await expect(aviso(page)).toContainText('recorrido animado de esta pieza');
-    await expect(page.getByRole('button', { name: 'Ver el recorrido' })).toBeDisabled();
+    await expect(page.locator('#recorrido')).toBeDisabled();
     await page.getByRole('button', { name: 'Reintentar' }).click();
-    await expect(page.getByRole('button', { name: 'Ver el recorrido' })).toBeEnabled();
+    await expect(page.locator('#recorrido')).toBeEnabled();
     await expect(aviso(page)).toBeHidden();
   });
 
@@ -106,6 +111,7 @@ test.describe('fallos recuperables (M07)', () => {
     });
     await page.goto('/');
     await expect(aviso(page)).toContainText('WebGL no disponible');
+    await abrirPestana(page, 'explorar');
     await page.getByLabel('Pieza').selectOption('pribram');
     await expect(page.locator('#procedencia')).toContainText('Příbram');
   });

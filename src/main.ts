@@ -25,10 +25,10 @@ const catalogo = cargarJson<Catalogo>('data/catalogo.json');
 
 aplicarTextos();
 montarDialogos();
-montarHoja();
-// En pantallas pequeñas los bloques de texto empiezan plegados para no tapar la escena
+const hoja = montarHoja();
+// En pantallas pequeñas los filtros empiezan plegados (cada pestaña de la hoja ya separa el resto)
 if (window.matchMedia('(max-width: 640px)').matches)
-  document.querySelectorAll('.plegable').forEach((d) => d.removeAttribute('open'));
+  document.querySelectorAll('.plegable.filtros').forEach((d) => d.removeAttribute('open'));
 
 const estado = leerEstadoUrl(location.search, {
   pieza: 'chelyabinsk',
@@ -61,7 +61,7 @@ if (!hayWebgl()) {
   avisarError('webgl', t('error.webgl'));
 } else
   import('./app3d')
-    .then(({ iniciar3D }) => iniciar3D(datos, panel, { modo, asegurarCneos }))
+    .then(({ iniciar3D }) => iniciar3D(datos, panel, { modo, asegurarCneos, hoja }))
     .catch(() => {
       document.querySelector('#descripcion')!.textContent = t('error.datos');
       avisarError('inicio', t('error.inicio'), () => location.reload());

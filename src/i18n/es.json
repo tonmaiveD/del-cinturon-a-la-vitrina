@@ -167,12 +167,8 @@
   "cneos.restablecer": "Restablecer filtros",
   "cneos.fuera-filtro": "El evento seleccionado no cumple los filtros actuales: se muestra porque sigue seleccionado, no como resultado de la búsqueda.",
   "cneos.cuenta.fuera": "El evento seleccionado sigue en pantalla, pero no cumple estos filtros.",
-  "hoja.etiqueta": "Paneles",
-  "hoja.datos": "Datos",
-  "hoja.controles": "Controles",
-  "hoja.ampliar": "Ampliar",
-  "hoja.ocultar": "Ocultar",
-  "hoja.mostrar": "Mostrar",
+  "hoja.etiqueta": "Secciones del panel",
+  "hoja.ampliar": "Ampliar el panel",
   "camara.etiqueta": "Cámara",
   "camara.izquierda": "Girar a la izquierda",
   "camara.derecha": "Girar a la derecha",
@@ -205,5 +201,11 @@
   "error.trayectoria": "No se pudo cargar el recorrido animado de esta pieza.",
   "error.indice": "No se pudo comprobar qué piezas tienen recorrido animado.",
   "error.textura": "No se pudo cargar la imagen de la Tierra: el globo se muestra sin ella.",
-  "error.contexto": "La escena 3D se interrumpió porque el navegador liberó la tarjeta gráfica. Debería recuperarse sola en unos segundos; si no, recarga la página."
+  "error.contexto": "La escena 3D se interrumpió porque el navegador liberó la tarjeta gráfica. Debería recuperarse sola en unos segundos; si no, recarga la página.",
+  "hoja.explorar": "Explorar",
+  "hoja.escena": "Escena",
+  "hoja.info": "Info",
+  "hoja.reducir": "Reducir el panel",
+  "hoja.ver-tierra": "Ver el globo",
+  "hoja.ver-sistema-solar": "Ver órbitas"
 }

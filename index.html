@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <title>Del cinturón a la vitrina</title>
     <link rel="stylesheet" href="/src/ui/estilos.css" />
@@ -23,27 +23,44 @@
       <p class="estado" data-i18n="app.estado"></p>
     </header>
     <div id="hoja" class="hoja">
-      <nav class="hoja-barra" data-i18n-aria="hoja.etiqueta">
-        <button type="button" id="hoja-datos" class="boton" data-i18n="hoja.datos"></button>
-        <button type="button" id="hoja-controles" class="boton" data-i18n="hoja.controles"></button>
+      <div class="hoja-cabeza">
         <button
           type="button"
-          id="hoja-ampliar"
-          class="boton"
-          aria-pressed="false"
-          data-i18n="hoja.ampliar"
-        ></button>
-        <button
-          type="button"
-          id="hoja-ocultar"
-          class="boton"
-          aria-expanded="true"
+          id="hoja-asa"
+          class="hoja-asa"
           aria-controls="hoja-contenido"
-          data-i18n="hoja.ocultar"
-        ></button>
-      </nav>
+          aria-expanded="false"
+        >
+          <span aria-hidden="true"></span>
+        </button>
+        <p id="hoja-titulo" class="hoja-titulo" data-i18n="cargando"></p>
+        <div class="hoja-acciones">
+          <button type="button" id="hoja-recorrido" class="boton principal" hidden></button>
+          <button type="button" id="hoja-vista" class="boton"></button>
+        </div>
+        <div class="hoja-pestanas" role="group" data-i18n-aria="hoja.etiqueta">
+          <button
+            type="button"
+            class="boton"
+            data-pestana-boton="explorar"
+            data-i18n="hoja.explorar"
+          ></button>
+          <button
+            type="button"
+            class="boton"
+            data-pestana-boton="escena"
+            data-i18n="hoja.escena"
+          ></button>
+          <button
+            type="button"
+            class="boton"
+            data-pestana-boton="info"
+            data-i18n="hoja.info"
+          ></button>
+        </div>
+      </div>
       <div id="hoja-contenido" class="hoja-contenido">
-        <aside class="panel panel-pieza" aria-labelledby="titulo-modo">
+        <aside data-pestana="explorar" class="panel panel-pieza" aria-labelledby="titulo-modo">
           <div class="grupo modo" role="group" aria-labelledby="titulo-modo">
             <span id="titulo-modo" class="rotulo" data-i18n="modo.etiqueta"></span>
             <button
@@ -141,7 +158,7 @@
           </div>
         </aside>
         <main id="panel-controles" class="panel" aria-label="Controles">
-          <div class="grupo" role="group" aria-labelledby="titulo-vista">
+          <div data-pestana="escena" class="grupo" role="group" aria-labelledby="titulo-vista">
             <span id="titulo-vista" class="rotulo" data-i18n="vista.etiqueta"></span>
             <button
               type="button"
@@ -156,13 +173,18 @@
               data-i18n="vista.sistema-solar"
             ></button>
           </div>
-          <div class="grupo">
+          <div data-pestana="escena" class="grupo">
             <button type="button" id="escala" class="interruptor" role="switch" aria-checked="true">
               <span class="pista" aria-hidden="true"></span>
               <span data-i18n="escala.etiqueta"></span>
             </button>
           </div>
-          <div class="grupo camara" role="group" aria-labelledby="titulo-camara">
+          <div
+            data-pestana="escena"
+            class="grupo camara"
+            role="group"
+            aria-labelledby="titulo-camara"
+          >
             <span id="titulo-camara" class="rotulo" data-i18n="camara.etiqueta"></span>
             <button
               type="button"
@@ -219,9 +241,14 @@
               data-i18n="camara.restablecer"
             ></button>
           </div>
-          <p id="aviso-escala" class="aviso"></p>
-          <p id="aviso-marcadores" class="aviso" data-i18n="escala.marcadores"></p>
-          <section class="linea-tiempo" aria-labelledby="titulo-tiempo">
+          <p data-pestana="escena" id="aviso-escala" class="aviso"></p>
+          <p
+            data-pestana="escena"
+            id="aviso-marcadores"
+            class="aviso"
+            data-i18n="escala.marcadores"
+          ></p>
+          <section data-pestana="escena" class="linea-tiempo" aria-labelledby="titulo-tiempo">
             <h2 id="titulo-tiempo" class="rotulo" data-i18n="tiempo.titulo"></h2>
             <div class="grupo">
               <button
@@ -262,11 +289,11 @@
             />
             <output id="fecha-texto" for="fecha" class="fecha"></output>
           </section>
-          <details class="plegable descripcion-plegable" open>
+          <details data-pestana="info" class="plegable descripcion-plegable" open>
             <summary data-i18n="desc.titulo"></summary>
             <p id="descripcion" class="descripcion" aria-live="polite" data-i18n="cargando"></p>
           </details>
-          <div class="grupo pie">
+          <div data-pestana="info" class="grupo pie">
             <button type="button" id="abrir-ficha" class="boton" data-i18n="ficha.abrir"></button>
             <button
               type="button"

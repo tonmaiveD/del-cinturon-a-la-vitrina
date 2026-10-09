@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { abrirPestana } from './hoja';
 
 test('carga la vista Tierra, cambia a sistema solar y alterna la escala sin errores', async ({
   page,
@@ -10,6 +11,7 @@ test('carga la vista Tierra, cambia a sistema solar y alterna la escala sin erro
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Del cinturón a la vitrina');
   await expect(page.locator('#descripcion')).toContainText('trayectoria de entrada');
+  await abrirPestana(page, 'escena');
   await expect(page.getByRole('button', { name: 'Tierra', exact: true })).toHaveAttribute(
     'aria-pressed',
     'true',
@@ -17,8 +19,10 @@ test('carga la vista Tierra, cambia a sistema solar y alterna la escala sin erro
   await page.waitForTimeout(1500);
   await page.screenshot({ path: `tests/e2e/.resultados/tierra-${test.info().project.name}.png` });
 
+  await abrirPestana(page, 'escena');
   await page.getByRole('button', { name: 'Sistema solar' }).click();
   await expect(page.locator('#descripcion')).toContainText('órbitas posibles');
+  await abrirPestana(page, 'escena');
   const escala = page.getByRole('switch', { name: 'Escala visual' });
   await expect(page.locator('#aviso-escala')).toContainText('Escala visual');
   await escala.click();

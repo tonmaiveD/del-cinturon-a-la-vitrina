@@ -516,17 +516,42 @@ summary:focus-visible {
   margin-bottom: 8px;
 }
 
-/* Hoja de paneles (M02): invisible en escritorio; en móvil, una sola hoja con su barra */
+/* Hoja de paneles (M02, estilo Mapas de Apple): invisible en escritorio; en móvil, una hoja
+   con asa, tres alturas (compacta, media, completa) y pestañas que muestran una sección */
 .hoja,
 .hoja-contenido {
   display: contents;
 }
-.hoja-barra {
+.hoja-cabeza {
   display: none;
 }
 @media (max-width: 640px), (max-height: 500px) and (orientation: landscape) {
+  .cabecera {
+    padding-top: max(12px, env(safe-area-inset-top));
+    padding-left: max(16px, env(safe-area-inset-left));
+  }
   .cabecera .estado {
     display: none;
+  }
+  .aviso-error {
+    top: max(12px, env(safe-area-inset-top));
+  }
+  /* iOS amplía la página al enfocar un campo con letra menor de 16 px */
+  .selector,
+  input.selector {
+    font-size: 16px;
+  }
+  /* Objetivos táctiles de al menos 44 px (guía de Apple) */
+  .hoja .boton,
+  .hoja .interruptor,
+  .hoja .selector {
+    min-height: 44px;
+  }
+  .hoja .boton.icono {
+    min-width: 44px;
+  }
+  .etiqueta {
+    font-size: 11px;
   }
   .hoja {
     position: fixed;
@@ -536,42 +561,92 @@ summary:focus-visible {
     bottom: 0;
     display: flex;
     flex-direction: column;
-    max-height: 34vh;
-    max-height: 34dvh;
     background: var(--panel);
     border-top: 1px solid var(--borde);
-    border-radius: 12px 12px 0 0;
-    backdrop-filter: blur(6px);
-    padding-bottom: env(safe-area-inset-bottom);
+    border-radius: 14px 14px 0 0;
+    backdrop-filter: blur(8px);
+    padding: 0 max(12px, env(safe-area-inset-right)) env(safe-area-inset-bottom)
+      max(12px, env(safe-area-inset-left));
   }
-  .hoja[data-estado='ampliada'] {
-    max-height: 82vh;
-    max-height: 82dvh;
+  .hoja[data-altura='media'] {
+    height: 52vh;
+    height: 52dvh;
   }
-  .hoja[data-estado='oculta'] .hoja-contenido {
-    display: none;
+  .hoja[data-altura='completa'] {
+    height: calc(100vh - 56px);
+    height: calc(100dvh - 56px - env(safe-area-inset-top));
   }
-  .hoja-barra {
-    display: flex;
-    flex: none;
+  .hoja-cabeza {
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 6px;
-    flex-wrap: wrap;
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--borde);
+    flex: none;
+    padding-bottom: 8px;
+    touch-action: none; /* el arrastre del asa no desplaza la página */
   }
-  .hoja-barra .boton {
-    font-size: 0.82rem;
-    padding: 4px 10px;
-    min-height: 32px;
+  .hoja-asa {
+    justify-self: center;
+    width: 100%;
+    height: 22px;
+    padding: 0;
+    background: none;
+    border: 0;
+    cursor: grab;
   }
-  .hoja[data-estado='oculta'] .hoja-barra {
-    border-bottom: 0;
+  .hoja-asa span {
+    display: block;
+    width: 40px;
+    height: 5px;
+    margin: 0 auto;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.35);
+  }
+  .hoja-asa:focus-visible {
+    outline: 2px solid #8ec5ff;
+    outline-offset: -2px;
+    border-radius: 8px;
+  }
+  .hoja-titulo {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .hoja-acciones,
+  .hoja-pestanas {
+    display: flex;
+    gap: 8px;
+  }
+  .hoja-acciones .boton {
+    flex: 1;
+  }
+  .hoja-pestanas .boton {
+    flex: 1;
+    border-radius: 10px;
+    font-size: 0.85rem;
+  }
+  /* Compacta: solo la cabecera (nombre, acciones y pestañas) */
+  .hoja[data-altura='compacta'] .hoja-contenido {
+    display: none;
   }
   .hoja-contenido {
     display: block;
+    flex: 1;
+    min-height: 0;
     overflow: auto;
     overscroll-behavior: contain;
-    padding: 0 12px 12px;
+    padding-bottom: 12px;
+    border-top: 1px solid var(--borde);
+  }
+  /* Una pestaña a la vez */
+  .hoja[data-pestana='explorar'] #panel-controles,
+  .hoja[data-pestana='escena'] .panel-pieza,
+  .hoja[data-pestana='info'] .panel-pieza,
+  .hoja[data-pestana='escena'] [data-pestana='info'],
+  .hoja[data-pestana='info'] [data-pestana='escena'] {
+    display: none;
   }
   .hoja .panel,
   .hoja .panel-pieza {
@@ -585,8 +660,18 @@ summary:focus-visible {
     padding: 10px 0 4px;
     backdrop-filter: none;
   }
-  .hoja .panel + .panel {
-    border-top: 1px solid var(--borde);
+  /* «Ver el recorrido» y «Saltar» ya están en la cabecera de la hoja: no se repiten */
+  .hoja .linea-tiempo > .grupo:has(#recorrido) {
+    display: none;
+  }
+  /* Dentro de su pestaña, la descripción no necesita plegarse */
+  .hoja .descripcion-plegable > summary {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hoja {
+    transition: height 0.2s ease;
   }
 }
 @media (max-height: 500px) and (orientation: landscape) {
@@ -594,17 +679,21 @@ summary:focus-visible {
     display: none;
   }
   .hoja,
-  .hoja[data-estado='ampliada'] {
+  .hoja[data-altura='media'],
+  .hoja[data-altura='completa'] {
     top: 0;
     left: auto;
     width: min(22rem, 46vw);
-    max-height: none;
+    height: auto;
     border-top: 0;
     border-left: 1px solid var(--borde);
     border-radius: 0;
+    padding-top: env(safe-area-inset-top);
   }
-  .hoja[data-estado='oculta'] {
-    top: auto;
+  .hoja[data-altura='compacta'] {
+    bottom: auto;
+    border-bottom: 1px solid var(--borde);
+    border-radius: 0 0 0 14px;
   }
 }
 

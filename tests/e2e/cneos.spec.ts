@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
+import { abrirPestana } from './hoja';
 
 interface EventoPublicado {
   fecha: string;
@@ -44,10 +45,12 @@ test('modo CNEOS: carga diferida, actualización visible, selección, URL y nube
   // La carga inicial no descarga los datos del CNEOS
   expect(pedidos.some((u) => u.includes('data/cneos/'))).toBe(false);
 
+  await abrirPestana(page, 'explorar');
   await page.getByRole('button', { name: 'Bólidos del CNEOS' }).click();
   await expect(page.locator('#cneos-actualizacion')).toContainText('No son en tiempo real');
   await expect(page.locator('#cneos-actualizacion')).not.toContainText(/en vivo/i);
   // En móvil la lista empieza plegada, como los demás bloques del panel
+  await abrirPestana(page, 'explorar');
   const lista = page.locator('#seccion-cneos details:has(#cneos-recientes)');
   if ((await lista.getAttribute('open')) === null) await lista.locator('summary').click();
   await expect(page.locator('#cneos-recientes button').first()).toBeVisible();
@@ -88,11 +91,14 @@ test('modo CNEOS: filtros y vuelta al modo pedigrí', async ({ page }) => {
   await expect(page.locator('#cneos-cuenta')).toContainText(
     `${conUbicacion} de ellos situados en el globo (${publicados.length} registros en total)`,
   );
+  await abrirPestana(page, 'explorar');
   await page.locator('#seccion-cneos').getByText('Filtros', { exact: true }).click();
+  await abrirPestana(page, 'explorar');
   await page.locator('#cneos-energia').selectOption('10');
   await expect(page.locator('#cneos-cuenta')).not.toContainText(
     new RegExp(`^${publicados.length} eventos`),
   );
+  await abrirPestana(page, 'explorar');
   await page.getByRole('button', { name: 'Meteoritos con pedigrí' }).click();
   await expect(page.locator('#seccion-pedigri')).toBeVisible();
   await expect(page).toHaveURL(/pieza=/);
@@ -114,10 +120,14 @@ test('modo CNEOS: filtros sin resultados dan un estado vacío inequívoco (M06)'
     )!;
   await page.goto('/?modo=cneos');
   await listo(page);
+  await abrirPestana(page, 'explorar');
   await page.locator('#seccion-cneos').getByText('Filtros', { exact: true }).click();
+  await abrirPestana(page, 'explorar');
   const restablecer = page.getByRole('button', { name: 'Restablecer filtros' });
   await expect(restablecer).toBeHidden();
+  await abrirPestana(page, 'explorar');
   await page.locator('#cneos-desde').selectOption(String(vacia.a));
+  await abrirPestana(page, 'explorar');
   await page.locator('#cneos-energia').selectOption(String(vacia.kt));
   await expect(page.locator('#cneos-cuenta')).toContainText('Ningún evento cumple estos filtros');
   await expect(page.locator('#cneos-recientes button')).toHaveCount(0);
@@ -150,12 +160,14 @@ test('modo CNEOS: todos los registros son consultables como texto (M03)', async 
   await page.goto('/?modo=cneos');
   await listo(page);
   // En móvil la lista empieza plegada, como los demás bloques del panel
+  await abrirPestana(page, 'explorar');
   const bloque = page.locator('#seccion-cneos details:has(#cneos-recientes)');
   if ((await bloque.getAttribute('open')) === null) await bloque.locator('summary').click();
   const lista = page.locator('#cneos-recientes button');
   await expect(page.locator('#cneos-pagina')).toHaveText(`Página 1 de ${paginas}`);
   await expect(lista).toHaveCount(POR_PAGINA);
   const primero = await lista.first().textContent();
+  await abrirPestana(page, 'explorar');
   await page.getByRole('button', { name: 'Más antiguos' }).click();
   await expect(page.locator('#cneos-pagina')).toHaveText(`Página 2 de ${paginas}`);
   await expect(lista.first()).not.toHaveText(primero!);
@@ -163,20 +175,26 @@ test('modo CNEOS: todos los registros son consultables como texto (M03)', async 
   await expect(lista.first()).toContainText(/ kt · /);
 
   // Búsqueda por fecha: Chelyabinsk
+  await abrirPestana(page, 'explorar');
   await page.getByLabel('Buscar por fecha').fill('15/02/2013');
   await expect(lista).toHaveCount(1);
+  await abrirPestana(page, 'explorar');
   await lista.first().click();
   await expect(page.locator('#cneos-evento')).toContainText('Es el propio bólido de Chelyabinsk');
   await expect(page).toHaveURL(/evento=cneos-20130215-032026/);
 
   // Un registro sin ubicación se abre con su explicación, sin inventar un punto en el globo
   const sinUbicacion = publicados.filter((e) => e.lat === undefined).length;
+  await abrirPestana(page, 'explorar');
   await page.getByLabel('Buscar por fecha').fill('');
+  await abrirPestana(page, 'explorar');
   await page.locator('#seccion-cneos').getByText('Filtros', { exact: true }).click();
+  await abrirPestana(page, 'explorar');
   await page.locator('#cneos-grupo').selectOption('sin-ubicacion');
   await expect(page.locator('#cneos-cuenta')).toContainText(
     `${sinUbicacion} eventos con estos filtros, 0 de ellos situados en el globo`,
   );
+  await abrirPestana(page, 'explorar');
   await lista.first().click();
   await expect(page.locator('#cneos-evento')).toContainText('no publica la ubicación');
   await expect(page.locator('#descripcion')).toContainText('no aparece en el globo');

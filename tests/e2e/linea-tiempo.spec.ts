@@ -1,14 +1,17 @@
 import { expect, test } from '@playwright/test';
+import { abrirPestana } from './hoja';
 
 const dir = 'tests/e2e/.resultados';
 
 test.describe('línea de tiempo y estado en URL', () => {
   test('restaura vista, escala e instante desde la URL', async ({ page }) => {
     await page.goto('/?pieza=chelyabinsk&t=2012-12-01T00:00:00Z&vista=sistema-solar&escala=real');
+    await abrirPestana(page, 'escena');
     await expect(page.getByRole('button', { name: 'Sistema solar' })).toHaveAttribute(
       'aria-pressed',
       'true',
     );
+    await abrirPestana(page, 'escena');
     await expect(page.getByRole('switch', { name: 'Escala visual' })).toHaveAttribute(
       'aria-checked',
       'false',
@@ -22,8 +25,10 @@ test.describe('línea de tiempo y estado en URL', () => {
     await page.goto('/?t=2012-06-01T00:00:00Z');
     const fecha = page.locator('#fecha-texto');
     await expect(fecha).toContainText('1 de junio de 2012');
+    await abrirPestana(page, 'escena');
     await page.getByRole('button', { name: 'Reproducir' }).click();
     await page.waitForTimeout(1200);
+    await abrirPestana(page, 'escena');
     await page.getByRole('button', { name: 'Pausar' }).click();
     await expect(fecha).not.toContainText('1 de junio de 2012');
     // Los atajos de la escena actúan sin foco en un control (el foco quedó en «Pausar»)
@@ -39,10 +44,13 @@ test.describe('línea de tiempo y estado en URL', () => {
     await page.goto('/?t=2012-06-01T00:00:00Z');
     await page.waitForFunction(() => (window as unknown as { __listo?: number }).__listo);
     const fecha = page.locator('#fecha-texto');
+    await abrirPestana(page, 'escena');
     await expect(page.getByRole('button', { name: 'Ir al pico de brillo' })).toBeVisible();
+    await abrirPestana(page, 'escena');
     await page.getByRole('button', { name: 'Reproducir' }).focus();
     await page.keyboard.press('i');
     await expect(fecha).toContainText('1 de junio de 2012');
+    await abrirPestana(page, 'info');
     await page.getByRole('button', { name: 'Fuentes y créditos' }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
     await page.keyboard.press('i');
@@ -56,6 +64,7 @@ test.describe('línea de tiempo y estado en URL', () => {
     // El botón responde cuando la escena 3D terminó de cargar
     await page.waitForFunction(() => (window as unknown as { __listo?: number }).__listo);
     await page.getByRole('button', { name: 'Ver el recorrido' }).click();
+    await abrirPestana(page, 'escena');
     await expect(page.getByRole('button', { name: 'Sistema solar' })).toHaveAttribute(
       'aria-pressed',
       'true',
@@ -90,6 +99,7 @@ test('recorrido cinematográfico completo', async ({ page }) => {
   await expect(page.locator('#descripcion')).toContainText('Pico de brillo del bólido', {
     timeout: 180_000,
   });
+  await abrirPestana(page, 'escena');
   await expect(page.getByRole('button', { name: 'Tierra', exact: true })).toHaveAttribute(
     'aria-pressed',
     'true',

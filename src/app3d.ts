@@ -19,7 +19,7 @@ import { crearReloj, VELOCIDADES } from './timeline/reloj';
 import { escribirEstadoUrl, leerEstadoUrl, type Modo } from './ui/estado-url';
 import type { ControlModo } from './ui/modo';
 import { avisarError, quitarAviso } from './ui/avisos';
-import { areaLibre } from './ui/hoja';
+import { areaLibre, type ControlHoja } from './ui/hoja';
 import { coordenada, nombrePieza, type PanelPieza } from './ui/panel-pieza';
 
 type Clave = Parameters<typeof t>[0];
@@ -64,7 +64,7 @@ import { cargarJson, urlTextura } from './ui/recursos';
 export async function iniciar3D(
   datosPromesa: Promise<DatosEscena>,
   panelPromesa: Promise<PanelPieza>,
-  cneosCtl: { modo: ControlModo; asegurarCneos: () => Promise<PanelCneos> },
+  cneosCtl: { modo: ControlModo; asegurarCneos: () => Promise<PanelCneos>; hoja: ControlHoja },
 ): Promise<void> {
   const $ = <T extends HTMLElement>(sel: string) => document.querySelector<T>(sel)!;
   const canvas = $<HTMLCanvasElement>('#escena');
@@ -383,6 +383,12 @@ export async function iniciar3D(
         : 'tiempo.ir-referencia',
     );
     if (!secuencia.activa()) descripcion.textContent = descripcionVista();
+    // Nombre de lo seleccionado en la cabecera de la hoja móvil
+    cneosCtl.hoja.fijarTitulo(
+      modo === 'cneos'
+        ? (etiquetaBolido?.element.textContent ?? '')
+        : ($<HTMLSelectElement>('#pieza').selectedOptions[0]?.text ?? ''),
+    );
     guardarUrl();
   }
 
@@ -712,6 +718,8 @@ export async function iniciar3D(
       descripcion.textContent = `${t('narr.reducido')} ${descripcionVista()}`;
       return;
     }
+    // En el móvil la hoja se baja para ver la animación
+    if (cneosCtl.hoja.activa()) cneosCtl.hoja.fijarAltura('compacta');
     camT.controles.enabled = false;
     asegurarSolar().camS.controles.enabled = false;
     // Durante el recorrido solo se ve la nube de la pieza que se sigue
@@ -864,9 +872,20 @@ export async function iniciar3D(
   canvas.addEventListener('pointerup', (ev) => {
     const ini = inicioPuntero;
     inicioPuntero = undefined;
-    if (!ini || Math.hypot(ev.clientX - ini.x, ev.clientY - ini.y) > 5) return;
+    if (!ini) return;
+    const hoja = cneosCtl.hoja;
+    if (Math.hypot(ev.clientX - ini.x, ev.clientY - ini.y) > 5) {
+      // Girar el globo con el dedo baja la hoja móvil, como al mover un mapa
+      if (hoja.activa() && hoja.altura() !== 'compacta') hoja.fijarAltura('compacta');
+      return;
+    }
     const id = piezaBajoPuntero(ev);
     if (!id) return;
+    // Tocar un marcador abre su ficha en la hoja móvil
+    if (hoja.activa()) {
+      hoja.mostrarPestana('explorar');
+      if (hoja.altura() === 'compacta') hoja.fijarAltura('media');
+    }
     if (modo === 'cneos') {
       if (id !== panelCneos?.actual()) panelCneos?.seleccionar(id);
     } else if (id !== panel.actual()) panel.seleccionar(id);

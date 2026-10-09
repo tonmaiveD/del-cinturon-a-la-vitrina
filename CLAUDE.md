@@ -106,6 +106,11 @@ entre C, D y la Fase 4.
   Playwright. Claude in Chrome: la pestaña del grupo puede estar en uso por el usuario; no
   tocar pestañas ajenas.
 - Etiquetas CSS2D: CSS2DRenderer escribe `transform` en línea → desplazar con `margin`.
+- **e2e locales con la máquina cargada** (iCloud `bird`/`fileproviderd` y Spotlight `mds_stores`
+  reaccionan a cada build en Documentos): fallos por tiempo agotado que desaparecen al repetir.
+  Usar `--workers=2` y repetir de uno en uno lo que falle antes de buscar un error de código.
+- **Hoja móvil** (`src/ui/hoja.ts`): en móvil los controles están en pestañas; las pruebas
+  e2e abren la correcta con `abrirPestana` (`tests/e2e/hoja.ts`) antes de interactuar.
 
 ### Notas técnicas por etapa
 

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { abrirPestana } from './hoja';
 
 const listo = (page: Page) =>
   page.waitForFunction(() => (window as unknown as { __listo?: number }).__listo !== undefined);
@@ -37,6 +38,7 @@ test('selección de pieza: lista, procedencia en dos capas, URL y vista solar', 
   await expect(page.locator('#procedencia')).toContainText('Según Granvik y Brown 2018');
   await expect(page.locator('#procedencia')).toContainText('Confianza media');
 
+  await abrirPestana(page, 'explorar');
   await page.locator('#pieza').selectOption('zdar-nad-sazavou');
   await expect(page.locator('#procedencia')).toContainText('Especulativa');
   await expect(page.locator('#procedencia')).toContainText('No es el punto de caída');
@@ -52,6 +54,7 @@ test('selección de pieza: lista, procedencia en dos capas, URL y vista solar', 
     path: `tests/e2e/.resultados/catalogo-tierra-${test.info().project.name}.png`,
   });
 
+  await abrirPestana(page, 'escena');
   await page.getByRole('button', { name: 'Sistema solar' }).click();
   await expect(page.locator('#descripcion')).toContainText('órbitas posibles de Žďár');
   await expect(page.locator('#descripcion')).toContainText('Hungaria');
@@ -65,12 +68,16 @@ test('selección de pieza: lista, procedencia en dos capas, URL y vista solar', 
 test('filtros por clase y por confianza', async ({ page }) => {
   await page.goto('/?pieza=chelyabinsk');
   await listo(page);
+  await abrirPestana(page, 'explorar');
   await page.locator('#seccion-pedigri').getByText('Filtros', { exact: true }).click();
+  await abrirPestana(page, 'explorar');
   await page.locator('#filtro-confianza').selectOption('ninguna');
   await expect(page.locator('#pieza-cuenta')).toContainText('4 de 25');
   // La pieza seleccionada sigue en la lista aunque quede fuera del filtro
   await expect(page.locator('#pieza option')).toHaveCount(5);
+  await abrirPestana(page, 'explorar');
   await page.locator('#filtro-confianza').selectOption('');
+  await abrirPestana(page, 'explorar');
   await page.locator('#filtro-grupo').selectOption('H');
   await expect(page.locator('#pieza-cuenta')).toContainText('11 de 25');
 });

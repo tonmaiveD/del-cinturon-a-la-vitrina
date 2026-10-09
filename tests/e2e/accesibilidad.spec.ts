@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
+import { abrirPestana } from './hoja';
 
 const auditar = (page: import('@playwright/test').Page) =>
   new AxeBuilder({ page })
@@ -14,6 +15,7 @@ test('sin violaciones WCAG 2.1 AA en la página principal y en el diálogo de fu
   const principal = await auditar(page).analyze();
   expect(principal.violations.map((v) => `${v.id}: ${v.nodes.length}`)).toEqual([]);
 
+  await abrirPestana(page, 'info');
   await page.getByRole('button', { name: 'Fuentes y créditos' }).click();
   await expect(page.getByRole('dialog')).toBeVisible();
   const dialogo = await auditar(page).analyze();
@@ -25,6 +27,7 @@ test('sin violaciones WCAG 2.1 AA en el modo CNEOS (con filtros y detalle abiert
 }) => {
   await page.goto('/?modo=cneos');
   await expect(page.locator('#cneos-evento')).toContainText('Bólido del');
+  await abrirPestana(page, 'explorar');
   await page.locator('#seccion-cneos').getByText('Filtros', { exact: true }).click();
   const r = await auditar(page).analyze();
   expect(r.violations.map((v) => `${v.id}: ${v.nodes.length}`)).toEqual([]);
@@ -37,6 +40,9 @@ test('todos los controles son alcanzables con el teclado y el diálogo devuelve 
   test.setTimeout(90_000);
   await page.goto('/');
   await expect(page.locator('#descripcion')).toContainText('trayectoria de entrada');
+  // En móvil se recorre la pestaña Escena de la hoja; «Ver el recorrido» está en su cabecera
+  const movil = await page.locator('#hoja-asa').isVisible();
+  await abrirPestana(page, 'escena');
   const vistos = new Set<string>();
   for (let k = 0; k < 30; k++) {
     await page.keyboard.press('Tab');
@@ -46,19 +52,21 @@ test('todos los controles son alcanzables con el teclado y el diálogo devuelve 
     });
     vistos.add(nombre);
   }
-  for (const esperado of [
+  const comunes = [
     'button:Tierra',
     'button:Sistema solar',
     'button:escala',
-    'button:recorrido',
     'button:reproducir',
     'select:velocidad',
     'button:impacto',
     'input:fecha',
-    'button:abrir-fuentes',
-  ])
-    expect([...vistos], esperado).toContain(esperado);
+  ];
+  const esperados = movil
+    ? [...comunes, 'button:hoja-asa', 'button:hoja-recorrido', 'button:hoja-vista']
+    : [...comunes, 'button:recorrido', 'button:abrir-fuentes'];
+  for (const esperado of esperados) expect([...vistos], esperado).toContain(esperado);
 
+  await abrirPestana(page, 'info');
   const boton = page.getByRole('button', { name: 'Fuentes y créditos' });
   await boton.focus();
   await page.keyboard.press('Enter');
@@ -70,6 +78,7 @@ test('todos los controles son alcanzables con el teclado y el diálogo devuelve 
 
 test('en producción la ficha en borrador no se publica', async ({ page }) => {
   await page.goto('/');
+  await abrirPestana(page, 'info');
   await expect(page.getByRole('button', { name: 'Fuentes y créditos' })).toBeVisible();
   await expect(page.locator('#abrir-ficha')).toBeHidden();
 });

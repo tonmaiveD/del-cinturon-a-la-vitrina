@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { abrirPestana } from './hoja';
 
 const listo = (page: Page) =>
   page.waitForFunction(() => (window as unknown as { __listo?: number }).__listo !== undefined);
@@ -40,10 +41,13 @@ test.describe('cámara sin arrastrar (M04)', () => {
     await page.goto('/');
     await listo(page);
     const antes = await camara(page);
+    await abrirPestana(page, 'escena');
     await page.getByRole('button', { name: 'Girar a la derecha' }).click();
     await expect.poll(async () => distinta(await camara(page), antes)).toBe(true);
+    await abrirPestana(page, 'escena');
     await page.getByRole('button', { name: 'Alejar' }).click();
     await expect.poll(async () => (await camara(page)).d).toBeGreaterThan(antes.d * 1.05);
+    await abrirPestana(page, 'escena');
     await page.getByRole('button', { name: 'Restablecer vista' }).click();
     await expect.poll(async () => Math.abs((await camara(page)).d - antes.d)).toBeLessThan(0.05);
   });

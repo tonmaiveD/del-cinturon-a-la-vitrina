@@ -117,6 +117,29 @@ Verificación: 238 tests unitarios, 69 e2e (7 omitidas por proyecto) y auditorí
 La carga inicial en 4G lento fue de 2,75 s. Los fps informativos de la vista solar (13,5)
 salieron más bajos que antes porque la máquina estaba cargada por la sincronización de iCloud.
 
+**Revisión de la hoja móvil tras probar en el iPhone 16 Pro Max del usuario (2026-10-09).**
+La primera versión dejaba la parte útil de la hoja en unos 150 px, con todo en una sola lista
+y el botón principal escondido. Se evaluaron tres opciones: ajustes sueltos, ventanas a
+pantalla completa y una hoja al estilo de Mapas de Apple. El usuario eligió la tercera.
+
+- **Tres alturas.** La hoja tiene compacta (la inicial), media y completa. Se cambian
+  arrastrando el asa o con el teclado: clic, o flechas arriba y abajo.
+- **Cabecera siempre visible.** Muestra el nombre de lo seleccionado, «Ver el recorrido» (o
+  «Saltar animación») y «Ver órbitas» o «Ver el globo». Estos botones delegan en los controles
+  del panel y reflejan su estado con un `MutationObserver`.
+- **Pestañas Explorar, Escena e Info.** Muestran una sección a la vez.
+- **Comportamiento automático.** Al empezar el recorrido la hoja se baja; al tocar un marcador
+  sube con su ficha; al girar el globo con el dedo se baja.
+- **Ajustes para iOS.**
+  - Letra de 16 px en campos y selectores, para que Safari no amplíe la página al tocarlos.
+  - Objetivos táctiles de 44 px.
+  - Áreas seguras (`viewport-fit=cover` y `env(safe-area-inset-*)`).
+  - Etiquetas del globo más pequeñas.
+
+En compacta, la escena ocupa el 81 % de la altura en 440×830 (iPhone 16 Pro Max con las barras
+de Safari) y el 64 % en 320×568. Las pruebas e2e abren la pestaña correcta en el móvil con
+`tests/e2e/hoja.ts`.
+
 Pendiente de esta área (no bloqueante): probar en un teléfono real, con lector de pantalla
 real y con zoom del navegador al 200–400 % (M21).
 
