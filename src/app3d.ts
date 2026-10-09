@@ -265,7 +265,9 @@ export async function iniciar3D(
         tray:
           ev.v_ecef_kms && ev.alt_km !== undefined
             ? t('desc.tierra.cneos.tray', { alto: ALTURA_INICIO_KM })
-            : '',
+            : ev.lat === undefined
+              ? t('desc.tierra.cneos.sin-ubicacion')
+              : '',
         consultado: formatoFecha(new Date(panelCneos!.resumen.consultado)),
       });
     return nClonesCneos > 0

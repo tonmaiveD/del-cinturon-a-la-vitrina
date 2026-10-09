@@ -4,6 +4,7 @@ import {
   cumpleFiltroCneos,
   dosCifras,
   grupoLeyenda,
+  prefijoFecha,
   rango,
   recientes,
 } from '../../src/cneos/formato';
@@ -36,6 +37,17 @@ describe('formato del modo CNEOS', () => {
     expect(grupoLeyenda({ calidad: 'orbita-no-fiable' })).toBe('no-verificable');
     expect(grupoLeyenda({ calidad: 'sin-altura' })).toBe('sin-trayectoria');
     expect(grupoLeyenda({ calidad: 'sin-vector' })).toBe('sin-trayectoria');
+    expect(grupoLeyenda({ calidad: 'sin-ubicacion' })).toBe('sin-ubicacion');
+  });
+
+  it('búsqueda por fecha', () => {
+    expect(prefijoFecha('')).toBe('');
+    expect(prefijoFecha(' 2013 ')).toBe('2013');
+    expect(prefijoFecha('2013-2')).toBe('2013-02');
+    expect(prefijoFecha('2013-02-15')).toBe('2013-02-15');
+    expect(prefijoFecha('15/2/2013')).toBe('2013-02-15');
+    expect(prefijoFecha('02/2013')).toBe('2013-02');
+    expect(prefijoFecha('febrero')).toBeNull();
   });
 
   it('filtro y recientes', () => {
@@ -47,7 +59,13 @@ describe('formato del modo CNEOS', () => {
       ev('2025-01-01T00:00:00Z', 2, 'orbita'), // sin ubicación: nunca en el globo
     ];
     const f = { grupo: '' as const, desde: 2021, energiaMin: 1 };
+    // La lista textual incluye también los eventos sin ubicación (M03)
     expect(lista.filter((e) => cumpleFiltroCneos(e, f)).map((e) => e.fecha)).toEqual([
+      '2024-01-01T00:00:00Z',
+      '2025-01-01T00:00:00Z',
+    ]);
+    const conFecha = { ...f, desde: 2000, energiaMin: 0, fecha: '2024' };
+    expect(lista.filter((e) => cumpleFiltroCneos(e, conFecha)).map((e) => e.fecha)).toEqual([
       '2024-01-01T00:00:00Z',
     ]);
     expect(recientes(lista, 2).map((e) => e.fecha.slice(0, 4))).toEqual(['2025', '2024']);

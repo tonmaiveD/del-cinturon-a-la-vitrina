@@ -8,6 +8,7 @@ import {
   comparacionChelyabinsk,
   cumpleFiltroCneos,
   grupoLeyenda,
+  prefijoFecha,
   rango,
   recientes,
   type FiltroCneos,
@@ -18,7 +19,8 @@ import type { ResumenCneos, ResumenOrbita } from './resumen';
 type Clave = Parameters<typeof t>[0];
 type Evento = ResumenCneos['eventos'][number];
 
-const N_RECIENTES = 15;
+/** Eventos por página de la lista. */
+export const POR_PAGINA = 15;
 const ENERGIAS_MIN = [0, 0.1, 1, 10];
 /** Umbral de clones descartados a partir del cual se avisa de posible sesgo de la nube. */
 export const UMBRAL_SESGO = 0.1;
@@ -75,6 +77,7 @@ function detalle(ev: Evento, r: ResumenCneos, ktChely: number | undefined): HTML
         'nota',
       ),
     );
+  else raiz.append(el('p', t('cneos.evento.sin-ubicacion'), 'nota pendiente'));
   if (ev.v_kms !== undefined)
     raiz.append(el('p', t('cneos.evento.velocidad', { v: num(ev.v_kms, 1) }), 'nota'));
   raiz.append(
@@ -140,16 +143,13 @@ function detalle(ev: Evento, r: ResumenCneos, ktChely: number | undefined): HTML
     sec.append(el('p', t('cneos.orbita.metodo'), 'nota'));
   } else if (o && 'error' in o) {
     sec.append(el('p', t('cneos.orbita.error', { motivo: o.error }), 'nota pendiente'));
+  } else if (ev.calidad === 'orbita') {
+    // Elegible pero aún sin resultado publicado (no debería ocurrir: el pipeline calcula antes)
+    sec.append(el('p', t('cneos.orbita.pendiente'), 'nota pendiente'));
   } else if (ev.calidad === 'orbita-no-fiable') {
     sec.append(el('p', t('cneos.orbita.no-verificable', textoCriterio(r)), 'nota pendiente'));
   } else {
-    sec.append(
-      el(
-        'p',
-        t(ev.calidad === 'sin-altura' ? 'cneos.orbita.sin-altura' : 'cneos.orbita.sin-vector'),
-        'nota',
-      ),
-    );
+    sec.append(el('p', t(`cneos.orbita.${ev.calidad}` as Clave), 'nota'));
   }
   raiz.append(sec, el('p', t('cneos.fuente'), 'nota'));
   return raiz;
@@ -211,81 +211,124 @@ export function montarPanelCneos(resumen: ResumenCneos, inicial?: string) {
     );
 
   const ktChely = resumen.eventos.find((e) => e.fecha.startsWith('2013-02-15T03:20'))?.impacto_kt;
-  const situables = resumen.eventos.filter((e) => e.lat !== undefined);
+  const buscar = $<HTMLInputElement>('#cneos-buscar');
+  const bAnterior = $<HTMLButtonElement>('#cneos-pagina-anterior');
+  const bSiguiente = $<HTMLButtonElement>('#cneos-pagina-siguiente');
+  const textoPagina = $('#cneos-pagina');
+  // Todos los registros, del más reciente al más antiguo (también los que no tienen ubicación)
+  const todos = recientes(resumen.eventos, resumen.eventos.length);
+  const porId = new Map(todos.map((e) => [e.id, e]));
+  const situables = todos.filter((e) => e.lat !== undefined);
   const oyentes = new Set<(id: string) => void>();
   const oyentesFiltro = new Set<(ids: Set<string>) => void>();
-  const existe = (id?: string) => !!id && situables.some((e) => e.id === id);
-  let actual = existe(inicial) ? inicial! : recientes(situables, 1)[0]!.id;
+  const existe = (id?: string) => !!id && porId.has(id);
+  let actual = existe(inicial) ? inicial! : situables[0]!.id;
+  let pagina = 0;
 
   const filtro = (): FiltroCneos => ({
     grupo: selGrupo.value as FiltroCneos['grupo'],
     desde: Number(selDesde.value),
     energiaMin: Number(selEnergia.value),
+    fecha: buscar.value,
   });
+  /** Eventos que cumplen los filtros (lista textual), en orden de fecha descendente. */
+  const coincidentes = () => todos.filter((e) => cumpleFiltroCneos(e, filtro()));
+  /** Los que además se pueden situar: son los que dibuja el globo. */
   const visibles = () =>
-    new Set(situables.filter((e) => cumpleFiltroCneos(e, filtro())).map((e) => e.id));
+    new Set(
+      coincidentes()
+        .filter((e) => e.lat !== undefined)
+        .map((e) => e.id),
+    );
 
-  function poblarLista(): void {
-    const ids = visibles();
-    const fuera = !ids.has(actual);
+  function poblarLista(irASeleccion = false): void {
+    const lista_ = coincidentes();
+    const enGlobo = lista_.filter((e) => e.lat !== undefined);
+    const fuera = !lista_.some((e) => e.id === actual);
+    buscar.setAttribute('aria-invalid', String(prefijoFecha(buscar.value) === null));
     cuenta.textContent = [
-      ids.size === 0
-        ? t('cneos.cuenta.vacia', { total: situables.length })
-        : t('cneos.cuenta', { n: ids.size, total: situables.length }),
+      lista_.length === 0
+        ? t('cneos.cuenta.vacia', { total: todos.length })
+        : t('cneos.cuenta', { n: lista_.length, g: enGlobo.length, total: todos.length }),
       ...(fuera ? [t('cneos.cuenta.fuera')] : []),
     ].join(' ');
     const f = filtro();
-    bRestablecer.hidden = !f.grupo && selDesde.value === desdeInicial && f.energiaMin === 0;
+    bRestablecer.hidden =
+      !f.grupo && selDesde.value === desdeInicial && f.energiaMin === 0 && !buscar.value.trim();
     // Política: la selección se conserva, pero si los filtros la excluyen se dice claramente
     caja.querySelector('.fuera-filtro')?.remove();
     if (fuera) caja.prepend(el('p', t('cneos.fuera-filtro'), 'aviso fuera-filtro'));
+
+    const paginas = Math.max(1, Math.ceil(lista_.length / POR_PAGINA));
+    if (irASeleccion && !fuera)
+      pagina = Math.floor(lista_.findIndex((e) => e.id === actual) / POR_PAGINA);
+    pagina = Math.min(Math.max(0, pagina), paginas - 1);
+    textoPagina.textContent = t('cneos.pagina', { p: pagina + 1, n: paginas });
+    bAnterior.disabled = pagina === 0;
+    bSiguiente.disabled = pagina >= paginas - 1;
+
     lista.replaceChildren();
-    for (const e of recientes(
-      situables.filter((x) => ids.has(x.id)),
-      N_RECIENTES,
-    )) {
+    for (const e of lista_.slice(pagina * POR_PAGINA, (pagina + 1) * POR_PAGINA)) {
       const li = el('li');
       const b = el('button', undefined, 'evento');
       b.type = 'button';
+      b.dataset.id = e.id;
       b.setAttribute('aria-pressed', String(e.id === actual));
+      const g = grupoLeyenda(e);
       const punto = el('span', undefined, 'punto');
-      punto.style.background = COLOR_LEYENDA[grupoLeyenda(e)];
+      punto.style.background = COLOR_LEYENDA[g];
       punto.setAttribute('aria-hidden', 'true');
-      b.append(punto, `${fechaUtc(e.fecha, false)} · ${publicado(e.impacto_kt)} kt`);
+      // El tipo va también en texto: el color no es el único medio (WCAG 1.4.1)
+      b.append(
+        punto,
+        t('cneos.lista.evento', {
+          fecha: fechaUtc(e.fecha, false),
+          kt: publicado(e.impacto_kt),
+          tipo: t(`cneos.lista.${g}` as Clave),
+        }),
+      );
       b.addEventListener('click', () => seleccionar(e.id));
       li.append(b);
       lista.append(li);
     }
-    oyentesFiltro.forEach((f) => f(ids));
+    oyentesFiltro.forEach((fn) => fn(new Set(enGlobo.map((e) => e.id))));
   }
+  /** Cambio de filtros o búsqueda: se vuelve a la página que contiene la selección (o a la primera). */
+  const alFiltrarLista = () => {
+    pagina = 0;
+    poblarLista(true);
+  };
 
   let primera = true;
   function seleccionar(id: string): void {
     if (!existe(id)) return;
     actual = id;
-    for (const b of lista.querySelectorAll('button')) b.setAttribute('aria-pressed', 'false');
-    caja.replaceChildren(
-      detalle(
-        situables.find((e) => e.id === id)!,
-        resumen,
-        ktChely,
-      ),
-    );
+    caja.replaceChildren(detalle(porId.get(id)!, resumen, ktChely));
     // El detalle está arriba del panel: al elegir desde la lista o el globo se lleva a la vista
     if (!primera) caja.scrollIntoView({ block: 'nearest' });
+    poblarLista(primera);
     primera = false;
-    poblarLista();
     oyentes.forEach((f) => f(id));
   }
 
-  selGrupo.addEventListener('change', poblarLista);
-  selDesde.addEventListener('change', poblarLista);
-  selEnergia.addEventListener('change', poblarLista);
+  selGrupo.addEventListener('change', alFiltrarLista);
+  selDesde.addEventListener('change', alFiltrarLista);
+  selEnergia.addEventListener('change', alFiltrarLista);
+  buscar.addEventListener('input', alFiltrarLista);
+  bAnterior.addEventListener('click', () => {
+    pagina--;
+    poblarLista();
+  });
+  bSiguiente.addEventListener('click', () => {
+    pagina++;
+    poblarLista();
+  });
   bRestablecer.addEventListener('click', () => {
     selGrupo.value = '';
     selDesde.value = desdeInicial;
     selEnergia.value = '0';
-    poblarLista();
+    buscar.value = '';
+    alFiltrarLista();
     selGrupo.focus();
   });
   seleccionar(actual);
@@ -293,7 +336,7 @@ export function montarPanelCneos(resumen: ResumenCneos, inicial?: string) {
   return {
     resumen,
     actual: () => actual,
-    evento: (id: string) => situables.find((e) => e.id === id),
+    evento: (id: string) => porId.get(id),
     visibles,
     seleccionar,
     alSeleccionar: (f: (id: string) => void) => oyentes.add(f),

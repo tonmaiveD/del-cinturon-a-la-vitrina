@@ -108,7 +108,34 @@
             ></button>
             <details class="plegable procedencia-plegable" open>
               <summary data-i18n="cneos.recientes"></summary>
+              <div class="grupo">
+                <label class="rotulo" for="cneos-buscar" data-i18n="cneos.buscar"></label>
+                <input
+                  id="cneos-buscar"
+                  type="search"
+                  class="selector ancho"
+                  inputmode="numeric"
+                  autocomplete="off"
+                  aria-describedby="cneos-buscar-ayuda"
+                />
+              </div>
+              <p id="cneos-buscar-ayuda" class="nota" data-i18n="cneos.buscar.ayuda"></p>
               <ul id="cneos-recientes" class="lista-eventos"></ul>
+              <div class="grupo paginas">
+                <button
+                  type="button"
+                  id="cneos-pagina-anterior"
+                  class="boton"
+                  data-i18n="cneos.pagina.recientes"
+                ></button>
+                <span id="cneos-pagina" class="rotulo" aria-live="polite"></span>
+                <button
+                  type="button"
+                  id="cneos-pagina-siguiente"
+                  class="boton"
+                  data-i18n="cneos.pagina.antiguos"
+                ></button>
+              </div>
             </details>
           </div>
         </aside>
