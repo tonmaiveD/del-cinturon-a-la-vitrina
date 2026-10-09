@@ -737,6 +737,43 @@ export async function iniciar3D(
     if (secuencia.activa()) terminarSecuencia();
     reloj.irA(reloj.min + (Number(deslizador.value) / 10000) * (reloj.max - reloj.min));
   });
+  // ---------- Cámara sin arrastrar (M04): botones y teclado con el foco en la escena ----------
+  const PASO_GIRO = Math.PI / 12;
+  const PASO_ZOOM = 1.25;
+  function moverCamara(accion: string): void {
+    if (secuencia.activa()) terminarSecuencia();
+    const c = vista === 'tierra' ? camT : asegurarSolar().camS;
+    const ctl = c.controles;
+    if (accion === 'izquierda') ctl.rotateLeft(PASO_GIRO);
+    else if (accion === 'derecha') ctl.rotateLeft(-PASO_GIRO);
+    else if (accion === 'arriba') ctl.rotateUp(PASO_GIRO);
+    else if (accion === 'abajo') ctl.rotateUp(-PASO_GIRO);
+    // En OrbitControls, dollyOut acerca la cámara y dollyIn la aleja (comprobado en camara.spec.ts)
+    else if (accion === 'acercar') ctl.dollyOut(PASO_ZOOM);
+    else if (accion === 'alejar') ctl.dollyIn(PASO_ZOOM);
+    else if (accion === 'restablecer')
+      fijarCamara(vista, (vista === 'tierra' ? encuadreTierra() : encuadreSolar()).pos, ORIGEN);
+  }
+  for (const b of document.querySelectorAll<HTMLButtonElement>('[data-camara]'))
+    b.addEventListener('click', () => moverCamara(b.dataset.camara!));
+  const TECLAS_CAMARA: Record<string, string> = {
+    ArrowLeft: 'izquierda',
+    ArrowRight: 'derecha',
+    ArrowUp: 'arriba',
+    ArrowDown: 'abajo',
+    '+': 'acercar',
+    '=': 'acercar',
+    '-': 'alejar',
+    '0': 'restablecer',
+  };
+  canvas.addEventListener('keydown', (ev) => {
+    const accion = TECLAS_CAMARA[ev.key];
+    if (!accion || ev.ctrlKey || ev.metaKey || ev.altKey) return;
+    ev.preventDefault();
+    ev.stopPropagation(); // las flechas no mueven el reloj cuando el foco está en la escena
+    moverCamara(accion);
+  });
+
   window.addEventListener('keydown', (ev) => {
     if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
     // Con un diálogo abierto, el teclado no altera la escena de fondo

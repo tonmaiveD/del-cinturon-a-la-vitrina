@@ -2,7 +2,7 @@
   "app.titulo": "Del cinturón a la vitrina",
   "app.subtitulo": "El viaje de los meteoritos desde su origen hasta la Tierra",
   "app.estado": "Versión en desarrollo (fase 3).",
-  "escena.descripcion": "Visualización 3D interactiva. La descripción textual de la vista está en el panel de controles.",
+  "escena.descripcion": "Visualización 3D interactiva. Con el foco aquí: flechas para girar la cámara, más y menos para acercar o alejar, cero para restablecer la vista. La descripción textual de la vista está en el panel de controles.",
   "vista.etiqueta": "Vista",
   "vista.tierra": "Tierra",
   "vista.sistema-solar": "Sistema solar",
@@ -47,7 +47,7 @@
   "narr.final": "Pico de brillo del bólido sobre los Urales, {fecha} UTC. Puedes explorar la escena o mover la línea de tiempo.",
   "narr.reducido": "Movimiento reducido activo: se muestra la órbita completa sin animación. Usa la línea de tiempo para recorrerla.",
   "atajos.titulo": "Atajos de teclado",
-  "atajos.texto": "Espacio: reproducir o pausar. Flechas izquierda y derecha: un día atrás o adelante. I (sin el foco en un botón o campo): ir al pico de brillo o al punto de referencia. Escape: saltar la animación. Arrastrar sobre la escena: girar la cámara; rueda o pellizco: acercar o alejar.",
+  "atajos.texto": "Espacio: reproducir o pausar. Flechas izquierda y derecha: un día atrás o adelante. I (sin el foco en un botón o campo): ir al pico de brillo o al punto de referencia. Escape: saltar la animación. Con el foco en la escena (tecla Tab): flechas para girar la cámara, más y menos para acercar o alejar, cero para restablecer la vista; los mismos controles están en los botones de Cámara. Con el ratón o el dedo: arrastrar para girar, rueda o pellizco para acercar.",
   "desc.titulo": "Descripción de la escena",
   "ficha.abrir": "Ficha de Chelyabinsk",
   "ficha.titulo": "{nombre} ({anio})",
@@ -172,5 +172,13 @@
   "hoja.controles": "Controles",
   "hoja.ampliar": "Ampliar",
   "hoja.ocultar": "Ocultar",
-  "hoja.mostrar": "Mostrar"
+  "hoja.mostrar": "Mostrar",
+  "camara.etiqueta": "Cámara",
+  "camara.izquierda": "Girar a la izquierda",
+  "camara.derecha": "Girar a la derecha",
+  "camara.arriba": "Girar hacia arriba",
+  "camara.abajo": "Girar hacia abajo",
+  "camara.acercar": "Acercar",
+  "camara.alejar": "Alejar",
+  "camara.restablecer": "Restablecer vista"
 }

@@ -607,3 +607,14 @@ summary:focus-visible {
     top: auto;
   }
 }
+
+/* Controles de cámara (M04): botones de giro y zoom, y foco visible sobre la escena */
+.boton.icono {
+  min-width: 36px;
+  padding: 6px 0;
+  line-height: 1;
+}
+#escena:focus-visible {
+  outline: 3px solid #8ec5ff;
+  outline-offset: -3px;
+}

@@ -8,7 +8,12 @@
     <link rel="stylesheet" href="/src/ui/estilos.css" />
   </head>
   <body>
-    <canvas id="escena" role="img" data-i18n-aria="escena.descripcion"></canvas>
+    <canvas
+      id="escena"
+      tabindex="0"
+      role="application"
+      data-i18n-aria="escena.descripcion"
+    ></canvas>
     <div id="etiquetas" class="capa-etiquetas"></div>
     <div id="fundido" class="fundido" aria-hidden="true"></div>
     <header class="cabecera">
@@ -128,6 +133,63 @@
               <span class="pista" aria-hidden="true"></span>
               <span data-i18n="escala.etiqueta"></span>
             </button>
+          </div>
+          <div class="grupo camara" role="group" aria-labelledby="titulo-camara">
+            <span id="titulo-camara" class="rotulo" data-i18n="camara.etiqueta"></span>
+            <button
+              type="button"
+              class="boton icono"
+              data-camara="izquierda"
+              data-i18n-aria="camara.izquierda"
+            >
+              <span aria-hidden="true">◀</span>
+            </button>
+            <button
+              type="button"
+              class="boton icono"
+              data-camara="derecha"
+              data-i18n-aria="camara.derecha"
+            >
+              <span aria-hidden="true">▶</span>
+            </button>
+            <button
+              type="button"
+              class="boton icono"
+              data-camara="arriba"
+              data-i18n-aria="camara.arriba"
+            >
+              <span aria-hidden="true">▲</span>
+            </button>
+            <button
+              type="button"
+              class="boton icono"
+              data-camara="abajo"
+              data-i18n-aria="camara.abajo"
+            >
+              <span aria-hidden="true">▼</span>
+            </button>
+            <button
+              type="button"
+              class="boton icono"
+              data-camara="acercar"
+              data-i18n-aria="camara.acercar"
+            >
+              <span aria-hidden="true">+</span>
+            </button>
+            <button
+              type="button"
+              class="boton icono"
+              data-camara="alejar"
+              data-i18n-aria="camara.alejar"
+            >
+              <span aria-hidden="true">−</span>
+            </button>
+            <button
+              type="button"
+              class="boton"
+              data-camara="restablecer"
+              data-i18n="camara.restablecer"
+            ></button>
           </div>
           <p id="aviso-escala" class="aviso"></p>
           <p id="aviso-marcadores" class="aviso" data-i18n="escala.marcadores"></p>
