@@ -12,6 +12,12 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
 export type NombreVista = 'tierra' | 'sistema-solar';
+export interface AreaLibre {
+  arriba: number;
+  abajo: number;
+  izquierda: number;
+  derecha: number;
+}
 
 interface Vista {
   escena: Scene;
@@ -77,19 +83,29 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
     return obj;
   }
 
+  /** Zona de la ventana que no tapan los paneles (px); null: toda la escena está libre. */
+  let areaLibre: () => AreaLibre | null = () => null;
+
   function ajustar(): void {
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
     renderer.setSize(w, h, false);
     etiquetas.setSize(w, h);
+    // El centro de la proyección se lleva al centro de la zona libre (hoja móvil abierta, etc.)
+    const a = areaLibre();
+    const dx = a ? w / 2 - (a.izquierda + a.derecha) / 2 : 0;
+    const dy = a ? h / 2 - (a.arriba + a.abajo) / 2 : 0;
     for (const v of vistas.values()) {
       v.camara.aspect = w / h;
-      // En vertical el panel ocupa la parte baja: se desplaza el encuadre hacia arriba
-      if (w / h < 0.8) v.camara.setViewOffset(w, h, 0, h * 0.18, w, h);
+      if (Math.abs(dx) > 1 || Math.abs(dy) > 1) v.camara.setViewOffset(w, h, dx, dy, w, h);
       else v.camara.clearViewOffset();
       v.camara.updateProjectionMatrix();
       v.composer.setSize(w, h, false);
     }
+  }
+  function fijarAreaLibre(f: () => AreaLibre | null): void {
+    areaLibre = f;
+    ajustar();
   }
   window.addEventListener('resize', ajustar);
 
@@ -131,5 +147,15 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
   });
 
   const vista = (n: NombreVista) => vistas.get(n)!;
-  return { registrar, activar, etiqueta, alCuadro, vista, activa: () => activa, fps: () => fps };
+  return {
+    registrar,
+    activar,
+    etiqueta,
+    alCuadro,
+    vista,
+    ajustar,
+    fijarAreaLibre,
+    activa: () => activa,
+    fps: () => fps,
+  };
 }

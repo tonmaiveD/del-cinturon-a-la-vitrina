@@ -18,6 +18,7 @@ import type { Muestra } from './timeline/interpolacion';
 import { crearReloj, VELOCIDADES } from './timeline/reloj';
 import { escribirEstadoUrl, leerEstadoUrl, type Modo } from './ui/estado-url';
 import type { ControlModo } from './ui/modo';
+import { areaLibre } from './ui/hoja';
 import { coordenada, nombrePieza, type PanelPieza } from './ui/panel-pieza';
 
 type Clave = Parameters<typeof t>[0];
@@ -82,6 +83,9 @@ export async function iniciar3D(
   }
 
   const motor = crearMotor(canvas, $('#etiquetas'));
+  // La cámara se centra en la zona que no tapa la hoja de paneles (móvil) y sigue sus cambios
+  motor.fijarAreaLibre(areaLibre);
+  new ResizeObserver(() => motor.ajustar()).observe($('#hoja'));
   const movil = window.matchMedia('(max-width: 900px)').matches;
   const radioMet = radioMeteoroideKm();
   const tierra = crearVistaTierra(

@@ -16,134 +16,178 @@
       <p data-i18n="app.subtitulo"></p>
       <p class="estado" data-i18n="app.estado"></p>
     </header>
-    <aside class="panel panel-pieza" aria-labelledby="titulo-modo">
-      <div class="grupo modo" role="group" aria-labelledby="titulo-modo">
-        <span id="titulo-modo" class="rotulo" data-i18n="modo.etiqueta"></span>
-        <button type="button" class="boton" data-modo="pedigri" data-i18n="modo.pedigri"></button>
-        <button type="button" class="boton" data-modo="cneos" data-i18n="modo.cneos"></button>
-      </div>
-      <div id="seccion-pedigri">
-        <h2 id="titulo-pieza" class="rotulo" data-i18n="pieza.titulo"></h2>
-        <div class="grupo">
-          <label class="rotulo" for="pieza" data-i18n="pieza.elegir"></label>
-          <select id="pieza" class="selector ancho"></select>
-        </div>
-        <details class="plegable filtros">
-          <summary data-i18n="filtro.titulo"></summary>
-          <div class="grupo">
-            <label class="rotulo" for="filtro-grupo" data-i18n="filtro.grupo"></label>
-            <select id="filtro-grupo" class="selector"></select>
-          </div>
-          <div class="grupo">
-            <label class="rotulo" for="filtro-confianza" data-i18n="filtro.confianza"></label>
-            <select id="filtro-confianza" class="selector"></select>
-          </div>
-        </details>
-        <p id="pieza-cuenta" class="nota"></p>
-        <details class="plegable procedencia-plegable" open>
-          <summary data-i18n="procedencia.titulo"></summary>
-          <div id="procedencia" class="procedencia" aria-live="polite"></div>
-        </details>
-      </div>
-      <div id="seccion-cneos" hidden>
-        <p id="cneos-actualizacion" class="nota" data-i18n="cneos.cargando"></p>
-        <div id="cneos-evento" class="procedencia" aria-live="polite"></div>
-        <details class="plegable" open>
-          <summary data-i18n="cneos.leyenda.titulo"></summary>
-          <ul id="cneos-leyenda" class="leyenda"></ul>
-        </details>
-        <details class="plegable filtros">
-          <summary data-i18n="filtro.titulo"></summary>
-          <div class="grupo">
-            <label class="rotulo" for="cneos-grupo" data-i18n="cneos.filtro.grupo"></label>
-            <select id="cneos-grupo" class="selector"></select>
-          </div>
-          <div class="grupo">
-            <label class="rotulo" for="cneos-desde" data-i18n="cneos.filtro.desde"></label>
-            <select id="cneos-desde" class="selector"></select>
-          </div>
-          <div class="grupo">
-            <label class="rotulo" for="cneos-energia" data-i18n="cneos.filtro.energia"></label>
-            <select id="cneos-energia" class="selector"></select>
-          </div>
-        </details>
-        <p id="cneos-cuenta" class="nota"></p>
+    <div id="hoja" class="hoja">
+      <nav class="hoja-barra" data-i18n-aria="hoja.etiqueta">
+        <button type="button" id="hoja-datos" class="boton" data-i18n="hoja.datos"></button>
+        <button type="button" id="hoja-controles" class="boton" data-i18n="hoja.controles"></button>
         <button
           type="button"
-          id="cneos-restablecer"
+          id="hoja-ampliar"
           class="boton"
-          data-i18n="cneos.restablecer"
-          hidden
+          aria-pressed="false"
+          data-i18n="hoja.ampliar"
         ></button>
-        <details class="plegable procedencia-plegable" open>
-          <summary data-i18n="cneos.recientes"></summary>
-          <ul id="cneos-recientes" class="lista-eventos"></ul>
-        </details>
-      </div>
-    </aside>
-    <main class="panel" aria-label="Controles">
-      <div class="grupo" role="group" aria-labelledby="titulo-vista">
-        <span id="titulo-vista" class="rotulo" data-i18n="vista.etiqueta"></span>
-        <button type="button" class="boton" data-vista="tierra" data-i18n="vista.tierra"></button>
         <button
           type="button"
+          id="hoja-ocultar"
           class="boton"
-          data-vista="sistema-solar"
-          data-i18n="vista.sistema-solar"
+          aria-expanded="true"
+          aria-controls="hoja-contenido"
+          data-i18n="hoja.ocultar"
         ></button>
+      </nav>
+      <div id="hoja-contenido" class="hoja-contenido">
+        <aside class="panel panel-pieza" aria-labelledby="titulo-modo">
+          <div class="grupo modo" role="group" aria-labelledby="titulo-modo">
+            <span id="titulo-modo" class="rotulo" data-i18n="modo.etiqueta"></span>
+            <button
+              type="button"
+              class="boton"
+              data-modo="pedigri"
+              data-i18n="modo.pedigri"
+            ></button>
+            <button type="button" class="boton" data-modo="cneos" data-i18n="modo.cneos"></button>
+          </div>
+          <div id="seccion-pedigri">
+            <h2 id="titulo-pieza" class="rotulo" data-i18n="pieza.titulo"></h2>
+            <div class="grupo">
+              <label class="rotulo" for="pieza" data-i18n="pieza.elegir"></label>
+              <select id="pieza" class="selector ancho"></select>
+            </div>
+            <details class="plegable filtros">
+              <summary data-i18n="filtro.titulo"></summary>
+              <div class="grupo">
+                <label class="rotulo" for="filtro-grupo" data-i18n="filtro.grupo"></label>
+                <select id="filtro-grupo" class="selector"></select>
+              </div>
+              <div class="grupo">
+                <label class="rotulo" for="filtro-confianza" data-i18n="filtro.confianza"></label>
+                <select id="filtro-confianza" class="selector"></select>
+              </div>
+            </details>
+            <p id="pieza-cuenta" class="nota"></p>
+            <details class="plegable procedencia-plegable" open>
+              <summary data-i18n="procedencia.titulo"></summary>
+              <div id="procedencia" class="procedencia" aria-live="polite"></div>
+            </details>
+          </div>
+          <div id="seccion-cneos" hidden>
+            <p id="cneos-actualizacion" class="nota" data-i18n="cneos.cargando"></p>
+            <div id="cneos-evento" class="procedencia" aria-live="polite"></div>
+            <details class="plegable" open>
+              <summary data-i18n="cneos.leyenda.titulo"></summary>
+              <ul id="cneos-leyenda" class="leyenda"></ul>
+            </details>
+            <details class="plegable filtros">
+              <summary data-i18n="filtro.titulo"></summary>
+              <div class="grupo">
+                <label class="rotulo" for="cneos-grupo" data-i18n="cneos.filtro.grupo"></label>
+                <select id="cneos-grupo" class="selector"></select>
+              </div>
+              <div class="grupo">
+                <label class="rotulo" for="cneos-desde" data-i18n="cneos.filtro.desde"></label>
+                <select id="cneos-desde" class="selector"></select>
+              </div>
+              <div class="grupo">
+                <label class="rotulo" for="cneos-energia" data-i18n="cneos.filtro.energia"></label>
+                <select id="cneos-energia" class="selector"></select>
+              </div>
+            </details>
+            <p id="cneos-cuenta" class="nota"></p>
+            <button
+              type="button"
+              id="cneos-restablecer"
+              class="boton"
+              data-i18n="cneos.restablecer"
+              hidden
+            ></button>
+            <details class="plegable procedencia-plegable" open>
+              <summary data-i18n="cneos.recientes"></summary>
+              <ul id="cneos-recientes" class="lista-eventos"></ul>
+            </details>
+          </div>
+        </aside>
+        <main id="panel-controles" class="panel" aria-label="Controles">
+          <div class="grupo" role="group" aria-labelledby="titulo-vista">
+            <span id="titulo-vista" class="rotulo" data-i18n="vista.etiqueta"></span>
+            <button
+              type="button"
+              class="boton"
+              data-vista="tierra"
+              data-i18n="vista.tierra"
+            ></button>
+            <button
+              type="button"
+              class="boton"
+              data-vista="sistema-solar"
+              data-i18n="vista.sistema-solar"
+            ></button>
+          </div>
+          <div class="grupo">
+            <button type="button" id="escala" class="interruptor" role="switch" aria-checked="true">
+              <span class="pista" aria-hidden="true"></span>
+              <span data-i18n="escala.etiqueta"></span>
+            </button>
+          </div>
+          <p id="aviso-escala" class="aviso"></p>
+          <p id="aviso-marcadores" class="aviso" data-i18n="escala.marcadores"></p>
+          <section class="linea-tiempo" aria-labelledby="titulo-tiempo">
+            <h2 id="titulo-tiempo" class="rotulo" data-i18n="tiempo.titulo"></h2>
+            <div class="grupo">
+              <button
+                type="button"
+                id="recorrido"
+                class="boton principal"
+                data-i18n="tiempo.recorrido"
+              ></button>
+              <button
+                type="button"
+                id="saltar"
+                class="boton"
+                data-i18n="tiempo.saltar"
+                hidden
+              ></button>
+            </div>
+            <p id="nota-recorrido" class="nota" data-i18n="tiempo.sin-trayectoria" hidden></p>
+            <div class="grupo">
+              <button
+                type="button"
+                id="reproducir"
+                class="boton"
+                aria-pressed="false"
+                data-i18n="tiempo.reproducir"
+              ></button>
+              <label class="rotulo" for="velocidad" data-i18n="tiempo.velocidad"></label>
+              <select id="velocidad" class="selector"></select>
+              <button type="button" id="impacto" class="boton" data-i18n="tiempo.ir-pico"></button>
+            </div>
+            <input
+              id="fecha"
+              type="range"
+              min="0"
+              max="10000"
+              step="1"
+              class="deslizador"
+              data-i18n-aria="tiempo.fecha"
+            />
+            <output id="fecha-texto" for="fecha" class="fecha"></output>
+          </section>
+          <details class="plegable descripcion-plegable" open>
+            <summary data-i18n="desc.titulo"></summary>
+            <p id="descripcion" class="descripcion" aria-live="polite" data-i18n="cargando"></p>
+          </details>
+          <div class="grupo pie">
+            <button type="button" id="abrir-ficha" class="boton" data-i18n="ficha.abrir"></button>
+            <button
+              type="button"
+              id="abrir-fuentes"
+              class="boton"
+              data-i18n="fuentes.abrir"
+            ></button>
+          </div>
+        </main>
       </div>
-      <div class="grupo">
-        <button type="button" id="escala" class="interruptor" role="switch" aria-checked="true">
-          <span class="pista" aria-hidden="true"></span>
-          <span data-i18n="escala.etiqueta"></span>
-        </button>
-      </div>
-      <p id="aviso-escala" class="aviso"></p>
-      <p id="aviso-marcadores" class="aviso" data-i18n="escala.marcadores"></p>
-      <section class="linea-tiempo" aria-labelledby="titulo-tiempo">
-        <h2 id="titulo-tiempo" class="rotulo" data-i18n="tiempo.titulo"></h2>
-        <div class="grupo">
-          <button
-            type="button"
-            id="recorrido"
-            class="boton principal"
-            data-i18n="tiempo.recorrido"
-          ></button>
-          <button type="button" id="saltar" class="boton" data-i18n="tiempo.saltar" hidden></button>
-        </div>
-        <p id="nota-recorrido" class="nota" data-i18n="tiempo.sin-trayectoria" hidden></p>
-        <div class="grupo">
-          <button
-            type="button"
-            id="reproducir"
-            class="boton"
-            aria-pressed="false"
-            data-i18n="tiempo.reproducir"
-          ></button>
-          <label class="rotulo" for="velocidad" data-i18n="tiempo.velocidad"></label>
-          <select id="velocidad" class="selector"></select>
-          <button type="button" id="impacto" class="boton" data-i18n="tiempo.ir-pico"></button>
-        </div>
-        <input
-          id="fecha"
-          type="range"
-          min="0"
-          max="10000"
-          step="1"
-          class="deslizador"
-          data-i18n-aria="tiempo.fecha"
-        />
-        <output id="fecha-texto" for="fecha" class="fecha"></output>
-      </section>
-      <details class="plegable descripcion-plegable" open>
-        <summary data-i18n="desc.titulo"></summary>
-        <p id="descripcion" class="descripcion" aria-live="polite" data-i18n="cargando"></p>
-      </details>
-      <div class="grupo pie">
-        <button type="button" id="abrir-ficha" class="boton" data-i18n="ficha.abrir"></button>
-        <button type="button" id="abrir-fuentes" class="boton" data-i18n="fuentes.abrir"></button>
-      </div>
-    </main>
+    </div>
     <dialog id="dialogo-ficha" class="dialogo" aria-labelledby="titulo-ficha">
       <div class="cabeza">
         <h2 id="titulo-ficha"></h2>

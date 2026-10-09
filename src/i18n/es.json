@@ -166,5 +166,11 @@
   "cneos.cuenta.vacia": "Ningún bólido cumple estos filtros (de {total} con ubicación publicada). Cambia los filtros o restablécelos.",
   "cneos.restablecer": "Restablecer filtros",
   "cneos.fuera-filtro": "El bólido seleccionado no cumple los filtros actuales: se muestra porque sigue seleccionado, no como resultado de la búsqueda.",
-  "cneos.cuenta.fuera": "El bólido seleccionado sigue en pantalla, pero no cumple estos filtros."
+  "cneos.cuenta.fuera": "El bólido seleccionado sigue en pantalla, pero no cumple estos filtros.",
+  "hoja.etiqueta": "Paneles",
+  "hoja.datos": "Datos",
+  "hoja.controles": "Controles",
+  "hoja.ampliar": "Ampliar",
+  "hoja.ocultar": "Ocultar",
+  "hoja.mostrar": "Mostrar"
 }

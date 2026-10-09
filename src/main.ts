@@ -4,6 +4,7 @@
  */
 import { t } from './i18n';
 import { montarDialogos } from './ui/dialogos';
+import { montarHoja } from './ui/hoja';
 import type { Catalogo } from './ui/catalogo';
 import { leerEstadoUrl } from './ui/estado-url';
 import { montarModo } from './ui/modo';
@@ -23,6 +24,7 @@ const catalogo = cargarJson<Catalogo>('data/catalogo.json');
 
 aplicarTextos();
 montarDialogos();
+montarHoja();
 // En pantallas pequeñas los bloques de texto empiezan plegados para no tapar la escena
 if (window.matchMedia('(max-width: 640px)').matches)
   document.querySelectorAll('.plegable').forEach((d) => d.removeAttribute('open'));
