@@ -17,7 +17,10 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 - Verificación al cierre: 234 tests unitarios, 41 e2e (escritorio + móvil), axe 0 violaciones,
   auditoría 549 datos / 0 errores, carga inicial 2,7–2,9 s en 4G lento, modo CNEOS 1,5–2,2 s.
 
-### Siguiente: Fase 4 (colección y fichas con la API de Claude)
+### Siguiente: Etapa A de deuda técnica y/o Fase 4 (colección y fichas con la API de Claude)
+
+Ver «Deuda técnica» abajo: M01 es requisito previo de la Fase 4. Diseño de la Fase 4 debe
+incorporar M33 (meteorito ≠ ejemplar), M32 (campos privados) y M10 (hosting según uso).
 
 Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan detallado.
 
@@ -66,18 +69,13 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
 
 ### Deuda técnica
 
-- Panel en móvil: deja poco espacio a la escena (pestañas u hoja deslizable).
-- Módulo 3D > 500 kB (aviso de Vite): imports más finos de Three o worker de efemérides.
-- Recorrido animado de los bólidos del CNEOS: barato ahora (escena generalizada; las órbitas
-  guardan la anomalía media); no hecho.
-- No se modela la deceleración atmosférica antes del pico/punto de referencia.
-- Incertidumbres de órbitas publicadas como gaussianas independientes (sin covarianza);
-  clones de Chelyabinsk movidos con Kepler (solo la nominal con N cuerpos).
-- Regiones de escape aproximadas (Hungaria/Phocaea sin excentricidad; ν6 y JFC sin geometría).
-- fps en GPU real sin cifra (solo «se ve bien» en un teléfono); navegador sin GPU: 18,7 fps
-  con catálogo, 24,7 sin él.
-- Pruebas e2e lentas en GitHub: reintento 1 y reporter `github` (anotaciones públicas
-  legibles con la API de check-runs) para identificar inestables.
+**Fuente única: `docs/deuda-tecnica.md`** (consolida la deuda previa con la auditoría externa
+del 2026-10-09, M01–M42, verificada contra el código; copia de la auditoría en `revision/`).
+Etapas propuestas: **A** correcciones rápidas (M01 borradores fuera del build, M05 tecla I,
+M06 estado vacío CNEOS, M24–M26, M28, correcciones del documento del amigo) → recomendada
+antes de la Fase 4; **B** móvil y accesibilidad (M02–M04, M07); **C** rigor CNEOS (M18 → M09
+radiante geocéntrico + cobertura, M08, M27); **D** CI (M20, M19, M30). Pendiente de elección
+del usuario (2026-10-09).
 
 ### Riesgos
 
