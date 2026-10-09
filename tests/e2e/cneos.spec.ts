@@ -143,6 +143,8 @@ test('modo CNEOS: la leyenda separa órbitas calculadas y cálculos fallidos (M2
 });
 
 test('modo CNEOS: todos los registros son consultables como texto (M03)', async ({ page }) => {
+  // Muchos pasos sobre una escena con 888 símbolos: en GitHub (sin GPU) superó los 30 s (2026-10-09)
+  test.setTimeout(120_000);
   const POR_PAGINA = 15;
   const paginas = Math.ceil(publicados.length / POR_PAGINA);
   await page.goto('/?modo=cneos');
