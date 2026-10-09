@@ -19,7 +19,39 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 - 2026-10-09: etapas A y B de la deuda técnica (auditoría externa) hechas; ver
   `docs/deuda-tecnica.md`. Ahora: 238 unitarios, 69 e2e, carga inicial 2,75 s.
 
-### Siguiente: Etapa A de deuda técnica y/o Fase 4 (colección y fichas con la API de Claude)
+### Hoja de ruta acordada (2026-10-09)
+
+Criterios: primero lo roto o lo que bloquea; luego dependencias; luego impacto sobre el
+objetivo (la web de la tienda del amigo: confianza, presentación, uso) dividido por esfuerzo.
+Lo que depende del usuario corre en paralelo, y la Fase 4 se adelanta si llegan sus datos.
+
+0. **Hoy:** confirmar que la CI publicó la hoja móvil, que el usuario la pruebe en su iPhone
+   16 Pro Max, cierre formal de la Fase 3 y decisión sobre sacar el proyecto de iCloud.
+1. **Arreglos rápidos (1 sesión):**
+   - control de duración del recorrido: hoy dura unos 21 s fijos y el selector de velocidad
+     solo afecta a «Reproducir» (medido: 21,6 s frente a 21,7 s);
+   - ajustes que salgan de la prueba en el iPhone;
+   - **Etapa D** (M20, M19, M30).
+2. **Etapa C (1–2 sesiones):** M18 → M09 (recálculo de unas 260 órbitas), M08, M27.
+3. **Fase 4 (2 sesiones):** con M33, M32, M10 y M29; necesita las decisiones del usuario.
+4. **Presentación para la tienda (2–3 sesiones):**
+   - iluminación de día (M35, la pidió el amigo) y marca;
+   - soundtrack con los MP3 del usuario: apagado por defecto, carga diferida, «todos los
+     derechos reservados», fuera de la CC BY;
+   - M34 y M36; M12 solo si hace falta captar tráfico.
+5. **Optimización y ampliación:** M13–M16, M22, M31, M37 (antes si la Fase 4 lo exige), M38,
+   M39, M41, M42.
+
+En paralelo, del usuario:
+
+- colección pública o privada;
+- lista de piezas;
+- aprobar la ficha de Chelyabinsk;
+- PDF de MetBull;
+- clave de la API (al llegar a la Fase 4);
+- marca del amigo y los MP3.
+
+### Fase 4 (colección y fichas con la API de Claude)
 
 Ver «Deuda técnica» abajo: M01 es requisito previo de la Fase 4. Diseño de la Fase 4 debe
 incorporar M33 (meteorito ≠ ejemplar), M32 (campos privados) y M10 (hosting según uso).
