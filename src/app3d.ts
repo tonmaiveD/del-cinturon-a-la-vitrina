@@ -364,6 +364,12 @@ export async function iniciar3D(
     avisoMarcadores.textContent = t(
       modo === 'cneos' ? 'escala.marcadores.cneos' : 'escala.marcadores',
     );
+    // El final del recorrido es el pico de brillo (Chelyabinsk y CNEOS) o el punto de referencia
+    bImpacto.textContent = t(
+      modo === 'cneos' || panel.actual() === 'chelyabinsk'
+        ? 'tiempo.ir-pico'
+        : 'tiempo.ir-referencia',
+    );
     if (!secuencia.activa()) descripcion.textContent = descripcionVista();
     guardarUrl();
   }
@@ -494,7 +500,7 @@ export async function iniciar3D(
     reloj.fijarRango(impacto - 365 * DIA_MS, impacto, tInicial ?? impacto);
     bRecorrido.disabled = true;
     notaRecorrido.hidden = false;
-    notaRecorrido.textContent = t('tiempo.solo-chelyabinsk.cneos');
+    notaRecorrido.textContent = t('tiempo.sin-recorrido.cneos');
     bFicha.hidden = true;
     const dir = bolidos.posicionMundo(id);
     if (dir) {
@@ -666,10 +672,12 @@ export async function iniciar3D(
     solarCreada?.cat.filtrar(panel.visibles());
     refrescarVista();
     const p = piezaDe(panel.actual());
-    descripcion.textContent =
+    // El mensaje de llegada se antepone: la descripción del método y sus límites no desaparecen
+    const llegada =
       p.id === 'chelyabinsk'
         ? t('narr.final', { fecha: formatoFecha(bolido.fecha) })
         : t('narr.final.pieza', { nombre: nombrePieza(p), fecha: formatoFecha(new Date(impacto)) });
+    descripcion.textContent = `${llegada} ${descripcionVista()}`;
   }
   const secuencia = crearSecuencia(pasos, terminarSecuencia);
 
@@ -681,7 +689,7 @@ export async function iniciar3D(
       irDias(0);
       fijarCamara('sistema-solar', encuadreSolar().pos, ORIGEN);
       refrescarVista();
-      narrar('narr.reducido');
+      descripcion.textContent = `${t('narr.reducido')} ${descripcionVista()}`;
       return;
     }
     camT.controles.enabled = false;
@@ -727,6 +735,8 @@ export async function iniciar3D(
   });
   window.addEventListener('keydown', (ev) => {
     if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
+    // Con un diálogo abierto, el teclado no altera la escena de fondo
+    if (document.querySelector('dialog[open]')) return;
     const objetivo = ev.target as HTMLElement;
     // Solo se ceden las teclas que el propio control usa
     const enCampo = objetivo.closest('input, select, textarea') !== null;
@@ -740,7 +750,10 @@ export async function iniciar3D(
     } else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') {
       if (enCampo) return;
       reloj.irA(reloj.estado().t + (ev.key === 'ArrowLeft' ? -DIA_MS : DIA_MS));
-    } else if (ev.key.toLowerCase() === 'i' && !enCampo) bImpacto.click();
+    } else if (ev.key.toLowerCase() === 'i' && !enCampo && !enActivable) {
+      // Atajo de una letra (WCAG 2.1.4): solo sin foco en un control, nunca desde un botón o campo
+      bImpacto.click();
+    }
   });
 
   panel.alSeleccionar((id) => modo === 'pedigri' && aplicarPieza(id));

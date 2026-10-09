@@ -3,7 +3,6 @@
  * evento seleccionado. Nunca se presenta como tiempo real (principio 4).
  */
 import { t } from '../i18n';
-import type { EventoCneos } from './eventos';
 import {
   COLOR_LEYENDA,
   comparacionChelyabinsk,
@@ -162,6 +161,7 @@ export function montarPanelCneos(resumen: ResumenCneos, inicial?: string) {
   const selDesde = $<HTMLSelectElement>('#cneos-desde');
   const selEnergia = $<HTMLSelectElement>('#cneos-energia');
   const cuenta = $('#cneos-cuenta');
+  const bRestablecer = $<HTMLButtonElement>('#cneos-restablecer');
   const lista = $('#cneos-recientes');
   const caja = $('#cneos-evento');
 
@@ -172,12 +172,23 @@ export function montarPanelCneos(resumen: ResumenCneos, inicial?: string) {
   const leyenda = $('#cneos-leyenda');
   leyenda.replaceChildren();
   const crit = textoCriterio(resumen);
+  // Cuántos registros hay en cada grupo (todos, con o sin ubicación)
+  const porGrupo = new Map<GrupoLeyenda, number>();
+  for (const e of resumen.eventos)
+    porGrupo.set(grupoLeyenda(e), (porGrupo.get(grupoLeyenda(e)) ?? 0) + 1);
   for (const g of Object.keys(COLOR_LEYENDA) as GrupoLeyenda[]) {
     const li = el('li');
     const punto = el('span', undefined, 'punto');
     punto.style.background = COLOR_LEYENDA[g];
     punto.setAttribute('aria-hidden', 'true');
-    li.append(punto, t(`cneos.leyenda.${g}` as Clave, crit));
+    li.append(
+      punto,
+      t('cneos.leyenda.cuenta', {
+        texto: t(`cneos.leyenda.${g}` as Clave, crit),
+        n: porGrupo.get(g) ?? 0,
+      }),
+    );
+    li.dataset.grupo = g;
     leyenda.append(li);
   }
   leyenda.append(el('li', t('cneos.leyenda.tamano'), 'nota'));
@@ -187,7 +198,8 @@ export function montarPanelCneos(resumen: ResumenCneos, inicial?: string) {
     selGrupo.add(new Option(t(`cneos.leyenda.${g}` as Clave, crit), g));
   const anios = [...new Set(resumen.eventos.map((e) => Number(e.fecha.slice(0, 4))))].sort();
   for (const a of anios) selDesde.add(new Option(String(a), String(a)));
-  selDesde.value = String(anios[0]);
+  const desdeInicial = String(anios[0]);
+  selDesde.value = desdeInicial;
   for (const kt of ENERGIAS_MIN)
     selEnergia.add(
       new Option(
@@ -211,13 +223,22 @@ export function montarPanelCneos(resumen: ResumenCneos, inicial?: string) {
     energiaMin: Number(selEnergia.value),
   });
   const visibles = () =>
-    new Set(
-      situables.filter((e) => cumpleFiltroCneos(e as EventoCneos, filtro())).map((e) => e.id),
-    );
+    new Set(situables.filter((e) => cumpleFiltroCneos(e, filtro())).map((e) => e.id));
 
   function poblarLista(): void {
     const ids = visibles();
-    cuenta.textContent = t('cneos.cuenta', { n: ids.size, total: situables.length });
+    const fuera = !ids.has(actual);
+    cuenta.textContent = [
+      ids.size === 0
+        ? t('cneos.cuenta.vacia', { total: situables.length })
+        : t('cneos.cuenta', { n: ids.size, total: situables.length }),
+      ...(fuera ? [t('cneos.cuenta.fuera')] : []),
+    ].join(' ');
+    const f = filtro();
+    bRestablecer.hidden = !f.grupo && selDesde.value === desdeInicial && f.energiaMin === 0;
+    // Política: la selección se conserva, pero si los filtros la excluyen se dice claramente
+    caja.querySelector('.fuera-filtro')?.remove();
+    if (fuera) caja.prepend(el('p', t('cneos.fuera-filtro'), 'aviso fuera-filtro'));
     lista.replaceChildren();
     for (const e of recientes(
       situables.filter((x) => ids.has(x.id)),
@@ -228,7 +249,7 @@ export function montarPanelCneos(resumen: ResumenCneos, inicial?: string) {
       b.type = 'button';
       b.setAttribute('aria-pressed', String(e.id === actual));
       const punto = el('span', undefined, 'punto');
-      punto.style.background = COLOR_LEYENDA[grupoLeyenda(e.calidad)];
+      punto.style.background = COLOR_LEYENDA[grupoLeyenda(e)];
       punto.setAttribute('aria-hidden', 'true');
       b.append(punto, `${fechaUtc(e.fecha, false)} · ${publicado(e.impacto_kt)} kt`);
       b.addEventListener('click', () => seleccionar(e.id));
@@ -260,6 +281,13 @@ export function montarPanelCneos(resumen: ResumenCneos, inicial?: string) {
   selGrupo.addEventListener('change', poblarLista);
   selDesde.addEventListener('change', poblarLista);
   selEnergia.addEventListener('change', poblarLista);
+  bRestablecer.addEventListener('click', () => {
+    selGrupo.value = '';
+    selDesde.value = desdeInicial;
+    selEnergia.value = '0';
+    poblarLista();
+    selGrupo.focus();
+  });
   seleccionar(actual);
 
   return {

@@ -29,10 +29,13 @@ describe('formato del modo CNEOS', () => {
   });
 
   it('grupos de la leyenda', () => {
-    expect(grupoLeyenda('orbita')).toBe('con-orbita');
-    expect(grupoLeyenda('orbita-no-fiable')).toBe('no-verificable');
-    expect(grupoLeyenda('sin-altura')).toBe('sin-trayectoria');
-    expect(grupoLeyenda('sin-vector')).toBe('sin-trayectoria');
+    expect(grupoLeyenda({ calidad: 'orbita', orbita: { n: 200 } })).toBe('con-orbita');
+    // Elegible pero con el cálculo fallido (o sin calcular): no cuenta como órbita calculada
+    expect(grupoLeyenda({ calidad: 'orbita', orbita: { error: 'x' } })).toBe('orbita-fallida');
+    expect(grupoLeyenda({ calidad: 'orbita' })).toBe('orbita-fallida');
+    expect(grupoLeyenda({ calidad: 'orbita-no-fiable' })).toBe('no-verificable');
+    expect(grupoLeyenda({ calidad: 'sin-altura' })).toBe('sin-trayectoria');
+    expect(grupoLeyenda({ calidad: 'sin-vector' })).toBe('sin-trayectoria');
   });
 
   it('filtro y recientes', () => {

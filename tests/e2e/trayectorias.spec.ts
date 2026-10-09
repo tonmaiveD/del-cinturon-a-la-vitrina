@@ -18,6 +18,8 @@ test('una pieza con trayectoria habilita el recorrido y lo completa', async ({ p
   await expect(boton).toBeEnabled();
   await expect(page.locator('#nota-recorrido')).toBeHidden();
   await expect(page.locator('#descripcion')).toContainText('altura convencional de 100 km');
+  // El final no es un impacto: es el punto de referencia (M26)
+  await expect(page.getByRole('button', { name: 'Ir al punto de referencia' })).toBeVisible();
   await boton.click();
   await expect(page.getByRole('button', { name: 'Saltar animación' })).toBeVisible();
   await page.waitForTimeout(6000);
@@ -28,6 +30,8 @@ test('una pieza con trayectoria habilita el recorrido y lo completa', async ({ p
     timeout: 180_000,
   });
   await expect(page.locator('#fecha-texto')).toContainText('instante de referencia');
+  // Tras el recorrido sigue visible el método y su altura convencional (M28)
+  await expect(page.locator('#descripcion')).toContainText('altura convencional de 100 km');
   expect(errores).toEqual([]);
 });
 

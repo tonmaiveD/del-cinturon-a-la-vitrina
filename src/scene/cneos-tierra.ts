@@ -19,7 +19,7 @@ import {
   Vector3,
 } from 'three';
 import type { EventoCneos } from '../cneos/eventos';
-import { COLOR_LEYENDA, grupoLeyenda } from '../cneos/formato';
+import { COLOR_LEYENDA, grupoLeyenda, type ConCalidad } from '../cneos/formato';
 import { eqjAEcef, estadoPuntoTerrestre, KM_POR_AU } from '../core/marcos';
 import type { Vec3 } from '../core/vector';
 import { RADIO_TIERRA_KM } from './cuerpos';
@@ -31,7 +31,7 @@ export const radioSimbolo = (kt: number) =>
 /** Altura del símbolo si el evento no publica altura (km): por encima del achatamiento. */
 const ALTURA_SIN_DATO_KM = 20;
 
-export function crearBolidosTierra(globo: Group, eventos: EventoCneos[]) {
+export function crearBolidosTierra(globo: Group, eventos: (EventoCneos & ConCalidad)[]) {
   const situables = eventos.filter((e) => e.lat !== undefined && e.lon !== undefined);
   const t0 = Astro.MakeTime(new Date('2000-01-01T12:00:00Z'));
   const posiciones = situables.map((e) => {
@@ -49,7 +49,7 @@ export function crearBolidosTierra(globo: Group, eventos: EventoCneos[]) {
   const color = new Color();
   situables.forEach((e, k) => {
     // Valores > 1 para que el bloom los realce un poco
-    color.set(COLOR_LEYENDA[grupoLeyenda(e.calidad)]).multiplyScalar(1.3);
+    color.set(COLOR_LEYENDA[grupoLeyenda(e)]).multiplyScalar(1.3);
     malla.setColorAt(k, color);
   });
   globo.add(malla);

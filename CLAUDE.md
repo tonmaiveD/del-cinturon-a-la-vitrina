@@ -71,11 +71,10 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
 
 **Fuente única: `docs/deuda-tecnica.md`** (consolida la deuda previa con la auditoría externa
 del 2026-10-09, M01–M42, verificada contra el código; copia de la auditoría en `revision/`).
-Etapas propuestas: **A** correcciones rápidas (M01 borradores fuera del build, M05 tecla I,
-M06 estado vacío CNEOS, M24–M26, M28, correcciones del documento del amigo) → recomendada
-antes de la Fase 4; **B** móvil y accesibilidad (M02–M04, M07); **C** rigor CNEOS (M18 → M09
-radiante geocéntrico + cobertura, M08, M27); **D** CI (M20, M19, M30). Pendiente de elección
-del usuario (2026-10-09).
+Etapas: **A** correcciones rápidas (M01 borradores fuera del build, M05 tecla I, M06 estado
+vacío CNEOS, M24–M26, M28, documento del amigo) **hecha el 2026-10-09**; **B** móvil y accesibilidad (M02–M04, M07); **C** rigor CNEOS (M18 → M09
+radiante geocéntrico + cobertura, M08, M27); **D** CI (M20, M19, M30). Siguiente: elegir
+entre B y la Fase 4.
 
 ### Riesgos
 

@@ -68,6 +68,13 @@
           </div>
         </details>
         <p id="cneos-cuenta" class="nota"></p>
+        <button
+          type="button"
+          id="cneos-restablecer"
+          class="boton"
+          data-i18n="cneos.restablecer"
+          hidden
+        ></button>
         <details class="plegable procedencia-plegable" open>
           <summary data-i18n="cneos.recientes"></summary>
           <ul id="cneos-recientes" class="lista-eventos"></ul>
@@ -104,7 +111,7 @@
           ></button>
           <button type="button" id="saltar" class="boton" data-i18n="tiempo.saltar" hidden></button>
         </div>
-        <p id="nota-recorrido" class="nota" data-i18n="tiempo.solo-chelyabinsk" hidden></p>
+        <p id="nota-recorrido" class="nota" data-i18n="tiempo.sin-trayectoria" hidden></p>
         <div class="grupo">
           <button
             type="button"
@@ -115,7 +122,7 @@
           ></button>
           <label class="rotulo" for="velocidad" data-i18n="tiempo.velocidad"></label>
           <select id="velocidad" class="selector"></select>
-          <button type="button" id="impacto" class="boton" data-i18n="tiempo.impacto"></button>
+          <button type="button" id="impacto" class="boton" data-i18n="tiempo.ir-pico"></button>
         </div>
         <input
           id="fecha"

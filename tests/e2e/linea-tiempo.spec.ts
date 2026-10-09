@@ -26,11 +26,28 @@ test.describe('línea de tiempo y estado en URL', () => {
     await page.waitForTimeout(1200);
     await page.getByRole('button', { name: 'Pausar' }).click();
     await expect(fecha).not.toContainText('1 de junio de 2012');
+    // Los atajos de la escena actúan sin foco en un control (el foco quedó en «Pausar»)
+    await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
     await page.locator('body').press('i');
     await expect(fecha).toContainText('instante del pico de brillo');
     await page.locator('body').press('ArrowLeft');
     await expect(fecha).toContainText('1 d antes');
     await expect(page).toHaveURL(/t=2013-02-14T03%3A20%3A26Z/);
+  });
+
+  test('la tecla I no actúa desde un botón ni con un diálogo abierto (M05)', async ({ page }) => {
+    await page.goto('/?t=2012-06-01T00:00:00Z');
+    await page.waitForFunction(() => (window as unknown as { __listo?: number }).__listo);
+    const fecha = page.locator('#fecha-texto');
+    await expect(page.getByRole('button', { name: 'Ir al pico de brillo' })).toBeVisible();
+    await page.getByRole('button', { name: 'Reproducir' }).focus();
+    await page.keyboard.press('i');
+    await expect(fecha).toContainText('1 de junio de 2012');
+    await page.getByRole('button', { name: 'Fuentes y créditos' }).click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+    await page.keyboard.press('i');
+    await page.keyboard.press('ArrowRight');
+    await expect(fecha).toContainText('1 de junio de 2012');
   });
 
   test('movimiento reducido: corte directo sin animación', async ({ page }) => {

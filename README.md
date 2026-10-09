@@ -5,9 +5,13 @@ hasta su caída en la Tierra, con rigor científico verificable: cada dato mostr
 la incertidumbre se dibuja (nubes de órbitas, nunca una línea única) y toda escala exagerada
 se etiqueta.
 
-Estado: en desarrollo (fase 2 de 4). Incluye Chelyabinsk con su recorrido animado y las 25
-caídas con órbita instrumental recalculadas por Granvik y Brown (2018), con su probabilidad de
-región de escape y la asociación propuesta con su cuerpo progenitor.
+Estado: en desarrollo (fases 0–3 de 4 terminadas). Incluye las 25 caídas con órbita
+instrumental recalculadas por Granvik y Brown (2018), cada una con su recorrido animado, su
+probabilidad de región de escape y la asociación propuesta con su cuerpo progenitor, y los
+bólidos del CNEOS actualizados a diario (no en tiempo real), con órbita calculada cuando el
+dato es fiable. El recorrido termina en el pico de brillo o en un punto de referencia a altura
+convencional; no se modela la caída oscura hasta el suelo. Pendiente: colección y fichas
+revisadas (fase 4); backlog técnico en `docs/deuda-tecnica.md`.
 
 ## Rigor
 

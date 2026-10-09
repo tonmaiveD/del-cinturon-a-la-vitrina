@@ -6,12 +6,8 @@ import { t } from '../i18n';
 import type { Meteorito } from '../schema';
 import { leerFicha, publicable, renderizarFicha } from './ficha';
 import { contextoFicha } from './ficha-datos';
-
-const fichasCrudas = import.meta.glob('../../content/fichas/*.md', {
-  query: '?raw',
-  import: 'default',
-  eager: true,
-}) as Record<string, string>;
+// Solo las fichas aprobadas entran en el build de producción (pipeline/fichas-publicables.ts)
+import fichasCrudas from 'virtual:fichas';
 
 /** Número de clones mostrados (coincide con public/data/chelyabinsk-orbitas.json). */
 const N_CLONES = 300;

@@ -1,12 +1,24 @@
 import { readFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
 
-/** Eventos con ubicación en los datos publicados (cambia con cada actualización diaria). */
-const conUbicacion = (
+interface EventoPublicado {
+  fecha: string;
+  lat?: number;
+  impacto_kt: number;
+  calidad: string;
+  orbita?: object;
+}
+const publicados = (
   JSON.parse(readFileSync('public/data/cneos/eventos.json', 'utf8')) as {
-    eventos: { lat?: number }[];
+    eventos: EventoPublicado[];
   }
-).eventos.filter((e) => e.lat !== undefined).length;
+).eventos;
+/** Eventos con ubicación en los datos publicados (cambia con cada actualización diaria). */
+const conUbicacion = publicados.filter((e) => e.lat !== undefined).length;
+const fallidas = publicados.filter(
+  (e) => e.calidad === 'orbita' && (!e.orbita || 'error' in e.orbita),
+).length;
+const calculadas = publicados.filter((e) => e.calidad === 'orbita').length - fallidas;
 
 const listo = (page: Page) =>
   page.waitForFunction(() => (window as unknown as { __listo?: number }).__listo !== undefined);
@@ -81,4 +93,45 @@ test('modo CNEOS: filtros y vuelta al modo pedigrí', async ({ page }) => {
   await expect(page.locator('#seccion-pedigri')).toBeVisible();
   await expect(page).toHaveURL(/pieza=/);
   await expect(page).not.toHaveURL(/modo=cneos/);
+});
+
+test('modo CNEOS: filtros sin resultados dan un estado vacío inequívoco (M06)', async ({
+  page,
+}) => {
+  // Combinación vacía calculada desde los datos publicados (el año más reciente y ≥ 10 kt, o
+  // si no, la primera vacía): la prueba no depende de qué bólidos lleguen cada día
+  const situables = publicados.filter((e) => e.lat !== undefined);
+  const anios = [...new Set(situables.map((e) => Number(e.fecha.slice(0, 4))))].sort();
+  const vacia = anios
+    .reverse()
+    .flatMap((a) => [10, 1, 0.1].map((kt) => ({ a, kt })))
+    .find(({ a, kt }) =>
+      situables.every((e) => Number(e.fecha.slice(0, 4)) < a || e.impacto_kt < kt),
+    )!;
+  await page.goto('/?modo=cneos');
+  await listo(page);
+  await page.locator('#seccion-cneos').getByText('Filtros', { exact: true }).click();
+  const restablecer = page.getByRole('button', { name: 'Restablecer filtros' });
+  await expect(restablecer).toBeHidden();
+  await page.locator('#cneos-desde').selectOption(String(vacia.a));
+  await page.locator('#cneos-energia').selectOption(String(vacia.kt));
+  await expect(page.locator('#cneos-cuenta')).toContainText('Ningún bólido cumple estos filtros');
+  await expect(page.locator('#cneos-recientes button')).toHaveCount(0);
+  // La selección anterior sigue, pero marcada como fuera del filtro
+  await expect(page.locator('#cneos-evento .fuera-filtro')).toContainText('no cumple los filtros');
+  await expect(page.locator('#cneos-cuenta')).toContainText('no cumple estos filtros');
+  await restablecer.click();
+  await expect(page.locator('#cneos-cuenta')).toContainText(`${conUbicacion} bólidos`);
+  await expect(page.locator('#cneos-evento .fuera-filtro')).toHaveCount(0);
+  await expect(restablecer).toBeHidden();
+});
+
+test('modo CNEOS: la leyenda separa órbitas calculadas y cálculos fallidos (M25)', async ({
+  page,
+}) => {
+  await page.goto('/?modo=cneos');
+  await listo(page);
+  const leyenda = page.locator('#cneos-leyenda');
+  await expect(leyenda.locator('[data-grupo="con-orbita"]')).toContainText(`(${calculadas})`);
+  await expect(leyenda.locator('[data-grupo="orbita-fallida"]')).toContainText(`(${fallidas})`);
 });

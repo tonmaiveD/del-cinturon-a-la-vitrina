@@ -2,14 +2,28 @@
 import type { CalidadEvento, EventoCneos } from './eventos';
 import type { Percentiles } from './resumen';
 
-/** Grupos de la leyenda (sin-altura y sin-vector se dibujan igual: sin trayectoria). */
-export type GrupoLeyenda = 'con-orbita' | 'no-verificable' | 'sin-trayectoria';
-export const grupoLeyenda = (c: CalidadEvento): GrupoLeyenda =>
-  c === 'orbita' ? 'con-orbita' : c === 'orbita-no-fiable' ? 'no-verificable' : 'sin-trayectoria';
+/**
+ * Grupos de la leyenda. Elegible para órbita no es lo mismo que órbita calculada: si el cálculo
+ * falló (o falta), el evento va a «orbita-fallida». sin-altura y sin-vector se dibujan igual.
+ */
+export type GrupoLeyenda = 'con-orbita' | 'orbita-fallida' | 'no-verificable' | 'sin-trayectoria';
+export interface ConCalidad {
+  calidad: CalidadEvento;
+  orbita?: object;
+}
+export const grupoLeyenda = ({ calidad, orbita }: ConCalidad): GrupoLeyenda =>
+  calidad === 'orbita'
+    ? orbita && !('error' in orbita)
+      ? 'con-orbita'
+      : 'orbita-fallida'
+    : calidad === 'orbita-no-fiable'
+      ? 'no-verificable'
+      : 'sin-trayectoria';
 
 /** Colores de la leyenda, compartidos por el panel y los símbolos del globo. */
 export const COLOR_LEYENDA: Record<GrupoLeyenda, string> = {
   'con-orbita': '#6fd3ff',
+  'orbita-fallida': '#b58cff',
   'no-verificable': '#ffb25c',
   'sin-trayectoria': '#c8ccd8',
 };
@@ -49,9 +63,9 @@ export interface FiltroCneos {
   energiaMin: number;
 }
 
-export function cumpleFiltroCneos(e: EventoCneos, f: FiltroCneos): boolean {
+export function cumpleFiltroCneos(e: EventoCneos & ConCalidad, f: FiltroCneos): boolean {
   if (e.lat === undefined) return false; // solo los que se pueden situar en el globo
-  if (f.grupo && grupoLeyenda(e.calidad) !== f.grupo) return false;
+  if (f.grupo && grupoLeyenda(e) !== f.grupo) return false;
   if (Number(e.fecha.slice(0, 4)) < f.desde) return false;
   return e.impacto_kt >= f.energiaMin;
 }

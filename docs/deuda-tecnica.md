@@ -52,7 +52,22 @@ Matizados:
 
 ## Etapas propuestas (en orden)
 
-### Etapa A · Correcciones rápidas (1 sesión, S) · recomendada antes de la Fase 4
+### Etapa A · Correcciones rápidas · **hecha el 2026-10-09**
+
+Resultado: M01 con el módulo virtual `virtual:fichas` (`pipeline/fichas-publicables.ts`) y una
+comprobación posterior al build (`pipeline/verificar-dist.ts`, parte de `npm run build`), que
+falla si algún archivo de `dist/` o algún mapa de fuentes contiene un fragmento de una ficha no
+aprobada. M05 ignora la tecla I desde botones y campos, y los atajos con un diálogo abierto. M06
+conserva la selección y la marca «fuera del filtro» en el detalle y en el contador, con el
+botón «Restablecer filtros». M25 añade un cuarto grupo, «orbita-fallida», con recuento por
+grupo en la leyenda (258, 2, 100 y 714 con el snapshot del 2026-10-09). M26 nombra el botón
+«Ir al pico de brillo» o «Ir al punto de referencia» y quita «impacto» de la narración. M28
+antepone el mensaje de llegada a la descripción del método. M24 corrige el README, el aviso de
+recorrido del CNEOS y la ayuda (ya no promete girar con flechas; los controles de cámara con
+teclado quedan para M04). El documento del amigo se corrigió (rev 27) y se renombró. Pruebas:
+237 unitarias y 47 e2e, con regresiones de M01, M05, M06, M25, M26 y M28.
+
+Plan original:
 
 | Id        | Qué                                                                                                                                                 | Nuestra prioridad                  |
 | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |

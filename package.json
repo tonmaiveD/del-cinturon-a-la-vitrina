@@ -4,7 +4,7 @@
   "description": "Del cinturón a la vitrina: el viaje de los meteoritos desde su origen hasta la Tierra",
   "scripts": {
     "dev": "vite",
-    "build": "npm run validate && npm run auditoria && tsc --noEmit && vite build",
+    "build": "npm run validate && npm run auditoria && tsc --noEmit && vite build && tsx pipeline/verificar-dist.ts",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
