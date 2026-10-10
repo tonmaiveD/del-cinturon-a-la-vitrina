@@ -1,6 +1,6 @@
 # Bólidos del CNEOS: datos y órbitas (Fase 3, etapa 1)
 
-Generado por `npm run reporte:cneos`. Consulta de la API: 2026-10-09T14:28:02Z (versión 1.2); evento más reciente: 2026-10-04T03:14:45Z.
+Generado por `npm run reporte:cneos`. Consulta de la API: 2026-10-10T13:54:21Z (versión 1.2); evento más reciente: 2026-10-04T03:14:45Z.
 
 ## Eventos por calidad
 

@@ -1,7 +1,7 @@
 {
  "fuente": "cneos-fireball-api",
  "url": "https://ssd-api.jpl.nasa.gov/fireball.api?vel-comp=true",
- "consultado": "2026-10-09T14:28:02Z",
+ "consultado": "2026-10-10T13:54:21Z",
  "respuesta": {
   "signature": {
    "source": "NASA/JPL Fireball Data API",
