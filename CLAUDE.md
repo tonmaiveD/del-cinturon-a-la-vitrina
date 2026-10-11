@@ -28,15 +28,21 @@ Criterios: primero lo roto o lo que bloquea; luego dependencias; luego impacto s
 objetivo (la web de la tienda del amigo: confianza, presentación, uso) dividido por esfuerzo.
 Lo que depende del usuario corre en paralelo, y la Fase 4 se adelanta si llegan sus datos.
 
-0. **Hoy:** confirmar que la CI publicó la hoja móvil, que el usuario la pruebe en su iPhone
-   16 Pro Max (pendiente: la CI de la hoja aún no publicó), cierre formal de la Fase 3 (hecho)
-   y sacar el proyecto de iCloud (hecho: copiado a `~/Proyectos`; falta que el usuario
-   señale la carpeta nueva en GitHub Desktop y borre la antigua).
-1. **Arreglos rápidos (1 sesión):**
-   - control de duración del recorrido: hoy dura unos 21 s fijos y el selector de velocidad
-     solo afecta a «Reproducir» (medido: 21,6 s frente a 21,7 s);
-   - ajustes que salgan de la prueba en el iPhone;
-   - **Etapa D** (M20, M19, M30).
+0. **Hecha (2026-10-11).** La hoja móvil está publicada y el usuario la probó en su iPhone
+   16 Pro Max («se ve bien»). La Fase 3 quedó cerrada. El proyecto vive en `~/Proyectos`; el
+   usuario quitó la carpeta antigua de Documentos y la quitó de GitHub Desktop. La primera
+   página de la Wiki fue creada desde la web.
+1. **Hecha en local (2026-10-11), pendiente de push y CI.**
+   - Duración del recorrido elegible.
+   - Etapa D.
+   - Corrección de la medición de rendimiento del modo CNEOS.
+   - Primera versión de la Wiki en `~/Proyectos/del-cinturon-a-la-vitrina.wiki`, con commit
+     local y sin subir. El commit inicial de la Wiki, hecho desde la web, lleva el gmail del
+     usuario. Para quitarlo hay que reescribir la historia de la Wiki
+     y forzar el push, lo que **requiere su autorización**. Para el futuro, el usuario debe
+     marcar en GitHub, Settings → Emails, «Keep my email addresses private» o poner
+     apaec@yahoo.com como correo principal.
+   - No hubo ajustes del iPhone: el usuario no pidió ninguno.
 2. **Etapa C (1–2 sesiones):** M18 → M09 (recálculo de unas 260 órbitas), M08, M27.
 3. **Fase 4 (2 sesiones):** con M33, M32, M10 y M29; necesita las decisiones del usuario.
 4. **Presentación para la tienda (2–3 sesiones):**
