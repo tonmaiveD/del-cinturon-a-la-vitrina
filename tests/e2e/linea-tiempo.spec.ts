@@ -109,3 +109,34 @@ test('recorrido cinematográfico completo', async ({ page }) => {
   await page.screenshot({ path: `${dir}/recorrido-e-final-${p}.png` });
   expect(errores).toEqual([]);
 });
+
+test('la duración elegida cambia lo que tarda el recorrido; la velocidad no', async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.goto('/');
+  await page.waitForFunction(() => (window as unknown as { __listo?: number }).__listo);
+  await abrirPestana(page, 'escena');
+  const duracion = page.getByLabel('Duración del recorrido');
+  await expect(duracion.locator('option')).toHaveText([
+    /Corto \(unos 10 s\)/,
+    /Normal \(unos 21 s\)/,
+    /Largo \(unos 42 s\)/,
+    /Muy largo \(unos 84 s\)/,
+  ]);
+  await duracion.selectOption({ label: 'Corto (unos 10 s)' });
+  // La velocidad al reproducir es otra cosa: no debe afectar al recorrido
+  await page.getByLabel('Velocidad al reproducir').selectOption('1');
+  const t0 = Date.now();
+  await page.getByRole('button', { name: 'Ver el recorrido' }).click();
+  await page.waitForFunction(
+    () =>
+      !(
+        window as unknown as { __app: { secuencia: { activa(): boolean } } }
+      ).__app.secuencia.activa(),
+    null,
+    { timeout: 60_000 },
+  );
+  const segundos = (Date.now() - t0) / 1000;
+  // Unos 10 s (holgura por la carga de la máquina); con «Normal» serían unos 21 s
+  expect(segundos).toBeGreaterThan(8);
+  expect(segundos).toBeLessThan(17);
+});

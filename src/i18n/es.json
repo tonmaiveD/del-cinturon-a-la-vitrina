@@ -26,7 +26,7 @@
   "tiempo.saltar": "Saltar animación",
   "tiempo.reproducir": "Reproducir",
   "tiempo.pausar": "Pausar",
-  "tiempo.velocidad": "Velocidad",
+  "tiempo.velocidad": "Velocidad al reproducir",
   "tiempo.ir-pico": "Ir al pico de brillo",
   "tiempo.ir-referencia": "Ir al punto de referencia",
   "tiempo.fecha": "Fecha de la simulación",
@@ -207,5 +207,10 @@
   "hoja.info": "Info",
   "hoja.reducir": "Reducir el panel",
   "hoja.ver-tierra": "Ver el globo",
-  "hoja.ver-sistema-solar": "Ver órbitas"
+  "hoja.ver-sistema-solar": "Ver órbitas",
+  "tiempo.duracion": "Duración del recorrido",
+  "duracion.corto": "Corto (unos {s} s)",
+  "duracion.normal": "Normal (unos {s} s)",
+  "duracion.largo": "Largo (unos {s} s)",
+  "duracion.muy-largo": "Muy largo (unos {s} s)"
 }

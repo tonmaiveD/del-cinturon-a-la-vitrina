@@ -729,8 +729,26 @@ export async function iniciar3D(
     secuencia.iniciar();
   }
 
+  // Duración del recorrido: escala el tiempo de la animación sin cambiar su coreografía. Es
+  // independiente de la velocidad de «Reproducir», que avanza el reloj de la simulación.
+  const DURACIONES = [
+    { clave: 'corto', factor: 0.5 },
+    { clave: 'normal', factor: 1 },
+    { clave: 'largo', factor: 2 },
+    { clave: 'muy-largo', factor: 4 },
+  ] as const;
+  const duracionBase = pasos.reduce((s, p) => s + p.duracion, 0);
+  const selDuracion = $<HTMLSelectElement>('#duracion-recorrido');
+  for (const d of DURACIONES)
+    selDuracion.add(
+      new Option(
+        t(`duracion.${d.clave}` as Clave, { s: Math.round(duracionBase * d.factor) }),
+        String(d.factor),
+      ),
+    );
+  selDuracion.value = '1';
   motor.alCuadro((dt) => {
-    if (secuencia.activa()) secuencia.avanzar(dt);
+    if (secuencia.activa()) secuencia.avanzar(dt / Number(selDuracion.value));
     else reloj.avanzar(dt);
   });
 
