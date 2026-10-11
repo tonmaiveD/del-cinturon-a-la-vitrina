@@ -47,6 +47,30 @@ Lo que depende del usuario corre en paralelo, y la Fase 4 se adelanta si llegan 
 5. **Optimización y ampliación:** M13–M16, M22, M31, M37 (antes si la Fase 4 lo exige), M38,
    M39, M41, M42.
 
+**Tarea continua: Wiki de GitHub** (pedida el 2026-10-11). Documentar el proyecto en la
+sección Wiki del repositorio, siguiendo sus convenciones:
+
+- `Home.md` como portada;
+- `_Sidebar.md` con el índice y `_Footer.md` con licencia y enlace a la web;
+- una página por tema, con nombres separados por guiones (por ejemplo `Fuentes-y-licencias.md`);
+- enlaces internos `[[Nombre de la página]]`.
+
+Escribir en lenguaje natural, de modo que no se note el uso de IA. Son las mismas reglas que se
+usaron en el documento para el amigo: sin dos puntos como recurso, sin negritas de entrada,
+sin comillas «», párrafos en vez de listas salvo cuando una lista sea lo natural, frases
+directas y sin muletillas.
+
+- **Primera versión:** al cerrar la ola 1, cuando la interfaz móvil esté estable. Páginas
+  previstas: qué es el proyecto, cómo usar la web, de dónde salen los datos, método científico
+  y sus límites, licencias, arquitectura y desarrollo, actualización diaria del CNEOS,
+  historial de cambios.
+- **Mantenimiento:** se actualiza al cerrar cada ola, sin quedar como una etapa aparte.
+- **Requisitos técnicos.** La wiki es un repositorio git aparte
+  (`tonmaiveD/del-cinturon-a-la-vitrina.wiki`) y está habilitada en el repo. Pero el repositorio
+  de la wiki no existe hasta que se crea la primera página desde la web, y el usuario debe
+  hacerlo una vez. Después se clona con GitHub Desktop en `~/Proyectos/` y el usuario sube los
+  cambios desde allí. Commits con apaec@yahoo.com.
+
 En paralelo, del usuario:
 
 - colección pública o privada;
@@ -55,6 +79,8 @@ En paralelo, del usuario:
 - PDF de MetBull;
 - clave de la API (al llegar a la Fase 4);
 - marca del amigo y los MP3.
+- crear la primera página de la Wiki desde la web, para que exista su repositorio (antes de
+  cerrar la ola 1).
 
 ### Fase 4 (colección y fichas con la API de Claude)
 
