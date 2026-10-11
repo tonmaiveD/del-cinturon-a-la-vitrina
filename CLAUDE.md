@@ -173,6 +173,12 @@ entre C, D y la Fase 4.
   https://github.com/settings/emails antes de sospechar del contenido.
 - **Respaldo privado**: `.trabajo/RESPALDO-historial-git-con-gmail-2026-10-06.bundle`
   (contiene el gmail; no subir nunca; ver `.trabajo/LEEME-RESPALDO-HISTORIAL.md`).
+- **Ediciones desde la web de GitHub firman con el gmail** del usuario, que sigue siendo el
+  correo principal de su cuenta por decisión suya (2026-10-11). No pedirle que edite el
+  repositorio ni la wiki desde la web: todos los cambios se hacen en local con apaec@yahoo.com
+  y él los sube con GitHub Desktop. La wiki se clonó en `~/Proyectos/del-cinturon-a-la-vitrina.wiki`.
+  Su historia se reescribió el 2026-10-11 para quitar el commit inicial creado desde la web, con
+  respaldo en `.trabajo/RESPALDO-wiki-con-gmail-2026-10-11.bundle`.
 - `revision/` (ignorada por git): material del usuario (PDF de Nature, ficha legible, MetBull).
 - El navegador integrado de la app abre el `launch.json` de otro proyecto: verificar con
   Playwright. Claude in Chrome: la pestaña del grupo puede estar en uso por el usuario; no
