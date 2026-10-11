@@ -125,7 +125,6 @@ test('la duración elegida cambia lo que tarda el recorrido; la velocidad no', a
   await duracion.selectOption({ label: 'Corto (unos 10 s)' });
   // La velocidad al reproducir es otra cosa: no debe afectar al recorrido
   await page.getByLabel('Velocidad al reproducir').selectOption('1');
-  const t0 = Date.now();
   await page.getByRole('button', { name: 'Ver el recorrido' }).click();
   await page.waitForFunction(
     () =>
@@ -133,10 +132,15 @@ test('la duración elegida cambia lo que tarda el recorrido; la velocidad no', a
         window as unknown as { __app: { secuencia: { activa(): boolean } } }
       ).__app.secuencia.activa(),
     null,
-    { timeout: 60_000 },
+    { timeout: 100_000 },
   );
-  const segundos = (Date.now() - t0) / 1000;
-  // Unos 10 s (holgura por la carga de la máquina); con «Normal» serían unos 21 s
-  expect(segundos).toBeGreaterThan(8);
-  expect(segundos).toBeLessThan(17);
+  // Tiempo de escena consumido: en un equipo fluido son segundos reales. No se usa el reloj de
+  // la prueba porque sin GPU (CI, unos 3 fps) la escena avanza como mucho 0,1 s por cuadro y el
+  // recorrido corto tardaba 41–50 s reales (2026-10-11)
+  const segundos = await page.evaluate(() =>
+    (window as unknown as { __app: { tiempoRecorrido(): number } }).__app.tiempoRecorrido(),
+  );
+  // Corto: unos 10 s (la mitad de los unos 21 s del normal)
+  expect(segundos).toBeGreaterThan(9.5);
+  expect(segundos).toBeLessThan(11.5);
 });

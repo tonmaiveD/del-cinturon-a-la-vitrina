@@ -726,6 +726,7 @@ export async function iniciar3D(
     asegurarSolar().cat.filtrar(new Set([panel.actual()]));
     bSaltar.hidden = false;
     bRecorrido.disabled = true;
+    tiempoRecorrido = 0;
     secuencia.iniciar();
   }
 
@@ -747,9 +748,13 @@ export async function iniciar3D(
       ),
     );
   selDuracion.value = '1';
+  /** Segundos de escena transcurridos en el último recorrido (en un equipo fluido, segundos reales). */
+  let tiempoRecorrido = 0;
   motor.alCuadro((dt) => {
-    if (secuencia.activa()) secuencia.avanzar(dt / Number(selDuracion.value));
-    else reloj.avanzar(dt);
+    if (secuencia.activa()) {
+      tiempoRecorrido += dt;
+      secuencia.avanzar(dt / Number(selDuracion.value));
+    } else reloj.avanzar(dt);
   });
 
   // ---------- Eventos ----------
@@ -932,6 +937,7 @@ export async function iniciar3D(
     marcadores,
     camT,
     solar: () => solarCreada,
+    tiempoRecorrido: () => tiempoRecorrido,
     cneos: () => ({ modo, panel: panelCneos, bolidos, nClones: nClonesCneos }),
   };
 }
