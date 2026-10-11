@@ -15,27 +15,65 @@ on:
 permissions:
   contents: read
 
+# Las acciones están fijadas al commit de una versión publicada (Dependabot propone las nuevas).
+
 jobs:
   verificar:
     runs-on: ubuntu-latest
+    outputs:
+      portada: ${{ steps.huella.outputs.portada }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.ref || github.sha }}
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
           cache: npm
+      # Ruta de GitHub Pages (/<repositorio>/): el build se hace una vez con ella y las pruebas
+      # sirven ese mismo dist/ bajo la misma ruta
+      - run: echo "BASE_PUBLICA=/${GITHUB_REPOSITORY#*/}/" >> "$GITHUB_ENV"
       - run: npm ci
       - run: npm run lint
       - run: npm test
-      # Incluye validación del dataset y auditoría de trazabilidad
+      # Un solo build, con la ruta de GitHub Pages; incluye validación del dataset, auditoría de
+      # trazabilidad y la comprobación de que ningún borrador viaja en dist/
       - run: npm run build
       - run: npx playwright install --with-deps chromium
+      # Las pruebas usan ese mismo dist/, servido bajo la misma ruta que en producción
       - run: npm run e2e
+        env:
+          E2E_DIST_LISTO: '1'
       # La medición de carga depende del hardware del runner: informativa, no bloqueante
       - run: npm run e2e:rendimiento
         continue-on-error: true
+        env:
+          E2E_DIST_LISTO: '1'
+      - id: huella
+        name: Huella del artefacto probado
+        run: |
+          huella=$(find dist -type f ! -name '.*' -print0 | sort -z | xargs -0 sha256sum | sha256sum | cut -c1-16)
+          portada=$(grep -o 'assets/index-[^"]*\.js' dist/index.html | head -1)
+          echo "portada=$portada" >> "$GITHUB_OUTPUT"
+          echo "Artefacto probado: huella $huella, portada $portada" >> "$GITHUB_STEP_SUMMARY"
+      # El artefacto que se publica es exactamente el que pasó las pruebas (no se reconstruye)
+      - if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: dist
+
+  # Dependencias de producción con vulnerabilidades conocidas de severidad alta: el workflow
+  # queda en rojo (aviso por correo), pero no bloquea la publicación de datos
+  dependencias:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+      - run: npm audit --omit=dev --audit-level=high
 
   # Solo se publica desde main y si todas las pruebas pasaron
   publicar:
@@ -52,20 +90,37 @@ jobs:
       group: pages
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.ref || github.sha }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-      - run: npm ci
-      - run: npm run build
+      # Dos ejecuciones casi simultáneas (push del usuario y datos del bot) no deben terminar
+      # sirviendo la más antigua: si main ya avanzó, publica la ejecución del commit nuevo
+      - id: vigente
+        name: ¿Sigue siendo el último commit de main?
         env:
-          BASE_PUBLICA: /${{ github.event.repository.name }}/
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
+          REF: ${{ inputs.ref || github.sha }}
+        run: |
+          actual=$(git ls-remote "https://github.com/${{ github.repository }}" refs/heads/main | cut -f1)
+          if [ "$actual" = "$REF" ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "main avanzó a $actual (esta ejecución es de $REF): no se publica" >> "$GITHUB_STEP_SUMMARY"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          fi
       - id: despliegue
-        uses: actions/deploy-pages@v4
+        if: steps.vigente.outputs.ok == 'true'
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+      # Comprobación tras publicar: la web en vivo sirve la versión probada y sus datos
+      - name: Comprobación de la web publicada
+        if: steps.vigente.outputs.ok == 'true'
+        env:
+          URL: ${{ steps.despliegue.outputs.page_url }}
+          PORTADA: ${{ needs.verificar.outputs.portada }}
+        run: |
+          for intento in $(seq 1 20); do
+            if curl -fsS "${URL}?v=${GITHUB_RUN_ID}-${intento}" | grep -q "$PORTADA" \
+              && curl -fsS "${URL}data/catalogo.json" | head -c 1 | grep -q '{'; then
+              echo "Publicada y comprobada: $URL ($PORTADA)" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "::error::La web publicada no sirve la versión probada ($PORTADA). Ver «Reversión» en CLAUDE.md."
+          exit 1

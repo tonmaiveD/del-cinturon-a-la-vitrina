@@ -162,7 +162,27 @@ Plan original:
 | M08 | Contrato estricto de la API: versión, `count`, números finitos, rangos, IDs únicos; cuarentena si hay cambios masivos                                                                                                  | P1                |
 | M27 | Leyenda persistente por capa: fuente, método y la aclaración «la densidad no es una probabilidad calibrada»                                                                                                            | P2                |
 
-### Etapa D · CI y operación (1 sesión, S)
+### Etapa D · CI y operación · **hecha el 2026-10-11** (ola 1)
+
+Resultado:
+
+- **M19.** Un solo build con la ruta de Pages; las e2e prueban ese `dist/` servido bajo el
+  mismo prefijo. El servidor de pruebas ahora da 404 reales, como Pages; antes devolvía la
+  portada para cualquier archivo inexistente y podía ocultar errores de rutas. El artefacto
+  publicado es el probado (se registra su huella), y tras publicar se comprueba la web en vivo.
+  El procedimiento de reversión está en `CLAUDE.md`.
+- **M20.** El bot del CNEOS pasa las e2e antes de guardar en `main`, y la publicación se omite
+  si `main` ya avanzó, de modo que dos ejecuciones no pueden servir la más antigua.
+- **M30.** Dependabot (npm y Actions) con 14 días de espera y grupos de cambios menores;
+  `npm audit --omit=dev --audit-level=high` en un job aparte. Acciones fijadas por SHA a
+  versiones con Node 24: checkout v7.0.1, setup-node v7.0.0 (la v7.1.0 tenía 3 días),
+  upload-pages-artifact v5.0.0 y deploy-pages v5.0.1. Se quitó configure-pages, que no hacía
+  falta sin build en el job de publicación.
+- La medición «cambio al modo CNEOS» que falló en la CI no era una regresión: con la hoja
+  móvil, el botón estaba en una pestaña cerrada. Medido de nuevo: 1,2 s.
+- M16 (versión visible) y M17 (alerta por antigüedad) siguen en P3.
+
+Plan original:
 
 | Id  | Qué                                                                                               | Nuestra prioridad |
 | --- | ------------------------------------------------------------------------------------------------- | ----------------- |

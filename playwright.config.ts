@@ -12,7 +12,11 @@ export default defineConfig({
   reporter: process.env.CI ? [['github'], ['list']] : 'list',
   use: { baseURL: 'http://localhost:4173' },
   webServer: {
-    command: 'npx vite build && npx tsx pipeline/servidor-estatico.ts 4173',
+    // En la CI se prueba el mismo dist/ que se publica (construido una vez con BASE_PUBLICA):
+    // E2E_DIST_LISTO evita reconstruirlo. En local se construye antes de probar.
+    command: process.env.E2E_DIST_LISTO
+      ? 'npx tsx pipeline/servidor-estatico.ts 4173'
+      : 'npx vite build && npx tsx pipeline/servidor-estatico.ts 4173',
     port: 4173,
     reuseExistingServer: !process.env.CI,
   },

@@ -1,6 +1,11 @@
 /**
  * Servidor estático mínimo para tests e2e: sirve dist/ con gzip como lo haría un hosting
  * estático real (el `vite preview` no comprime y falsea las medidas de carga).
+ *
+ * Fiel a GitHub Pages: un archivo inexistente da 404 (no la portada), y si el build se hizo
+ * con BASE_PUBLICA (p. ej. /del-cinturon-a-la-vitrina/) los recursos solo existen bajo esa
+ * ruta, de modo que un recurso sin el prefijo falla en las pruebas igual que fallaría en
+ * producción. La portada responde también en «/» para que las pruebas usen page.goto('/').
  * Uso: tsx pipeline/servidor-estatico.ts [puerto]
  */
 import { createReadStream, existsSync, statSync } from 'node:fs';
@@ -9,6 +14,8 @@ import { extname, join, normalize } from 'node:path';
 import { createGzip } from 'node:zlib';
 
 const RAIZ = 'dist';
+/** Prefijo con el que se construyó dist/ (el mismo que usa el build de producción). */
+const BASE = (process.env.BASE_PUBLICA ?? '/').replace(/\/?$/, '/');
 const PUERTO = Number(process.argv[2] ?? 4173);
 const TIPOS: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
@@ -22,13 +29,22 @@ const TIPOS: Record<string, string> = {
 const COMPRIMIBLE = new Set(['.html', '.js', '.css', '.json', '.svg', '.map']);
 
 createServer((req, res) => {
-  const ruta = decodeURIComponent(new URL(req.url ?? '/', 'http://x').pathname);
-  let archivo = normalize(join(RAIZ, ruta));
+  let ruta = decodeURIComponent(new URL(req.url ?? '/', 'http://x').pathname);
+  if (ruta === '/') ruta = BASE;
+  if (!ruta.startsWith(BASE)) {
+    res.writeHead(404).end();
+    return;
+  }
+  let archivo = normalize(join(RAIZ, ruta.slice(BASE.length)));
   if (!archivo.startsWith(RAIZ)) {
     res.writeHead(403).end();
     return;
   }
-  if (!existsSync(archivo) || statSync(archivo).isDirectory()) archivo = join(RAIZ, 'index.html');
+  if (existsSync(archivo) && statSync(archivo).isDirectory()) archivo = join(archivo, 'index.html');
+  if (!existsSync(archivo)) {
+    res.writeHead(404).end();
+    return;
+  }
   const ext = extname(archivo);
   const cabeceras: Record<string, string> = {
     'Content-Type': TIPOS[ext] ?? 'application/octet-stream',

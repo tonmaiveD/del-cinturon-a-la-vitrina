@@ -1,0 +1,23 @@
+# Actualizaciones propuestas como pull requests: la CI las prueba (incluidas las validaciones
+# científicas) y se integran a mano, nunca solas. Las versiones recién publicadas esperan dos
+# semanas antes de proponerse.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 14
+    open-pull-requests-limit: 5
+    groups:
+      menores:
+        update-types: [minor, patch]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 14

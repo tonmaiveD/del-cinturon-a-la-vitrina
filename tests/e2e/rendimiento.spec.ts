@@ -3,6 +3,7 @@
  * Mide: primer pintado con contenido (texto) y "listo" (primera textura + cuadro 3D).
  */
 import { expect, test } from '@playwright/test';
+import { abrirPestana } from './hoja';
 
 test('carga inicial en 4G lento', async ({ page, browserName }, info) => {
   test.skip(browserName !== 'chromium', 'la emulación de red usa CDP');
@@ -79,6 +80,8 @@ test('cambio al modo CNEOS en 4G lento (datos descargados bajo demanda)', async 
     downloadThroughput: (1.6 * 1024 * 1024) / 8,
     uploadThroughput: (750 * 1024) / 8,
   });
+  // En móvil el selector de modo está en la pestaña Explorar de la hoja: se abre antes de medir
+  await abrirPestana(page, 'explorar');
   await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 });
   const t0 = Date.now();
   await page.getByRole('button', { name: 'Bólidos del CNEOS' }).click();

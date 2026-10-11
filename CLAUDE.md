@@ -178,6 +178,24 @@ entre C, D y la Fase 4.
   código.
 - **CI sin GPU:** la escena va a unos 4 fps en GitHub. El límite por prueba en la CI es de
   90 s (`playwright.config.ts`); en local, 30 s.
+- **CI desde la Etapa D (2026-10-11).**
+  - **Publicación:** se construye una sola vez con `BASE_PUBLICA=/<repo>/`; las e2e prueban
+    ese `dist/` (`E2E_DIST_LISTO=1`, servidor fiel a Pages: 404 reales y recursos solo bajo el
+    prefijo) y se publica ese mismo artefacto. Antes de publicar se comprueba que el commit
+    sigue siendo el último de `main`, y después se comprueba la web en vivo.
+  - **Bot del CNEOS:** pasa las e2e antes de guardar en `main`.
+  - **Dependencias:** Dependabot propone PR semanales con 14 días de espera (se integran a
+    mano tras la CI); `npm audit` de producción en un job aparte que no bloquea la publicación.
+  - **Acciones:** fijadas por SHA.
+  - Para reproducir la CI en local: `BASE_PUBLICA=/del-cinturon-a-la-vitrina/ npm run build`
+    y luego `BASE_PUBLICA=/del-cinturon-a-la-vitrina/ E2E_DIST_LISTO=1 npm run e2e`.
+- **Reversión si la web publicada falla** (el paso «Comprobación de la web publicada» da error
+  o el usuario ve un fallo):
+  1. En GitHub, pestaña Actions, abrir la última ejecución correcta de «CI y publicación» y
+     pulsar «Re-run all jobs»: vuelve a publicar ese commit.
+  2. Corregir en local, o hacer `git revert <commit>`, y subir; la CI publica la versión
+     corregida.
+     Nunca reescribir el historial de `main`.
 - **Hoja móvil** (`src/ui/hoja.ts`): en móvil los controles están en pestañas; las pruebas
   e2e abren la correcta con `abrirPestana` (`tests/e2e/hoja.ts`) antes de interactuar.
 
