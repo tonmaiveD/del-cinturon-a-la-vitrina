@@ -104,8 +104,19 @@ export const Meteorito = z.object({
   fecha_caida: Valor, // ISO 8601 UTC
   /** Puede faltar mientras no haya fuente accesible; la UI no lo muestra entonces. */
   punto_caida: z.object({ lat: Valor, lon: Valor }).optional(),
-  /** Posición de referencia de la trayectoria del bólido (no es el punto de caída). */
-  punto_trayectoria: z.object({ lat: Valor, lon: Valor }).optional(),
+  /**
+   * Posición de referencia de la trayectoria del bólido (no es el punto de caída). `instante`
+   * solo hace falta si no coincide con `fecha_caida` (Chelyabinsk: la fecha es la del pico de
+   * brillo de Popova et al. y la posición, el comienzo de la trayectoria).
+   */
+  punto_trayectoria: z.object({ lat: Valor, lon: Valor, instante: Valor.optional() }).optional(),
+  /** Alturas publicadas del paso por la atmósfera (km). */
+  atmosfera: z
+    .object({
+      altura_pico_brillo: Valor.optional(),
+      altura_destello_fragmentos: Valor.optional(),
+    })
+    .optional(),
   /** Radiante geocéntrico y velocidades publicadas (para validar órbitas calculadas). */
   radiante_geocentrico: z
     .object({
@@ -118,9 +129,19 @@ export const Meteorito = z.object({
   orbitas: z.array(Orbita),
   /** Fuente de la órbita que se muestra por defecto (si falta, la primera verificada). */
   orbita_principal: idSlug.optional(),
-  /** Probabilidades de procedencia dinámica publicadas para esta órbita (modelo citado en la fuente). */
+  /**
+   * Probabilidades de procedencia dinámica publicadas para esta órbita. `modelo` es la fuente
+   * del modelo que aplica la publicación, si no es ella misma (p. ej. Bottke et al. 2002).
+   */
   procedencia: z
-    .array(z.object({ region: idSlug, nombre: z.string(), probabilidad: Valor }))
+    .array(
+      z.object({
+        region: idSlug,
+        nombre: z.string(),
+        probabilidad: Valor,
+        modelo: idSlug.optional(),
+      }),
+    )
     .optional(),
 });
 export type Meteorito = z.infer<typeof Meteorito>;
@@ -184,7 +205,8 @@ export function referenciasDeFuente(obj: unknown, ruta = '$'): { ruta: string; i
   if (obj === null || typeof obj !== 'object') return [];
   const out: { ruta: string; id: string }[] = [];
   for (const [k, v] of Object.entries(obj)) {
-    if (k === 'fuente' && typeof v === 'string') out.push({ ruta: `${ruta}.${k}`, id: v });
+    if ((k === 'fuente' || k === 'modelo') && typeof v === 'string')
+      out.push({ ruta: `${ruta}.${k}`, id: v });
     else if (k === 'fuentes' && Array.isArray(v))
       v.forEach((id, i) => typeof id === 'string' && out.push({ ruta: `${ruta}.${k}[${i}]`, id }));
     else out.push(...referenciasDeFuente(v, `${ruta}.${k}`));

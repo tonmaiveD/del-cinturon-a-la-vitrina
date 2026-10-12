@@ -4,13 +4,10 @@ import cneos from '../../data/cneos/chelyabinsk.json';
 import pedigri from '../../data/pedigri/chelyabinsk.json';
 import { t } from '../i18n';
 import type { Meteorito } from '../schema';
-import { leerFicha, publicable, renderizarFicha } from './ficha';
+import { fichaDe, leerFicha, publicable, renderizarFicha } from './ficha';
 import { contextoFicha } from './ficha-datos';
 // Solo las fichas aprobadas entran en el build de producción (pipeline/fichas-publicables.ts)
 import fichasCrudas from 'virtual:fichas';
-
-/** Número de clones mostrados (coincide con public/data/chelyabinsk-orbitas.json). */
-const N_CLONES = 300;
 
 interface FuenteJson {
   id: string;
@@ -66,9 +63,7 @@ export function montarDialogos(): void {
   conectar(document.querySelector<HTMLButtonElement>('#abrir-fuentes')!, dFuentes);
   dFuentes.querySelector('.contenido')!.append(listaFuentes());
 
-  const cruda = Object.entries(fichasCrudas).find(([ruta]) =>
-    ruta.endsWith('/chelyabinsk.md'),
-  )?.[1];
+  const cruda = fichaDe(fichasCrudas, 'chelyabinsk');
   const ficha = cruda ? leerFicha(cruda) : undefined;
   if (!ficha || !publicable(ficha, import.meta.env.DEV)) {
     bFicha.hidden = true;
@@ -76,7 +71,7 @@ export function montarDialogos(): void {
   }
   const { html, fuentes: usadas } = renderizarFicha(
     ficha,
-    contextoFicha(pedigri as unknown as Meteorito, cneos, N_CLONES),
+    contextoFicha(pedigri as unknown as Meteorito, cneos, fuentes as FuenteJson[]),
   );
   dFicha.querySelector('#titulo-ficha')!.textContent = t('ficha.titulo', {
     nombre: String(pedigri.nombre_oficial.valor),

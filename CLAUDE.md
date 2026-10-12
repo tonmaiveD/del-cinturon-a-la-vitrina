@@ -7,6 +7,10 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 
 ### Estado (2026-10-12)
 
+- **2026-10-12: revisión de la ficha de Chelyabinsk hecha** (auditoría consolidada que trajo
+  el usuario; detalle en `docs/deuda-tecnica.md`). El recorrido de Chelyabinsk ya dibuja la
+  órbita de Popova, la misma que cita la ficha; la nube del CNEOS queda como validación. La
+  ficha sigue en `borrador` a la espera de su aprobación.
 - **Siguiente paso: ola 3 = Fase 4 (colección y fichas).** Necesita decisiones del usuario
   (ver «Fase 4» abajo). Si aún no las tiene, se puede empezar por lo que no las necesita: el
   modelo meteorito ≠ ejemplar (M33) y el manejo de campos privados (M32). Se lo propuse el
@@ -23,8 +27,9 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`cneos-diario.yml`, 07:30 UTC, con retrasos posibles) y Dependabot revisa dependencias los
   lunes.
 - **Verificación al 2026-10-12:**
-  - 253 tests unitarios y 78 e2e (escritorio y móvil), más la medición de rendimiento;
-  - auditoría: 551 datos, 0 errores;
+  - 255 tests unitarios y 80 e2e (escritorio y móvil), más la medición de rendimiento
+    (aislada: `npm run e2e:rendimiento`; en paralelo con las demás roza el límite de 3 s);
+  - auditoría: 587 datos, 0 errores;
   - carga inicial unos 2,8 s en 4G lento;
   - cambio al modo CNEOS: 1,2 s en local y 3,2–3,4 s en la CI sin GPU. Esa medición
     informativa falla en la CI y no bloquea; queda para la ola 5.
@@ -126,7 +131,8 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
 
 ### Pendientes del usuario (sin urgencia)
 
-- **Ficha de Chelyabinsk** (`content/fichas/chelyabinsk.md`, `borrador`): versión legible en
+- **Ficha de Chelyabinsk** (`content/fichas/chelyabinsk.md`, `borrador`, reescrita el
+  2026-10-12 tras la auditoría consolidada): versión legible en
   `revision/ficha-chelyabinsk-para-revisar.md` (regenerar con `.trabajo/ficha-legible.ts` si
   cambia). Respuesta esperada: «apruebo» + nombre del revisor (→ `estado: aprobada`,
   `revisado_por`, `fecha_revision`) o cambios en sus palabras.
@@ -162,6 +168,10 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
   iPhone 16 Pro Max.
 - 2026-10-11: documentación continua en la wiki, en lenguaje natural y sin rasgos de texto de
   IA.
+- 2026-10-12: **una sola órbita por pieza**. El recorrido de Chelyabinsk dibuja la órbita de
+  Popova et al. 2013 (nube muestreada con su σ y estela desde su radiante), la misma que cita
+  la ficha; el cálculo desde el CNEOS queda como validación independiente. La auditoría
+  comprueba esa coherencia en las 25 piezas. Unidad «au» en la interfaz.
 - 2026-10-11: el usuario **mantiene el gmail como correo principal** de su cuenta de GitHub y
   quiere que **solo apaec@yahoo.com sea visible**. Autorizó reescribir la historia de la wiki y
   de `main` (hecho, con push forzado suyo). Nunca escribir el gmail en archivos del repo.
@@ -357,11 +367,14 @@ textura Blue Marble según las directrices de medios de NASA (verificado el 2026
 - Tiempo: `src/timeline/reloj.ts` (365 días antes del pico → pico); secuencia en
   `src/camera/coreografia.ts` + pasos en `app3d.ts`; `prefers-reduced-motion` → corte directo.
   URL: `?pieza&t&vista&escala` o `?modo=cneos&evento&t&vista&escala` (`src/ui/estado-url.ts`).
-- Animación: Chelyabinsk con `public/data/chelyabinsk-trayectoria.json` (N cuerpos desde el
-  CNEOS; los 300 clones se mueven con Kepler solo como nube de posiciones); las otras 24 piezas
-  con `public/data/trayectorias/<id>.json`.
+- Animación: Chelyabinsk con `public/data/chelyabinsk-trayectoria.json` y
+  `chelyabinsk-orbitas.json` (`npm run datos:trayectoria`: estela N cuerpos desde el radiante de
+  Popova en la posición e instante de Granvik & Brown, 6 s antes del pico del CNEOS, y nube de
+  300 órbitas de Popova que se mueven con Kepler); en el globo, la entrada y el pico son los del
+  CNEOS. Las otras 24 piezas con `public/data/trayectorias/<id>.json`.
 - Fichas: `content/fichas/*.md`, plantillas con `{{clave}}` resueltas desde el dataset
-  (`src/ui/ficha-datos.ts`); un test prohíbe cifras escritas a mano. Solo se publican las
+  (`src/ui/ficha-datos.ts`, que también nombra modelos y fórmulas desde `fuentes.json`); un
+  test prohíbe cifras escritas a mano. Admiten enlaces `[texto](https://…)`. Solo se publican las
   `aprobada` con `revisado_por` y `fecha_revision`. En Fase 4 se generarán con la API de Claude
   en build, nunca en el navegador.
 - e2e contra `pipeline/servidor-estatico.ts` (gzip, como un hosting real; `vite preview` no
@@ -416,7 +429,9 @@ textura Blue Marble según las directrices de medios de NASA (verificado el 2026
 - Monte Carlo: Tabla 4 de Peña-Asensio 2025 da **medianas** de error del grupo de bajo D_D
   (≥ 2018 o ≥ 0,45 kt): 0,55 km/s, 1,35° (α_g), 0,84° (δ_g) → σ = mediana/0,6745 (principal).
   Grupo pre-2018 y < 0,45 kt: D_D mediana 0,31 → se muestra sin órbita (decisión del usuario).
-- Chelyabinsk: CNEOS da 03:20:26 UTC y 23,3 km; Popova 03:20:32,2 y 29,7 km (documentado).
+- Chelyabinsk: CNEOS da 03:20:26 UTC, 23,3 km y 18,6 km/s; Popova 03:20:32,2, 29,7 km y
+  V∞ = 19,16 km/s; los dos fragmentos principales destellaron hacia 24 km (Popova). `impact-e`
+  (441 kt) sale de la energía radiada (`energy`, 89,6 kt) con la fórmula de Brown et al. 2002.
 
 ## Convenciones
 

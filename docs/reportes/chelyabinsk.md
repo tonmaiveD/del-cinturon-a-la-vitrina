@@ -4,6 +4,8 @@
 
 ## Veredicto
 
+> Desde el 2026-10-12 la web no dibuja esta nube. El recorrido de Chelyabinsk muestra la órbita de Popova et al. 2013, la misma que cita su ficha, muestreada con su incertidumbre (`npm run datos:trayectoria`). Este cálculo desde el vector del CNEOS queda como comprobación independiente.
+
 **APROBADA.** Ninguna órbita publicada verificada supera el criterio de parada (D_D > 0.1 o algún elemento a, e, i, q fuera de 3σ de la nube Monte Carlo).
 
 ## Entrada
@@ -51,7 +53,7 @@ Fuente: Peña-Asensio, Socas-Navarro & Seligman 2025, A&A 701, A202 (arXiv:2508.
 
 Radiante geocéntrico de Popova et al. 2013 (1σ): α = 333.2 ± 0.8°, δ = 0.3 ± 0.9°, Vg = 15.3 ± 0.2 km/s.
 
-Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1000 clones): 34.3 s.
+Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1000 clones): 34.5 s.
 
 ## Monte Carlo
 

@@ -1,11 +1,26 @@
 /** Construye el contexto de la ficha a partir del dataset (solo valores verificados). */
 import type { Meteorito, Valor } from '../schema';
+import { citaCorta } from './catalogo';
 import type { ContextoFicha, DatoFicha } from './ficha';
 
 interface RegistroCneos {
   fuente: string;
-  respuesta: { fields: string[]; data: string[][] };
+  consultado: string;
+  respuesta: { fields: string[]; data: (string | null)[][] };
 }
+
+/** Lo que la ficha necesita de data/fuentes.json: la cita, para nombrar un modelo o fórmula. */
+export interface FuenteCita {
+  id: string;
+  cita: string;
+}
+
+/** Julios por kilotón de TNT (definición convencional). */
+const J_POR_KT = 4.184e12;
+/** El campo `energy` del CNEOS viene en unidades de 10¹⁰ J (documentación de la API). */
+const J_POR_UNIDAD_ENERGY = 1e10;
+/** Fórmula con la que el CNEOS pasa de energía radiada a energía de impacto. */
+const FUENTE_ENERGIA_IMPACTO = 'brown-2002';
 
 const num = (x: number, dec: number) =>
   x.toLocaleString('es', { minimumFractionDigits: dec, maximumFractionDigits: dec });
@@ -21,13 +36,21 @@ function dato(v: Valor | undefined, texto: (v: Valor) => string): DatoFicha | un
   return { texto: texto(v), fuente: v.fuente };
 }
 
-export function contextoFicha(m: Meteorito, cneos: RegistroCneos, nClones: number): ContextoFicha {
+export function contextoFicha(
+  m: Meteorito,
+  cneos: RegistroCneos,
+  fuentes: FuenteCita[],
+): ContextoFicha {
   const ctx: ContextoFicha = {};
   const poner = (k: string, d: DatoFicha | undefined) => {
     if (d) ctx[k] = d;
   };
   const dec = (v: Valor) => (String(v.valor).split('.')[1] ?? '').length;
   const n = (v: Valor) => num(v.valor as number, dec(v));
+  const cita = (id: string): DatoFicha | undefined => {
+    const f = fuentes.find((x) => x.id === id);
+    return f && { texto: citaCorta(f.cita), fuente: id };
+  };
 
   const fecha = new Date(String(m.fecha_caida.valor));
   poner(
@@ -39,7 +62,12 @@ export function contextoFicha(m: Meteorito, cneos: RegistroCneos, nClones: numbe
   poner(
     'hora',
     dato(m.fecha_caida, () =>
-      new Intl.DateTimeFormat('es', { timeStyle: 'short', timeZone: 'UTC' }).format(fecha),
+      new Intl.DateTimeFormat('es', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23',
+        timeZone: 'UTC',
+      }).format(fecha),
     ),
   );
   poner(
@@ -50,21 +78,32 @@ export function contextoFicha(m: Meteorito, cneos: RegistroCneos, nClones: numbe
     'diametro',
     dato(m.diametro_preatmosferico, (v) => num(Math.round(v.valor as number), 0)),
   );
-  poner(
-    'v_entrada',
-    dato(m.radiante_geocentrico?.v_entrada, (v) => num(Math.round(v.valor as number), 0)),
-  );
+  poner('v_entrada', dato(m.radiante_geocentrico?.v_entrada, n));
+  poner('alt_pico_popova', dato(m.atmosfera?.altura_pico_brillo, n));
+  poner('alt_destello', dato(m.atmosfera?.altura_destello_fragmentos, n));
 
+  // Registro del CNEOS: cifras tal como las publica, con su fecha de consulta
   const { fields, data } = cneos.respuesta;
   const c = (k: string) => data[0]![fields.indexOf(k)]!;
   const desdeCneos = (texto: string): DatoFicha => ({ texto, fuente: cneos.fuente });
-  ctx.alt_pico_cneos = desdeCneos(num(Math.round(Number(c('alt'))), 0));
+  ctx.alt_pico_cneos = desdeCneos(num(Number(c('alt')), 1));
+  ctx.v_pico_cneos = desdeCneos(num(Number(c('vel')), 1));
   ctx.lat = desdeCneos(`${num(Number(c('lat')), 1)}° ${c('lat-dir') === 'N' ? 'N' : 'S'}`);
   ctx.lon = desdeCneos(`${num(Number(c('lon')), 1)}° ${c('lon-dir') === 'E' ? 'E' : 'O'}`);
-  ctx.energia_kt = desdeCneos(num(Math.round(Number(c('impact-e'))), 0));
+  ctx.energia_kt = desdeCneos(num(Number(c('impact-e')), 0));
+  ctx.energia_radiada_kt = desdeCneos(
+    num(Math.round((Number(c('energy')) * J_POR_UNIDAD_ENERGY) / J_POR_KT), 0),
+  );
+  ctx.cneos_consultado = desdeCneos(
+    new Intl.DateTimeFormat('es', { dateStyle: 'long', timeZone: 'UTC' }).format(
+      new Date(cneos.consultado),
+    ),
+  );
+  poner('ref_energia', cita(FUENTE_ENERGIA_IMPACTO));
 
+  // La órbita que cita el texto es la principal: la misma que se dibuja en el recorrido
   const orbita = m.orbitas.find(
-    (o) => o.fuente === 'popova-2013-science' && o.a.estado === 'verificado',
+    (o) => o.fuente === m.orbita_principal && o.a.estado === 'verificado',
   );
   if (orbita) {
     poner('a', dato(orbita.a, n));
@@ -72,6 +111,15 @@ export function contextoFicha(m: Meteorito, cneos: RegistroCneos, nClones: numbe
     poner('i', dato(orbita.i, n));
     poner('q', dato(orbita.q, n));
     poner('Q', dato(orbita.Q, n));
+    // σ a 1σ (la de la nube) y tal como la publica la fuente
+    poner(
+      'a_sigma1',
+      dato(orbita.a, (v) => num(v.sigma ?? NaN, dec(v))),
+    );
+    poner(
+      'i_sigma1',
+      dato(orbita.i, (v) => num(v.sigma ?? NaN, dec(v))),
+    );
     poner(
       'a_sigma',
       dato(orbita.a, (v) => num(v.sigma_publicada ?? v.sigma ?? NaN, dec(v))),
@@ -79,6 +127,11 @@ export function contextoFicha(m: Meteorito, cneos: RegistroCneos, nClones: numbe
     poner(
       'i_sigma',
       dato(orbita.i, (v) => num(v.sigma_publicada ?? v.sigma ?? NaN, dec(v))),
+    );
+    // El esquema guarda `sigma` siempre a 1σ: es la que usa la nube
+    poner(
+      'nivel_nube',
+      dato(orbita.a, () => NIVEL['1-sigma']!),
     );
     poner(
       'nivel_orbita',
@@ -99,7 +152,7 @@ export function contextoFicha(m: Meteorito, cneos: RegistroCneos, nClones: numbe
       `n_${clave}`,
       dato(p.probabilidad, () => p.nombre.charAt(0).toLowerCase() + p.nombre.slice(1)),
     );
+    if (p.modelo) poner('modelo_procedencia', cita(p.modelo));
   }
-  ctx.n_clones = { texto: String(nClones), fuente: 'pena-asensio-2025' };
   return ctx;
 }

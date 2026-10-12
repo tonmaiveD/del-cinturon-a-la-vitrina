@@ -98,7 +98,8 @@ export function calcularPieza(m: Meteorito): TrayectoriaPieza {
   const pt = m.punto_trayectoria;
   if (!r || !pt || ![r.ra, r.dec, r.v_geocentrica, pt.lat, pt.lon].every(verificado))
     throw new Error(`${m.id}: faltan radiante, v_g o posición de referencia verificados`);
-  const fecha = new Date(String(m.fecha_caida.valor));
+  // El instante de la posición de referencia; si no se publica aparte, el de la caída
+  const fecha = new Date(String((pt.instante ?? m.fecha_caida).valor));
   const { t, y0 } = estadoDesdeRadianteGeocentrico({
     fecha,
     latGrados: num(pt.lat),

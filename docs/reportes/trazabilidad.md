@@ -3,10 +3,10 @@
 Generado por `npm run auditoria` (también se ejecuta en `npm run build`, que falla si hay
 errores). Cada dato que muestra la interfaz se contrasta con su valor de origen en `data/`.
 
-- Verificados: 472
+- Verificados: 506
 - Pendientes mostrados con aviso: 25
-- Calculados con método documentado: 29
-- Convenciones visuales o de notación: 25
+- Calculados con método documentado: 30
+- Convenciones visuales o de notación: 26
 - **Errores: 0**
 
 ## Pieza: almahata-sitta
@@ -626,36 +626,50 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | vx | 12.80 | cneos-fireball-api | verificado | respuesta cruda de la API guardada en data/cneos/chelyabinsk.json |
 | vy | -13.30 | cneos-fireball-api | verificado | respuesta cruda de la API guardada en data/cneos/chelyabinsk.json |
 | vz | -2.40 | cneos-fireball-api | verificado | respuesta cruda de la API guardada en data/cneos/chelyabinsk.json |
-| nube de órbitas y trayectoria | public/data/chelyabinsk-orbitas.json, chelyabinsk-trayectoria.json | cneos-fireball-api, pena-asensio-2025 | calculado | Monte Carlo con σ de Peña-Asensio 2025 e integración N cuerpos (docs/reportes/chelyabinsk.md) |
+
+## Chelyabinsk: recorrido (vista solar)
+
+| Elemento | Valor | Fuente | Estado | Nota |
+| --- | --- | --- | --- | --- |
+| nube de órbitas | 300 órbitas (public/data/chelyabinsk-orbitas.json) | popova-2013-science | calculado | muestreo de la órbita principal con su σ (1σ), elementos independientes; la trayectoria del año previo está en la sección de trayectorias animadas |
 
 ## Ficha: chelyabinsk (borrador)
 
 | Elemento | Valor | Fuente | Estado | Nota |
 | --- | --- | --- | --- | --- |
 | {{fecha}} | 15 de febrero de 2013 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{hora}} | 3:20 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{hora}} | 03:20 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{diametro}} | 20 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{v_entrada}} | 19 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{alt_pico_cneos}} | 23 | cneos-fireball-api | verificado | borrador: no se publica en producción |
+| {{v_entrada}} | 19,16 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{alt_pico_cneos}} | 23,3 | cneos-fireball-api | verificado | borrador: no se publica en producción |
 | {{lat}} | 54,8° N | cneos-fireball-api | verificado | borrador: no se publica en producción |
 | {{lon}} | 61,1° E | cneos-fireball-api | verificado | borrador: no se publica en producción |
+| {{v_pico_cneos}} | 18,6 | cneos-fireball-api | verificado | borrador: no se publica en producción |
+| {{alt_pico_popova}} | 29,7 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{alt_destello}} | 24 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{energia_kt}} | 441 | cneos-fireball-api | verificado | borrador: no se publica en producción |
+| {{ref_energia}} | Brown et al. 2002 | brown-2002 | verificado | borrador: no se publica en producción |
+| {{energia_radiada_kt}} | 90 | cneos-fireball-api | verificado | borrador: no se publica en producción |
 | {{clase}} | LL5 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{a}} | 1,76 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{e}} | 0,581 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{i}} | 4,93 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{q}} | 0,739 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{Q}} | 2,78 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{modelo_procedencia}} | Bottke et al. 2002 | bottke-2002 | verificado | borrador: no se publica en producción |
 | {{n_nu6}} | resonancia secular ν6 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{p_nu6}} | 62 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{n_imc}} | región de cruzadores intermedios de Marte (IMC) | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{p_imc}} | 25 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{n_31}} | resonancia de movimiento medio 3:1 con Júpiter | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{p_31}} | 11 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{n_clones}} | 300 | pena-asensio-2025 | verificado | borrador: no se publica en producción |
+| {{nivel_nube}} | 1σ | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{a_sigma1}} | 0,08 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{i_sigma1}} | 0,24 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{a_sigma}} | 0,16 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{i_sigma}} | 0,48 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{nivel_orbita}} | 2σ | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{cneos_consultado}} | 1 de octubre de 2026 | cneos-fireball-api | verificado | borrador: no se publica en producción |
 
 ## Trayectorias animadas (piezas con pedigrí)
 
@@ -685,6 +699,37 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | tagish-lake | D_D 0.00074 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
 | villalbeto-de-la-pena | D_D 0.00105 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
 | zdar-nad-sazavou | D_D 0.00011 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| chelyabinsk | D_D 0.00097 frente a popova-2013-science | cálculo propio desde popova-2013-science | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+
+## Una sola órbita por pieza (texto y figura)
+
+| Elemento | Valor | Fuente | Estado | Nota |
+| --- | --- | --- | --- | --- |
+| almahata-sitta | panel y nube del catálogo, estela del año previo | jpl-horizons | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| annama | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| benesov | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| bunburra-rockhole | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| buzzard-coulee | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| chelyabinsk | panel y nube del catálogo, estela del año previo, nube del recorrido, ficha {{a}}, ficha {{e}}, ficha {{i}}, ficha {{q}}, ficha {{Q}}, ficha {{a_sigma}}, ficha {{i_sigma}}, ficha {{a_sigma1}}, ficha {{i_sigma1}} | popova-2013-science | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| ejby | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| grimsby | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| innisfree | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| jesenice | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| kosice | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| krizevci | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| lost-city | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| maribo | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| mason-gully | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| moravka | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| neuschwanstein | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| novato | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| park-forest | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| peekskill | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| pribram | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| sutters-mill | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| tagish-lake | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| villalbeto-de-la-pena | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| zdar-nad-sazavou | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
 
 ## Bólidos del CNEOS (modo CNEOS)
 
@@ -704,6 +749,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | escala.visual.tierra | 60 | src/i18n/es.json | convencion | convención visual: radio dibujado del marcador en escala visual (src/scene/tierra.ts) |
 | escala.visual.sistema-solar | 900 000 | src/i18n/es.json | convencion | convención visual: RADIO_VISUAL_METEOROIDE_AU ≈ 900 000 km (se comprueba abajo) |
 | desc.tierra | 100 | src/i18n/es.json | convencion | convención visual: altura desde la que se dibuja la entrada (ALTURA_INICIO_KM) |
+| desc.sistema-solar | 1 | src/i18n/es.json | convencion | notación («1σ») |
 | velocidad.60 | 1 | src/i18n/es.json | convencion | opción de velocidad de la interfaz |
 | velocidad.3600 | 1 | src/i18n/es.json | convencion | opción de velocidad de la interfaz |
 | velocidad.86400 | 1 | src/i18n/es.json | convencion | opción de velocidad de la interfaz |

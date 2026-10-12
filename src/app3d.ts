@@ -55,7 +55,8 @@ const coord = (v: number, pos: string, neg: string) =>
 
 export interface DatosEscena {
   orbitas: DatosOrbitas;
-  trayectoria: { helio_ecl_au: Muestra[]; geo_eqj_km: Muestra[] };
+  /** Trayectoria de Chelyabinsk desde la órbita de Popova; dt = 0 en `instante_referencia`. */
+  trayectoria: { instante_referencia: string; helio_ecl_au: Muestra[]; geo_eqj_km: Muestra[] };
 }
 
 import { cargarJson, urlTextura } from './ui/recursos';
@@ -90,10 +91,12 @@ export async function iniciar3D(
   new ResizeObserver(() => motor.ajustar()).observe($('#hoja'));
   const movil = window.matchMedia('(max-width: 900px)').matches;
   const radioMet = radioMeteoroideKm();
+  /** Instante de la última muestra de la trayectoria de Chelyabinsk (no es el pico del CNEOS). */
+  const refTrayectoria = new Date(trayectoria.instante_referencia);
   const tierra = crearVistaTierra(
     bolido,
     [urlTextura(1024), urlTextura(movil ? 2048 : 4096)],
-    trayectoria.geo_eqj_km,
+    { muestras: trayectoria.geo_eqj_km, referencia: refTrayectoria },
     radioMet,
     (reintentar) => avisarError('textura', t('error.textura'), reintentar),
   );
@@ -188,7 +191,13 @@ export async function iniciar3D(
     | undefined;
   function asegurarSolar() {
     if (solarCreada) return solarCreada;
-    const solar = crearVistaSistemaSolar(bolido.fecha, orbitas, trayectoria.helio_ecl_au, radioMet);
+    const solar = crearVistaSistemaSolar(
+      bolido.fecha,
+      orbitas,
+      trayectoria.helio_ecl_au,
+      radioMet,
+      refTrayectoria,
+    );
     const cat = crearCatalogoSolar(catalogo);
     solar.escena.add(cat.grupo);
     const camS = motor.registrar('sistema-solar', solar.escena, 1e-6, 200);
@@ -400,7 +409,7 @@ export async function iniciar3D(
     const chely = p.id === 'chelyabinsk';
     const { solar } = solarCreada;
     solar.mostrarNubeChelyabinsk(chely);
-    if (chely) solar.fijarTrayectoria(trayectoria.helio_ecl_au, bolido.fecha, radioMet);
+    if (chely) solar.fijarTrayectoria(trayectoria.helio_ecl_au, refTrayectoria, radioMet);
     else if (trayPieza)
       solar.fijarTrayectoria(trayPieza.helio_ecl_au, new Date(trayPieza.instante_referencia));
     solar.mostrarTrayectoria(chely || trayPieza !== null);
@@ -421,7 +430,10 @@ export async function iniciar3D(
         ? [['#6fd3ff', 'capas.cneos']]
         : [
             ...(panel.actual() === 'chelyabinsk'
-              ? ([['#ff9a3c', 'capas.chelyabinsk']] as [string, Clave][])
+              ? ([
+                  ['#ff9a3c', 'capas.chelyabinsk'],
+                  ['#ffd08a', 'capas.estela'],
+                ] as [string, Clave][])
               : ([
                   ['#6fd3ff', 'capas.seleccion'],
                   ...(trayPieza ? [['#ffe2b8', 'capas.estela']] : []),
@@ -457,9 +469,10 @@ export async function iniciar3D(
     trayPieza = null;
     pedidoTray++;
     if (chely && escenaConOtra) {
-      // Vuelve a la trayectoria de Chelyabinsk (vector del CNEOS)
+      // Vuelve a Chelyabinsk: aproximación desde la órbita de Popova, entrada del CNEOS
       tierra.fijarBolido({
         fecha: bolido.fecha,
+        fechaAproximacion: refTrayectoria,
         aproximacion: trayectoria.geo_eqj_km,
         punto: bolido,
         vEcefKmS: bolido.vEcefKmS,

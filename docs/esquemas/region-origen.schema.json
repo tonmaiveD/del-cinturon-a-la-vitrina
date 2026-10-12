@@ -9,6 +9,10 @@
     "nombre": {
       "type": "string"
     },
+    "tipo": {
+      "type": "string",
+      "enum": ["cuerpo-progenitor", "familia", "tipo-espectral", "meteoroide-observado"]
+    },
     "clases": {
       "type": "array",
       "items": {
@@ -29,8 +33,24 @@
         "type": "string",
         "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
       }
+    },
+    "meteoritos": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      }
     }
   },
-  "required": ["id", "nombre", "clases", "confianza", "justificacion", "fuentes"],
+  "required": [
+    "id",
+    "nombre",
+    "tipo",
+    "clases",
+    "confianza",
+    "justificacion",
+    "fuentes",
+    "meteoritos"
+  ],
   "additionalProperties": false
 }

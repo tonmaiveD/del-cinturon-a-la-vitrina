@@ -193,6 +193,66 @@ Plan original:
 | M08 | Contrato estricto de la API: versión, `count`, números finitos, rangos, IDs únicos; cuarentena si hay cambios masivos                                                                                                  | P1                |
 | M27 | Leyenda persistente por capa: fuente, método y la aclaración «la densidad no es una probabilidad calibrada»                                                                                                            | P2                |
 
+### Revisión de la ficha de Chelyabinsk · **hecha el 2026-10-12**
+
+Origen: auditoría consolidada de la ficha que trajo el usuario (dos auditorías contrastadas; copia
+en `revision/`). Se auditó el código y la salida de la nube, la acción P0 que el documento no
+podía cerrar.
+
+Hallazgo principal, confirmado: la ficha citaba la órbita de Popova et al. 2013, pero el
+recorrido dibujaba la nube, la órbita nominal y la estela calculadas desde el vector del CNEOS.
+El centro de esa nube (i = 4,10°) quedaba fuera del intervalo citado (4,93 ± 0,48° a 2σ) y solo
+el 23 % de las 300 órbitas entraba en él. La nube usaba σ de grupo a 1σ y el texto citaba 2σ. En
+el catálogo, la misma pieza ya se dibujaba con la órbita de Popova. Afectaba solo al recorrido
+de Chelyabinsk; las otras 24 piezas y el modo CNEOS usaban una sola órbita.
+
+Resultado (opción recomendada, aprobada por el usuario):
+
+- **Una sola órbita.** El recorrido de Chelyabinsk funciona como el de las demás piezas.
+  `pipeline/trayectoria-chelyabinsk.ts` genera:
+  - la nube de 300 órbitas muestreadas con la σ 1σ de Popova, con la misma semilla que el
+    catálogo; la anomalía media sale del tiempo de perihelio publicado;
+  - la estela del año previo, calculada desde el radiante y v_g de Popova en la posición e
+    instante de referencia de Granvik & Brown. Contra la órbita de Popova da D_D 0,00097 y
+    |z| ≤ 0,13.
+
+  El cálculo desde el CNEOS queda como validación independiente en
+  `docs/reportes/chelyabinsk.md`; sus cifras no cambian. En el globo, la entrada en la
+  atmósfera y el pico siguen saliendo del CNEOS (etiquetados), y la aproximación sale de la
+  estela nueva, con su propio instante de referencia.
+
+- **Control automático.** Sección «Una sola órbita por pieza» de la auditoría: para las 25
+  piezas, el panel, la nube, la estela y las cifras orbitales de la ficha deben usar la órbita
+  principal. Hay una prueba que reproduce la mezcla encontrada.
+- **Ficha reescrita.** Todas las cifras salen del dataset con su fuente:
+  - alturas del CNEOS (23,3 km) y de Popova (29,7 km), y el destello de los fragmentos hacia
+    24 km (verificado en el texto de Popova);
+  - velocidad de entrada (19,16 km/s, Popova) y en el pico (18,6 km/s, CNEOS);
+  - energía de 441 kt estimada con la fórmula de Brown et al. 2002 desde unos 90 kt
+    radiados (campo `energy` del CNEOS), y explosión en el aire;
+  - modelo de procedencia de Bottke et al. 2002 y «tres vías principales»;
+  - σ a 1σ de la nube y 2σ publicada;
+  - qué es la nube y qué no significa su densidad;
+  - enlace al reporte de validación y fecha de consulta del CNEOS.
+
+  Redacción: «asteroide» en toda la ficha, eclíptica, LL5 explicado, au y 03:20 UTC.
+
+- **Datos y fuentes.** Fuentes nuevas `bottke-2002` y `brown-2002`, verificadas en Crossref.
+  En el esquema se añadieron `atmosfera`, `punto_trayectoria.instante` y `procedencia.modelo`.
+  Las fichas admiten enlaces `[texto](https://…)`.
+- **Unidad «au»** (IAU 2012) en el panel de las piezas y en el panel del CNEOS.
+
+Dos fallos de la Etapa A (M01) que aparecieron al verificar, corregidos con su prueba:
+
+- el diálogo buscaba la ficha como «…/chelyabinsk.md», pero el módulo `virtual:fichas` usa el
+  nombre del archivo, de modo que la ficha no se habría mostrado ni siquiera aprobada
+  (`fichaDe` en `src/ui/ficha.ts`);
+- en `npm run dev`, la ruta relativa que el módulo registraba para vigilar las fichas rompía la
+  carga de la página; ahora es absoluta. La web publicada no estaba afectada.
+
+Queda en manos del usuario: aprobar la ficha (`revision/ficha-chelyabinsk-para-revisar.md`) o
+pedir cambios.
+
 ### Etapa D · CI y operación · **hecha el 2026-10-11** (ola 1)
 
 Resultado:
@@ -258,6 +318,6 @@ Plan original:
   media); no hecho.
 - No se modela la deceleración atmosférica antes del pico o del punto de referencia.
 - Incertidumbres de órbitas publicadas como gaussianas independientes (sin covarianza); los
-  clones de Chelyabinsk se mueven con Kepler (solo la nominal con N cuerpos).
+  los clones de las nubes se mueven con Kepler (solo la estela usa N cuerpos).
 - Regiones de escape aproximadas (Hungaria/Phocaea sin excentricidad; ν6 y JFC sin geometría).
 - Pruebas e2e lentas en GitHub (reintento 1 y anotaciones públicas).

@@ -4,7 +4,7 @@
  * (`vite` sin build) se incluyen todas para poder revisarlas.
  */
 import { readdirSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import type { Plugin } from 'vite';
 import { leerFicha } from '../src/ui/ficha';
 
@@ -44,7 +44,8 @@ export function fichasPublicables(): Plugin {
     load(id) {
       if (id !== ID_RESUELTO) return;
       const crudas = leerFichasCrudas();
-      for (const f of Object.keys(crudas)) this.addWatchFile(join(DIR_FICHAS, f));
+      // Ruta absoluta: con una relativa, el servidor de desarrollo intenta resolverla como import
+      for (const f of Object.keys(crudas)) this.addWatchFile(resolve(DIR_FICHAS, f));
       return `export default ${JSON.stringify(seleccionarFichas(crudas, desarrollo))};`;
     },
   };

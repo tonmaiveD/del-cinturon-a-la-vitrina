@@ -24,13 +24,21 @@ const entrada = (): EntradaAuditoria => {
     ficha: {
       cruda: readFileSync('content/fichas/chelyabinsk.md', 'utf8'),
       cneos,
-      nClones: 300,
     },
+    nubeChelyabinsk: leer('public/data/chelyabinsk-orbitas.json'),
     cneos,
     radioVisualMeteoroideKm: RADIO_VISUAL_METEOROIDE_AU * KM_POR_AU,
     trayectorias: {
-      indice: leer<{ piezas: string[] }>('public/data/trayectorias/indice.json').piezas,
-      leer: (id) => leer<TrayectoriaPieza>(`public/data/trayectorias/${id}.json`),
+      indice: [
+        ...leer<{ piezas: string[] }>('public/data/trayectorias/indice.json').piezas,
+        'chelyabinsk',
+      ],
+      leer: (id) =>
+        leer<TrayectoriaPieza>(
+          id === 'chelyabinsk'
+            ? 'public/data/chelyabinsk-trayectoria.json'
+            : `public/data/trayectorias/${id}.json`,
+        ),
       alturaConvencionalKm: ALTURA_CONVENCIONAL_KM,
       vectoresJpl: Object.fromEntries(
         Object.entries(
@@ -127,6 +135,26 @@ describe('auditoría de trazabilidad', () => {
   it('ningún texto de la interfaz dice «en vivo» (los datos del CNEOS no son en tiempo real)', () => {
     for (const [clave, texto] of Object.entries(entrada().textos))
       expect(texto, clave).not.toMatch(/en vivo|live/i);
+  });
+
+  it('detecta una pieza cuya figura o ficha usan una órbita distinta de la principal', () => {
+    // Lo que encontró la auditoría consolidada del 2026-10-11: ficha con Popova, nube del CNEOS
+    const e = entrada();
+    e.nubeChelyabinsk!.fuente_orbita = 'cneos-fireball-api';
+    expect(errores(e).map((f) => [f.elemento, f.nota])).toEqual([
+      ['chelyabinsk', 'usan otra órbita: nube del recorrido (cneos-fireball-api)'],
+    ]);
+    const e2 = entrada();
+    e2.meteoritos.find((m) => m.id === 'chelyabinsk')!.orbita_principal = 'granvik-brown-2018';
+    expect(errores(e2).some((f) => f.elemento === 'chelyabinsk')).toBe(true);
+    const e3 = entrada();
+    const leerOriginal = e3.trayectorias!.leer;
+    e3.trayectorias!.leer = (id) => {
+      const tr = leerOriginal(id);
+      if (id === 'novato') tr.validacion.fuente_orbita = 'otra';
+      return tr;
+    };
+    expect(errores(e3).map((f) => f.elemento)).toEqual(['novato']);
   });
 
   it('trayectorias: detecta un radiante alterado y una altura no declarada como convencional', () => {

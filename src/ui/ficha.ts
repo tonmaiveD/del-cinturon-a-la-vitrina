@@ -49,7 +49,10 @@ export const marcadores = (cuerpo: string): string[] =>
 const escapar = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-/** Renderiza a HTML (subconjunto de Markdown: ## títulos, párrafos, **negrita**, *cursiva*). */
+/**
+ * Renderiza a HTML (subconjunto de Markdown: ## títulos, párrafos, **negrita**, *cursiva* y
+ * enlaces [texto](https://…), que se abren en otra pestaña).
+ */
 export function renderizarFicha(
   ficha: Ficha,
   ctx: ContextoFicha,
@@ -66,12 +69,23 @@ export function renderizarFicha(
     .map((bloque) => {
       const b = escapar(bloque.trim())
         .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.+?)\*/g, '<em>$1</em>');
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(
+          /\[([^\]]+)\]\((https:\/\/[^\s)]+)\)/g,
+          '<a href="$2" target="_blank" rel="noopener">$1</a>',
+        );
       return b.startsWith('## ') ? `<h3>${b.slice(3)}</h3>` : `<p>${b}</p>`;
     })
     .join('\n');
   return { html, fuentes: [...usadas] };
 }
+
+/**
+ * Ficha cruda de una pieza dentro del módulo `virtual:fichas`, cuyas claves son nombres de
+ * archivo («chelyabinsk.md»; ver pipeline/fichas-publicables.ts).
+ */
+export const fichaDe = (crudas: Record<string, string>, pieza: string): string | undefined =>
+  crudas[`${pieza}.md`];
 
 /** En producción solo se publican fichas aprobadas. */
 export const publicable = (f: Ficha, desarrollo: boolean) => f.estado === 'aprobada' || desarrollo;

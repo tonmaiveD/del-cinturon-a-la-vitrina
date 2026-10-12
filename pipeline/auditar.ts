@@ -29,13 +29,22 @@ const filas = auditar({
   ficha: {
     cruda: readFileSync('content/fichas/chelyabinsk.md', 'utf8'),
     cneos,
-    nClones: leer<{ clones: unknown[] }>('public/data/chelyabinsk-orbitas.json').clones.length,
   },
+  nubeChelyabinsk: leer('public/data/chelyabinsk-orbitas.json'),
   cneos,
   radioVisualMeteoroideKm: RADIO_VISUAL_METEOROIDE_AU * KM_POR_AU,
   trayectorias: {
-    indice: leer<{ piezas: string[] }>('public/data/trayectorias/indice.json').piezas,
-    leer: (id) => leer<TrayectoriaPieza>(`public/data/trayectorias/${id}.json`),
+    // Chelyabinsk: su trayectoria del recorrido se audita con las demás
+    indice: [
+      ...leer<{ piezas: string[] }>('public/data/trayectorias/indice.json').piezas,
+      'chelyabinsk',
+    ],
+    leer: (id) =>
+      leer<TrayectoriaPieza>(
+        id === 'chelyabinsk'
+          ? 'public/data/chelyabinsk-trayectoria.json'
+          : `public/data/trayectorias/${id}.json`,
+      ),
     alturaConvencionalKm: ALTURA_CONVENCIONAL_KM,
     vectoresJpl: Object.fromEntries(
       Object.entries(

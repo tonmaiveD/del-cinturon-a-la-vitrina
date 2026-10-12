@@ -2,7 +2,8 @@ import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { seleccionarFichas } from '../../pipeline/fichas-publicables';
+import { leerFichasCrudas, seleccionarFichas } from '../../pipeline/fichas-publicables';
+import { fichaDe, leerFicha } from '../../src/ui/ficha';
 import { borradoresEnDist, testigos } from '../../pipeline/verificar-dist';
 
 const cuerpo =
@@ -15,6 +16,16 @@ describe('fichas publicables (M01)', () => {
     const crudas = { 'x.md': borrador, 'y.md': aprobada };
     expect(Object.keys(seleccionarFichas(crudas, false))).toEqual(['y.md']);
     expect(Object.keys(seleccionarFichas(crudas, true))).toEqual(['x.md', 'y.md']);
+  });
+
+  it('el diálogo encuentra cada ficha con las claves del módulo virtual', () => {
+    // Entre el 2026-10-09 y el 2026-10-12 el diálogo buscaba «…/chelyabinsk.md» y no la hallaba
+    const crudas = seleccionarFichas(leerFichasCrudas(), true);
+    for (const archivo of Object.keys(crudas)) {
+      const pieza = archivo.replace(/\.md$/, '');
+      expect(leerFicha(fichaDe(crudas, pieza)!).pieza, archivo).toBe(pieza);
+    }
+    expect(fichaDe(seleccionarFichas({ 'y.md': aprobada }, false), 'y')).toBe(aprobada);
   });
 
   it('detecta un borrador distribuido en dist, también en mapas de fuentes', () => {

@@ -10,6 +10,10 @@ import {
 } from '../../src/ui/ficha';
 import { contextoFicha } from '../../src/ui/ficha-datos';
 
+const fuentesJson = JSON.parse(readFileSync('data/fuentes.json', 'utf8')) as {
+  id: string;
+  cita: string;
+}[];
 const fichas = readdirSync('content/fichas')
   .filter((f) => f.endsWith('.md'))
   .map((f) => leerFicha(readFileSync(`content/fichas/${f}`, 'utf8')));
@@ -17,7 +21,7 @@ const fichas = readdirSync('content/fichas')
 describe.each(fichas.map((f) => [f.pieza, f] as const))('ficha %s', (pieza, ficha) => {
   const m = Meteorito.parse(JSON.parse(readFileSync(`data/pedigri/${pieza}.json`, 'utf8')));
   const cneos = JSON.parse(readFileSync(`data/cneos/${pieza}.json`, 'utf8'));
-  const ctx = contextoFicha(m, cneos, 300);
+  const ctx = contextoFicha(m, cneos, fuentesJson);
 
   it('no contiene cifras escritas a mano fuera de los marcadores', () => {
     expect(cifrasFueraDeMarcadores(ficha.cuerpo)).toEqual([]);

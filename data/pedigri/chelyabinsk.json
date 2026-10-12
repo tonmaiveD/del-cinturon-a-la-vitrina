@@ -430,8 +430,9 @@
         "fuente": "popova-2013-science",
         "ubicacion": "texto principal, sección \"Source and Evolution of the Chelyabinsk Meteoroid\"",
         "estado": "verificado",
-        "nota": "Probabilidad según el modelo de Bottke et al. (ref. 33 de la fuente), aplicada por Popova et al. a la órbita de la Tabla 1."
-      }
+        "nota": "Probabilidad según el modelo de Bottke et al. (2002), ref. 33 de la fuente, aplicada por Popova et al. a la órbita de la Tabla 1. Las tres suman 98 %: la fuente no explica el resto."
+      },
+      "modelo": "bottke-2002"
     },
     {
       "region": "resonancia-3-1",
@@ -442,8 +443,9 @@
         "fuente": "popova-2013-science",
         "ubicacion": "texto principal, sección \"Source and Evolution of the Chelyabinsk Meteoroid\"",
         "estado": "verificado",
-        "nota": "Probabilidad según el modelo de Bottke et al. (ref. 33 de la fuente), aplicada por Popova et al. a la órbita de la Tabla 1."
-      }
+        "nota": "Probabilidad según el modelo de Bottke et al. (2002), ref. 33 de la fuente, aplicada por Popova et al. a la órbita de la Tabla 1. Las tres suman 98 %: la fuente no explica el resto."
+      },
+      "modelo": "bottke-2002"
     },
     {
       "region": "cruzadores-marte",
@@ -454,8 +456,9 @@
         "fuente": "popova-2013-science",
         "ubicacion": "texto principal, sección \"Source and Evolution of the Chelyabinsk Meteoroid\"",
         "estado": "verificado",
-        "nota": "Probabilidad según el modelo de Bottke et al. (ref. 33 de la fuente), aplicada por Popova et al. a la órbita de la Tabla 1."
-      }
+        "nota": "Probabilidad según el modelo de Bottke et al. (2002), ref. 33 de la fuente, aplicada por Popova et al. a la órbita de la Tabla 1. Las tres suman 98 %: la fuente no explica el resto."
+      },
+      "modelo": "bottke-2002"
     },
     {
       "region": "hungaria",
@@ -578,6 +581,35 @@
       "ubicacion": "arXiv:1804.07229v1, tabla table:trajectorydata",
       "estado": "verificado",
       "unidad": "grados"
+    },
+    "instante": {
+      "valor": "2013-02-15T03:20:19.968Z",
+      "unidad": "UTC",
+      "fuente": "granvik-brown-2018",
+      "ubicacion": "arXiv:1804.07229v1, tabla table:orbits (época MJD 56338.139120); la tabla table:trajectorydata da la misma hora redondeada (3,3389 h UTC)",
+      "estado": "verificado",
+      "nota": "Instante de la posición de referencia: comienzo de la trayectoria, a unos 95 km según Borovička et al. 2013 (Tabla 1). Es anterior al pico de brillo de fecha_caida."
+    }
+  },
+  "atmosfera": {
+    "altura_pico_brillo": {
+      "valor": 29.7,
+      "unidad": "km",
+      "sigma": 0.7,
+      "sigma_publicada": 1.4,
+      "nivel_sigma": "2-sigma",
+      "fuente": "popova-2013-science",
+      "ubicacion": "Tabla 1 (Hm); el texto principal da 29,7 ± 0,7 km",
+      "estado": "verificado",
+      "nota": "Altura del pico de brillo reconstruida a partir de videos. El CNEOS da otra altura para su pico (data/cneos/chelyabinsk.json)."
+    },
+    "altura_destello_fragmentos": {
+      "valor": 24,
+      "unidad": "km",
+      "fuente": "popova-2013-science",
+      "ubicacion": "texto principal: «Two main fragments survived the disruption at 29.7 km. They flared around 24 km»",
+      "estado": "verificado",
+      "nota": "Valor aproximado («around»), sin incertidumbre publicada."
     }
   },
   "orbita_principal": "popova-2013-science"

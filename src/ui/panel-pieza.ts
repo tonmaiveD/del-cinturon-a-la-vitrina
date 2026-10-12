@@ -145,7 +145,7 @@ export function renderizarProcedencia(p: PiezaCatalogo, catalogo: Catalogo): HTM
       el(
         'p',
         t('pieza.orbita', {
-          a: conSigma(o.a, ' AU'),
+          a: conSigma(o.a, ' au'),
           e: conSigma(o.e),
           i: conSigma(o.i, '°'),
           fuente: f(o.fuente),

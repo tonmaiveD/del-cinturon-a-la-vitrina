@@ -57,6 +57,7 @@ export const CIFRAS_PERMITIDAS: Record<string, { cifras: string[]; motivo: strin
   },
   'pieza.orbita': { cifras: ['1'], motivo: 'notación del nivel de incertidumbre («1σ»)' },
   'procedencia.escape-nota': { cifras: ['1'], motivo: 'notación («±1σ»)' },
+  'desc.sistema-solar': { cifras: ['1'], motivo: 'notación («1σ»)' },
   'desc.sistema-solar.pieza': { cifras: ['1'], motivo: 'notación («1σ»)' },
   'zona.resonancia-3-1': { cifras: ['3', '1'], motivo: 'nombre de la resonancia p:q' },
   'zona.resonancia-5-2': { cifras: ['5', '2'], motivo: 'nombre de la resonancia p:q' },
@@ -88,8 +89,10 @@ export interface EntradaAuditoria {
   escape: RegionEscape[];
   catalogo: Catalogo;
   textos: Record<string, string>;
-  ficha?: { cruda: string; cneos: Parameters<typeof contextoFicha>[1]; nClones: number };
-  cneos: { fuente: string; respuesta: { fields: string[]; data: string[][] } };
+  ficha?: { cruda: string; cneos: Parameters<typeof contextoFicha>[1] };
+  /** Nube del recorrido de Chelyabinsk (public/data/chelyabinsk-orbitas.json). */
+  nubeChelyabinsk?: { fuente_orbita: string; clones: unknown[] };
+  cneos: { fuente: string; consultado: string; respuesta: { fields: string[]; data: string[][] } };
   radioVisualMeteoroideKm: number;
   /** Trayectorias animadas de las piezas con pedigrí (índice y lector de archivos). */
   trayectorias?: {
@@ -283,20 +286,21 @@ export function auditar(e: EntradaAuditoria): Fila[] {
       nota: 'respuesta cruda de la API guardada en data/cneos/chelyabinsk.json',
     });
   }
-  filas.push({
-    seccion: 'Chelyabinsk: registro CNEOS (vista Tierra y recorrido)',
-    elemento: 'nube de órbitas y trayectoria',
-    valor: 'public/data/chelyabinsk-orbitas.json, chelyabinsk-trayectoria.json',
-    fuente: 'cneos-fireball-api, pena-asensio-2025',
-    estado: 'calculado',
-    nota: 'Monte Carlo con σ de Peña-Asensio 2025 e integración N cuerpos (docs/reportes/chelyabinsk.md)',
-  });
+  if (e.nubeChelyabinsk)
+    filas.push({
+      seccion: 'Chelyabinsk: recorrido (vista solar)',
+      elemento: 'nube de órbitas',
+      valor: `${e.nubeChelyabinsk.clones.length} órbitas (public/data/chelyabinsk-orbitas.json)`,
+      fuente: e.nubeChelyabinsk.fuente_orbita,
+      estado: 'calculado',
+      nota: 'muestreo de la órbita principal con su σ (1σ), elementos independientes; la trayectoria del año previo está en la sección de trayectorias animadas',
+    });
 
   // ---------- D. Ficha ----------
   if (e.ficha) {
     const ficha = leerFicha(e.ficha.cruda);
     const m = meteoritos.get(ficha.pieza)!;
-    const ctx = contextoFicha(m, e.ficha.cneos, e.ficha.nClones);
+    const ctx = contextoFicha(m, e.ficha.cneos, e.fuentes);
     for (const k of marcadores(ficha.cuerpo)) {
       const d = ctx[k];
       filas.push({
@@ -318,7 +322,10 @@ export function auditar(e: EntradaAuditoria): Fila[] {
       const tr = leer(id);
       const fallos: string[] = [];
       if (!m) fallos.push('pieza inexistente en el dataset');
-      else if (Date.parse(tr.instante_referencia) !== Date.parse(String(m.fecha_caida.valor)))
+      else if (
+        Date.parse(tr.instante_referencia) !==
+        Date.parse(String((m.punto_trayectoria?.instante ?? m.fecha_caida).valor))
+      )
         fallos.push('instante distinto del dataset');
       let nota: string;
       if (tr.origen === 'jpl') {
@@ -366,6 +373,43 @@ export function auditar(e: EntradaAuditoria): Fila[] {
         nota: fallos.length ? fallos.join('; ') : nota,
       });
     }
+  }
+
+  // ---------- H. Una sola órbita por pieza ----------
+  // La órbita que citan el panel y la ficha es la misma que dibujan la nube y la estela (la
+  // auditoría consolidada del 2026-10-11 encontró la ficha de Chelyabinsk citando a Popova
+  // mientras el recorrido dibujaba la órbita calculada desde el CNEOS).
+  const fichaCtx = e.ficha
+    ? (() => {
+        const ficha = leerFicha(e.ficha!.cruda);
+        const m = meteoritos.get(ficha.pieza);
+        return m && { pieza: ficha.pieza, ctx: contextoFicha(m, e.ficha!.cneos, e.fuentes) };
+      })()
+    : undefined;
+  const conTrayectoria = new Set(e.trayectorias?.indice ?? []);
+  for (const m of e.meteoritos) {
+    const p = e.catalogo.piezas.find((x) => x.id === m.id);
+    const principal = p?.orbita?.fuente;
+    if (!principal) continue;
+    const usos: [string, string | undefined][] = [['panel y nube del catálogo', principal]];
+    if (conTrayectoria.has(m.id))
+      usos.push(['estela del año previo', e.trayectorias!.leer(m.id).validacion.fuente_orbita]);
+    if (m.id === 'chelyabinsk' && e.nubeChelyabinsk)
+      usos.push(['nube del recorrido', e.nubeChelyabinsk.fuente_orbita]);
+    if (fichaCtx?.pieza === m.id)
+      for (const k of ['a', 'e', 'i', 'q', 'Q', 'a_sigma', 'i_sigma', 'a_sigma1', 'i_sigma1'])
+        if (fichaCtx.ctx[k]) usos.push([`ficha {{${k}}}`, fichaCtx.ctx[k]!.fuente]);
+    const distintos = usos.filter(([, f]) => f !== principal);
+    filas.push({
+      seccion: 'Una sola órbita por pieza (texto y figura)',
+      elemento: m.id,
+      valor: usos.map(([u]) => u).join(', '),
+      fuente: principal,
+      estado: distintos.length ? 'error' : 'verificado',
+      nota: distintos.length
+        ? `usan otra órbita: ${distintos.map(([u, f]) => `${u} (${f ?? '—'})`).join('; ')}`
+        : 'todo lo que cita o dibuja la órbita usa la principal',
+    });
   }
 
   // ---------- F. Bólidos del CNEOS ----------

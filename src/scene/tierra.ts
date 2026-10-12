@@ -68,7 +68,8 @@ export function crearVistaTierra(
   bolido: DatosBolido,
   /** Texturas de menor a mayor resolución: se muestra la primera y se sustituye al cargar la siguiente. */
   texturasUrl: string[],
-  aproximacion: Muestra[],
+  /** Aproximación final; `referencia` es el instante de su última muestra (dt = 0). */
+  aproximacion: { muestras: Muestra[]; referencia: Date },
   radioMeteoroideKm?: number,
   /** Fallo de la textura inicial: el globo queda sin imagen y se ofrece reintentar. */
   alFallarTextura?: (reintentar: () => void) => void,
@@ -182,7 +183,9 @@ export function crearVistaTierra(
 
   /** Estado del bólido actual (Chelyabinsk al crear la vista). */
   let fechaRef = bolido.fecha.getTime();
-  let aprox: Muestra[] = aproximacion;
+  /** Instante de la última muestra de la aproximación (puede no coincidir con el pico). */
+  let fechaAprox = aproximacion.referencia.getTime();
+  let aprox: Muestra[] = aproximacion.muestras;
   let dtMin = aprox[0]![0];
   let radioMet = radioMeteoroideKm;
   let conEntrada = true;
@@ -194,16 +197,20 @@ export function crearVistaTierra(
   /**
    * Fija el bólido que se dibuja. Con `entrada` (vector de velocidad y altura publicados) se
    * dibuja la trayectoria de entrada hasta el pico de brillo; sin ella, solo la aproximación hasta
-   * el punto final indicado.
+   * el punto final indicado. `fechaAproximacion` es el instante de la última muestra de la
+   * aproximación si no es `fecha` (Chelyabinsk: la aproximación llega a lo alto de la atmósfera
+   * unos segundos antes del pico de brillo del CNEOS).
    */
   function fijarBolido(b: {
     fecha: Date;
+    fechaAproximacion?: Date;
     aproximacion: Muestra[];
     punto: { latGrados: number; lonGrados: number; alturaKm: number };
     vEcefKmS?: Vec3;
     radioMeteoroideKm?: number;
   }): void {
     fechaRef = b.fecha.getTime();
+    fechaAprox = (b.fechaAproximacion ?? b.fecha).getTime();
     aprox = b.aproximacion;
     dtMin = aprox[0]![0];
     radioMet = b.radioMeteoroideKm;
@@ -257,20 +264,23 @@ export function crearVistaTierra(
     orientar(tt);
     iluminar(tt);
     const dt = (fecha.getTime() - fechaRef) / 86400000;
-    const visible = conBolido && dt >= dtMin && dt <= 0;
+    const dtA = (fecha.getTime() - fechaAprox) / 86400000;
+    // Pasada su última muestra, la aproximación queda dibujada entera y el meteoroide se oculta
+    const visible = conBolido && dtA >= dtMin;
     trayectoria.visible = conBolido && conEntrada;
     lineaAprox.visible = visible;
-    meteoroide.visible = visible && dt < 0;
+    meteoroide.visible = visible && dtA < 0;
     // El pico de brillo se marca desde 1 min antes
     marcador.visible = conBolido && dt >= -1 / 1440;
     if (!visible) return;
-    const i = indiceInferior(aprox, dt);
+    const i = indiceInferior(aprox, Math.min(dtA, 0));
     geomAprox.setDrawRange(0, i + 1);
-    meteoroide.position.copy(aThree(interpolar(aprox, dt), kmAUnidad));
+    meteoroide.position.copy(aThree(interpolar(aprox, Math.min(dtA, 0)), kmAUnidad));
   }
   fijarBolido({
     fecha: bolido.fecha,
-    aproximacion,
+    fechaAproximacion: aproximacion.referencia,
+    aproximacion: aproximacion.muestras,
     punto: bolido,
     vEcefKmS: bolido.vEcefKmS,
     radioMeteoroideKm,

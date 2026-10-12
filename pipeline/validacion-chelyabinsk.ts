@@ -1,8 +1,9 @@
 /**
  * CLI: `npm run validacion:chelyabinsk`.
  * Calcula la órbita de Chelyabinsk desde el vector CNEOS, ejecuta el Monte Carlo y compara con
- * las órbitas publicadas. Escribe docs/reportes/chelyabinsk.md y public/data/chelyabinsk-orbitas.json.
- * Sale con código 2 si se cumple el criterio de parada.
+ * las órbitas publicadas. Escribe docs/reportes/chelyabinsk.md. Es una validación independiente:
+ * desde el 2026-10-12 el recorrido dibuja la órbita de Popova et al. (`npm run datos:trayectoria`),
+ * no esta nube. Sale con código 2 si se cumple el criterio de parada.
  */
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import type { Elementos } from '../src/core/kepler';
@@ -214,31 +215,6 @@ const mediana = (xs: number[]) => {
 };
 const bajos = filasCal.filter((f) => f.bajoDD);
 
-// ---------- salida: datos para la visualización ----------
-mkdirSync('public/data', { recursive: true });
-const serializar = (e: Elementos) => ({
-  a: e.a,
-  e: e.e,
-  i: grados(e.i),
-  nodo: grados(e.nodo),
-  omega: grados(e.omega),
-  M: grados(e.M),
-  epoca_ut_j2000: e.epoca,
-});
-writeFileSync(
-  'public/data/chelyabinsk-orbitas.json',
-  JSON.stringify({
-    generado: new Date().toISOString(),
-    nota: 'Elementos eclípticos J2000 (grados, AU). Nube Monte Carlo sobre el vector CNEOS; ver docs/reportes/chelyabinsk.md.',
-    fuente_entrada: cneos.fuente,
-    hipotesis: 'ecef-relativa',
-    incertidumbre: INC_PRINCIPAL,
-    semilla: SEMILLA,
-    nominal: serializar(nominal['ecef-relativa'].elementos),
-    clones: mcPrincipal.slice(0, 300).map((r) => serializar(r.elementos)),
-  }) + '\n',
-);
-
 // ---------- salida: reporte ----------
 const f = (x: number, d = 3) => x.toFixed(d);
 const tablaElementos = (titulo: string, e: Elementos, rad?: ResultadoOrbita['radiante']) =>
@@ -268,6 +244,8 @@ const informe = `# Validación científica: Chelyabinsk (CNEOS → órbita helio
 > Generado por \`npm run validacion:chelyabinsk\` el ${new Date().toISOString().slice(0, 10)}. No editar a mano.
 
 ## Veredicto
+
+> Desde el 2026-10-12 la web no dibuja esta nube. El recorrido de Chelyabinsk muestra la órbita de Popova et al. 2013, la misma que cita su ficha, muestreada con su incertidumbre (\`npm run datos:trayectoria\`). Este cálculo desde el vector del CNEOS queda como comprobación independiente.
 
 ${fallos.length === 0 ? `**APROBADA.** Ninguna órbita publicada verificada supera el criterio de parada (D_D > ${UMBRAL_DD} o algún elemento a, e, i, q fuera de 3σ de la nube Monte Carlo).` : `**CRITERIO DE PARADA ACTIVADO.**\n\n${fallos.map((x) => `- ${x}`).join('\n')}`}
 

@@ -72,6 +72,26 @@
     "notas": "Leída la copia completa del artículo (6 págs.). Tabla 1: trayectoria y órbita con incertidumbres a 2σ, equinoccio J2000.0. Páginas verificadas en Crossref. La sección sobre el origen cita el modelo de procedencia de Bottke et al. como «Icarus 156, 339–433 (2000)»; según Crossref ese artículo es Icarus 156, 399–433 (2002), doi:10.1006/icar.2001.6788 (errata en la cita de la fuente)."
   },
   {
+    "id": "bottke-2002",
+    "tipo": "articulo",
+    "cita": "Bottke, W. F. et al. (2002). Debiased Orbital and Absolute Magnitude Distribution of the Near-Earth Objects. Icarus, 156, 399–433.",
+    "doi": "10.1006/icar.2001.6788",
+    "licencia": "Cita bibliográfica",
+    "consultado": "2026-10-12",
+    "metadatos_verificados": true,
+    "notas": "Modelo de procedencia que aplican Popova et al. 2013 (su ref. 33, citada allí con año 2000 y páginas 339–433, ambos erróneos). Título, revista, volumen, páginas, año y primer autor verificados en Crossref el 2026-10-12; Crossref no lista a los coautores, por eso se cita «et al.». No se usa ningún dato de este artículo: solo se nombra el modelo."
+  },
+  {
+    "id": "brown-2002",
+    "tipo": "articulo",
+    "cita": "Brown, P., Spalding, R. E., ReVelle, D. O., Tagliaferri, E., Worden, S. P. (2002). The flux of small near-Earth objects colliding with the Earth. Nature, 420, 294–296.",
+    "doi": "10.1038/nature01238",
+    "licencia": "Cita bibliográfica",
+    "consultado": "2026-10-12",
+    "metadatos_verificados": true,
+    "notas": "Metadatos verificados en Crossref el 2026-10-12. La página de introducción del CNEOS (https://cneos.jpl.nasa.gov/fireballs/intro.html, consultada el 2026-10-12) indica que la energía de impacto total (impact-e) se estima a partir de la energía óptica radiada con la expresión empírica de este artículo, E = 8,2508 · E₀^0,885 (kt). Con los 89,6 kt radiados de Chelyabinsk da 441 kt, el valor del registro."
+  },
+  {
     "id": "emelyanenko-2014-arxiv",
     "tipo": "articulo",
     "cita": "Emel'yanenko, V. V., Naroenkov, S. A., Jenniskens, P., Popova, O. P. (2014). The Orbit and Dynamical Evolution of the Chelyabinsk Object. Preprint arXiv:1412.1987 (enviado a Meteoritics & Planetary Science).",

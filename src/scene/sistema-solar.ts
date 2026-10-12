@@ -1,7 +1,8 @@
 /**
  * Vista heliocéntrica en el marco eclíptico J2000 (unidades: AU).
- * Planetas y sus órbitas desde astronomy-engine; órbita del meteoroide como nube de clones
- * Monte Carlo (nunca una sola línea) más la órbita nominal resaltada.
+ * Planetas y sus órbitas desde astronomy-engine; órbita de Chelyabinsk como nube de órbitas
+ * muestreadas con la incertidumbre de su órbita principal (nunca una sola línea) más la órbita
+ * central publicada resaltada.
  */
 import * as Astro from 'astronomy-engine';
 import {
@@ -84,6 +85,8 @@ export function crearVistaSistemaSolar(
   orbitas: DatosOrbitas,
   trayectoria: Muestra[],
   radioMeteoroideKm = 0.01,
+  /** Instante de la última muestra de `trayectoria` (dt = 0), si no es `fecha`. */
+  referenciaTrayectoria = fecha,
 ) {
   const escena = new Scene();
   escena.background = new Color(0x000000);
@@ -237,9 +240,9 @@ export function crearVistaSistemaSolar(
     meteoroide.scale.setScalar(visual ? RADIO_VISUAL_METEOROIDE_AU : radioMet / KM_POR_AU);
   }
   aplicarEscala(true);
-  fijarTrayectoria(trayectoria, fecha, radioMeteoroideKm);
+  fijarTrayectoria(trayectoria, referenciaTrayectoria, radioMeteoroideKm);
 
-  /** Nube Monte Carlo del CNEOS y órbita nominal: propias de Chelyabinsk. */
+  /** Nube y órbita central de Chelyabinsk (órbita de Popova et al.; ver pipeline/trayectoria-chelyabinsk.ts). */
   function mostrarNubeChelyabinsk(si: boolean): void {
     for (const o of [nube, nominal, puntosClones]) o.visible = si;
   }
