@@ -239,6 +239,67 @@ ${an.comparaciones.map((cmp) => `| ${nombreOrbita(cmp.orbita)} | ${f(cmp.dd)} | 
 `;
 
 const popova = meteorito.radiante_geocentrico!;
+
+// ---------- ¿qué episodio registró el CNEOS? (Tabla S1 de Popova et al.) ----------
+interface Episodio {
+  evento: string;
+  hora_ut: string;
+  lat: number;
+  lon: number;
+  altura_km: number;
+  velocidad_kms: number;
+}
+const destellos = JSON.parse(
+  readFileSync('data/verificacion/chelyabinsk-destellos.json', 'utf8'),
+) as {
+  popova_tabla_s1: { episodios: Episodio[] };
+  cneos_anuncio_2013: Omit<Episodio, 'evento'>;
+};
+const segundosDe = (h: string) => {
+  const [hh, mm, ss] = h.split(':').map(Number);
+  return hh! * 3600 + mm! * 60 + ss!;
+};
+const s1 = destellos.popova_tabla_s1.episodios;
+const pico = s1.find((x) => x.evento === 'pico principal')!;
+const secundaria = s1.find((x) => x.evento === 'disrupción secundaria')!;
+const cneosApi: Omit<Episodio, 'evento'> = {
+  hora_ut: c('date').slice(11),
+  lat: Number(c('lat')),
+  lon: Number(c('lon')),
+  altura_km: Number(c('alt')),
+  velocidad_kms: Number(c('vel')),
+};
+/** Altura del bólido a una hora dada, interpolando linealmente entre episodios de la Tabla S1. */
+function alturaA(hora: string): number {
+  const t = segundosDe(hora);
+  for (let k = 0; k + 1 < s1.length; k++) {
+    const [a, b] = [s1[k]!, s1[k + 1]!];
+    const [ta, tb] = [segundosDe(a.hora_ut), segundosDe(b.hora_ut)];
+    if (t >= ta && t <= tb)
+      return a.altura_km + ((t - ta) / (tb - ta)) * (b.altura_km - a.altura_km);
+  }
+  return NaN;
+}
+const diferencia = (x: Omit<Episodio, 'evento'>, ref: Episodio) =>
+  `${(segundosDe(x.hora_ut) - segundosDe(ref.hora_ut)).toFixed(1)} s, ${(x.lat - ref.lat).toFixed(3)}° lat, ${(x.lon - ref.lon).toFixed(3)}° lon, ${(x.altura_km - ref.altura_km).toFixed(1)} km, ${(x.velocidad_kms - ref.velocidad_kms).toFixed(1)} km/s`;
+const filaEpisodio = (nombre: string, x: Omit<Episodio, 'evento'>) =>
+  `| ${nombre} | ${x.hora_ut} | ${x.lat} | ${x.lon} | ${x.altura_km} | ${x.velocidad_kms} |`;
+const seccionDestellos = `## ¿Qué episodio registró el CNEOS?
+
+La hora, la posición y la altura del CNEOS no coinciden con el pico principal de brillo que reconstruyen Popova et al. a partir de videos. Comparación con su Tabla S1 (material suplementario, pág. 3; incertidumbres ±0,1 s, ±0,018° de latitud, ±0,030° de longitud, ±0,7 km y ±0,16 km/s) y con el anuncio de JPL del 1 de marzo de 2013:
+
+| Registro | Hora (UT) | Latitud (° N) | Longitud (° E) | Altura (km) | Velocidad (km/s) |
+|---|---|---|---|---|---|
+${filaEpisodio('CNEOS, API (consulta guardada)', cneosApi)}
+${filaEpisodio('CNEOS, anuncio de JPL de 2013', destellos.cneos_anuncio_2013)}
+${s1.map((x) => filaEpisodio(`Popova, ${x.evento}`, x)).join('\n')}
+
+Diferencias del CNEOS (anuncio de 2013) frente a:
+- el pico principal: ${diferencia(destellos.cneos_anuncio_2013, pico)};
+- la disrupción secundaria: ${diferencia(destellos.cneos_anuncio_2013, secundaria)}.
+
+La longitud y la altura del CNEOS encajan mejor con la disrupción secundaria que con el pico principal, y la hora de 2013 también; la latitud (redondeada a 0,1°) y la velocidad quedan algo más cerca del pico principal. La hora que da hoy la API (${cneosApi.hora_ut}) no encaja con ninguno de los dos: según la Tabla S1, a esa hora el bólido estaba a unos ${alturaA(cneosApi.hora_ut).toFixed(0)} km de altura. Es un indicio, no una prueba: no se ha establecido qué episodio registraron los sensores, y la ficha no lo afirma. Para la órbita la diferencia es despreciable (unos segundos y unos kilómetros); para saber qué destello se registró, no.
+`;
 const informe = `# Validación científica: Chelyabinsk (CNEOS → órbita heliocéntrica)
 
 > Generado por \`npm run validacion:chelyabinsk\` el ${new Date().toISOString().slice(0, 10)}. No editar a mano.
@@ -254,10 +315,11 @@ ${fallos.length === 0 ? `**APROBADA.** Ninguna órbita publicada verificada supe
 Registro CNEOS (consultado ${cneos.consultado}): ${c('date')} UTC, ${c('lat')}°${c('lat-dir')} ${c('lon')}°${c('lon-dir')}, ${c('alt')} km, |v| = ${c('vel')} km/s, (vx, vy, vz) = (${c('vx')}, ${c('vy')}, ${c('vz')}) km/s, energía de impacto ${c('impact-e')} kt.
 
 Diferencias conocidas entre el registro CNEOS y la literatura:
-- Hora del pico: CNEOS da ${c('date').slice(11)} (consulta actual) y Peña-Asensio et al. 2025 usan 03:20:33 (revisión de 2024); Popova et al. 2013 dan 03:20:32.2 UTC. 7 s mueven la Tierra ~200 km en su órbita: efecto despreciable.
+- Hora del pico: CNEOS da ${c('date').slice(11)} (consulta actual) y Peña-Asensio et al. 2025 usan 03:20:33 (revisión de 2024); Popova et al. 2013 dan 03:20:32.2 UTC. 7 s mueven la Tierra ~200 km en su órbita: efecto despreciable para la órbita, aunque no para saber qué destello registró el CNEOS (sección siguiente).
 - Altura del pico: CNEOS ${c('alt')} km frente a 29.7 km (Popova et al. 2013).
 - Velocidad: CNEOS ${c('vel')} km/s frente a V∞ = ${num(popova.v_entrada!)} ± ${popova.v_entrada!.sigma} km/s (1σ, Popova et al. 2013). Es la diferencia que más pesa en a, e y Vg; el Monte Carlo la cubre (σv del CNEOS).
 
+${seccionDestellos}
 ## Método
 
 1. Posición del pico de brillo con \`ObserverState\` de astronomy-engine; velocidad rotada de ECEF a EQJ (GAST + precesión/nutación).

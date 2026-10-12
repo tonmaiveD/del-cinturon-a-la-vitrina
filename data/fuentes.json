@@ -10,6 +10,16 @@
     "notas": "vx, vy, vz se describen solo como 'Earth centered'. Peña-Asensio et al. 2025 los interpretan como ECEF; la diferencia frente a la hipótesis inercial no se puede resolver empíricamente (docs/reportes/chelyabinsk.md)."
   },
   {
+    "id": "cneos-anuncio-2013",
+    "tipo": "circular",
+    "cita": "NASA/JPL Center for Near Earth Object Studies (CNEOS). Additional Details on the Large Fireball Event over Russia on Feb. 15, 2013 (1 de marzo de 2013).",
+    "url": "https://cneos.jpl.nasa.gov/news/fireball_130301.html",
+    "licencia": "Datos del Gobierno de EE. UU.; la página no indica licencia explícita",
+    "consultado": "2026-10-12",
+    "metadatos_verificados": true,
+    "notas": "Primera publicación de los datos de los sensores para Chelyabinsk: pico de brillo a las 03:20:33 UT, 54,8° N 61,1° E, 23,3 km, 18,6 km/s, energía radiada 3,75 × 10¹⁴ J y energía de impacto total 440 kt. La API actual da la misma posición, altura y velocidad, pero las 03:20:26."
+  },
+  {
     "id": "astronomy-engine",
     "tipo": "software",
     "cita": "Cross, D. Astronomy Engine, v2.1.19.",
@@ -37,7 +47,7 @@
     "licencia": "Cita bibliográfica",
     "consultado": "2026-10-07",
     "metadatos_verificados": true,
-    "notas": "Leído el PDF completo del artículo (13 págs., incluidos Extended Data), aportado por el usuario el 2026-10-07; no se redistribuye. Tabla 2: órbita previa al impacto con incertidumbres «±» sin nivel declarado, osculadora 60 días antes del impacto (integración RADAU), equinoccio J2000.0. Nota de la Tabla 2: radiante geocéntrico α_g = 332,82 ± 0,11°, δ_g = 10,28 ± 0,14°, v_g = 15,14 ± 0,16 km/s. Tabla 1: trayectoria; el primer punto (64,477° E, 54,454° N, 95,0 km) coincide con el punto de trayectoria de Granvik & Brown 2018. Autores y DOI verificados en nature.com y en la página del coautor P. Wiegert.",
+    "notas": "Leído el PDF completo del artículo (13 págs., incluidos Extended Data), aportado por el usuario el 2026-10-07; no se redistribuye. Tabla 2: órbita previa al impacto con incertidumbres «±» sin nivel declarado, osculadora 60 días antes del impacto (integración RADAU), equinoccio J2000.0. Nota de la Tabla 2: radiante geocéntrico α_g = 332,82 ± 0,11°, δ_g = +0,28 ± 0,14° (+0°17′ ± 8′; corregido el 2026-10-12, la extracción de texto había leído el signo «+» como un «1»), v_g = 15,14 ± 0,16 km/s. Tabla 1: trayectoria; el primer punto (64,477° E, 54,454° N, 95,0 km) coincide con el punto de trayectoria de Granvik & Brown 2018. Autores y DOI verificados en nature.com y en la página del coautor P. Wiegert.",
     "url": "https://www.nature.com/articles/nature12671"
   },
   {
@@ -69,17 +79,17 @@
     "licencia": "Cita bibliográfica; copia de repositorio institucional para uso personal",
     "consultado": "2026-10-01",
     "metadatos_verificados": true,
-    "notas": "Leída la copia completa del artículo (6 págs.). Tabla 1: trayectoria y órbita con incertidumbres a 2σ, equinoccio J2000.0. Páginas verificadas en Crossref. La sección sobre el origen cita el modelo de procedencia de Bottke et al. como «Icarus 156, 339–433 (2000)»; según Crossref ese artículo es Icarus 156, 399–433 (2002), doi:10.1006/icar.2001.6788 (errata en la cita de la fuente)."
+    "notas": "Leída la copia completa del artículo (6 págs.). Tabla 1: trayectoria y órbita con incertidumbres a 2σ, equinoccio J2000.0. Páginas verificadas en Crossref. La sección sobre el origen cita el modelo de procedencia de Bottke et al. como «Icarus 156, 339–433 (2000)»; según Crossref ese artículo es Icarus 156, 399–433 (2002), doi:10.1006/icar.2001.6788 (errata en la cita de la fuente). Material suplementario (157 págs.) leído el 2026-10-12 en la copia de https://www.meteorites.ru/menu/publication/popova_ea_2013_science.pdf (no se redistribuye): Tabla S1 (hora, posición, altura y velocidad de los episodios del bólido; pág. 3) y sección 1.1, «Model of Meteoroid Orbital Dynamics» (pág. 20), con las cinco probabilidades del modelo de Bottke et al."
   },
   {
     "id": "bottke-2002",
     "tipo": "articulo",
-    "cita": "Bottke, W. F. et al. (2002). Debiased Orbital and Absolute Magnitude Distribution of the Near-Earth Objects. Icarus, 156, 399–433.",
+    "cita": "Bottke, W. F., Morbidelli, A., Jedicke, R., Petit, J.-M., Levison, H. F., Michel, P., Metcalfe, T. S. (2002). Debiased Orbital and Absolute Magnitude Distribution of the Near-Earth Objects. Icarus, 156, 399–433.",
     "doi": "10.1006/icar.2001.6788",
     "licencia": "Cita bibliográfica",
     "consultado": "2026-10-12",
     "metadatos_verificados": true,
-    "notas": "Modelo de procedencia que aplican Popova et al. 2013 (su ref. 33, citada allí con año 2000 y páginas 339–433, ambos erróneos). Título, revista, volumen, páginas, año y primer autor verificados en Crossref el 2026-10-12; Crossref no lista a los coautores, por eso se cita «et al.». No se usa ningún dato de este artículo: solo se nombra el modelo."
+    "notas": "Modelo de procedencia que aplican Popova et al. 2013 (su ref. 33, citada allí con año 2000 y páginas 339–433, ambos erróneos). Título, revista, volumen, páginas, año y primer autor verificados en Crossref el 2026-10-12; Crossref no lista a los coautores, que se toman de la lista de referencias de Popova et al. No se usa ningún dato de este artículo: solo se nombra el modelo."
   },
   {
     "id": "brown-2002",

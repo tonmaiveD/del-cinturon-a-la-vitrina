@@ -294,9 +294,35 @@ Resultado:
 - **Huella del CNEOS.** Al cambiar `src/core/` se recalcularon en local las 260 órbitas. Sus
   valores no cambian, porque el cálculo es el mismo; cambia la huella.
 
-Pendiente, etapa 2 de esta revisión: el material suplementario de Popova (tablas S1 y S6), los
-destellos, la validación acotada a Peña-Asensio, la redacción restante, los DOI en la versión
-legible y la nota de Borovička (δ_g = +0,28°, no 10,28°).
+### Segunda revisión de la ficha · etapa 2, texto y fuentes · **hecha el 2026-10-12**
+
+- **Material suplementario de Popova et al.** Descargado con permiso del usuario (7 MB, 157
+  págs.) en `.trabajo/popova-suplemento/`; no se redistribuye. De él se verificaron:
+  - la Tabla S1 (pág. 3), con hora, posición, altura y velocidad de cada episodio;
+  - las cinco probabilidades del modelo de Bottke et al. (sección 1.1, pág. 20):
+    62 / 25 / 11 / 2 / 0 %;
+  - la lista completa de autores de Bottke et al. 2002.
+- **Destellos (hallazgo 2).** La ficha ya no sugiere que el CNEOS registrara el destello de
+  24 km: dice que no se ha establecido. El reporte de validación tiene una sección nueva, «¿Qué
+  episodio registró el CNEOS?», con la Tabla S1 (`data/verificacion/chelyabinsk-destellos.json`)
+  y el anuncio de JPL de 2013 (fuente nueva `cneos-anuncio-2013`). La longitud, la altura y la
+  hora de 2013 encajan mejor con la disrupción secundaria (23,9 km); la latitud y la velocidad,
+  con el pico principal. A la hora actual de la API, el bólido estaba a unos 66 km. Es un
+  indicio, no una prueba.
+- **Validación con el CNEOS (hallazgo 3).** La frase queda acotada a los errores típicos de
+  Peña-Asensio et al. 2025, que ahora figura entre las fuentes de la ficha.
+- **Procedencias (hallazgo 4).** El 2 % del cinturón exterior y el 0 % de los cometas de la
+  familia de Júpiter entraron al dataset con su fuente; la ficha y el panel muestran las cinco.
+- **Redacción (hallazgo 5).**
+  - LL5: el tipo petrológico describe el metamorfismo en el cuerpo progenitor, y el «5» sale
+    del dataset;
+  - «se fragmentó en el aire en varias etapas»;
+  - «donde el asteroide se rompió».
+- **Trazabilidad (hallazgo 6).** La versión legible imprime los DOI. Se corrigió la nota de
+  Borovička: δ_g = +0,28°, no 10,28°.
+
+Queda en manos del usuario: aprobar la ficha (`revision/ficha-chelyabinsk-para-revisar.md`) o
+pedir cambios.
 
 ### Etapa D · CI y operación · **hecha el 2026-10-11** (ola 1)
 

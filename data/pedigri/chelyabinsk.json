@@ -428,9 +428,9 @@
         "valor": 62,
         "unidad": "%",
         "fuente": "popova-2013-science",
-        "ubicacion": "texto principal, sección \"Source and Evolution of the Chelyabinsk Meteoroid\"",
+        "ubicacion": "texto principal, sección \"Source and Evolution of the Chelyabinsk Meteoroid\"; material suplementario, sección 1.1, \"Model of Meteoroid Orbital Dynamics\" (pág. 20)",
         "estado": "verificado",
-        "nota": "Probabilidad según el modelo de Bottke et al. (2002), ref. 33 de la fuente, aplicada por Popova et al. a la órbita de la Tabla 1. Las tres suman 98 %: la fuente no explica el resto."
+        "nota": "Probabilidad según el modelo de Bottke et al. (2002), ref. 33 de la fuente, aplicada por Popova et al. a la órbita de la Tabla 1. El texto principal da las tres primeras (62, 11 y 25 %); el material suplementario da las cinco regiones del modelo (62 / 25 / 11 / 2 / 0 %)."
       },
       "modelo": "bottke-2002"
     },
@@ -441,9 +441,9 @@
         "valor": 11,
         "unidad": "%",
         "fuente": "popova-2013-science",
-        "ubicacion": "texto principal, sección \"Source and Evolution of the Chelyabinsk Meteoroid\"",
+        "ubicacion": "texto principal, sección \"Source and Evolution of the Chelyabinsk Meteoroid\"; material suplementario, sección 1.1, \"Model of Meteoroid Orbital Dynamics\" (pág. 20)",
         "estado": "verificado",
-        "nota": "Probabilidad según el modelo de Bottke et al. (2002), ref. 33 de la fuente, aplicada por Popova et al. a la órbita de la Tabla 1. Las tres suman 98 %: la fuente no explica el resto."
+        "nota": "Probabilidad según el modelo de Bottke et al. (2002), ref. 33 de la fuente, aplicada por Popova et al. a la órbita de la Tabla 1. El texto principal da las tres primeras (62, 11 y 25 %); el material suplementario da las cinco regiones del modelo (62 / 25 / 11 / 2 / 0 %)."
       },
       "modelo": "bottke-2002"
     },
@@ -454,9 +454,35 @@
         "valor": 25,
         "unidad": "%",
         "fuente": "popova-2013-science",
-        "ubicacion": "texto principal, sección \"Source and Evolution of the Chelyabinsk Meteoroid\"",
+        "ubicacion": "texto principal, sección \"Source and Evolution of the Chelyabinsk Meteoroid\"; material suplementario, sección 1.1, \"Model of Meteoroid Orbital Dynamics\" (pág. 20)",
         "estado": "verificado",
-        "nota": "Probabilidad según el modelo de Bottke et al. (2002), ref. 33 de la fuente, aplicada por Popova et al. a la órbita de la Tabla 1. Las tres suman 98 %: la fuente no explica el resto."
+        "nota": "Probabilidad según el modelo de Bottke et al. (2002), ref. 33 de la fuente, aplicada por Popova et al. a la órbita de la Tabla 1. El texto principal da las tres primeras (62, 11 y 25 %); el material suplementario da las cinco regiones del modelo (62 / 25 / 11 / 2 / 0 %)."
+      },
+      "modelo": "bottke-2002"
+    },
+    {
+      "region": "cinturon-exterior",
+      "nombre": "Cinturón principal exterior",
+      "probabilidad": {
+        "valor": 2,
+        "unidad": "%",
+        "fuente": "popova-2013-science",
+        "ubicacion": "material suplementario, sección 1.1, \"Model of Meteoroid Orbital Dynamics\" (pág. 20)",
+        "estado": "verificado",
+        "nota": "Según el modelo de Bottke et al. (2002), aplicado por Popova et al. a su órbita: «62 / 25 / 11 / 2 / 0 % probability of originating from the ν6 secular resonance / the Intermediate Mars Crosser region / the 3:1 mean-motion resonance / the Outer main Belt / Jupiter Family Comets»."
+      },
+      "modelo": "bottke-2002"
+    },
+    {
+      "region": "cometas-jfc",
+      "nombre": "Cometas de la familia de Júpiter",
+      "probabilidad": {
+        "valor": 0,
+        "unidad": "%",
+        "fuente": "popova-2013-science",
+        "ubicacion": "material suplementario, sección 1.1, \"Model of Meteoroid Orbital Dynamics\" (pág. 20)",
+        "estado": "verificado",
+        "nota": "Según el modelo de Bottke et al. (2002), aplicado por Popova et al. a su órbita: «62 / 25 / 11 / 2 / 0 % probability of originating from the ν6 secular resonance / the Intermediate Mars Crosser region / the 3:1 mean-motion resonance / the Outer main Belt / Jupiter Family Comets»."
       },
       "modelo": "bottke-2002"
     },
@@ -609,7 +635,7 @@
       "fuente": "popova-2013-science",
       "ubicacion": "texto principal: «Two main fragments survived the disruption at 29.7 km. They flared around 24 km»",
       "estado": "verificado",
-      "nota": "Valor aproximado («around»), sin incertidumbre publicada."
+      "nota": "Valor aproximado del texto principal («around»), sin incertidumbre publicada. La Tabla S1 del material suplementario sitúa la disrupción secundaria a 23,9 ± 0,7 km, a las 03:20:33,4 UT."
     }
   },
   "orbita_principal": "popova-2013-science"

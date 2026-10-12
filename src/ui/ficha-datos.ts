@@ -21,6 +21,8 @@ const J_POR_KT = 4.184e12;
 const J_POR_UNIDAD_ENERGY = 1e10;
 /** Fórmula con la que el CNEOS pasa de energía radiada a energía de impacto. */
 const FUENTE_ENERGIA_IMPACTO = 'brown-2002';
+/** Errores típicos del CNEOS por grupo (Tabla 4), usados en la validación con Chelyabinsk. */
+const FUENTE_ERRORES_CNEOS = 'pena-asensio-2025';
 
 const num = (x: number, dec: number) =>
   x.toLocaleString('es', { minimumFractionDigits: dec, maximumFractionDigits: dec });
@@ -74,6 +76,11 @@ export function contextoFicha(
     'clase',
     dato(m.clase, (v) => String(v.valor)),
   );
+  // La cifra final de la clase (p. ej. el 5 de LL5) es el tipo petrológico
+  poner(
+    'tipo_petrologico',
+    dato(m.clase, (v) => /(\d+)$/.exec(String(v.valor))?.[1] ?? ''),
+  );
   poner(
     'diametro',
     dato(m.diametro_preatmosferico, (v) => num(Math.round(v.valor as number), 0)),
@@ -100,6 +107,8 @@ export function contextoFicha(
     ),
   );
   poner('ref_energia', cita(FUENTE_ENERGIA_IMPACTO));
+  // Errores típicos del CNEOS con los que se valida la órbita calculada desde su vector
+  poner('ref_errores_cneos', cita(FUENTE_ERRORES_CNEOS));
 
   // La órbita que cita el texto es la principal: la misma que se dibuja en el recorrido
   const orbita = m.orbitas.find(
@@ -164,9 +173,13 @@ export function contextoFicha(
   for (const p of (m.procedencia ?? []).filter(
     (x) => x.probabilidad.fuente === 'popova-2013-science',
   )) {
-    const clave = { 'resonancia-nu6': 'nu6', 'resonancia-3-1': '31', 'cruzadores-marte': 'imc' }[
-      p.region
-    ];
+    const clave = {
+      'resonancia-nu6': 'nu6',
+      'resonancia-3-1': '31',
+      'cruzadores-marte': 'imc',
+      'cinturon-exterior': 'ob',
+      'cometas-jfc': 'jfc',
+    }[p.region];
     if (!clave) continue;
     poner(`p_${clave}`, dato(p.probabilidad, n));
     // El nombre de la región también sale del dataset (evita cifras escritas a mano, p. ej. «3:1»)

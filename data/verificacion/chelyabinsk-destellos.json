@@ -1,0 +1,82 @@
+{
+  "descripcion": "Episodios del bólido de Chelyabinsk según los videos (Popova et al. 2013, material suplementario, Tabla S1) y registro de los sensores del CNEOS, para comparar qué episodio registró el CNEOS. Solo se usa en docs/reportes/chelyabinsk.md; no se muestra en la web.",
+  "popova_tabla_s1": {
+    "fuente": "popova-2013-science",
+    "ubicacion": "material suplementario, Tabla S1 (pág. 3)",
+    "estado": "verificado",
+    "incertidumbre": {
+      "hora_s": 0.1,
+      "lat_grados": 0.018,
+      "lon_grados": 0.03,
+      "altura_km": 0.7,
+      "velocidad_kms": 0.16
+    },
+    "episodios": [
+      {
+        "evento": "primera detección",
+        "hora_ut": "03:20:20.8",
+        "lat": 54.445,
+        "lon": 64.565,
+        "altura_km": 97.1,
+        "velocidad_kms": 19.16
+      },
+      {
+        "evento": "primer pico",
+        "hora_ut": "03:20:29.8",
+        "lat": 54.764,
+        "lon": 62.109,
+        "altura_km": 43.9,
+        "velocidad_kms": 19.2
+      },
+      {
+        "evento": "pico principal",
+        "hora_ut": "03:20:32.2",
+        "lat": 54.845,
+        "lon": 61.412,
+        "altura_km": 29.7,
+        "velocidad_kms": 19.2
+      },
+      {
+        "evento": "fin de la formación de la nube térmica",
+        "hora_ut": "03:20:32.65",
+        "lat": 54.859,
+        "lon": 61.278,
+        "altura_km": 27,
+        "velocidad_kms": 19.2
+      },
+      {
+        "evento": "disrupción secundaria",
+        "hora_ut": "03:20:33.4",
+        "lat": 54.876,
+        "lon": 61.128,
+        "altura_km": 23.9,
+        "velocidad_kms": 16.8
+      },
+      {
+        "evento": "disrupción terciaria",
+        "hora_ut": "03:20:34.7",
+        "lat": 54.905,
+        "lon": 60.865,
+        "altura_km": 18.5,
+        "velocidad_kms": 12.1
+      },
+      {
+        "evento": "última detección",
+        "hora_ut": "03:20:36.8",
+        "lat": 54.931,
+        "lon": 60.625,
+        "altura_km": 13.6,
+        "velocidad_kms": 4.9
+      }
+    ]
+  },
+  "cneos_anuncio_2013": {
+    "fuente": "cneos-anuncio-2013",
+    "estado": "verificado",
+    "hora_ut": "03:20:33",
+    "lat": 54.8,
+    "lon": 61.1,
+    "altura_km": 23.3,
+    "velocidad_kms": 18.6
+  }
+}

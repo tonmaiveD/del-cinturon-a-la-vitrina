@@ -3,7 +3,7 @@
 Generado por `npm run auditoria` (también se ejecuta en `npm run build`, que falla si hay
 errores). Cada dato que muestra la interfaz se contrasta con su valor de origen en `data/`.
 
-- Verificados: 511
+- Verificados: 519
 - Pendientes mostrados con aviso: 25
 - Calculados con método documentado: 30
 - Convenciones visuales o de notación: 27
@@ -141,6 +141,8 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | escape: resonancia-nu6 | 62 | popova-2013-science | verificado |  |
 | escape: resonancia-3-1 | 11 | popova-2013-science | verificado |  |
 | escape: cruzadores-marte | 25 | popova-2013-science | verificado |  |
+| escape: cinturon-exterior | 2 | popova-2013-science | verificado |  |
+| escape: cometas-jfc | 0 | popova-2013-science | verificado |  |
 | escape: hungaria | 8 ± 3 | granvik-brown-2018 | verificado |  |
 | escape: resonancia-nu6 | 80 ± 8 | granvik-brown-2018 | verificado |  |
 | escape: phocaea | 0 ± 0.1 | granvik-brown-2018 | verificado |  |
@@ -651,6 +653,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | {{ref_energia}} | Brown et al. 2002 | brown-2002 | verificado | borrador: no se publica en producción |
 | {{energia_radiada_kt}} | 90 | cneos-fireball-api | verificado | borrador: no se publica en producción |
 | {{clase}} | LL5 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{tipo_petrologico}} | 5 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{a}} | 1,76 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{e}} | 0,581 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{i}} | 4,93 | popova-2013-science | verificado | borrador: no se publica en producción |
@@ -663,6 +666,10 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | {{p_imc}} | 25 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{n_31}} | resonancia de movimiento medio 3:1 con Júpiter | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{p_31}} | 11 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{n_ob}} | cinturón principal exterior | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{p_ob}} | 2 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{n_jfc}} | cometas de la familia de Júpiter | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{p_jfc}} | 0 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{nivel_nube}} | 1σ | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{ra_sigma1}} | 0,8 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{dec_sigma1}} | 0,9 | popova-2013-science | verificado | borrador: no se publica en producción |
@@ -674,6 +681,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | {{a_sigma1}} | 0,08 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{i_sigma1}} | 0,24 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{nivel_nube}} | 1σ | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{ref_errores_cneos}} | Peña-Asensio et al. 2025 | pena-asensio-2025 | verificado | borrador: no se publica en producción |
 | {{cneos_consultado}} | 1 de octubre de 2026 | cneos-fireball-api | verificado | borrador: no se publica en producción |
 
 ## Trayectorias animadas (piezas con pedigrí)

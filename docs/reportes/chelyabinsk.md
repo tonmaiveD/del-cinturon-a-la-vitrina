@@ -14,9 +14,32 @@ Registro CNEOS (consultado 2026-10-01T13:55:44Z): 2013-02-15 03:20:26 UTC, 54.8�
 
 Diferencias conocidas entre el registro CNEOS y la literatura:
 
-- Hora del pico: CNEOS da 03:20:26 (consulta actual) y Peña-Asensio et al. 2025 usan 03:20:33 (revisión de 2024); Popova et al. 2013 dan 03:20:32.2 UTC. 7 s mueven la Tierra ~200 km en su órbita: efecto despreciable.
+- Hora del pico: CNEOS da 03:20:26 (consulta actual) y Peña-Asensio et al. 2025 usan 03:20:33 (revisión de 2024); Popova et al. 2013 dan 03:20:32.2 UTC. 7 s mueven la Tierra ~200 km en su órbita: efecto despreciable para la órbita, aunque no para saber qué destello registró el CNEOS (sección siguiente).
 - Altura del pico: CNEOS 23.3 km frente a 29.7 km (Popova et al. 2013).
 - Velocidad: CNEOS 18.6 km/s frente a V∞ = 19.16 ± 0.15 km/s (1σ, Popova et al. 2013). Es la diferencia que más pesa en a, e y Vg; el Monte Carlo la cubre (σv del CNEOS).
+
+## ¿Qué episodio registró el CNEOS?
+
+La hora, la posición y la altura del CNEOS no coinciden con el pico principal de brillo que reconstruyen Popova et al. a partir de videos. Comparación con su Tabla S1 (material suplementario, pág. 3; incertidumbres ±0,1 s, ±0,018° de latitud, ±0,030° de longitud, ±0,7 km y ±0,16 km/s) y con el anuncio de JPL del 1 de marzo de 2013:
+
+| Registro                                       | Hora (UT)   | Latitud (° N) | Longitud (° E) | Altura (km) | Velocidad (km/s) |
+| ---------------------------------------------- | ----------- | ------------- | -------------- | ----------- | ---------------- |
+| CNEOS, API (consulta guardada)                 | 03:20:26    | 54.8          | 61.1           | 23.3        | 18.6             |
+| CNEOS, anuncio de JPL de 2013                  | 03:20:33    | 54.8          | 61.1           | 23.3        | 18.6             |
+| Popova, primera detección                      | 03:20:20.8  | 54.445        | 64.565         | 97.1        | 19.16            |
+| Popova, primer pico                            | 03:20:29.8  | 54.764        | 62.109         | 43.9        | 19.2             |
+| Popova, pico principal                         | 03:20:32.2  | 54.845        | 61.412         | 29.7        | 19.2             |
+| Popova, fin de la formación de la nube térmica | 03:20:32.65 | 54.859        | 61.278         | 27          | 19.2             |
+| Popova, disrupción secundaria                  | 03:20:33.4  | 54.876        | 61.128         | 23.9        | 16.8             |
+| Popova, disrupción terciaria                   | 03:20:34.7  | 54.905        | 60.865         | 18.5        | 12.1             |
+| Popova, última detección                       | 03:20:36.8  | 54.931        | 60.625         | 13.6        | 4.9              |
+
+Diferencias del CNEOS (anuncio de 2013) frente a:
+
+- el pico principal: 0.8 s, -0.045° lat, -0.312° lon, -6.4 km, -0.6 km/s;
+- la disrupción secundaria: -0.4 s, -0.076° lat, -0.028° lon, -0.6 km, 1.8 km/s.
+
+La longitud y la altura del CNEOS encajan mejor con la disrupción secundaria que con el pico principal, y la hora de 2013 también; la latitud (redondeada a 0,1°) y la velocidad quedan algo más cerca del pico principal. La hora que da hoy la API (03:20:26) no encaja con ninguno de los dos: según la Tabla S1, a esa hora el bólido estaba a unos 66 km de altura. Es un indicio, no una prueba: no se ha establecido qué episodio registraron los sensores, y la ficha no lo afirma. Para la órbita la diferencia es despreciable (unos segundos y unos kilómetros); para saber qué destello se registró, no.
 
 ## Método
 
@@ -53,7 +76,7 @@ Fuente: Peña-Asensio, Socas-Navarro & Seligman 2025, A&A 701, A202 (arXiv:2508.
 
 Radiante geocéntrico de Popova et al. 2013 (1σ): α = 333.2 ± 0.8°, δ = 0.3 ± 0.9°, Vg = 15.3 ± 0.2 km/s.
 
-Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1000 clones): 34.4 s.
+Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1000 clones): 34.3 s.
 
 ## Monte Carlo
 

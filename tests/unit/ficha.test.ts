@@ -27,7 +27,7 @@ describe.each(fichas.map((f) => [f.pieza, f] as const))('ficha %s', (pieza, fich
     expect(cifrasFueraDeMarcadores(ficha.cuerpo)).toEqual([]);
   });
   it('las probabilidades de procedencia vienen de la fuente que nombra el texto', () => {
-    for (const k of ['p_nu6', 'p_31', 'p_imc'])
+    for (const k of ['p_nu6', 'p_31', 'p_imc', 'p_ob', 'p_jfc'])
       expect(ctx[k]?.fuente, k).toBe('popova-2013-science');
   });
   it('todos los marcadores se resuelven con datos verificados', () => {

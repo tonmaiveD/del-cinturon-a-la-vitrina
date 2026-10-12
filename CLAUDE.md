@@ -11,11 +11,10 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   el usuario; detalle en `docs/deuda-tecnica.md`). El recorrido de Chelyabinsk ya dibuja la
   órbita de Popova, la misma que cita la ficha; la nube del CNEOS queda como validación. La
   ficha sigue en `borrador` a la espera de su aprobación.
-- **2026-10-12: segunda revisión de la ficha.** Plan en dos etapas aprobado por el usuario.
-  **Etapa 1 hecha:** las nubes de las 25 piezas se calculan desde el radiante publicado
-  (`npm run datos:nubes`), y así todas sus órbitas pasan por la Tierra. **Siguiente: etapa 2**
-  (ver el final de esa sección en `docs/deuda-tecnica.md`); su primer paso es pedir permiso para
-  descargar el material suplementario de Popova (tablas S1 y S6).
+- **2026-10-12: segunda revisión de la ficha hecha** (etapas 1 y 2): las nubes de las 25
+  piezas se calculan desde el radiante (`npm run datos:nubes`); la ficha cita la tabla S1 y las
+  cinco procedencias del material suplementario de Popova (en `.trabajo/popova-suplemento/`, no
+  se redistribuye). Falta que el usuario apruebe la ficha.
 - **Siguiente paso: ola 3 = Fase 4 (colección y fichas).** Necesita decisiones del usuario
   (ver «Fase 4» abajo). Si aún no las tiene, se puede empezar por lo que no las necesita: el
   modelo meteorito ≠ ejemplar (M33) y el manejo de campos privados (M32). Se lo propuse el
