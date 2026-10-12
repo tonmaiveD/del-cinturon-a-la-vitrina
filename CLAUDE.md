@@ -32,17 +32,16 @@ Lo que depende del usuario corre en paralelo, y la Fase 4 se adelanta si llegan 
    16 Pro Max («se ve bien»). La Fase 3 quedó cerrada. El proyecto vive en `~/Proyectos`; el
    usuario quitó la carpeta antigua de Documentos y la quitó de GitHub Desktop. La primera
    página de la Wiki fue creada desde la web.
-1. **Hecha en local (2026-10-11), pendiente de push y CI.**
+1. **Hecha (2026-10-12).** Publicada por la CI nueva: se probó el mismo artefacto, se comprobó
+   que era el último commit de `main` y se verificó la web en vivo; 76 e2e en verde.
    - Duración del recorrido elegible.
    - Etapa D.
-   - Corrección de la medición de rendimiento del modo CNEOS.
-   - Primera versión de la Wiki en `~/Proyectos/del-cinturon-a-la-vitrina.wiki`, con commit
-     local y sin subir. El commit inicial de la Wiki, hecho desde la web, lleva el gmail del
-     usuario. Para quitarlo hay que reescribir la historia de la Wiki
-     y forzar el push, lo que **requiere su autorización**. Para el futuro, el usuario debe
-     marcar en GitHub, Settings → Emails, «Keep my email addresses private» o poner
-     apaec@yahoo.com como correo principal.
-   - No hubo ajustes del iPhone: el usuario no pidió ninguno.
+   - Wiki publicada (8 páginas); su historia y la de `main` se reescribieron el 2026-10-11 para
+     que solo aparezca apaec@yahoo.com, con push forzado hecho por el usuario y respaldos en
+     `.trabajo/`.
+   - Dependabot: TypeScript >= 6.1 ignorado mientras typescript-eslint no lo admita.
+   - Dato de rendimiento: el cambio al modo CNEOS tarda 1,2 s en local y 3,2–3,4 s en la CI
+     (sin GPU, CPU ×4); es una medición informativa, para la ola 5 (M22).
 2. **Etapa C (1–2 sesiones):** M18 → M09 (recálculo de unas 260 órbitas), M08, M27.
 3. **Fase 4 (2 sesiones):** con M33, M32, M10 y M29; necesita las decisiones del usuario.
 4. **Presentación para la tienda (2–3 sesiones):**
