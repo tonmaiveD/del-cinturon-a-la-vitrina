@@ -5,22 +5,29 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 
 ## Retomar aquí
 
-### Estado (2026-10-09)
+### Estado (2026-10-12)
 
-- **Fases 0–3 cerradas** (`docs/cierres/fase-1.md`, `fase-2.md`, `fase-3.md`); la Fase 3
-  confirmada por el usuario el 2026-10-09. **Etapa extra de recorridos animados** hecha: las 25
-  piezas con pedigrí tienen recorrido.
-- **Ubicación:** `~/Proyectos/del-cinturon-a-la-vitrina` desde el 2026-10-09, fuera de iCloud.
-  Hasta que el usuario la borre, queda una copia antigua en `~/Documents/del-cinturon-a-la-vitrina`
-  (iCloud); **no trabajar en ella**.
-- Publicado en https://tonmaived.github.io/del-cinturon-a-la-vitrina/ (repo público
-  `tonmaiveD/del-cinturon-a-la-vitrina`). La CI (`ci.yml`) publica desde `main` si pasan
-  lint, tests, build (con validación y auditoría) y e2e. Actualización diaria del CNEOS
-  automática (`cneos-diario.yml`, 07:30 UTC; GitHub puede retrasarla horas).
-- Verificación al cierre: 234 tests unitarios, 41 e2e (escritorio + móvil), axe 0 violaciones,
-  auditoría 549 datos / 0 errores, carga inicial 2,7–2,9 s en 4G lento, modo CNEOS 1,5–2,2 s.
-- 2026-10-09: etapas A y B de la deuda técnica (auditoría externa) hechas; ver
-  `docs/deuda-tecnica.md`. Ahora: 238 unitarios, 69 e2e, carga inicial 2,75 s.
+- **Siguiente paso: ola 3 = Fase 4 (colección y fichas).** Necesita decisiones del usuario
+  (ver «Fase 4» abajo). Si aún no las tiene, se puede empezar por lo que no las necesita: el
+  modelo meteorito ≠ ejemplar (M33) y el manejo de campos privados (M32). Se lo propuse el
+  2026-10-12 y está pendiente su respuesta.
+- **Fases 0–3 cerradas** (`docs/cierres/fase-1.md`, `fase-2.md`, `fase-3.md`; la 3 confirmada
+  el 2026-10-09) y **olas 0, 1 y 2 de la hoja de ruta hechas y publicadas** (etapas A, B, C y D
+  de la deuda técnica).
+- **Ubicación:** `~/Proyectos/del-cinturon-a-la-vitrina` (fuera de iCloud) y la wiki en
+  `~/Proyectos/del-cinturon-a-la-vitrina.wiki`. La copia antigua de Documentos ya fue borrada.
+- **Publicación:** https://tonmaived.github.io/del-cinturon-a-la-vitrina/ (repo público
+  `tonmaiveD/del-cinturon-a-la-vitrina`) y wiki en
+  https://github.com/tonmaiveD/del-cinturon-a-la-vitrina/wiki. La CI publica desde `main`
+  (ver «CI desde la Etapa D» en las notas operativas). El CNEOS se actualiza solo cada día
+  (`cneos-diario.yml`, 07:30 UTC, con retrasos posibles) y Dependabot revisa dependencias los
+  lunes.
+- **Verificación al 2026-10-12:**
+  - 253 tests unitarios y 78 e2e (escritorio y móvil), más la medición de rendimiento;
+  - auditoría: 551 datos, 0 errores;
+  - carga inicial unos 2,8 s en 4G lento;
+  - cambio al modo CNEOS: 1,2 s en local y 3,2–3,4 s en la CI sin GPU. Esa medición
+    informativa falla en la CI y no bloquea; queda para la ola 5.
 
 ### Hoja de ruta acordada (2026-10-09)
 
@@ -48,7 +55,7 @@ Lo que depende del usuario corre en paralelo, y la Fase 4 se adelanta si llegan 
    grupo fiable: 35/48 dentro del 68 % y 45/48 dentro del 95 %. La validación de Chelyabinsk
    sigue aprobada; con el método nuevo la nube es más estrecha en inclinación, y en el análisis
    de sensibilidad (σ = mediana, informativo) Emel'yanenko 2014 queda a 3,9σ en i. Wiki
-   actualizada en local.
+   actualizada y publicada.
 3. **Fase 4 (2 sesiones):** con M33, M32, M10 y M29; necesita las decisiones del usuario.
 4. **Presentación para la tienda (2–3 sesiones):**
    - iluminación de día (M35, la pidió el amigo) y marca;
@@ -71,16 +78,15 @@ usaron en el documento para el amigo: sin dos puntos como recurso, sin negritas 
 sin comillas «», párrafos en vez de listas salvo cuando una lista sea lo natural, frases
 directas y sin muletillas.
 
-- **Primera versión:** al cerrar la ola 1, cuando la interfaz móvil esté estable. Páginas
-  previstas: qué es el proyecto, cómo usar la web, de dónde salen los datos, método científico
-  y sus límites, licencias, arquitectura y desarrollo, actualización diaria del CNEOS,
-  historial de cambios.
+- **Primera versión publicada el 2026-10-11.** Tiene 8 páginas: Home, Cómo usar la web, De
+  dónde salen los datos, Método y límites, Actualización diaria de bólidos, Licencias,
+  Arquitectura y desarrollo, Historial de cambios; más `_Sidebar` y `_Footer`. Se actualizó con
+  la ola 2.
 - **Mantenimiento:** se actualiza al cerrar cada ola, sin quedar como una etapa aparte.
-- **Requisitos técnicos.** La wiki es un repositorio git aparte
-  (`tonmaiveD/del-cinturon-a-la-vitrina.wiki`) y está habilitada en el repo. Pero el repositorio
-  de la wiki no existe hasta que se crea la primera página desde la web, y el usuario debe
-  hacerlo una vez. Después se clona con GitHub Desktop en `~/Proyectos/` y el usuario sube los
-  cambios desde allí. Commits con apaec@yahoo.com.
+- **Cómo se trabaja.** La wiki es un repositorio git aparte, clonado en
+  `~/Proyectos/del-cinturon-a-la-vitrina.wiki` y añadido a GitHub Desktop. Yo hago commits en
+  local con apaec@yahoo.com (configurado en el repo) y el usuario sube con «Push origin».
+  Nunca editar la wiki desde la web (firmaría con el gmail).
 
 En paralelo, del usuario:
 
@@ -89,14 +95,16 @@ En paralelo, del usuario:
 - aprobar la ficha de Chelyabinsk;
 - PDF de MetBull;
 - clave de la API (al llegar a la Fase 4);
-- marca del amigo y los MP3.
-- crear la primera página de la Wiki desde la web, para que exista su repositorio (antes de
-  cerrar la ola 1).
+- marca del amigo y los MP3;
+- opcional: pedir al soporte de GitHub que purgue las vistas cacheadas de los commits
+  reescritos el 2026-10-11 (aún accesibles por enlace directo, p. ej. desde Actions).
 
 ### Fase 4 (colección y fichas con la API de Claude)
 
-Ver «Deuda técnica» abajo: M01 es requisito previo de la Fase 4. Diseño de la Fase 4 debe
-incorporar M33 (meteorito ≠ ejemplar), M32 (campos privados) y M10 (hosting según uso).
+M01 (borradores fuera del build), su requisito previo, está hecho. El diseño de la Fase 4 debe
+incorporar M33 (meteorito ≠ ejemplar), M32 (campos privados), M10 (hosting según el uso:
+Pages no admite ser el alojamiento principal de una tienda) y M29 (licencias por activo,
+sobre todo Blue Marble para uso comercial).
 
 Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan detallado.
 
@@ -128,7 +136,10 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
 - **Decidir** si se añaden caídas posteriores a 2016 (Hamburg, Flensburg, Novo Mesto,
   Winchcombe, Ribbeck…) desde sus artículos originales; recomendado después de la Fase 4.
 - **Rutina de publicación**: «Fetch origin» (y «Pull origin» si aparece) antes de «Push origin»
-  en GitHub Desktop, porque el bot del CNEOS hace commits en `main`.
+  en GitHub Desktop, porque el bot del CNEOS hace commits en `main`. Desktop tiene dos
+  repositorios: el proyecto y la wiki. Si alguna vez hace falta un push forzado (solo con
+  autorización expresa), el usuario lo hizo con éxito desde el menú de Desktop: el botón
+  principal solo ofrecía «Pull origin».
 
 ### Decisiones del usuario (no reabrir)
 
@@ -145,6 +156,15 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
 - 2026-10-08: recorridos de las 25 piezas por lotes; **altura convencional de 100 km**
   declarada; Almahata Sitta desde el estado de JPL con **criterio solo D_D** explicado en
   pantalla (opción A). Conservar el respaldo con el gmail (`.trabajo/`, ver abajo).
+- 2026-10-09: la auditoría externa se adopta como backlog (`docs/deuda-tecnica.md`) y el orden
+  de trabajo es el de la «Hoja de ruta acordada» (olas 0–5).
+- 2026-10-09: hoja móvil al estilo de Mapas de Apple (opción C), probada por el usuario en su
+  iPhone 16 Pro Max.
+- 2026-10-11: documentación continua en la wiki, en lenguaje natural y sin rasgos de texto de
+  IA.
+- 2026-10-11: el usuario **mantiene el gmail como correo principal** de su cuenta de GitHub y
+  quiere que **solo apaec@yahoo.com sea visible**. Autorizó reescribir la historia de la wiki y
+  de `main` (hecho, con push forzado suyo). Nunca escribir el gmail en archivos del repo.
 
 ### Deuda técnica
 
@@ -153,9 +173,9 @@ del 2026-10-09, M01–M42, verificada contra el código; copia de la auditoría 
 Etapas: **A** correcciones rápidas (M01 borradores fuera del build, M05 tecla I, M06 estado
 vacío CNEOS, M24–M26, M28, documento del amigo) **hecha el 2026-10-09**; **B** móvil y
 accesibilidad (M02 hoja móvil, M04 cámara con teclado, M03 lista completa CNEOS, M07 fallos
-recuperables) **hecha el 2026-10-09**; **C** rigor CNEOS (M18 → M09
-radiante geocéntrico + cobertura, M08, M27); **D** CI (M20, M19, M30). Siguiente: elegir
-entre C, D y la Fase 4.
+recuperables) **hecha el 2026-10-09**; **D** CI (M20, M19, M30) **hecha el 2026-10-11**; **C**
+rigor CNEOS (M18, M09, M08, M27) **hecha el 2026-10-12**. Lo que queda (M10–M17, M21–M23,
+M29, M31–M42) está repartido en las olas 3–5 de la hoja de ruta.
 
 ### Riesgos
 
@@ -163,7 +183,12 @@ entre C, D y la Fase 4.
 - GitHub desactiva los workflows programados tras 60 días sin actividad.
 - Lectura sensacionalista de las 5 órbitas hiperbólicas (llevan aviso).
 - Criterio de fiabilidad del CNEOS basado en 18 eventos calibrados.
-- Rendimiento en móviles de gama baja sin medir.
+- Rendimiento en móviles de gama baja sin medir. En la CI sin GPU, el cambio al modo CNEOS
+  pasa de 3 s, aunque en local tarda 1,2 s.
+- 8 eventos del CNEOS tienen |v| incoherente con la velocidad publicada (dato de la fuente,
+  documentado en `docs/reportes/cneos.md`).
+- Dependabot abre PR semanales: revisarlos con el usuario. Nunca integrar a ciegas cambios que
+  afecten al núcleo numérico.
 - Hasta el 2026-10-09 el proyecto estuvo en Documentos, que iCloud sincroniza. iCloud creaba
   copias «archivo 2.ext» (el video de la Fase 3 y `.git/index 2`/`3`). Fuera de iCloud ya no
   debería pasar, pero conviene revisar `git status` antes de cada commit.
@@ -212,7 +237,7 @@ entre C, D y la Fase 4.
      pulsar «Re-run all jobs»: vuelve a publicar ese commit.
   2. Corregir en local, o hacer `git revert <commit>`, y subir; la CI publica la versión
      corregida.
-     Nunca reescribir el historial de `main`.
+     No reescribir el historial de `main` sin autorización expresa del usuario.
 - **Hoja móvil** (`src/ui/hoja.ts`): en móvil los controles están en pestañas; las pruebas
   e2e abren la correcta con `abrirPestana` (`tests/e2e/hoja.ts`) antes de interactuar.
 
