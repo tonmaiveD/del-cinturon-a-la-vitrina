@@ -81,6 +81,25 @@ interface Calculo {
   completas?: Elementos[];
   /** σ de la nube frente a la σ publicada (1σ) de la órbita principal. */
   sigmas: Record<'a' | 'e' | 'i' | 'q', { nube: number; publicada: number | undefined }>;
+  /** Valores centrales publicados de la órbita principal con su σ (1σ). */
+  publicada: Partial<Record<'a' | 'e' | 'i' | 'q', { v: number; s?: number }>>;
+}
+
+const CLAVES = ['a', 'e', 'i', 'q'] as const;
+const valorDe = (x: FormaOrbita, k: (typeof CLAVES)[number]) =>
+  k === 'q' ? x.a * (1 - x.e) : x[k];
+function resumen(formas: FormaOrbita[]): NubePieza['resumen'] {
+  return Object.fromEntries(
+    CLAVES.map((k) => {
+      const xs = formas.map((x) => valorDe(x, k));
+      return [k, { mediana: red(mediana(xs), 6), sigma: red(desviacion(xs), 6) }];
+    }),
+  ) as NubePieza['resumen'];
+}
+
+function publicadaDe(o: Orbita): Calculo['publicada'] {
+  const vs = (x?: Valor) => x && { v: num(x), s: x.sigma };
+  return { a: vs(o.a), e: vs(o.e), i: vs(o.i), q: vs(o.q) };
 }
 
 function sigmas(formas: FormaOrbita[], o: Orbita): Calculo['sigmas'] {
@@ -108,6 +127,9 @@ export function calcularNube(m: Meteorito, catalogo: Catalogo, n = N_NUBE): Calc
       nube: {
         metodo: 'elementos',
         fuente: pc.fuente,
+        semilla: semillaDe(m.id),
+        sorteadas: formas.length,
+        resumen: resumen(formas),
         descartados: 0,
         validacion: {
           dd_centro: null,
@@ -118,6 +140,7 @@ export function calcularNube(m: Meteorito, catalogo: Catalogo, n = N_NUBE): Calc
         formas: formas.map(formaDe),
       },
       sigmas: sigmas(formas, o),
+      publicada: publicadaDe(o),
     };
   }
 
@@ -160,10 +183,29 @@ export function calcularNube(m: Meteorito, catalogo: Catalogo, n = N_NUBE): Calc
   const d = clones.map((c) => distancia(estadoDesdeElementos(c.elementos, MU, t.ut).r, T));
   const dmax = Math.max(...d);
   const formas = clones.map((c) => formaDeElementos(c.elementos));
+  const sorteada = (f: (c: (typeof clones)[number]) => number) => red(desviacion(clones.map(f)), 6);
   return {
     nube: {
       metodo: 'radiante',
       fuente: radiante.ra.fuente,
+      semilla: semillaDe(m.id),
+      entrada: {
+        instante: base.fecha.toISOString(),
+        lat: base.latGrados,
+        lon: base.lonGrados,
+        altura_km: base.alturaKm,
+        ra: cs(radiante.ra),
+        dec: cs(radiante.dec),
+        vg: cs(radiante.vg),
+        nivel_sigma_publicado: radiante.ra.nivel_sigma ?? 'sin dato',
+        sigma_sorteada: {
+          ra: sorteada((c) => c.radiante.ra),
+          dec: sorteada((c) => c.radiante.dec),
+          vg: sorteada((c) => c.radiante.vg),
+        },
+      },
+      sorteadas: formas.length,
+      resumen: resumen(formas),
       descartados,
       validacion: {
         dd_centro: red(dd, 5),
@@ -179,6 +221,7 @@ export function calcularNube(m: Meteorito, catalogo: Catalogo, n = N_NUBE): Calc
     },
     completas: clones.map((c) => c.elementos),
     sigmas: sigmas(formas, o),
+    publicada: publicadaDe(o),
   };
 }
 
@@ -204,7 +247,61 @@ function centralChelyabinsk(o: Orbita) {
   };
 }
 
-function informe(nubes: NubesPedigri, calc: Map<string, Calculo>): string {
+interface FilaSensibilidad {
+  caso: string;
+  entrada: string;
+  sigma: Record<(typeof CLAVES)[number], number>;
+}
+
+/**
+ * ¿De dónde sale la diferencia entre la σ de la nube de Chelyabinsk y la publicada? Se repite la
+ * nube variando una sola entrada cada vez y con los márgenes del radiante de Borovička et al.
+ * 2013, cuya órbita también está en el dataset. Misma semilla y mismo número de órbitas.
+ */
+function sensibilidadChelyabinsk(m: Meteorito): FilaSensibilidad[] {
+  const { base, radiante } = entradaPieza(m);
+  const v = (x: Valor) => ({ v: num(x), s: x.sigma! });
+  const r = { ra: v(radiante.ra), dec: v(radiante.dec), vg: v(radiante.vg) };
+  const fija = (x: { v: number; s: number }) => ({ v: x.v, s: 0 });
+  const b = leer<{
+    ra: { valor: number; sigma: number };
+    dec: { valor: number; sigma: number };
+    vg: { valor: number; sigma: number };
+  }>('data/verificacion/borovicka-2013-radiante.json');
+  const rb = {
+    ra: { v: b.ra.valor, s: b.ra.sigma },
+    dec: { v: b.dec.valor, s: b.dec.sigma },
+    vg: { v: b.vg.valor, s: b.vg.sigma },
+  };
+  const es = (n: number) => n.toLocaleString('es', { maximumFractionDigits: 4 });
+  const txt = (x: typeof r) =>
+    `α ${es(x.ra.v)} ± ${es(x.ra.s)}°, δ ${es(x.dec.v)} ± ${es(x.dec.s)}°, v_g ${es(x.vg.v)} ± ${es(x.vg.s)} km/s`;
+  const casos: [string, typeof r][] = [
+    ['Popova: las tres entradas', r],
+    ['Popova: solo α_g', { ra: r.ra, dec: fija(r.dec), vg: fija(r.vg) }],
+    ['Popova: solo δ_g', { ra: fija(r.ra), dec: r.dec, vg: fija(r.vg) }],
+    ['Popova: solo v_g', { ra: fija(r.ra), dec: fija(r.dec), vg: r.vg }],
+    ['Borovička: las tres entradas', rb],
+  ];
+  return casos.map(([caso, x]) => {
+    const { clones } = nubeDesdeRadiante(base, x, N_CHELYABINSK, semillaDe(m.id));
+    const sigma = resumen(clones.map((c) => formaDeElementos(c.elementos)));
+    return {
+      caso,
+      entrada: txt(x),
+      sigma: Object.fromEntries(
+        CLAVES.map((k) => [k, sigma[k].sigma]),
+      ) as FilaSensibilidad['sigma'],
+    };
+  });
+}
+
+function informe(
+  nubes: NubesPedigri,
+  calc: Map<string, Calculo>,
+  sens: FilaSensibilidad[],
+  chely: Meteorito,
+): string {
   const f = (x: number | null | undefined, d = 3) =>
     x === null || x === undefined ? '—' : x.toLocaleString('es', { maximumFractionDigits: d });
   const km = (au: number) => `${Math.round(au * 149597870.7).toLocaleString('es')} km`;
@@ -212,7 +309,7 @@ function informe(nubes: NubesPedigri, calc: Map<string, Calculo>): string {
     const s = calc.get(id)?.sigmas;
     const par = (k: 'a' | 'e' | 'i' | 'q', d: number) =>
       s ? `${f(s[k].nube, d)} / ${f(s[k].publicada, d)}` : '—';
-    return `| ${id} | ${p.metodo} | ${p.fuente} | ${p.formas.length} | ${p.descartados} | ${f(p.validacion.dd_centro, 5)} | ${km(p.validacion.dist_mediana_au)} | ${km(p.validacion.dist_max_au)} | ${par('a', 3)} | ${par('e', 4)} | ${par('i', 2)} | ${par('q', 4)} | ${p.validacion.aprobada ? 'sí' : '**NO**'} |`;
+    return `| ${id} | ${p.metodo} | ${p.fuente} | ${p.sorteadas} | ${p.descartados} | ${f(p.validacion.dd_centro, 5)} | ${km(p.validacion.dist_mediana_au)} | ${km(p.validacion.dist_max_au)} | ${par('a', 3)} | ${par('e', 4)} | ${par('i', 2)} | ${par('q', 4)} | ${p.validacion.aprobada ? 'sí' : '**NO**'} |`;
   });
   // Solo a, e, i (q se deriva de a y e) y solo las nubes sorteadas desde el radiante
   const difiere = (x: { nube: number; publicada: number | undefined }) =>
@@ -222,6 +319,60 @@ function informe(nubes: NubesPedigri, calc: Map<string, Calculo>): string {
     .map(([id, c]) => [id, (['a', 'e', 'i'] as const).filter((k) => difiere(c.sigmas[k]))] as const)
     .filter(([, ks]) => ks.length)
     .map(([id, ks]) => `${id} (${ks.join(', ')})`);
+  // Entradas y reproducibilidad
+  const filasEntrada = Object.entries(nubes.piezas)
+    .filter(([, p]) => p.entrada)
+    .map(([id, p]) => {
+      const e = p.entrada!;
+      const cmp = (k: 'ra' | 'dec' | 'vg', d: number) =>
+        `${f(e.sigma_sorteada[k], d)} / ${f(e[k].s, d)}`;
+      const g = (x: number) => f(x, 6);
+      return `| ${id} | ${e.instante} | ${g(e.lat)}, ${g(e.lon)}, ${g(e.altura_km)} km | ${g(e.ra.v)} ± ${g(e.ra.s)} | ${g(e.dec.v)} ± ${g(e.dec.s)} | ${g(e.vg.v)} ± ${g(e.vg.s)} | ${e.nivel_sigma_publicado} | ${p.semilla} | ${cmp('ra', 3)} | ${cmp('dec', 3)} | ${cmp('vg', 4)} |`;
+    });
+  // Centro de la nube frente a la órbita publicada, en unidades de su σ
+  const filasCentro = Object.entries(nubes.piezas).map(([id, p]) => {
+    const o = calc.get(id)?.publicada;
+    const celda = (k: (typeof CLAVES)[number], d: number) => {
+      const pub = o?.[k];
+      if (!pub) return f(p.resumen[k].mediana, d);
+      const z = pub.s ? (p.resumen[k].mediana - pub.v) / pub.s : null;
+      return `${f(p.resumen[k].mediana, d)} / ${f(pub.v, d)}${z === null ? '' : ` (${z >= 0 ? '+' : ''}${f(z, 2)}σ)`}`;
+    };
+    return `| ${id} | ${celda('a', 3)} | ${celda('e', 4)} | ${celda('i', 2)} | ${celda('q', 4)} |`;
+  });
+  const orb = (fuente: string) => chely.orbitas.find((o) => o.fuente === fuente);
+  const sigmaPub = (fuente: string) => {
+    const o = orb(fuente);
+    if (!o) return '—';
+    const q = o.q?.sigma;
+    return `| Publicada: órbita de ${fuente} (1σ) | — | ${f(o.a.sigma, 3)} | ${f(o.e.sigma, 4)} | ${f(o.i.sigma, 2)} | ${f(q, 4)} |`;
+  };
+  const filasSens = sens.map(
+    (x) =>
+      `| ${x.caso} | ${x.entrada} | ${f(x.sigma.a, 3)} | ${f(x.sigma.e, 4)} | ${f(x.sigma.i, 2)} | ${f(x.sigma.q, 4)} |`,
+  );
+  const s0 = sens.find((x) => x.caso === 'Popova: las tres entradas');
+  const principal = [...sens.filter((x) => x.caso.startsWith('Popova: solo'))].sort(
+    (a, b) => b.sigma.i - a.sigma.i,
+  )[0];
+  const bor = sens.find((x) => x.caso.startsWith('Borovička'));
+  const oBor = orb('borovicka-2013-nature');
+  const oPop = orb('popova-2013-science');
+  /** σ de la nube frente a la publicada, elemento a elemento. */
+  const coherencia = (x: FilaSensibilidad, o: Orbita) =>
+    CLAVES.filter((k) => (k === 'q' ? o.q?.sigma : o[k].sigma))
+      .map((k) => {
+        const pub = (k === 'q' ? o.q!.sigma : o[k].sigma)!;
+        return `σ${k} ${f(x.sigma[k], k === 'i' ? 2 : 4)} frente a ${f(pub, k === 'i' ? 2 : 4)}`;
+      })
+      .join('; ');
+  /** Desajuste medio |ln(σ nube / σ publicada)| en a, e, i. */
+  const desajuste = (x: FilaSensibilidad, o: Orbita) =>
+    (['a', 'e', 'i'] as const).reduce(
+      (acc, k) => acc + Math.abs(Math.log(x.sigma[k] / o[k].sigma!)),
+      0,
+    ) / 3;
+
   return `# Nubes de órbitas de las piezas con pedigrí
 
 Generado por \`npm run datos:nubes\` (\`pipeline/nubes-pedigri.ts\`) el ${nubes.generado.slice(0, 10)}. No editar a mano.
@@ -240,6 +391,40 @@ Hasta el 2026-10-12 cada nube sorteaba los elementos orbitales por separado. Con
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${filas.join('\n')}
 
+## Entradas y reproducibilidad
+
+Cada nube se reproduce con estas entradas, su semilla (\`semillaDe(id)\`, FNV-1a de 32 bits del identificador) y \`nubeDesdeRadiante\` (\`src/core/montecarlo.ts\`). Las dos últimas columnas comprueban el procedimiento declarado: la σ de los valores que se sortearon de verdad frente a la σ de entrada (1σ). Instante y posición son los de referencia de la estela; altura convencional.
+
+| Pieza | Instante (UTC) | Lat, lon, altura | α_g ± σ (°) | δ_g ± σ (°) | v_g ± σ (km/s) | Nivel publicado | Semilla | σα sorteada / entrada | σδ sorteada / entrada | σv_g sorteada / entrada |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+${filasEntrada.join('\n')}
+
+## Centro de la nube frente a la órbita publicada
+
+Mediana de las órbitas de la nube frente al valor central publicado; entre paréntesis, la diferencia en unidades de la σ publicada (1σ).
+
+| Pieza | a (au) | e | i (°) | q (au) |
+| --- | --- | --- | --- | --- |
+${filasCentro.join('\n')}
+
+## Chelyabinsk: de dónde sale la diferencia en la dispersión
+
+Misma semilla y ${N_CHELYABINSK} órbitas en cada caso. Primero se varía una sola entrada cada vez con los márgenes de Popova et al.; después se usan el radiante y los márgenes de Borovička et al. 2013 (\`data/verificacion/borovicka-2013-radiante.json\`), cuya órbita también está en el dataset.
+
+| Caso | Entradas (1σ) | σa (au) | σe | σi (°) | σq (au) |
+| --- | --- | --- | --- | --- | --- |
+${filasSens.join('\n')}
+${sigmaPub('popova-2013-science')}
+${sigmaPub('borovicka-2013-nature')}
+
+${
+  s0 && principal && bor && oBor && oPop
+    ? `- Con los márgenes de Popova, la entrada que más dispersión produce en i es ${principal.caso.replace('Popova: solo ', '')} (σi ${f(principal.sigma.i, 2)}° de ${f(s0.sigma.i, 2)}°). La nube completa da σi ${f(s0.sigma.i, 2)}°, frente a ${f(oPop.i.sigma, 2)}° que Popova publica para la órbita: los márgenes del radiante de Popova, tratados como independientes, no reproducen los de su órbita (${coherencia(s0, oPop)}).
+- Con el radiante y los márgenes de Borovička, la nube da ${coherencia(bor, oBor)}. Su par de márgenes, radiante y órbita, es ${desajuste(bor, oBor) < desajuste(s0, oPop) ? 'bastante más coherente que el de Popova' : 'tan poco coherente como el de Popova'}. La órbita de Borovička es osculadora 60 días antes del impacto, así que esta comparación es orientativa.
+- Conclusión: la nube aplica fielmente los márgenes del radiante que publica Popova (ver las σ sorteadas arriba). La diferencia con los márgenes de su órbita está en la propia fuente, que no explica cómo obtuvo unos y otros, y sin su covarianza no se puede reconciliar. La ficha lo dice y no atribuye a la nube más precisión que la de su radiante.`
+    : ''
+}
+
 ## Cómo leerlo
 
 - La distancia es la que separa la posición de cada órbita del centro de la Tierra en el instante de referencia (con el método \`elementos\`, la distancia mínima de la elipse). Son órbitas pre-atmosféricas, calculadas sin la atracción de la Tierra en el último tramo, así que es normal que queden a unas decenas de miles de kilómetros: es la desviación que produce la gravedad terrestre. La estela del año previo, que sí la incluye, llega a la posición de referencia.
@@ -257,8 +442,9 @@ if (process.argv[1]?.endsWith('nubes-pedigri.ts')) {
     .filter((x) => x.endsWith('.json'))
     .map((x) => Meteorito.parse(leer(`data/pedigri/${x}`)))
     .sort((a, b) => a.id.localeCompare(b.id));
-  const anterior =
-    pedidos.length && existsSync(SALIDA) ? leer<NubesPedigri>(SALIDA).piezas : undefined;
+  const previo = pedidos.length && existsSync(SALIDA) ? leer<NubesPedigri>(SALIDA) : undefined;
+  const anterior = previo?.piezas;
+  const anteriorSens = previo?.sensibilidad_chelyabinsk;
   const piezas: Record<string, NubePieza> = {};
   const calc = new Map<string, Calculo>();
   const rechazadas: string[] = [];
@@ -306,13 +492,16 @@ if (process.argv[1]?.endsWith('nubes-pedigri.ts')) {
     process.exit(2);
   }
   guardarChelyabinsk?.();
+  const chely = meteoritos.find((m) => m.id === 'chelyabinsk')!;
+  const sens = pedidos.length ? anteriorSens : sensibilidadChelyabinsk(chely);
   const nubes: NubesPedigri = {
     generado: new Date().toISOString(),
     metodo:
       'Para cada pieza se sortean el radiante geocéntrico (α_g, δ_g) y la velocidad geocéntrica v_g publicados, con distribuciones normales independientes de desviación típica igual a su incertidumbre a 1σ, y cada clon se integra con N cuerpos desde la posición e instante de referencia (altura convencional de 100 km), igual que la estela del año previo; los elementos son los pre-atmosféricos en ese instante. Almahata Sitta: sorteo de los elementos de su órbita telescópica de JPL (σ formal).',
     piezas,
+    ...(sens && { sensibilidad_chelyabinsk: sens }),
   };
   writeFileSync(SALIDA, JSON.stringify(nubes) + '\n');
-  if (!pedidos.length) writeFileSync('docs/reportes/nubes.md', informe(nubes, calc));
+  if (!pedidos.length) writeFileSync('docs/reportes/nubes.md', informe(nubes, calc, sens!, chely));
   else console.log('Cálculo parcial: el reporte solo se regenera con todas las piezas.');
 }

@@ -3,7 +3,7 @@
 Generado por `npm run auditoria` (también se ejecuta en `npm run build`, que falla si hay
 errores). Cada dato que muestra la interfaz se contrasta con su valor de origen en `data/`.
 
-- Verificados: 519
+- Verificados: 521
 - Pendientes mostrados con aviso: 25
 - Calculados con método documentado: 30
 - Convenciones visuales o de notación: 27
@@ -674,6 +674,8 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | {{ra_sigma1}} | 0,8 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{dec_sigma1}} | 0,9 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{vg_sigma1}} | 0,2 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{vg}} | 15,3 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{v_entrada}} | 19,16 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{ra_sigma}} | 1,6 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{dec_sigma}} | 1,8 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{vg_sigma}} | 0,4 | popova-2013-science | verificado | borrador: no se publica en producción |
@@ -723,7 +725,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | benesov | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
 | bunburra-rockhole | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
 | buzzard-coulee | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
-| chelyabinsk | panel, nube del catálogo, estela del año previo, nube del recorrido, ficha {{a}}, ficha {{e}}, ficha {{i}}, ficha {{q}}, ficha {{Q}}, ficha {{a_sigma}}, ficha {{i_sigma}}, ficha {{a_sigma1}}, ficha {{i_sigma1}}, ficha {{ra_sigma1}}, ficha {{dec_sigma1}}, ficha {{vg_sigma1}} | popova-2013-science | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| chelyabinsk | panel, nube del catálogo, estela del año previo, nube del recorrido, ficha {{a}}, ficha {{e}}, ficha {{i}}, ficha {{q}}, ficha {{Q}}, ficha {{a_sigma}}, ficha {{i_sigma}}, ficha {{a_sigma1}}, ficha {{i_sigma1}}, ficha {{ra_sigma1}}, ficha {{dec_sigma1}}, ficha {{vg_sigma1}}, ficha {{vg}} | popova-2013-science | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
 | ejby | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
 | grimsby | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
 | innisfree | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |

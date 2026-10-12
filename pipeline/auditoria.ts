@@ -422,6 +422,7 @@ export function auditar(e: EntradaAuditoria): Fila[] {
         'ra_sigma1',
         'dec_sigma1',
         'vg_sigma1',
+        'vg',
       ])
         if (fichaCtx.ctx[k]) usos.push([`ficha {{${k}}}`, fichaCtx.ctx[k]!.fuente]);
     const distintos = usos.filter(([, f]) => f !== principal);

@@ -1,0 +1,11 @@
+{
+  "descripcion": "Radiante geocéntrico y velocidad geocéntrica de Chelyabinsk según Borovička et al. 2013. Solo se usa en el análisis de sensibilidad de docs/reportes/nubes.md (¿son coherentes entre sí los márgenes del radiante y los de la órbita?); no se muestra en la web.",
+  "fuente": "borovicka-2013-nature",
+  "ubicacion": "Nature 503, 235–237, texto bajo la Tabla 2: «αg = 22 h 11 min 17 s ± 26 s (332.82 ± 0.11°), δg = +0° 17′ ± 8′ (+0.28 ± 0.14°), vg = 15.14 ± 0.16 km s−1»",
+  "estado": "verificado",
+  "nivel_sigma": "formal-sin-nivel",
+  "nota": "Incertidumbres «±» sin nivel declarado; se asumen 1σ, como su órbita en data/pedigri/chelyabinsk.json.",
+  "ra": { "valor": 332.82, "sigma": 0.11, "unidad": "grados" },
+  "dec": { "valor": 0.28, "sigma": 0.14, "unidad": "grados" },
+  "vg": { "valor": 15.14, "sigma": 0.16, "unidad": "km/s" }
+}

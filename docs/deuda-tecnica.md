@@ -321,6 +321,44 @@ Resultado:
 - **Trazabilidad (hallazgo 6).** La versión legible imprime los DOI. Se corrigió la nota de
   Borovička: δ_g = +0,28°, no 10,28°.
 
+### Tercera revisión de la ficha (auditoría V3) · etapa 3 · **hecha el 2026-10-12**
+
+Origen: una auditoría de la versión con nubes desde el radiante, hecha antes de la etapa 2, que
+pedía pruebas reproducibles del algoritmo. El 2 % del cinturón exterior, la compatibilidad con
+el CNEOS acotada a Peña-Asensio et al. y LL5 ya estaban resueltos en la etapa 2.
+
+- **Reproducibilidad (requisito 4).** `docs/reportes/nubes.md` documenta, para cada pieza:
+  - las entradas: instante, posición, radiante, v_g con su σ y nivel publicado;
+  - la semilla numérica;
+  - las σ efectivamente sorteadas frente a las declaradas;
+  - la mediana de a, e, i y q de la nube frente a la órbita publicada (todas a menos de
+    0,72σ).
+
+  `nubes.json` guarda esas entradas, la semilla, el resumen y la sensibilidad.
+
+- **Distribución (P0).** Hay una sensibilidad de Chelyabinsk que varía una sola entrada cada vez
+  y repite el cálculo con el radiante de Borovička et al.:
+  - el margen de la declinación produce la mayor parte de σi (0,37° de 0,42°);
+  - con los márgenes de Borovička, radiante y órbita casi encajan (σa 0,023 frente a 0,02;
+    σi 0,08 frente a 0,12).
+
+  La diferencia con Popova está en sus propios márgenes, que la fuente no reconcilia. Dato nuevo
+  en `data/verificacion/borovicka-2013-radiante.json`.
+
+- **Pruebas (requisitos 1 a 3).** Las nuevas son:
+  - umbrales de regresión cercanos a los valores obtenidos (D_D del centro < 0,005; órbitas a
+    < 0,001 au de la Tierra; 0 descartes);
+  - medianas a menos de 1σ;
+  - σ sorteadas dentro de 4 errores típicos, con las entradas iguales al dataset;
+  - reproducibilidad con la semilla: tres órbitas recalculadas coinciden con las guardadas;
+  - la sensibilidad que respalda la frase de la ficha.
+- **Ficha.**
+  - velocidad geocéntrica (15,3 km/s) distinta de la de entrada (19,16 km/s);
+  - 1σ por variable (cerca de un tercio fuera) y conjunta (algo más de dos de cada tres con
+    alguna fuera);
+  - energía radiada en el óptico según los sensores;
+  - origen de la anchura en inclinación.
+
 Queda en manos del usuario: aprobar la ficha (`revision/ficha-chelyabinsk-para-revisar.md`) o
 pedir cambios.
 

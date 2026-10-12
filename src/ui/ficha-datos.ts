@@ -164,6 +164,7 @@ export function contextoFicha(
         dato(v, (x) => num(x.sigma_publicada ?? x.sigma ?? NaN, dec(x))),
       );
     }
+    poner('vg', dato(r.v_geocentrica, n));
     poner(
       'nivel_radiante',
       dato(r.ra, (v) => NIVEL[v.nivel_sigma ?? '1-sigma']!),

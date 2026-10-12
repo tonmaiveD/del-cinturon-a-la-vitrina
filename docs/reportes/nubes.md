@@ -19,7 +19,7 @@ Hasta el 2026-10-12 cada nube sorteaba los elementos orbitales por separado. Con
 | benesov               | radiante  | granvik-brown-2018  | 160     | 0           | 0,00017    | 13.613 km         | 13.763 km        | 0,002 / 0,002            | 0,0003 / 0,0004     | 0,01 / 0,01             | 0 / 0,0001               | sí       |
 | bunburra-rockhole     | radiante  | granvik-brown-2018  | 160     | 0           | 0,00082    | 48.171 km         | 49.367 km        | 0,001 / 0,001            | 0,0012 / 0,0014     | 0,06 / 0,07             | 0,0014 / 0,0019          | sí       |
 | buzzard-coulee        | radiante  | granvik-brown-2018  | 160     | 0           | 0,00057    | 17.653 km         | 19.897 km        | 0,024 / 0,029            | 0,0146 / 0,018      | 0,8 / 0,78              | 0,0011 / 0,0015          | sí       |
-| chelyabinsk           | radiante  | popova-2013-science | 160     | 0           | 0,00097    | 13.913 km         | 14.661 km        | 0,054 / 0,08             | 0,011 / 0,009       | 0,42 / 0,24             | 0,0065 / 0,01            | sí       |
+| chelyabinsk           | radiante  | popova-2013-science | 300     | 0           | 0,00097    | 13.913 km         | 14.661 km        | 0,054 / 0,08             | 0,011 / 0,009       | 0,42 / 0,24             | 0,0065 / 0,01            | sí       |
 | ejby                  | radiante  | granvik-brown-2018  | 160     | 0           | 0,00041    | 30.368 km         | 32.014 km        | 0,094 / 0,094            | 0,0117 / 0,012      | 0,11 / 0,1              | 0,0003 / 0,0006          | sí       |
 | grimsby               | radiante  | granvik-brown-2018  | 160     | 0           | 0,0005     | 13.314 km         | 13.763 km        | 0,043 / 0,048            | 0,0103 / 0,011      | 0,25 / 0,28             | 0,0005 / 0,0003          | sí       |
 | innisfree             | radiante  | granvik-brown-2018  | 160     | 0           | 0,00043    | 30.967 km         | 33.211 km        | 0,047 / 0,051            | 0,0133 / 0,014      | 0,24 / 0,22             | 0 / 0                    | sí       |
@@ -39,6 +39,87 @@ Hasta el 2026-10-12 cada nube sorteaba los elementos orbitales por separado. Con
 | tagish-lake           | radiante  | granvik-brown-2018  | 160     | 0           | 0,00074    | 21.093 km         | 27.526 km        | 0,196 / 0,19             | 0,0436 / 0,045      | 0,94 / 0,97             | 0,0085 / 0,011           | sí       |
 | villalbeto-de-la-pena | radiante  | granvik-brown-2018  | 160     | 0           | 0,00105    | 18.101 km         | 21.392 km        | 0,186 / 0,22             | 0,0299 / 0,036      | 0,16 / 0,49             | 0,0067 / 0,0074          | sí       |
 | zdar-nad-sazavou      | radiante  | granvik-brown-2018  | 160     | 0           | 0,00011    | 11.669 km         | 11.669 km        | 0,007 / 0,009            | 0,0013 / 0,0015     | 0,01 / 0,02             | 0,0004 / 0,0003          | sí       |
+
+## Entradas y reproducibilidad
+
+Cada nube se reproduce con estas entradas, su semilla (`semillaDe(id)`, FNV-1a de 32 bits del identificador) y `nubeDesdeRadiante` (`src/core/montecarlo.ts`). Las dos últimas columnas comprueban el procedimiento declarado: la σ de los valores que se sortearon de verdad frente a la σ de entrada (1σ). Instante y posición son los de referencia de la estela; altura convencional.
+
+| Pieza                 | Instante (UTC)           | Lat, lon, altura         | α_g ± σ (°)   | δ_g ± σ (°)    | v_g ± σ (km/s)   | Nivel publicado  | Semilla    | σα sorteada / entrada | σδ sorteada / entrada | σv_g sorteada / entrada |
+| --------------------- | ------------------------ | ------------------------ | ------------- | -------------- | ---------------- | ---------------- | ---------- | --------------------- | --------------------- | ----------------------- |
+| annama                | 2014-04-18T22:14:08.880Z | 68,775, 30,787, 100 km   | 213 ± 0,2     | 8,8 ± 0,4      | 21,45 ± 0,56     | formal-sin-nivel | 2448648953 | 0,201 / 0,2           | 0,379 / 0,4           | 0,4677 / 0,56           |
+| benesov               | 1991-05-07T23:03:52.920Z | 49,662, 14,635, 100 km   | 227,62 ± 0,01 | 39,909 ± 0,002 | 18,0807 ± 0,0059 | formal-sin-nivel | 3341756811 | 0,01 / 0,01           | 0,002 / 0,002         | 0,0061 / 0,0059         |
+| bunburra-rockhole     | 2007-07-20T19:13:51.960Z | -31,45, 129,827, 100 km  | 80,7 ± 0,05   | -14,22 ± 0,04  | 6,735 ± 0,039    | formal-sin-nivel | 3842661742 | 0,048 / 0,05          | 0,041 / 0,04          | 0,0402 / 0,039          |
+| buzzard-coulee        | 2008-11-21T00:26:43.080Z | 53,183, -109,875, 100 km | 290 ± 0,7     | 77 ± 0,3       | 14,19 ± 0,51     | formal-sin-nivel | 529154585  | 0,675 / 0,7           | 0,272 / 0,3           | 0,5054 / 0,51           |
+| chelyabinsk           | 2013-02-15T03:20:19.968Z | 54,454, 64,477, 100 km   | 333,2 ± 0,8   | 0,3 ± 0,9      | 15,3 ± 0,2       | 2-sigma          | 2641236064 | 0,783 / 0,8           | 0,896 / 0,9           | 0,2059 / 0,2            |
+| ejby                  | 2016-02-06T21:04:30.000Z | 55,449, 11,912, 100 km   | 77,74 ± 0,09  | 26,89 ± 0,38   | 9,44 ± 0,15      | formal-sin-nivel | 3774527319 | 0,095 / 0,09          | 0,424 / 0,38          | 0,1516 / 0,15           |
+| grimsby               | 2009-09-26T01:02:58.560Z | 43,534, -80,194, 100 km  | 242,6 ± 0,26  | 54,98 ± 0,12   | 17,89 ± 0,22     | formal-sin-nivel | 1942664362 | 0,271 / 0,26          | 0,122 / 0,12          | 0,2055 / 0,22           |
+| innisfree             | 1977-02-06T02:17:38.040Z | 53,415, -111,338, 100 km | 7,43 ± 0,3    | 66,52 ± 0,01   | 9,4 ± 0,23       | formal-sin-nivel | 3660280358 | 0,278 / 0,3           | 0,01 / 0,01           | 0,2252 / 0,23           |
+| jesenice              | 2009-04-09T00:59:39.840Z | 46,662, 13,692, 100 km   | 159,9 ± 1,2   | 58,7 ± 0,5     | 8,28 ± 0,42      | formal-sin-nivel | 2774619469 | 1,24 / 1,2            | 0,512 / 0,5           | 0,4269 / 0,42           |
+| kosice                | 2010-02-28T22:24:46.080Z | 20,705, 48,667, 100 km   | 114,3 ± 1,7   | 29 ± 3         | 10,31 ± 0,44     | formal-sin-nivel | 4275916987 | 1,771 / 1,7           | 2,601 / 3             | 0,3735 / 0,44           |
+| krizevci              | 2011-02-04T23:20:39.840Z | 45,733, 16,43, 100 km    | 131,22 ± 0,05 | 19,53 ± 0,04   | 14,456 ± 0,089   | formal-sin-nivel | 2683712980 | 0,051 / 0,05          | 0,042 / 0,04          | 0,0849 / 0,089          |
+| lost-city             | 1970-01-04T02:13:59.880Z | 36,005, -95,09, 100 km   | 315 ± 0,1     | 39 ± 0,1       | 9,1984 ± 0,0018  | formal-sin-nivel | 1926967317 | 0,097 / 0,1           | 0,11 / 0,1            | 0,002 / 0,0018          |
+| maribo                | 2009-01-17T19:08:27.960Z | 54,585, 13,657, 100 km   | 124,7 ± 1     | 19,7 ± 0,5     | 25,8 ± 0,22      | formal-sin-nivel | 1947553401 | 1,005 / 1             | 0,498 / 0,5           | 0,2141 / 0,22           |
+| mason-gully           | 2010-04-13T10:36:12.960Z | -30,275, 128,215, 100 km | 148,36 ± 0,05 | 9 ± 0,05       | 9,324 ± 0,016    | formal-sin-nivel | 3128565087 | 0,053 / 0,05          | 0,053 / 0,05          | 0,0163 / 0,016          |
+| moravka               | 2000-05-06T11:51:50.040Z | 50,23, 18,45, 100 km     | 250,1 ± 0,7   | 54,95 ± 0,25   | 19,6 ± 0,23      | formal-sin-nivel | 1957213530 | 0,671 / 0,7           | 0,257 / 0,25          | 0,216 / 0,23            |
+| neuschwanstein        | 2002-04-06T20:20:17.880Z | 47,304, 11,552, 100 km   | 192,33 ± 0,03 | 19,55 ± 0,04   | 17,506 ± 0,048   | formal-sin-nivel | 2623917848 | 0,032 / 0,03          | 0,043 / 0,04          | 0,0434 / 0,048          |
+| novato                | 2012-10-18T02:44:30.120Z | 36,295, -123,463, 100 km | 268,1 ± 0,5   | -48,9 ± 0,6    | 8,22 ± 0,2       | formal-sin-nivel | 4093885690 | 0,523 / 0,5           | 0,571 / 0,6           | 0,185 / 0,2             |
+| park-forest           | 2003-03-27T05:50:26.160Z | 41,13, -87,9, 100 km     | 171,8 ± 1,3   | 11,2 ± 0,5     | 16,05 ± 0,37     | formal-sin-nivel | 3643927573 | 1,42 / 1,3            | 0,508 / 0,5           | 0,3857 / 0,37           |
+| peekskill             | 1992-10-09T23:48:00.000Z | 39,663, -78,206, 100 km  | 208,9 ± 0,2   | -29,2 ± 0,3    | 10,09 ± 0,075    | formal-sin-nivel | 3825454215 | 0,214 / 0,2           | 0,337 / 0,3           | 0,0724 / 0,075          |
+| pribram               | 1959-04-07T19:30:11.880Z | 49,51, 14,83, 100 km     | 192,34 ± 0,01 | 17,47 ± 0,01   | 17,437 ± 0,012   | formal-sin-nivel | 2098728224 | 0,01 / 0,01           | 0,011 / 0,01          | 0,0116 / 0,012          |
+| sutters-mill          | 2012-04-22T14:36:12.960Z | 38,804, -120,908, 100 km | 24 ± 1,3      | 12,7 ± 1,7     | 25,96 ± 0,65     | formal-sin-nivel | 1967505680 | 1,382 / 1,3           | 1,98 / 1,7            | 0,6254 / 0,65           |
+| tagish-lake           | 2000-01-18T16:43:41.880Z | 60, -134,2, 100 km       | 90,4 ± 1,9    | 29,9 ± 2,8     | 11,31 ± 0,84     | formal-sin-nivel | 1724939851 | 1,85 / 1,9            | 3 / 2,8               | 0,7739 / 0,84           |
+| villalbeto-de-la-pena | 2004-01-04T16:46:45.120Z | 42,771, -4,789, 100 km   | 311,4 ± 1,4   | -18 ± 0,7      | 12,92 ± 0,53     | formal-sin-nivel | 3138913118 | 1,382 / 1,4           | 0,722 / 0,7           | 0,4945 / 0,53           |
+| zdar-nad-sazavou      | 2014-12-09T16:16:50.160Z | 49,941, 18,002, 100 km   | 69,31 ± 0,02  | 26,98 ± 0,02   | 18,607 ± 0,035   | formal-sin-nivel | 2989817982 | 0,02 / 0,02           | 0,019 / 0,02          | 0,0329 / 0,035          |
+
+## Centro de la nube frente a la órbita publicada
+
+Mediana de las órbitas de la nube frente al valor central publicado; entre paréntesis, la diferencia en unidades de la σ publicada (1σ).
+
+| Pieza                 | a (au)                 | e                        | i (°)                  | q (au)                   |
+| --------------------- | ---------------------- | ------------------------ | ---------------------- | ------------------------ |
+| almahata-sitta        | 1,265 / 1,265 (+0,07σ) | 0,2813 / 0,2813 (-0,05σ) | 2,3 / 2,3 (+0σ)        | 0,9094 / 0,9094 (+0,56σ) |
+| annama                | 2,065 / 2,08 (-0,12σ)  | 0,6886 / 0,69 (-0,07σ)   | 14,2 / 14,23 (-0,06σ)  | 0,6444 / 0,6436 (+0,15σ) |
+| benesov               | 2,483 / 2,483 (+0,3σ)  | 0,6275 / 0,6273 (+0,37σ) | 23,98 / 23,98 (+0,28σ) | 0,9252 / 0,9252 (-0,37σ) |
+| bunburra-rockhole     | 0,853 / 0,853 (-0,29σ) | 0,2428 / 0,2425 (+0,21σ) | 8,95 / 8,94 (+0,16σ)   | 0,6457 / 0,6461 (-0,2σ)  |
+| buzzard-coulee        | 1,242 / 1,246 (-0,15σ) | 0,226 / 0,228 (-0,11σ)   | 24,99 / 25,07 (-0,1σ)  | 0,961 / 0,9612 (-0,12σ)  |
+| chelyabinsk           | 1,755 / 1,76 (-0,06σ)  | 0,5803 / 0,581 (-0,08σ)  | 4,94 / 4,93 (+0,02σ)   | 0,7382 / 0,739 (-0,08σ)  |
+| ejby                  | 2,818 / 2,805 (+0,14σ) | 0,6565 / 0,655 (+0,13σ)  | 0,97 / 0,96 (+0,07σ)   | 0,9679 / 0,9677 (+0,28σ) |
+| grimsby               | 2,024 / 2,035 (-0,23σ) | 0,5149 / 0,518 (-0,28σ)  | 28,03 / 28,08 (-0,18σ) | 0,9818 / 0,9817 (+0,23σ) |
+| innisfree             | 1,863 / 1,866 (-0,05σ) | 0,4708 / 0,472 (-0,08σ)  | 12,22 / 12,25 (-0,12σ) | 0,986 / 0,986            |
+| jesenice              | 1,736 / 1,744 (-0,12σ) | 0,4257 / 0,429 (-0,14σ)  | 9,52 / 9,58 (-0,13σ)   | 0,9966 / 0,9965 (+0,11σ) |
+| kosice                | 2,767 / 2,73 (+0,16σ)  | 0,6544 / 0,65 (+0,15σ)   | 1,91 / 1,99 (-0,17σ)   | 0,956 / 0,9563 (-0,07σ)  |
+| krizevci              | 1,543 / 1,543 (-0,01σ) | 0,5204 / 0,5205 (-0,03σ) | 0,64 / 0,64 (+0,01σ)   | 0,74 / 0,7397 (+0,28σ)   |
+| lost-city             | 1,649 / 1,649 (+0,2σ)  | 0,4137 / 0,4133 (+0,29σ) | 11,94 / 11,94 (-0,04σ) | 0,9671 / 0,9672 (-0,32σ) |
+| maribo                | 2,482 / 2,48 (+0,01σ)  | 0,8066 / 0,807 (-0,03σ)  | 0,33 / 0,1 (+0,18σ)    | 0,478 / 0,478 (+0σ)      |
+| mason-gully           | 2,561 / 2,557 (+0,44σ) | 0,6165 / 0,6159 (+0,42σ) | 0,89 / 0,9 (-0,04σ)    | 0,982 / 0,982 (+0,2σ)    |
+| moravka               | 1,841 / 1,851 (-0,13σ) | 0,4661 / 0,469 (-0,13σ)  | 32,22 / 32,28 (-0,13σ) | 0,9822 / 0,9822 (-0σ)    |
+| neuschwanstein        | 2,398 / 2,398 (-0,02σ) | 0,6693 / 0,6693 (+0,01σ) | 11,41 / 11,42 (-0,1σ)  | 0,7931 / 0,793 (+0,26σ)  |
+| novato                | 2,091 / 2,091 (+0,01σ) | 0,5276 / 0,528 (-0,02σ)  | 5,5 / 5,52 (-0,2σ)     | 0,9879 / 0,9879 (+0,1σ)  |
+| park-forest           | 2,559 / 2,53 (+0,14σ)  | 0,6836 / 0,68 (+0,15σ)   | 3,24 / 3,25 (-0,01σ)   | 0,8112 / 0,8107 (+0,05σ) |
+| peekskill             | 1,49 / 1,489 (+0,06σ)  | 0,4057 / 0,4052 (+0,08σ) | 4,88 / 4,88 (-0,03σ)   | 0,8855 / 0,8856 (-0,08σ) |
+| pribram               | 2,405 / 2,405 (+0,01σ) | 0,6718 / 0,6717 (+0,1σ)  | 10,49 / 10,48 (+0,3σ)  | 0,7895 / 0,7896 (-0,72σ) |
+| sutters-mill          | 2,545 / 2,57 (-0,06σ)  | 0,8212 / 0,823 (-0,08σ)  | 2,24 / 2,4 (-0,11σ)    | 0,459 / 0,456 (+0,14σ)   |
+| tagish-lake           | 1,972 / 1,98 (-0,04σ)  | 0,5525 / 0,554 (-0,03σ)  | 2,01 / 2,06 (-0,06σ)   | 0,8849 / 0,884 (+0,08σ)  |
+| villalbeto-de-la-pena | 2,309 / 2,3 (+0,04σ)   | 0,6265 / 0,627 (-0,01σ)  | 0,21 / 0,02 (+0,39σ)   | 0,8598 / 0,8596 (+0,03σ) |
+| zdar-nad-sazavou      | 2,104 / 2,102 (+0,19σ) | 0,6811 / 0,6808 (+0,23σ) | 2,81 / 2,81 (+0,1σ)    | 0,6708 / 0,6709 (-0,23σ) |
+
+## Chelyabinsk: de dónde sale la diferencia en la dispersión
+
+Misma semilla y 300 órbitas en cada caso. Primero se varía una sola entrada cada vez con los márgenes de Popova et al.; después se usan el radiante y los márgenes de Borovička et al. 2013 (`data/verificacion/borovicka-2013-radiante.json`), cuya órbita también está en el dataset.
+
+| Caso                                            | Entradas (1σ)                                           | σa (au) | σe     | σi (°) | σq (au) |
+| ----------------------------------------------- | ------------------------------------------------------- | ------- | ------ | ------ | ------- |
+| Popova: las tres entradas                       | α 333,2 ± 0,8°, δ 0,3 ± 0,9°, v_g 15,3 ± 0,2 km/s       | 0,054   | 0,011  | 0,42   | 0,0065  |
+| Popova: solo α_g                                | α 333,2 ± 0,8°, δ 0,3 ± 0°, v_g 15,3 ± 0 km/s           | 0,041   | 0,0067 | 0,16   | 0,0054  |
+| Popova: solo δ_g                                | α 333,2 ± 0°, δ 0,3 ± 0,9°, v_g 15,3 ± 0 km/s           | 0,017   | 0,0019 | 0,37   | 0,0035  |
+| Popova: solo v_g                                | α 333,2 ± 0°, δ 0,3 ± 0°, v_g 15,3 ± 0,2 km/s           | 0,029   | 0,0082 | 0,06   | 0,0023  |
+| Borovička: las tres entradas                    | α 332,82 ± 0,11°, δ 0,28 ± 0,14°, v_g 15,14 ± 0,16 km/s | 0,023   | 0,0066 | 0,08   | 0,002   |
+| Publicada: órbita de popova-2013-science (1σ)   | —                                                       | 0,08    | 0,009  | 0,24   | 0,01    |
+| Publicada: órbita de borovicka-2013-nature (1σ) | —                                                       | 0,02    | 0,006  | 0,12   | 0,002   |
+
+- Con los márgenes de Popova, la entrada que más dispersión produce en i es δ_g (σi 0,37° de 0,42°). La nube completa da σi 0,42°, frente a 0,24° que Popova publica para la órbita: los márgenes del radiante de Popova, tratados como independientes, no reproducen los de su órbita (σa 0,054 frente a 0,08; σe 0,011 frente a 0,009; σi 0,42 frente a 0,24; σq 0,0065 frente a 0,01).
+- Con el radiante y los márgenes de Borovička, la nube da σa 0,023 frente a 0,02; σe 0,0066 frente a 0,006; σi 0,08 frente a 0,12; σq 0,002 frente a 0,002. Su par de márgenes, radiante y órbita, es bastante más coherente que el de Popova. La órbita de Borovička es osculadora 60 días antes del impacto, así que esta comparación es orientativa.
+- Conclusión: la nube aplica fielmente los márgenes del radiante que publica Popova (ver las σ sorteadas arriba). La diferencia con los márgenes de su órbita está en la propia fuente, que no explica cómo obtuvo unos y otros, y sin su covarianza no se puede reconciliar. La ficha lo dice y no atribuye a la nube más precisión que la de su radiante.
 
 ## Cómo leerlo
 

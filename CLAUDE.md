@@ -14,7 +14,8 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 - **2026-10-12: segunda revisión de la ficha hecha** (etapas 1 y 2): las nubes de las 25
   piezas se calculan desde el radiante (`npm run datos:nubes`); la ficha cita la tabla S1 y las
   cinco procedencias del material suplementario de Popova (en `.trabajo/popova-suplemento/`, no
-  se redistribuye). Falta que el usuario apruebe la ficha.
+  se redistribuye). Etapa 3 (auditoría V3) hecha: reporte de nubes reproducible (entradas,
+  semillas, sensibilidad) y pruebas más estrictas. Falta que el usuario apruebe la ficha.
 - **Siguiente paso: ola 3 = Fase 4 (colección y fichas).** Necesita decisiones del usuario
   (ver «Fase 4» abajo). Si aún no las tiene, se puede empezar por lo que no las necesita: el
   modelo meteorito ≠ ejemplar (M33) y el manejo de campos privados (M32). Se lo propuse el

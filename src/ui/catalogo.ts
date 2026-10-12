@@ -154,6 +154,25 @@ export interface NubePieza {
    */
   metodo: 'radiante' | 'elementos';
   fuente: string;
+  /** Semilla del sorteo (`semillaDe(id)`): con ella y `entrada` la nube se reproduce. */
+  semilla: number;
+  /** Entradas del sorteo con el método `radiante` (σ a 1σ). */
+  entrada?: {
+    instante: string;
+    lat: number;
+    lon: number;
+    altura_km: number;
+    ra: { v: number; s: number };
+    dec: { v: number; s: number };
+    vg: { v: number; s: number };
+    nivel_sigma_publicado: string;
+    /** σ de los valores que se sortearon de verdad (comprueba el procedimiento). */
+    sigma_sorteada: { ra: number; dec: number; vg: number };
+  };
+  /** Órbitas generadas (en Chelyabinsk, 300; `formas` guarda las 160 primeras). */
+  sorteadas: number;
+  /** Mediana y σ de las órbitas generadas en a (au), e, i (grados) y q (au). */
+  resumen: Record<'a' | 'e' | 'i' | 'q', { mediana: number; sigma: number }>;
   descartados: number;
   validacion: {
     /** D_D entre la órbita del radiante central y la órbita principal (null con `elementos`). */
@@ -170,4 +189,10 @@ export interface NubesPedigri {
   generado: string;
   metodo: string;
   piezas: Record<string, NubePieza>;
+  /** Sensibilidad de la nube de Chelyabinsk a cada entrada (docs/reportes/nubes.md). */
+  sensibilidad_chelyabinsk?: {
+    caso: string;
+    entrada: string;
+    sigma: Record<'a' | 'e' | 'i' | 'q', number>;
+  }[];
 }
