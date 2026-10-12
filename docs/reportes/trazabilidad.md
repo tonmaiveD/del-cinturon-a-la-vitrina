@@ -3,10 +3,10 @@
 Generado por `npm run auditoria` (también se ejecuta en `npm run build`, que falla si hay
 errores). Cada dato que muestra la interfaz se contrasta con su valor de origen en `data/`.
 
-- Verificados: 506
+- Verificados: 511
 - Pendientes mostrados con aviso: 25
 - Calculados con método documentado: 30
-- Convenciones visuales o de notación: 26
+- Convenciones visuales o de notación: 27
 - **Errores: 0**
 
 ## Pieza: almahata-sitta
@@ -664,11 +664,16 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | {{n_31}} | resonancia de movimiento medio 3:1 con Júpiter | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{p_31}} | 11 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{nivel_nube}} | 1σ | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{ra_sigma1}} | 0,8 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{dec_sigma1}} | 0,9 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{vg_sigma1}} | 0,2 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{ra_sigma}} | 1,6 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{dec_sigma}} | 1,8 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{vg_sigma}} | 0,4 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{nivel_radiante}} | 2σ | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{a_sigma1}} | 0,08 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{i_sigma1}} | 0,24 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{a_sigma}} | 0,16 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{i_sigma}} | 0,48 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{nivel_orbita}} | 2σ | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{nivel_nube}} | 1σ | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{cneos_consultado}} | 1 de octubre de 2026 | cneos-fireball-api | verificado | borrador: no se publica en producción |
 
 ## Trayectorias animadas (piezas con pedigrí)
@@ -705,31 +710,31 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 
 | Elemento | Valor | Fuente | Estado | Nota |
 | --- | --- | --- | --- | --- |
-| almahata-sitta | panel y nube del catálogo, estela del año previo | jpl-horizons | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| annama | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| benesov | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| bunburra-rockhole | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| buzzard-coulee | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| chelyabinsk | panel y nube del catálogo, estela del año previo, nube del recorrido, ficha {{a}}, ficha {{e}}, ficha {{i}}, ficha {{q}}, ficha {{Q}}, ficha {{a_sigma}}, ficha {{i_sigma}}, ficha {{a_sigma1}}, ficha {{i_sigma1}} | popova-2013-science | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| ejby | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| grimsby | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| innisfree | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| jesenice | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| kosice | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| krizevci | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| lost-city | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| maribo | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| mason-gully | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| moravka | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| neuschwanstein | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| novato | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| park-forest | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| peekskill | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| pribram | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| sutters-mill | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| tagish-lake | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| villalbeto-de-la-pena | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
-| zdar-nad-sazavou | panel y nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| almahata-sitta | panel, nube del catálogo, estela del año previo | jpl-horizons | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| annama | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| benesov | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| bunburra-rockhole | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| buzzard-coulee | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| chelyabinsk | panel, nube del catálogo, estela del año previo, nube del recorrido, ficha {{a}}, ficha {{e}}, ficha {{i}}, ficha {{q}}, ficha {{Q}}, ficha {{a_sigma}}, ficha {{i_sigma}}, ficha {{a_sigma1}}, ficha {{i_sigma1}}, ficha {{ra_sigma1}}, ficha {{dec_sigma1}}, ficha {{vg_sigma1}} | popova-2013-science | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| ejby | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| grimsby | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| innisfree | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| jesenice | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| kosice | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| krizevci | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| lost-city | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| maribo | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| mason-gully | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| moravka | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| neuschwanstein | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| novato | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| park-forest | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| peekskill | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| pribram | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| sutters-mill | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| tagish-lake | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| villalbeto-de-la-pena | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| zdar-nad-sazavou | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
 
 ## Bólidos del CNEOS (modo CNEOS)
 
@@ -761,6 +766,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | zona.resonancia-5-2 | 5 2 | src/i18n/es.json | convencion | nombre de la resonancia p:q |
 | zona.resonancia-2-1 | 2 1 | src/i18n/es.json | convencion | nombre de la resonancia p:q |
 | desc.sistema-solar.pieza | 1 | src/i18n/es.json | convencion | notación («1σ») |
+| desc.sistema-solar.pieza.jpl | 1 | src/i18n/es.json | convencion | notación («1σ») |
 | desc.regiones | 6 | src/i18n/es.json | convencion | nombre de la resonancia secular («ν6») |
 | cneos.evento.energia | 10 | src/i18n/es.json | convencion | unidad en que la API publica la energía radiada (10¹⁰ J) |
 | cneos.orbita.calculada | 68 16 84 | src/i18n/es.json | convencion | definición del rango mostrado (percentiles 16 y 84 de la nube) |

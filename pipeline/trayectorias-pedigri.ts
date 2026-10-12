@@ -16,7 +16,11 @@ import * as Astro from 'astronomy-engine';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { derivadaHeliocentrica } from '../src/core/dinamica';
 import { integrar } from '../src/core/integrador';
-import { elementosSinTierra, estadoDesdeRadianteGeocentrico } from '../src/core/orbita-bolido';
+import {
+  elementosSinTierra,
+  estadoDesdeRadianteGeocentrico,
+  type EntradaRadiante,
+} from '../src/core/orbita-bolido';
 import { dDrummond } from '../src/core/similitud';
 import { GRAD } from '../src/core/vector';
 import { Meteorito, type Orbita, type Valor } from '../src/schema';
@@ -93,21 +97,40 @@ function principal(m: Meteorito): Orbita {
   return o;
 }
 
-export function calcularPieza(m: Meteorito): TrayectoriaPieza {
+/**
+ * Entrada común de la estela y de la nube: posición e instante de referencia publicados, altura
+ * convencional y radiante geocéntrico con v_g (valores verificados del dataset).
+ */
+export function entradaPieza(m: Meteorito): {
+  base: Omit<EntradaRadiante, 'raGrados' | 'decGrados' | 'vgKmS'>;
+  radiante: { ra: Valor; dec: Valor; vg: Valor };
+} {
   const r = m.radiante_geocentrico;
   const pt = m.punto_trayectoria;
   if (!r || !pt || ![r.ra, r.dec, r.v_geocentrica, pt.lat, pt.lon].every(verificado))
     throw new Error(`${m.id}: faltan radiante, v_g o posición de referencia verificados`);
-  // El instante de la posición de referencia; si no se publica aparte, el de la caída
-  const fecha = new Date(String((pt.instante ?? m.fecha_caida).valor));
+  return {
+    base: {
+      // El instante de la posición de referencia; si no se publica aparte, el de la caída
+      fecha: new Date(String((pt.instante ?? m.fecha_caida).valor)),
+      latGrados: num(pt.lat),
+      lonGrados: num(pt.lon),
+      alturaKm: ALTURA_CONVENCIONAL_KM,
+    },
+    radiante: { ra: r.ra, dec: r.dec, vg: r.v_geocentrica },
+  };
+}
+
+export function calcularPieza(m: Meteorito): TrayectoriaPieza {
+  const { base, radiante } = entradaPieza(m);
+  const r = m.radiante_geocentrico!;
+  const pt = m.punto_trayectoria!;
+  const fecha = base.fecha;
   const { t, y0 } = estadoDesdeRadianteGeocentrico({
-    fecha,
-    latGrados: num(pt.lat),
-    lonGrados: num(pt.lon),
-    alturaKm: ALTURA_CONVENCIONAL_KM,
-    raGrados: num(r.ra),
-    decGrados: num(r.dec),
-    vgKmS: num(r.v_geocentrica),
+    ...base,
+    raGrados: num(radiante.ra),
+    decGrados: num(radiante.dec),
+    vgKmS: num(radiante.vg),
   });
 
   const validacion = validar(m, y0, t.ut, t.ut, 'dd-y-z');

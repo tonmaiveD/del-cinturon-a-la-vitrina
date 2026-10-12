@@ -253,6 +253,51 @@ Dos fallos de la Etapa A (M01) que aparecieron al verificar, corregidos con su p
 Queda en manos del usuario: aprobar la ficha (`revision/ficha-chelyabinsk-para-revisar.md`) o
 pedir cambios.
 
+### Segunda revisión de la ficha · etapa 1, nubes desde el radiante · **hecha el 2026-10-12**
+
+Origen: segunda auditoría consolidada de la ficha (versión del 12 de octubre), con un hallazgo
+P0. Sortear cada elemento orbital por separado produce órbitas que no pasan por la Tierra. La
+medición se extendió a las 25 piezas: solo Almahata Sitta, con su órbita telescópica, tenía el
+100 % de las órbitas a menos de 0,002 au de la Tierra. En 21 piezas no llegaba a la mitad;
+Chelyabinsk tenía el 6 % y Maribo y Villalbeto de la Peña, ninguna.
+
+Resultado:
+
+- **Método.** `nubeDesdeRadiante` (`src/core/montecarlo.ts`) sortea α_g, δ_g y v_g con su
+  σ a 1σ e integra cada clon con N cuerpos desde la posición e instante de referencia, igual
+  que la estela. `pipeline/nubes-pedigri.ts` (`npm run datos:nubes`, también dentro de
+  `datos:pedigri`) tarda unos 50 s y genera:
+  - `public/data/nubes.json`: 160 formas por pieza, unos 63 kB comprimido; se carga al crear
+    la vista solar, fuera de la carga inicial;
+  - `chelyabinsk-orbitas.json`: 300 órbitas, de las que las 160 primeras son las del catálogo;
+  - `docs/reportes/nubes.md`.
+
+  Almahata Sitta conserva el sorteo de la órbita de JPL.
+
+- **Criterios de parada.** Radiante central frente a la órbita principal: D_D ≤ 0,1, con un
+  máximo obtenido de 0,0019. Todas las órbitas a menos de 0,002 au de la Tierra: el máximo
+  obtenido fue de 0,0005 au. Descartes ≤ 10 %: hubo 0.
+- **Dispersión.** En muchas piezas la σ de la nube coincide con la publicada, porque la fuente
+  calculó la órbita desde ese radiante. En 12 difiere más de un 40 % en a, e o i (lista en el
+  reporte). En Chelyabinsk la nube es más estrecha en a (0,054 frente a 0,08 au) y más ancha en i
+  (0,42° frente a 0,24°): sin covarianza, los márgenes del radiante y los de la órbita de Popova
+  no son coherentes. Queda anotado también en el reporte de validación.
+- **Textos.** Se actualizaron:
+  - el párrafo de la ficha, que ahora cita la incertidumbre del radiante, explica qué significa
+    sortear a 1σ (hallazgo 5) y enlaza el reporte de las nubes;
+  - las descripciones de la escena (con una variante para la órbita de JPL);
+  - la leyenda;
+  - la Wiki.
+- **Control automático.** La auditoría «Una sola órbita por pieza» comprueba también la fuente
+  de cada nube del catálogo y su criterio. Pruebas nuevas en `tests/unit/nubes.test.ts`, entre
+  ellas la que respalda la frase de la ficha sobre la dispersión.
+- **Huella del CNEOS.** Al cambiar `src/core/` se recalcularon en local las 260 órbitas. Sus
+  valores no cambian, porque el cálculo es el mismo; cambia la huella.
+
+Pendiente, etapa 2 de esta revisión: el material suplementario de Popova (tablas S1 y S6), los
+destellos, la validación acotada a Peña-Asensio, la redacción restante, los DOI en la versión
+legible y la nota de Borovička (δ_g = +0,28°, no 10,28°).
+
 ### Etapa D · CI y operación · **hecha el 2026-10-11** (ola 1)
 
 Resultado:
@@ -317,7 +362,8 @@ Plan original:
 - Recorrido animado de los bólidos del CNEOS: barato (las órbitas guardan la anomalía
   media); no hecho.
 - No se modela la deceleración atmosférica antes del pico o del punto de referencia.
-- Incertidumbres de órbitas publicadas como gaussianas independientes (sin covarianza); los
-  los clones de las nubes se mueven con Kepler (solo la estela usa N cuerpos).
+- Nubes calculadas desde el radiante publicado, con sus errores tratados como gaussianos
+  independientes (las fuentes no publican la covarianza). Los clones de la nube de Chelyabinsk
+  se mueven con Kepler; la estela y el cálculo de cada clon usan N cuerpos.
 - Regiones de escape aproximadas (Hungaria/Phocaea sin excentricidad; ν6 y JFC sin geometría).
 - Pruebas e2e lentas en GitHub (reintento 1 y anotaciones públicas).

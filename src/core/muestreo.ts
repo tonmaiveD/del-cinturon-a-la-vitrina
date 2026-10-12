@@ -1,7 +1,11 @@
 /**
- * Muestreo de órbitas publicadas con su σ (1σ) para dibujarlas como nube.
- * Supuesto (se declara en la UI): elementos gaussianos independientes, porque las fuentes no
- * publican la matriz de covarianza. Se descartan muestras no elípticas (e ≥ 1 o e < 0).
+ * Muestreo de órbitas publicadas con su σ (1σ): elementos gaussianos independientes. Se
+ * descartan muestras no elípticas (e ≥ 1 o e < 0).
+ *
+ * Desde el 2026-10-12 solo se usa para la órbita telescópica de Almahata Sitta, cuya σ es tan
+ * pequeña que todas las muestras pasan por la Tierra. Con σ mayores, sortear cada elemento por
+ * separado produce órbitas que no pasan por la Tierra; las demás nubes se calculan desde el
+ * radiante (`nubeDesdeRadiante`, pipeline/nubes-pedigri.ts).
  */
 import { crearAzar } from './azar';
 

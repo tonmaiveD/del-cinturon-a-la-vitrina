@@ -11,7 +11,7 @@ import type { OrbitaCneos, ResumenCneos } from '../src/cneos/resumen';
 import type { TrayectoriaPieza } from './trayectorias-pedigri';
 import type { CalidadCneos, RespuestaCneos } from '../src/schema';
 import type { Fuente, Meteorito, RegionEscape, RegionesOrigen, Valor } from '../src/schema';
-import type { Catalogo, NumSigma } from '../src/ui/catalogo';
+import type { Catalogo, NubesPedigri, NumSigma } from '../src/ui/catalogo';
 import { leerFicha, marcadores } from '../src/ui/ficha';
 import { contextoFicha } from '../src/ui/ficha-datos';
 
@@ -59,6 +59,7 @@ export const CIFRAS_PERMITIDAS: Record<string, { cifras: string[]; motivo: strin
   'procedencia.escape-nota': { cifras: ['1'], motivo: 'notación («±1σ»)' },
   'desc.sistema-solar': { cifras: ['1'], motivo: 'notación («1σ»)' },
   'desc.sistema-solar.pieza': { cifras: ['1'], motivo: 'notación («1σ»)' },
+  'desc.sistema-solar.pieza.jpl': { cifras: ['1'], motivo: 'notación («1σ»)' },
   'zona.resonancia-3-1': { cifras: ['3', '1'], motivo: 'nombre de la resonancia p:q' },
   'zona.resonancia-5-2': { cifras: ['5', '2'], motivo: 'nombre de la resonancia p:q' },
   'zona.resonancia-2-1': { cifras: ['2', '1'], motivo: 'nombre de la resonancia p:q' },
@@ -91,7 +92,13 @@ export interface EntradaAuditoria {
   textos: Record<string, string>;
   ficha?: { cruda: string; cneos: Parameters<typeof contextoFicha>[1] };
   /** Nube del recorrido de Chelyabinsk (public/data/chelyabinsk-orbitas.json). */
-  nubeChelyabinsk?: { fuente_orbita: string; clones: unknown[] };
+  nubeChelyabinsk?: {
+    fuente_orbita: string;
+    muestreo?: { fuente: string };
+    clones: unknown[];
+  };
+  /** Nubes de las piezas (public/data/nubes.json). */
+  nubes?: NubesPedigri;
   cneos: { fuente: string; consultado: string; respuesta: { fields: string[]; data: string[][] } };
   radioVisualMeteoroideKm: number;
   /** Trayectorias animadas de las piezas con pedigrí (índice y lector de archivos). */
@@ -391,24 +398,49 @@ export function auditar(e: EntradaAuditoria): Fila[] {
     const p = e.catalogo.piezas.find((x) => x.id === m.id);
     const principal = p?.orbita?.fuente;
     if (!principal) continue;
-    const usos: [string, string | undefined][] = [['panel y nube del catálogo', principal]];
+    const usos: [string, string | undefined][] = [['panel', principal]];
+    const nube = e.nubes?.piezas[m.id];
+    if (e.nubes) usos.push(['nube del catálogo', nube?.fuente]);
     if (conTrayectoria.has(m.id))
       usos.push(['estela del año previo', e.trayectorias!.leer(m.id).validacion.fuente_orbita]);
     if (m.id === 'chelyabinsk' && e.nubeChelyabinsk)
-      usos.push(['nube del recorrido', e.nubeChelyabinsk.fuente_orbita]);
+      usos.push([
+        'nube del recorrido',
+        e.nubeChelyabinsk.muestreo?.fuente ?? e.nubeChelyabinsk.fuente_orbita,
+      ]);
     if (fichaCtx?.pieza === m.id)
-      for (const k of ['a', 'e', 'i', 'q', 'Q', 'a_sigma', 'i_sigma', 'a_sigma1', 'i_sigma1'])
+      for (const k of [
+        'a',
+        'e',
+        'i',
+        'q',
+        'Q',
+        'a_sigma',
+        'i_sigma',
+        'a_sigma1',
+        'i_sigma1',
+        'ra_sigma1',
+        'dec_sigma1',
+        'vg_sigma1',
+      ])
         if (fichaCtx.ctx[k]) usos.push([`ficha {{${k}}}`, fichaCtx.ctx[k]!.fuente]);
     const distintos = usos.filter(([, f]) => f !== principal);
+    const fallos = distintos.length
+      ? [`usan otra órbita: ${distintos.map(([u, f]) => `${u} (${f ?? '—'})`).join('; ')}`]
+      : [];
+    if (nube && !nube.validacion.aprobada)
+      fallos.push('la nube no supera su criterio (docs/reportes/nubes.md)');
     filas.push({
       seccion: 'Una sola órbita por pieza (texto y figura)',
       elemento: m.id,
       valor: usos.map(([u]) => u).join(', '),
       fuente: principal,
-      estado: distintos.length ? 'error' : 'verificado',
-      nota: distintos.length
-        ? `usan otra órbita: ${distintos.map(([u, f]) => `${u} (${f ?? '—'})`).join('; ')}`
-        : 'todo lo que cita o dibuja la órbita usa la principal',
+      estado: fallos.length ? 'error' : 'verificado',
+      nota: fallos.length
+        ? fallos.join('; ')
+        : nube?.metodo === 'radiante'
+          ? 'todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra'
+          : 'todo lo que cita o dibuja la órbita usa la principal',
     });
   }
 

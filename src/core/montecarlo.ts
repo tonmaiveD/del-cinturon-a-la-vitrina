@@ -105,3 +105,43 @@ export function montecarloBolido(
     );
   return clones;
 }
+
+/** Valor publicado con su σ (1σ), en las unidades de `EntradaRadiante`. */
+export interface ConSigma {
+  v: number;
+  s: number;
+}
+
+/**
+ * Nube de órbitas de una caída con radiante publicado: se sortean α_g, δ_g y v_g (normales
+ * independientes con su σ a 1σ) y cada clon se integra igual que la órbita nominal, de modo
+ * que todos pasan por la Tierra en el instante de referencia. Se descartan los clones sin
+ * órbita elíptica (e ≥ 1 o sin solución) y se devuelve cuántos.
+ */
+export function nubeDesdeRadiante(
+  base: Omit<EntradaRadiante, 'raGrados' | 'decGrados' | 'vgKmS'>,
+  radiante: { ra: ConSigma; dec: ConSigma; vg: ConSigma },
+  n: number,
+  semilla: number,
+  opciones: OpcionesOrbita = {},
+): { clones: ResultadoOrbita[]; descartados: number } {
+  const { normal } = crearAzar(semilla);
+  const clones: ResultadoOrbita[] = [];
+  let descartados = 0;
+  while (clones.length < n && descartados < n) {
+    const entrada: EntradaRadiante = {
+      ...base,
+      raGrados: radiante.ra.v + normal() * radiante.ra.s,
+      decGrados: radiante.dec.v + normal() * radiante.dec.s,
+      vgKmS: radiante.vg.v + normal() * radiante.vg.s,
+    };
+    try {
+      const r = orbitaDeRadiante(entrada, opciones);
+      if (r.elementos.e < 1 && r.elementos.a > 0) clones.push(r);
+      else descartados++;
+    } catch {
+      descartados++;
+    }
+  }
+  return { clones, descartados };
+}

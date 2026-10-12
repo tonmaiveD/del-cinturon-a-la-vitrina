@@ -7,6 +7,7 @@ import { PLANETAS } from './scene/cuerpos';
 import type { PanelCneos } from './cneos/panel';
 import type { OrbitaCneos } from './cneos/resumen';
 import { crearCatalogoSolar } from './scene/catalogo-solar';
+import type { NubesPedigri } from './ui/catalogo';
 import { crearBolidosTierra, type BolidosTierra } from './scene/cneos-tierra';
 import { crearNubeCneos } from './scene/cneos-solar';
 import { ALTURA_INICIO_KM } from './scene/trayectoria-entrada';
@@ -213,6 +214,7 @@ export async function iniciar3D(
     solar.escena.add(nubeCneos.grupo);
     motor.etiqueta(t('etiqueta.nube.cneos'), nubeCneos.ancla, 'seleccion');
     solarCreada = { solar, camS, cat, etiquetaNube, nubeCneos };
+    void cargarNubes();
     aplicarPiezaSolar();
     if (modo === 'cneos') aplicarModoSolar();
     cat.filtrar(panel.visibles());
@@ -221,6 +223,23 @@ export async function iniciar3D(
     fijarCamara('sistema-solar', encuadreSolar().pos, ORIGEN);
     motor.activar(motor.activa()); // oculta las etiquetas nuevas si la vista no está activa
     return solarCreada;
+  }
+
+  /** Nubes de las piezas (precalculadas desde su radiante): se piden al crear la vista solar. */
+  async function cargarNubes(): Promise<void> {
+    try {
+      const n = await cargarJson<NubesPedigri>('data/nubes.json');
+      quitarAviso('nubes');
+      // Solo cambia la parte de la descripción que habla de la escena: se conserva la narración
+      // que la precede (llegada, movimiento reducido)
+      const antes = descripcionVista();
+      solarCreada!.cat.fijarNubes(n);
+      const texto = descripcion.textContent ?? '';
+      if (!secuencia.activa() && texto.endsWith(antes))
+        descripcion.textContent = texto.slice(0, texto.length - antes.length) + descripcionVista();
+    } catch {
+      avisarError('nubes', t('error.nubes'), () => void cargarNubes());
+    }
   }
 
   // Controles del panel
@@ -317,7 +336,7 @@ export async function iniciar3D(
           : '')
       );
     if (animada)
-      return `${t('desc.sistema-solar.pieza', {
+      return `${t(clavePieza(p.id), {
         fecha,
         nombre: nombrePieza(p),
         n: solarCreada?.cat.nClonesSeleccion() ?? 0,
@@ -330,7 +349,7 @@ export async function iniciar3D(
             })
           : t('desc.sistema-solar.pieza.tray')
       } ${descripcionRegiones()}`;
-    return t('desc.sistema-solar.pieza', {
+    return t(clavePieza(p.id), {
       fecha,
       nombre: nombrePieza(p),
       n: solarCreada?.cat.nClonesSeleccion() ?? 0,
@@ -338,6 +357,12 @@ export async function iniciar3D(
       regiones: descripcionRegiones(),
     });
   }
+
+  /** Descripción de la nube según su método (Almahata Sitta: órbita telescópica de JPL). */
+  const clavePieza = (id: string): Clave =>
+    solarCreada?.cat.metodoNube(id) === 'elementos'
+      ? 'desc.sistema-solar.pieza.jpl'
+      : 'desc.sistema-solar.pieza';
 
   let urlPendiente = 0;
   function guardarUrl(): void {

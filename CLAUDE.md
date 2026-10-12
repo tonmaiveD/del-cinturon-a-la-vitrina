@@ -11,6 +11,11 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   el usuario; detalle en `docs/deuda-tecnica.md`). El recorrido de Chelyabinsk ya dibuja la
   órbita de Popova, la misma que cita la ficha; la nube del CNEOS queda como validación. La
   ficha sigue en `borrador` a la espera de su aprobación.
+- **2026-10-12: segunda revisión de la ficha.** Plan en dos etapas aprobado por el usuario.
+  **Etapa 1 hecha:** las nubes de las 25 piezas se calculan desde el radiante publicado
+  (`npm run datos:nubes`), y así todas sus órbitas pasan por la Tierra. **Siguiente: etapa 2**
+  (ver el final de esa sección en `docs/deuda-tecnica.md`); su primer paso es pedir permiso para
+  descargar el material suplementario de Popova (tablas S1 y S6).
 - **Siguiente paso: ola 3 = Fase 4 (colección y fichas).** Necesita decisiones del usuario
   (ver «Fase 4» abajo). Si aún no las tiene, se puede empezar por lo que no las necesita: el
   modelo meteorito ≠ ejemplar (M33) y el manejo de campos privados (M32). Se lo propuse el
@@ -172,6 +177,9 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
   Popova et al. 2013 (nube muestreada con su σ y estela desde su radiante), la misma que cita
   la ficha; el cálculo desde el CNEOS queda como validación independiente. La auditoría
   comprueba esa coherencia en las 25 piezas. Unidad «au» en la interfaz.
+- 2026-10-12: **nubes desde el radiante** en todas las piezas salvo Almahata Sitta (órbita de
+  JPL): se sortean α_g, δ_g y v_g y cada clon se integra como la estela. Sustituye al sorteo de
+  elementos independientes, que daba órbitas que no pasan por la Tierra.
 - 2026-10-11: el usuario **mantiene el gmail como correo principal** de su cuenta de GitHub y
   quiere que **solo apaec@yahoo.com sea visible**. Autorizó reescribir la historia de la wiki y
   de `main` (hecho, con push forzado suyo). Nunca escribir el gmail en archivos del repo.
@@ -346,6 +354,7 @@ textura Blue Marble según las directrices de medios de NASA (verificado el 2026
 - Datos: `npm run datos` (validación Chelyabinsk + trayectoria), `npm run datos:pedigri`
   (Granvik & Brown + JPL 2008 TC3 + catálogo), `npm run datos:texturas`, `npm run verificacion:cruzada`
 - CNEOS: `npm run datos:cneos` (descarga + órbitas), `npm run reporte:cneos`.
+- Nubes de las piezas: `npm run datos:nubes` (unos 50 s; incluido en `datos:pedigri`).
   Recorridos: `npm run datos:trayectorias -- <a|b|c>`.
 - `npm run cierre:video` / `cierre:fase-2` / `cierre:fase-3` (requieren `build`): video y
   capturas en `docs/cierres/`. `npm run auditoria`: trazabilidad.
@@ -367,11 +376,17 @@ textura Blue Marble según las directrices de medios de NASA (verificado el 2026
 - Tiempo: `src/timeline/reloj.ts` (365 días antes del pico → pico); secuencia en
   `src/camera/coreografia.ts` + pasos en `app3d.ts`; `prefers-reduced-motion` → corte directo.
   URL: `?pieza&t&vista&escala` o `?modo=cneos&evento&t&vista&escala` (`src/ui/estado-url.ts`).
-- Animación: Chelyabinsk con `public/data/chelyabinsk-trayectoria.json` y
-  `chelyabinsk-orbitas.json` (`npm run datos:trayectoria`: estela N cuerpos desde el radiante de
-  Popova en la posición e instante de Granvik & Brown, 6 s antes del pico del CNEOS, y nube de
-  300 órbitas de Popova que se mueven con Kepler); en el globo, la entrada y el pico son los del
-  CNEOS. Las otras 24 piezas con `public/data/trayectorias/<id>.json`.
+- Animación: Chelyabinsk con `public/data/chelyabinsk-trayectoria.json`
+  (`npm run datos:trayectoria`: estela N cuerpos desde el radiante de Popova en la posición e
+  instante de Granvik & Brown, 6 s antes del pico del CNEOS) y `chelyabinsk-orbitas.json`
+  (`npm run datos:nubes`: 300 órbitas desde el radiante de Popova que se mueven con Kepler); en
+  el globo, la entrada y el pico son los del CNEOS. Las otras 24 piezas con
+  `public/data/trayectorias/<id>.json`.
+- Nubes del catálogo: `public/data/nubes.json` (160 formas por pieza, calculadas desde el
+  radiante; Almahata Sitta, desde la órbita de JPL), cargado al crear la vista solar
+  (`cat.fijarNubes`). Validación en `docs/reportes/nubes.md`. Cambiar `src/core/` cambia la
+  huella del CNEOS: hay que recalcular sus órbitas en local (`CNEOS_FRAGMENTO=k/4` en paralelo
+  y una pasada final), o lo hará el bot en la CI.
 - Fichas: `content/fichas/*.md`, plantillas con `{{clave}}` resueltas desde el dataset
   (`src/ui/ficha-datos.ts`, que también nombra modelos y fórmulas desde `fuentes.json`); un
   test prohíbe cifras escritas a mano. Admiten enlaces `[texto](https://…)`. Solo se publican las

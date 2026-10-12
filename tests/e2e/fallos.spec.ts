@@ -55,6 +55,16 @@ test.describe('fallos recuperables (M07)', () => {
     await expect(page.locator('#descripcion')).toContainText('órbitas posibles del bólido');
   });
 
+  test('las nubes de las piezas no cargan: aviso y reintento', async ({ page }) => {
+    await page.route('**/data/nubes.json', fallarPrimeras(1, error500));
+    await page.goto('/?pieza=pribram&vista=sistema-solar');
+    await listo(page);
+    await expect(aviso(page)).toContainText('nubes de órbitas de las piezas');
+    await page.getByRole('button', { name: 'Reintentar' }).click();
+    await expect(aviso(page)).toBeHidden();
+    await expect(page.locator('#descripcion')).toContainText('160 órbitas posibles de Příbram');
+  });
+
   test('red interrumpida en el recorrido de una pieza: aviso y reintento', async ({ page }) => {
     await page.route(
       '**/data/trayectorias/pribram.json',

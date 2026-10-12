@@ -56,7 +56,9 @@ test('selección de pieza: lista, procedencia en dos capas, URL y vista solar', 
 
   await abrirPestana(page, 'escena');
   await page.getByRole('button', { name: 'Sistema solar' }).click();
-  await expect(page.locator('#descripcion')).toContainText('órbitas posibles de Žďár');
+  // Nubes precalculadas desde el radiante (public/data/nubes.json), cargadas con la vista solar
+  await expect(page.locator('#descripcion')).toContainText('160 órbitas posibles de Žďár');
+  await expect(page.locator('#descripcion')).toContainText('sorteando el radiante');
   await expect(page.locator('#descripcion')).toContainText('Hungaria');
   await page.waitForTimeout(800);
   await page.screenshot({

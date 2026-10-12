@@ -26,6 +26,7 @@ const entrada = (): EntradaAuditoria => {
       cneos,
     },
     nubeChelyabinsk: leer('public/data/chelyabinsk-orbitas.json'),
+    nubes: leer('public/data/nubes.json'),
     cneos,
     radioVisualMeteoroideKm: RADIO_VISUAL_METEOROIDE_AU * KM_POR_AU,
     trayectorias: {
@@ -140,7 +141,7 @@ describe('auditoría de trazabilidad', () => {
   it('detecta una pieza cuya figura o ficha usan una órbita distinta de la principal', () => {
     // Lo que encontró la auditoría consolidada del 2026-10-11: ficha con Popova, nube del CNEOS
     const e = entrada();
-    e.nubeChelyabinsk!.fuente_orbita = 'cneos-fireball-api';
+    e.nubeChelyabinsk!.muestreo!.fuente = 'cneos-fireball-api';
     expect(errores(e).map((f) => [f.elemento, f.nota])).toEqual([
       ['chelyabinsk', 'usan otra órbita: nube del recorrido (cneos-fireball-api)'],
     ]);
@@ -155,6 +156,17 @@ describe('auditoría de trazabilidad', () => {
       return tr;
     };
     expect(errores(e3).map((f) => f.elemento)).toEqual(['novato']);
+  });
+
+  it('detecta una nube del catálogo de otra fuente o que no pasa por la Tierra', () => {
+    const e = entrada();
+    e.nubes!.piezas['maribo']!.fuente = 'otra';
+    expect(errores(e).map((f) => f.elemento)).toEqual(['maribo']);
+    const e2 = entrada();
+    e2.nubes!.piezas['maribo']!.validacion.aprobada = false;
+    expect(errores(e2).map((f) => [f.elemento, f.nota])).toEqual([
+      ['maribo', 'la nube no supera su criterio (docs/reportes/nubes.md)'],
+    ]);
   });
 
   it('trayectorias: detecta un radiante alterado y una altura no declarada como convencional', () => {

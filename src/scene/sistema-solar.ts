@@ -1,8 +1,7 @@
 /**
  * Vista heliocéntrica en el marco eclíptico J2000 (unidades: AU).
  * Planetas y sus órbitas desde astronomy-engine; órbita de Chelyabinsk como nube de órbitas
- * muestreadas con la incertidumbre de su órbita principal (nunca una sola línea) más la órbita
- * central publicada resaltada.
+ * calculadas desde su radiante (nunca una sola línea) más la órbita central publicada.
  */
 import * as Astro from 'astronomy-engine';
 import {

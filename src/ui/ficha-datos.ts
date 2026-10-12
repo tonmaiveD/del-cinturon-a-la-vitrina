@@ -138,6 +138,28 @@ export function contextoFicha(
       dato(orbita.a, (v) => NIVEL[v.nivel_sigma ?? '1-sigma']!),
     );
   }
+  // Incertidumbre del radiante y de v_g: la que se sortea para dibujar la nube
+  const r = m.radiante_geocentrico;
+  if (r) {
+    for (const [k, v] of [
+      ['ra', r.ra],
+      ['dec', r.dec],
+      ['vg', r.v_geocentrica],
+    ] as const) {
+      poner(
+        `${k}_sigma1`,
+        dato(v, (x) => num(x.sigma ?? NaN, dec(x))),
+      );
+      poner(
+        `${k}_sigma`,
+        dato(v, (x) => num(x.sigma_publicada ?? x.sigma ?? NaN, dec(x))),
+      );
+    }
+    poner(
+      'nivel_radiante',
+      dato(r.ra, (v) => NIVEL[v.nivel_sigma ?? '1-sigma']!),
+    );
+  }
   // La ficha atribuye estas probabilidades a Popova et al.: solo se usan las de esa fuente
   for (const p of (m.procedencia ?? []).filter(
     (x) => x.probabilidad.fuente === 'popova-2013-science',

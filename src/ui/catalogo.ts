@@ -142,3 +142,32 @@ export function citaCorta(cita: string): string {
       : apellidos.join(' y ');
   return `${nombre} ${anio[1]}`;
 }
+
+/** Forma de una órbita de la nube: [a (au), e, i, Ω, ω (grados)], eclíptica J2000. */
+export type FormaNube = [number, number, number, number, number];
+
+/** Nube de una pieza en public/data/nubes.json (`npm run datos:nubes`). */
+export interface NubePieza {
+  /**
+   * `radiante`: se sortean el radiante y v_g publicados y cada clon se integra como la estela;
+   * `elementos`: se sortean los elementos de la órbita (solo la órbita telescópica de JPL).
+   */
+  metodo: 'radiante' | 'elementos';
+  fuente: string;
+  descartados: number;
+  validacion: {
+    /** D_D entre la órbita del radiante central y la órbita principal (null con `elementos`). */
+    dd_centro: number | null;
+    /** Distancia de cada órbita a la Tierra en el instante de referencia (au). */
+    dist_max_au: number;
+    dist_mediana_au: number;
+    aprobada: boolean;
+  };
+  formas: FormaNube[];
+}
+
+export interface NubesPedigri {
+  generado: string;
+  metodo: string;
+  piezas: Record<string, NubePieza>;
+}

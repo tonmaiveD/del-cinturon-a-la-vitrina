@@ -19,8 +19,8 @@ import {
   Object3D,
   Vector3,
 } from 'three';
-import { muestrearOrbita, puntosForma, semillaDe, type FormaOrbita } from '../core/muestreo';
-import type { Catalogo, PiezaCatalogo } from '../ui/catalogo';
+import { puntosForma, type FormaOrbita } from '../core/muestreo';
+import type { Catalogo, NubesPedigri, PiezaCatalogo } from '../ui/catalogo';
 import { aThree } from './coordenadas';
 
 /** Niveles de detalle: [clones, puntos por órbita]. */
@@ -58,24 +58,35 @@ export function crearCatalogoSolar(catalogo: Catalogo) {
   grupo.name = 'catalogo';
 
   // ---------- Nubes de todas las piezas (LOD por distancia) ----------
+  // Precalculadas desde el radiante de cada pieza (public/data/nubes.json); llegan con
+  // fijarNubes() después de crear la vista. Los niveles usan las primeras n formas.
   const nubes = new Map<string, LOD>();
   const matCerca = materialNube(COLOR_NUBE, 0.07);
   const matLejos = materialNube(COLOR_NUBE, 0.14);
-  const formasDe = (p: PiezaCatalogo, n: number) => muestrearOrbita(p.orbita!, n, semillaDe(p.id));
-  for (const p of catalogo.piezas) {
-    if (!p.orbita) continue;
-    const lod = new LOD();
-    lod.addLevel(
-      new LineSegments(geometriaNube(formasDe(p, DETALLE.cerca[0]), DETALLE.cerca[1]), matCerca),
-      0,
-    );
-    lod.addLevel(
-      new LineSegments(geometriaNube(formasDe(p, DETALLE.lejos[0]), DETALLE.lejos[1]), matLejos),
-      DISTANCIA_LOD,
-    );
-    lod.name = `nube-${p.id}`;
-    nubes.set(p.id, lod);
-    grupo.add(lod);
+  let datosNubes: NubesPedigri['piezas'] | undefined;
+  let filtro: Set<string> | undefined;
+  let seleccionada: PiezaCatalogo | undefined;
+  const formasDe = (p: PiezaCatalogo, n: number): FormaOrbita[] =>
+    (datosNubes?.[p.id]?.formas ?? [])
+      .slice(0, n)
+      .map(([a, e, i, nodo, omega]) => ({ a, e, i, nodo, omega }));
+  function construirNubes(): void {
+    for (const p of catalogo.piezas) {
+      if (!p.orbita || !datosNubes?.[p.id]) continue;
+      const lod = new LOD();
+      lod.addLevel(
+        new LineSegments(geometriaNube(formasDe(p, DETALLE.cerca[0]), DETALLE.cerca[1]), matCerca),
+        0,
+      );
+      lod.addLevel(
+        new LineSegments(geometriaNube(formasDe(p, DETALLE.lejos[0]), DETALLE.lejos[1]), matLejos),
+        DISTANCIA_LOD,
+      );
+      lod.name = `nube-${p.id}`;
+      lod.visible = !filtro || filtro.has(p.id);
+      nubes.set(p.id, lod);
+      grupo.add(lod);
+    }
   }
 
   // Nube de la pieza seleccionada: se construye al seleccionar
@@ -166,27 +177,41 @@ export function crearCatalogoSolar(catalogo: Catalogo) {
     anclaSeleccion,
     nubes,
     nClonesSeleccion: () => nClonesSeleccion,
+    /** Método con que se calculó la nube de una pieza (undefined si aún no se cargó). */
+    metodoNube: (id: string) => datosNubes?.[id]?.metodo,
+    /** Nubes ya cargadas (antes de fijarNubes() solo se ven regiones y resonancias). */
+    conNubes: () => datosNubes !== undefined,
+    /** Recibe las nubes precalculadas y las dibuja con el filtro y la selección actuales. */
+    fijarNubes(n: NubesPedigri): void {
+      if (datosNubes) return;
+      datosNubes = n.piezas;
+      construirNubes();
+      this.seleccionar(seleccionada);
+    },
     /** Muestra solo las nubes de las piezas indicadas (filtros). */
     filtrar(ids: Set<string>): void {
+      filtro = ids;
       for (const [id, lod] of nubes) lod.visible = ids.has(id);
     },
     seleccionar(p: PiezaCatalogo | undefined): void {
+      seleccionada = p;
       seleccion.geometry.dispose();
-      if (!p?.orbita) {
-        seleccion.visible = false;
-        nClonesSeleccion = 0;
-        return;
-      }
-      const formas = formasDe(p, DETALLE.seleccion[0]);
-      nClonesSeleccion = formas.length;
-      seleccion.geometry = geometriaNube(formas, DETALLE.seleccion[1]);
-      seleccion.visible = true;
+      seleccion.geometry = new BufferGeometry();
+      seleccion.visible = false;
+      nClonesSeleccion = 0;
+      if (!p?.orbita) return;
       const o = p.orbita;
       const afelio = puntosForma(
         { a: o.a.v, e: o.e.v, i: o.i.v, nodo: o.nodo.v, omega: o.omega.v },
         2,
       )[1]!;
       anclaSeleccion.position.copy(aThree(afelio));
+      if (!datosNubes?.[p.id]) return;
+      const formas = formasDe(p, DETALLE.seleccion[0]);
+      nClonesSeleccion = formas.length;
+      seleccion.geometry.dispose();
+      seleccion.geometry = geometriaNube(formas, DETALLE.seleccion[1]);
+      seleccion.visible = true;
     },
   };
 }

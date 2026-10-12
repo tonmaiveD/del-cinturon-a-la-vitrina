@@ -54,6 +54,8 @@ test('fps con las 25 nubes de órbitas (vista solar, nivel de detalle cercano)',
 }, info) => {
   await page.goto('/?pieza=zdar-nad-sazavou&vista=sistema-solar');
   await page.waitForFunction(() => (window as unknown as { __listo?: number }).__listo);
+  // Las nubes llegan después de crear la vista solar (public/data/nubes.json)
+  await expect(page.locator('#descripcion')).toContainText('160 órbitas posibles');
   await page.waitForTimeout(4000); // el promedio móvil de fps se estabiliza
   const fps = await page.evaluate(() =>
     (window as unknown as { __app: { motor: { fps(): number } } }).__app.motor.fps(),

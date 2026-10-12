@@ -31,6 +31,7 @@ const filas = auditar({
     cneos,
   },
   nubeChelyabinsk: leer('public/data/chelyabinsk-orbitas.json'),
+  nubes: leer('public/data/nubes.json'),
   cneos,
   radioVisualMeteoroideKm: RADIO_VISUAL_METEOROIDE_AU * KM_POR_AU,
   trayectorias: {
