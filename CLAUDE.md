@@ -15,7 +15,13 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   piezas se calculan desde el radiante (`npm run datos:nubes`); la ficha cita la tabla S1 y las
   cinco procedencias del material suplementario de Popova (en `.trabajo/popova-suplemento/`, no
   se redistribuye). Etapa 3 (auditoría V3) hecha: reporte de nubes reproducible (entradas,
-  semillas, sensibilidad) y pruebas más estrictas. Falta que el usuario apruebe la ficha.
+  semillas, sensibilidad) y pruebas más estrictas.
+- **2026-10-12: cuarta revisión validada; siguiente paso, etapa 4** (plan en
+  `docs/deuda-tecnica.md`, «Cuarta revisión de la ficha»). Bloquea la aprobación una frase
+  incorrecta: Popova sí explica sus márgenes, con un Monte Carlo. **Falta que el usuario decida**
+  qué entradas alimentan la nube de Chelyabinsk (A actual, B radiante aparente, C elementos
+  de la S5B junto a la Tierra; recomendada C) y si toda la figura sale del punto de Popova.
+  Después: aprobación de la ficha y ola 3.
 - **Siguiente paso: ola 3 = Fase 4 (colección y fichas).** Necesita decisiones del usuario
   (ver «Fase 4» abajo). Si aún no las tiene, se puede empezar por lo que no las necesita: el
   modelo meteorito ≠ ejemplar (M33) y el manejo de campos privados (M32). Se lo propuse el

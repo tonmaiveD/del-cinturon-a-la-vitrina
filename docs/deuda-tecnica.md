@@ -362,6 +362,80 @@ el CNEOS acotada a Peña-Asensio et al. y LL5 ya estaban resueltos en la etapa 2
 Queda en manos del usuario: aprobar la ficha (`revision/ficha-chelyabinsk-para-revisar.md`) o
 pedir cambios.
 
+### Cuarta revisión de la ficha · validada el 2026-10-12 · **pendiente (etapa 4)**
+
+Documento «Mejoras priorizadas de la ficha de Chelyabinsk». Se validó contra el material
+suplementario de Popova et al. (págs. 17–19 y 3) y con el código del proyecto:
+
+- **Confirmado:**
+  1. _P1._ La ficha dice que Popova no explica cómo obtuvo los márgenes de la órbita, pero el
+     suplemento (pág. 18) dice: «Error bars were calculated from a Monte Carlo propagation of
+     errors», partiendo del radiante aparente y la velocidad, corregidos por la rotación y la
+     gravedad terrestres. **Bloquea la aprobación.**
+  2. Con las cifras redondeadas de la Tabla 1, la línea central pasa a 259 656 km de la Tierra;
+     con las cifras completas del suplemento (a 1,763270; e 0,580953; i 4,928787°;
+     ω 108,301927°; Ω 326,442018°; q 0,738893), a 6008 km. Medido aquí con 3 millones de
+     puntos por elipse.
+  3. La estela y la nube parten del punto e instante de Granvik & Brown, que la ficha no cita.
+     Popova da el suyo: 97,1 km sobre 54,445° N 64,565° E a las 03:20:19,8. Su Tabla S1 da
+     la primera detección a las 03:20:20,8: hay 1 s de diferencia dentro de la propia fuente.
+  4. Con σq 0,010 y σe 0,009 (Tabla S5B, 1σ), σa no puede pasar de 0,0618 ni con correlación
+     perfecta. La Tabla 1 da 0,08 (±0,16 a 2σ) y la S5B no da σa.
+  5. El radiante aparente y la velocidad de entrada de Popova (S5A: 328,62 ± 0,09°,
+     +7,26 ± 0,10°, 19,16 ± 0,15 km/s) reproducen su órbita con el código del proyecto:
+     a 1,7640; e 0,5811; i 4,910°; q 0,7390. Esto valida el método.
+- **Hallazgo propio.** El suplemento da el radiante geocéntrico con ±1,0°, ±1,1° y ±0,2 km/s
+  (pág. 17, sin nivel). La Tabla 1 del artículo da ±1,6°, ±1,8° y ±0,4 a 2σ, es decir 0,8, 0,9
+  y 0,2 a 1σ. Los dos son mucho más anchos de lo que implica el radiante aparente (±0,1°). Por
+  eso la nube actual, que sortea el radiante geocéntrico, sale 1,75 veces más ancha en i.
+- **Válido en parte o de redacción:**
+  - «pasan por donde estaba la Tierra»: la separación real es de 13 913 km de mediana y
+    14 661 km como máximo; 0,002 au es solo el umbral de parada;
+  - la frase del 0 %;
+  - el encabezado de la versión legible, que dice «etapas 1 y 2»;
+  - la frase de 1σ conjunta, que pesa para el público;
+  - el commit y las versiones en los reportes.
+
+**Decisión pendiente del usuario: qué entradas alimentan la nube de Chelyabinsk.**
+
+| Opción                                                         | σa (au) | σe     | σi (°) | σq (au) | Nota                                               |
+| -------------------------------------------------------------- | ------- | ------ | ------ | ------- | -------------------------------------------------- |
+| A. Radiante geocéntrico de la Tabla 1 (actual)                 | 0,054   | 0,011  | 0,42   | 0,0065  | i 1,75 veces más ancha que el margen citado        |
+| B. Radiante aparente y V∞ (S5A), el método que describe Popova | 0,024   | 0,0067 | 0,14   | 0,0023  | más estrecha que los márgenes que cita la ficha    |
+| C. Elementos de la S5B, solo los que pasan junto a la Tierra   | 0,036   | 0,0080 | 0,24   | 0,012   | reproduce σe, σi, σq y σω publicados (recomendada) |
+
+Las cifras de B y C son las de la auditoría, con 300 a 500 clones; se recalcularán al
+implementar. Las 24 piezas restantes no cambian: con Granvik & Brown, la nube desde el radiante
+ya reproduce las σ publicadas.
+
+**Plan de la etapa 4, con la opción C y el punto de Popova (una sesión):**
+
+1. **Datos de Popova con su página:**
+   - la órbita con todas las cifras como línea central (S5B, pág. 19);
+   - el radiante aparente con V∞ (S5A);
+   - el punto e instante de entrada (pág. 17);
+   - el radiante geocéntrico del suplemento, para documentar la diferencia.
+2. **Estela de Chelyabinsk:** se calcula desde el radiante aparente y V∞ en el punto de Popova,
+   que es el método que la fuente describe, y se valida contra su órbita. Toda la figura sale
+   de una sola fuente y desaparece la altura convencional.
+3. **Nube de Chelyabinsk:**
+   - se sortean los elementos de la S5B y se conservan solo las órbitas a menos de 15 000 km
+     de la Tierra en el impacto;
+   - cada clon se coloca en su punto más cercano a la Tierra en ese instante;
+   - criterios y pruebas como en las demás piezas;
+   - la sensibilidad A/B/C queda registrada en `nubes.md`.
+4. **Ficha:**
+   - el método de Popova, Monte Carlo (P1);
+   - qué representa la nube con la opción C;
+   - la nota sobre σa (0,08 publicada frente a un máximo coherente de 0,062);
+   - «pasan rozando la Tierra; la pequeña separación se debe a que se calculan sin su
+     atracción»;
+   - la frase del 0 %;
+   - la 1σ conjunta pasa al reporte;
+   - el encabezado de la versión legible.
+5. **Reportes:** commit, árbol limpio o con cambios, versión de astronomy-engine y huella del
+   método en el encabezado de `nubes.md`, `chelyabinsk.md` y `trayectorias.md`.
+
 ### Etapa D · CI y operación · **hecha el 2026-10-11** (ola 1)
 
 Resultado:
