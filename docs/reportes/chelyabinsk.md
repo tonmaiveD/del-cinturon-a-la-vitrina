@@ -1,6 +1,6 @@
 # Validación científica: Chelyabinsk (CNEOS → órbita heliocéntrica)
 
-> Generado por `npm run validacion:chelyabinsk` el 2026-10-07. No editar a mano.
+> Generado por `npm run validacion:chelyabinsk` el 2026-10-12. No editar a mano.
 
 ## Veredicto
 
@@ -29,7 +29,7 @@ Fuente: Peña-Asensio, Socas-Navarro & Seligman 2025, A&A 701, A202 (arXiv:2508.
 
 - **Parametrización principal** (decidida antes de ver resultados): normales independientes con σ = mediana / 0.6745 (relación entre la mediana del valor absoluto y σ en una normal).
 - **Sensibilidad:** σ = mediana.
-- **Aproximación:** se perturba el radiante aparente del vector CNEOS con los σ del radiante geocéntrico.
+- **Dónde se aplican:** sobre el radiante geocéntrico (α_g, δ_g) y la velocidad de entrada, como los mide la Tabla 4; cada clon se reconstruye en el pico de brillo con la inversa de la atracción cenital y se integra igual que la órbita nominal (desde el 2026-10-12; antes se perturbaba el radiante aparente del vector con esos mismos σ).
 
 ## Resultados nominales (sin perturbar)
 
@@ -51,7 +51,7 @@ Fuente: Peña-Asensio, Socas-Navarro & Seligman 2025, A&A 701, A202 (arXiv:2508.
 
 Radiante geocéntrico de Popova et al. 2013 (1σ): α = 333.2 ± 0.8°, δ = 0.3 ± 0.9°, Vg = 15.3 ± 0.2 km/s.
 
-Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1000 clones): 34.5 s.
+Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1000 clones): 34.3 s.
 
 ## Monte Carlo
 
@@ -61,17 +61,17 @@ Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1
 
 | Elemento | Media | σ     | Percentil 2.5 % | Percentil 97.5 % |
 | -------- | ----- | ----- | --------------- | ---------------- |
-| a        | 1.733 | 0.166 | 1.462           | 2.101            |
-| e        | 0.563 | 0.041 | 0.479           | 0.642            |
-| i        | 4.176 | 1.052 | 2.031           | 6.239            |
-| q        | 0.751 | 0.020 | 0.712           | 0.789            |
+| a        | 1.733 | 0.169 | 1.459           | 2.137            |
+| e        | 0.563 | 0.042 | 0.474           | 0.645            |
+| i        | 4.106 | 0.694 | 2.827           | 5.578            |
+| q        | 0.751 | 0.018 | 0.715           | 0.788            |
 
 | Órbita publicada                              | D_D (nominal) | D_D mediana (clones) | z(a)  | z(e) | z(i) | z(q)  |
 | --------------------------------------------- | ------------- | -------------------- | ----- | ---- | ---- | ----- |
-| popova-2013-science                           | 0.021         | 0.034                | 0.16  | 0.45 | 0.72 | -0.64 |
-| borovicka-2013-nature (osculadora 60 d antes) | 0.016         | 0.034                | -0.08 | 0.20 | 0.76 | -0.69 |
-| emelyanenko-2014-arxiv                        | 0.045         | 0.048                | 0.89  | 1.14 | 1.68 | -0.82 |
-| granvik-brown-2018                            | 0.018         | 0.033                | 0.22  | 0.40 | 0.57 | -0.34 |
+| popova-2013-science                           | 0.021         | 0.034                | 0.16  | 0.43 | 1.19 | -0.65 |
+| borovicka-2013-nature (osculadora 60 d antes) | 0.016         | 0.033                | -0.08 | 0.20 | 1.26 | -0.71 |
+| emelyanenko-2014-arxiv                        | 0.045         | 0.047                | 0.87  | 1.09 | 2.64 | -0.86 |
+| granvik-brown-2018                            | 0.018         | 0.033                | 0.22  | 0.39 | 0.97 | -0.34 |
 
 #### Sensibilidad: ECEF-relativa, σ = mediana
 
@@ -79,17 +79,17 @@ Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1
 
 | Elemento | Media | σ     | Percentil 2.5 % | Percentil 97.5 % |
 | -------- | ----- | ----- | --------------- | ---------------- |
-| a        | 1.723 | 0.108 | 1.533           | 1.956            |
-| e        | 0.562 | 0.027 | 0.505           | 0.615            |
-| i        | 4.153 | 0.709 | 2.699           | 5.531            |
-| q        | 0.752 | 0.013 | 0.725           | 0.777            |
+| a        | 1.722 | 0.110 | 1.531           | 1.974            |
+| e        | 0.562 | 0.029 | 0.502           | 0.617            |
+| i        | 4.104 | 0.466 | 3.254           | 5.092            |
+| q        | 0.751 | 0.012 | 0.727           | 0.777            |
 
 | Órbita publicada                              | D_D (nominal) | D_D mediana (clones) | z(a)  | z(e) | z(i) | z(q)  |
 | --------------------------------------------- | ------------- | -------------------- | ----- | ---- | ---- | ----- |
-| popova-2013-science                           | 0.021         | 0.026                | 0.34  | 0.69 | 1.10 | -0.97 |
-| borovicka-2013-nature (osculadora 60 d antes) | 0.016         | 0.025                | -0.02 | 0.33 | 1.17 | -1.04 |
-| emelyanenko-2014-arxiv                        | 0.045         | 0.045                | 1.46  | 1.72 | 2.52 | -1.25 |
-| granvik-brown-2018                            | 0.018         | 0.024                | 0.44  | 0.63 | 0.88 | -0.53 |
+| popova-2013-science                           | 0.021         | 0.027                | 0.34  | 0.67 | 1.77 | -1.01 |
+| borovicka-2013-nature (osculadora 60 d antes) | 0.016         | 0.025                | -0.02 | 0.32 | 1.88 | -1.09 |
+| emelyanenko-2014-arxiv                        | 0.045         | 0.045                | 1.44  | 1.65 | 3.93 | -1.31 |
+| granvik-brown-2018                            | 0.018         | 0.024                | 0.43  | 0.60 | 1.45 | -0.55 |
 
 #### Hipótesis inercial, σ = mediana / 0.6745
 
@@ -97,17 +97,17 @@ Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1
 
 | Elemento | Media | σ     | Percentil 2.5 % | Percentil 97.5 % |
 | -------- | ----- | ----- | --------------- | ---------------- |
-| a        | 1.786 | 0.179 | 1.496           | 2.183            |
-| e        | 0.577 | 0.041 | 0.493           | 0.656            |
-| i        | 4.299 | 1.044 | 2.171           | 6.342            |
-| q        | 0.749 | 0.019 | 0.710           | 0.786            |
+| a        | 1.786 | 0.182 | 1.492           | 2.225            |
+| e        | 0.577 | 0.042 | 0.488           | 0.660            |
+| i        | 4.230 | 0.706 | 2.927           | 5.723            |
+| q        | 0.748 | 0.018 | 0.712           | 0.785            |
 
 | Órbita publicada                              | D_D (nominal) | D_D mediana (clones) | z(a)  | z(e)  | z(i) | z(q)  |
 | --------------------------------------------- | ------------- | -------------------- | ----- | ----- | ---- | ----- |
-| popova-2013-science                           | 0.011         | 0.032                | -0.15 | 0.10  | 0.60 | -0.51 |
-| borovicka-2013-nature (osculadora 60 d antes) | 0.012         | 0.033                | -0.37 | -0.14 | 0.65 | -0.57 |
-| emelyanenko-2014-arxiv                        | 0.033         | 0.039                | 0.53  | 0.79  | 1.57 | -0.71 |
-| granvik-brown-2018                            | 0.007         | 0.031                | -0.09 | 0.06  | 0.46 | -0.22 |
+| popova-2013-science                           | 0.011         | 0.032                | -0.14 | 0.10  | 0.99 | -0.52 |
+| borovicka-2013-nature (osculadora 60 d antes) | 0.012         | 0.032                | -0.36 | -0.13 | 1.06 | -0.57 |
+| emelyanenko-2014-arxiv                        | 0.033         | 0.039                | 0.52  | 0.76  | 2.42 | -0.72 |
+| granvik-brown-2018                            | 0.007         | 0.031                | -0.09 | 0.06  | 0.78 | -0.21 |
 
 ## ¿Qué marco usa CNEOS? Prueba con los 18 eventos calibrados
 

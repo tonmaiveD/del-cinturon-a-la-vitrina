@@ -50,7 +50,10 @@ export interface OrbitaCalculada {
   id: string;
   huella: string;
   metodo: {
-    version: number;
+    /** Huella del método (núcleo orbital, efemérides y parámetros; pipeline/huella-metodo.ts). */
+    huella: string;
+    /** Dónde se aplican los errores de la Tabla 4 (desde el 2026-10-12, el radiante geocéntrico). */
+    perturbacion: 'radiante-geocentrico';
     clones_pedidos: number;
     clones_fallidos: number;
     semilla: number;

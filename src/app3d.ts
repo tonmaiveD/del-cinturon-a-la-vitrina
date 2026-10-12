@@ -383,6 +383,7 @@ export async function iniciar3D(
         : 'tiempo.ir-referencia',
     );
     if (!secuencia.activa()) descripcion.textContent = descripcionVista();
+    actualizarLeyendaCapas();
     // Nombre de lo seleccionado en la cabecera de la hoja móvil
     cneosCtl.hoja.fijarTitulo(
       modo === 'cneos'
@@ -405,6 +406,46 @@ export async function iniciar3D(
     solar.mostrarTrayectoria(chely || trayPieza !== null);
     solarCreada.cat.seleccionar(p);
     solarCreada.etiquetaNube.element.textContent = t('etiqueta.nube', { nombre: nombrePieza(p) });
+  }
+
+  // Leyenda por capa de la vista solar (M27): fuente y método de lo que se dibuja, con la
+  // advertencia de que la densidad de una nube no es una probabilidad calibrada. Los colores
+  // son los de src/scene/catalogo-solar.ts, sistema-solar.ts y cneos-solar.ts.
+  const leyendaCapas = $('#leyenda-capas');
+  const listaCapas = $('#leyenda-capas-lista');
+  function actualizarLeyendaCapas(): void {
+    leyendaCapas.hidden = vista !== 'sistema-solar';
+    if (leyendaCapas.hidden) return;
+    const capas: [string, Clave][] =
+      modo === 'cneos'
+        ? [['#6fd3ff', 'capas.cneos']]
+        : [
+            ...(panel.actual() === 'chelyabinsk'
+              ? ([['#ff9a3c', 'capas.chelyabinsk']] as [string, Clave][])
+              : ([
+                  ['#6fd3ff', 'capas.seleccion'],
+                  ...(trayPieza ? [['#ffe2b8', 'capas.estela']] : []),
+                ] as [string, Clave][])),
+            ['#8f9bd6', 'capas.otras'],
+            ['#9be7a8', 'capas.hungaria'],
+            ['#f0b6ff', 'capas.phocaea'],
+            ['#ffd36b', 'capas.resonancias'],
+          ];
+    listaCapas.replaceChildren(
+      ...capas.map(([color, clave]) => {
+        const li = document.createElement('li');
+        const punto = document.createElement('span');
+        punto.className = 'punto';
+        punto.style.background = color;
+        punto.setAttribute('aria-hidden', 'true');
+        li.append(punto, t(clave));
+        return li;
+      }),
+    );
+    const nota = document.createElement('li');
+    nota.className = 'nota';
+    nota.textContent = t('capas.densidad');
+    listaCapas.append(nota);
   }
 
   /** Ajusta escena, reloj y panel a la pieza seleccionada; `t` opcional (estado de la URL). */

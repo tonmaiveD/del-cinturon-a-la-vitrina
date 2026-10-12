@@ -1,42 +1,93 @@
 /**
- * Monte Carlo sobre el vector de velocidad de un bólido: se perturban el módulo y la
- * dirección (ascensión recta/declinación del vector en ejes ECEF; la rotación sobre z de
- * ECEF a ecuatorial conserva la declinación y desplaza la AR uniformemente).
+ * Monte Carlo de la órbita de un bólido a partir de sus errores típicos.
+ *
+ * Peña-Asensio et al. (2025, Tabla 4) miden los errores del CNEOS sobre el radiante
+ * geocéntrico (α_g, δ_g) y sobre la velocidad. Por eso cada clon se construye así:
+ * 1. del vector publicado se obtiene el radiante geocéntrico y la velocidad de entrada
+ *    (atracción cenital analítica, en el pico de brillo);
+ * 2. se perturban α_g y δ_g (en grados de AR y de declinación, como los publica la tabla) y el
+ *    módulo de la velocidad de entrada;
+ * 3. se reconstruye el estado en el mismo punto con la inversa de la atracción cenital y se
+ *    integra con N cuerpos, igual que la órbita nominal.
+ * Sin perturbación, el clon reproduce la órbita nominal (prueba en orbita-bolido.test.ts).
+ *
+ * Hasta el 2026-10-12 se perturbaba la dirección del vector aparente en ejes ECEF con esas
+ * mismas σ, una aproximación no declarada que señaló la auditoría externa (M09).
  */
+import * as Astro from 'astronomy-engine';
 import { crearAzar } from './azar';
+import { gm } from './dinamica';
+import { KMS_A_AUD } from './marcos';
 import {
-  orbitaDesdeBolido,
+  elementosSinTierra,
+  estadoDesdeRadianteGeocentrico,
+  estadoGeocentrico,
+  orbitaAtraccionCenital,
+  type EntradaRadiante,
   type OpcionesOrbita,
   type RegistroBolido,
   type ResultadoOrbita,
 } from './orbita-bolido';
-import { GRAD, norma, type Vec3 } from './vector';
+import { norma } from './vector';
 
 export interface IncertidumbreVelocidad {
-  /** σ del módulo (km/s). */
+  /** σ del módulo de la velocidad de entrada (km/s). */
   sigmaV: number;
-  /** σ de la ascensión recta del radiante (grados de AR). */
+  /** σ de la ascensión recta del radiante geocéntrico (grados de AR). */
   sigmaRaGrados: number;
-  /** σ de la declinación del radiante (grados). */
+  /** σ de la declinación del radiante geocéntrico (grados). */
   sigmaDecGrados: number;
 }
 
-export function perturbarVelocidad(
-  v: Vec3,
+/**
+ * Radiante geocéntrico perturbado de un registro, listo para reconstruir su estado. Lanza un
+ * error si la velocidad perturbada no supera la de escape (no hay órbita posible).
+ */
+export function radiantePerturbado(
+  reg: RegistroBolido,
   inc: IncertidumbreVelocidad,
   normal: () => number,
-): Vec3 {
-  const m = norma(v);
-  const ra = Math.atan2(v[1], v[0]);
-  const dec = Math.asin(v[2] / m);
-  const m2 = m + normal() * inc.sigmaV;
-  const ra2 = ra + normal() * inc.sigmaRaGrados * GRAD;
-  const dec2 = dec + normal() * inc.sigmaDecGrados * GRAD;
-  return [
-    m2 * Math.cos(dec2) * Math.cos(ra2),
-    m2 * Math.cos(dec2) * Math.sin(ra2),
-    m2 * Math.sin(dec2),
-  ];
+  hipotesis: OpcionesOrbita['hipotesis'] = 'ecef-relativa',
+): EntradaRadiante {
+  const { r, v } = estadoGeocentrico(reg, hipotesis);
+  const { radiante } = orbitaAtraccionCenital(reg, hipotesis);
+  // Velocidad de entrada (km/s) perturbada → v_g con la misma corrección de energía
+  const vEntrada = norma(v) / KMS_A_AUD + normal() * inc.sigmaV;
+  const vEscape2 = (2 * gm('Earth')) / norma(r) / (KMS_A_AUD * KMS_A_AUD);
+  const vg2 = vEntrada * vEntrada - vEscape2;
+  if (!(vg2 > 0)) throw new Error('velocidad perturbada por debajo de la de escape');
+  return {
+    fecha: reg.fecha,
+    latGrados: reg.latGrados,
+    lonGrados: reg.lonGrados,
+    alturaKm: reg.alturaKm,
+    raGrados: radiante.ra + normal() * inc.sigmaRaGrados,
+    decGrados: radiante.dec + normal() * inc.sigmaDecGrados,
+    vgKmS: Math.sqrt(vg2),
+  };
+}
+
+/** Órbita (sin la deflexión terrestre) de un radiante geocéntrico, como la nominal. */
+export function orbitaDeRadiante(
+  entrada: EntradaRadiante,
+  opciones: OpcionesOrbita = {},
+): ResultadoOrbita {
+  const { t, y0 } = estadoDesdeRadianteGeocentrico(entrada);
+  const { elementos, tSalida } = elementosSinTierra(
+    y0,
+    t.ut,
+    t.ut,
+    opciones.distanciaSalida,
+    opciones.rtol,
+  );
+  const tierra = Astro.HelioState(Astro.Body.Earth, t);
+  const vGeo = Math.hypot(y0[3]! - tierra.vx, y0[4]! - tierra.vy, y0[5]! - tierra.vz);
+  return {
+    elementos,
+    radiante: { ra: entrada.raGrados, dec: entrada.decGrados, vg: entrada.vgKmS },
+    vInercialKmS: vGeo / KMS_A_AUD,
+    diasRetro: t.ut - tSalida,
+  };
 }
 
 export function montecarloBolido(
@@ -48,9 +99,9 @@ export function montecarloBolido(
 ): ResultadoOrbita[] {
   const { normal } = crearAzar(semilla);
   const clones: ResultadoOrbita[] = [];
-  for (let k = 0; k < n; k++) {
-    const vEcefKmS = perturbarVelocidad(reg.vEcefKmS, inc, normal);
-    clones.push(orbitaDesdeBolido({ ...reg, vEcefKmS }, opciones));
-  }
+  for (let k = 0; k < n; k++)
+    clones.push(
+      orbitaDeRadiante(radiantePerturbado(reg, inc, normal, opciones.hipotesis), opciones),
+    );
   return clones;
 }

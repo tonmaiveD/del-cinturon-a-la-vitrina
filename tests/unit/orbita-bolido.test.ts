@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { Elementos } from '../../src/core/kepler';
-import { montecarloBolido } from '../../src/core/montecarlo';
+import { montecarloBolido, orbitaDeRadiante, radiantePerturbado } from '../../src/core/montecarlo';
 import {
   orbitaAtraccionCenital,
   orbitaDesdeBolido,
@@ -68,6 +68,35 @@ describe('órbita desde un registro CNEOS', () => {
     const b = montecarloBolido(registro(chelyabinsk), inc, 3, 7).map((r) => r.elementos.a);
     expect(a).toEqual(b);
     expect(new Set(a).size).toBe(3);
+  });
+  it('sin perturbación, un clon reproduce la órbita nominal (M09)', () => {
+    const reg = registro(chelyabinsk);
+    const nominal = orbitaDesdeBolido(reg).elementos;
+    const clon = orbitaDeRadiante(
+      radiantePerturbado(reg, { sigmaV: 0, sigmaRaGrados: 0, sigmaDecGrados: 0 }, () => 0),
+    ).elementos;
+    expect(clon.a).toBeCloseTo(nominal.a, 5);
+    expect(clon.e).toBeCloseTo(nominal.e, 6);
+    expect(clon.i).toBeCloseTo(nominal.i, 6);
+    expect(clon.nodo).toBeCloseTo(nominal.nodo, 6);
+    expect(clon.omega).toBeCloseTo(nominal.omega, 5);
+  });
+
+  it('los errores se aplican al radiante geocéntrico con la σ indicada', () => {
+    const reg = registro(chelyabinsk);
+    const base = radiantePerturbado(
+      reg,
+      { sigmaV: 0, sigmaRaGrados: 0, sigmaDecGrados: 0 },
+      () => 0,
+    );
+    // normal() devuelve siempre 1: cada magnitud se desplaza exactamente una σ
+    const uno = radiantePerturbado(
+      reg,
+      { sigmaV: 0, sigmaRaGrados: 2, sigmaDecGrados: 1 },
+      () => 1,
+    );
+    expect(uno.raGrados - base.raGrados).toBeCloseTo(2, 10);
+    expect(uno.decGrados - base.decGrados).toBeCloseTo(1, 10);
   });
 });
 

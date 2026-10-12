@@ -44,14 +44,29 @@ Errores medianos del grupo de alto D_D (Tabla 4): velocidad 6,05 km/s, α_g 67,2
 
 ## Monte Carlo
 
-200 clones por evento, σ_v = 0,815 km/s, σ_α = 2,002°, σ_δ = 1,245° (medianas de la Tabla 4 / 0,6745, igual que en la validación de Chelyabinsk), semilla derivada del id del evento. Retropropagación N cuerpos hasta 0,05 AU (método validado en la Fase 1).
+200 clones por evento, σ_v = 0,815 km/s, σ_α = 2,002°, σ_δ = 1,245° (medianas de la Tabla 4 / 0,6745, igual que en la validación de Chelyabinsk), semilla derivada del id del evento. Desde el 2026-10-12 los errores se aplican al radiante geocéntrico y a la velocidad de entrada, como los mide la Tabla 4, y cada clon se reconstruye en el pico de brillo con la inversa de la atracción cenital antes de integrarlo; antes se aplicaban a la dirección del vector aparente en ejes ECEF. Retropropagación N cuerpos hasta 0,05 AU (método validado en la Fase 1). Huella del método: `34b33bbd179fc374`. Cobertura de las nubes frente a los eventos calibrados: [cobertura-cneos.md](cobertura-cneos.md).
 
 - Eventos sin órbita calculable: 2 (cneos-20180419-133939: el objeto no salió de la influencia terrestre en 60 días; cneos-20110525-054002: el objeto no salió de la influencia terrestre en 60 días). La retropropagación no sale de la influencia terrestre en 60 días: velocidad geocéntrica muy baja, sin solución heliocéntrica con este método. Se muestran sin órbita, con el motivo.
-- Clones descartados porque su integración falló: 709 de 51600. Eventos con más del 10 % de clones descartados: 10 (cneos-20260323-192343: 47; cneos-20250329-081243: 21; cneos-20200918-080526: 57; cneos-20200802-163624: 99; cneos-20190521-131233: 61; cneos-20190422-214210: 107; cneos-20190122-091800: 82; cneos-20180503-072359: 80; cneos-20160516-100941: 26; cneos-20090823-211719: 24). En ellos la nube puede estar sesgada hacia las soluciones que sí convergen.
+- Clones descartados porque su integración falló: 737 de 51600. Eventos con más del 10 % de clones descartados: 11 (cneos-20260323-192343: 62; cneos-20200918-080526: 65; cneos-20200802-163624: 98; cneos-20190521-131233: 56; cneos-20190422-214210: 102; cneos-20190122-091800: 83; cneos-20180503-072359: 87; cneos-20160516-100941: 30; cneos-20130430-084037: 21; cneos-20100903-120458: 22; cneos-20090823-211719: 25). En ellos la nube puede estar sesgada hacia las soluciones que sí convergen.
 - Eventos cuya órbita nominal es hiperbólica (e ≥ 1): 5 de 258.
 - Eventos con más de la mitad de los clones hiperbólicos: 5 (2026-04-01, 69,2 km/s; 2022-07-28, 29,9 km/s; 2021-05-06, 26,6 km/s; 2017-03-09, 36,5 km/s; 2009-04-10, 19,1 km/s).
 
 Una órbita hiperbólica calculada a partir del CNEOS no se interpreta aquí: puede ser consecuencia del error de la velocidad publicada. La escena la mostrará como hiperbólica, sin más lectura.
+
+## Coherencia interna de la fuente
+
+En 8 eventos el módulo del vector de velocidad publicado difiere de la velocidad publicada (columna vel) en más de 0,5 km/s. Es un dato de la fuente que no se corrige; las órbitas usan el vector.
+
+| Evento | vel publicada (km/s) | módulo del vector (km/s) |
+| --- | --- | --- |
+| 2018-12-18 | 13,6 | 32,0 |
+| 2026-08-14 | 12,2 | 22,9 |
+| 2014-06-28 | 12,4 | 16,3 |
+| 2009-10-08 | 19,2 | 22,1 |
+| 2023-06-21 | 16,5 | 18,1 |
+| 2026-10-04 | 13,8 | 15,2 |
+| 2014-08-23 | 16,2 | 17,6 |
+| 2014-05-16 | 18,0 | 18,6 |
 
 ## Eventos con órbita por año
 

@@ -153,7 +153,38 @@ Plan original:
 | M07 | Errores recuperables: reintento de las cargas, aviso visible, `webglcontextlost` y fallo de la textura                                    | P1                |
 | M21 | Pruebas de regresión de cada punto anterior (va dentro de cada cambio, no como etapa aparte)                                              | —                 |
 
-### Etapa C · Rigor del CNEOS (1–2 sesiones más un recálculo de ~45 min)
+### Etapa C · Rigor del CNEOS · **hecha el 2026-10-12** (ola 2)
+
+Resultado:
+
+- **M18.** `pipeline/huella-metodo.ts` calcula un hash del código de `src/core/`, de la versión
+  de astronomy-engine y de los parámetros, y sustituye a `VERSION_METODO`. Si cambia, las
+  órbitas del CNEOS se recalculan solas; cada archivo guarda `metodo.huella`.
+- **M09.**
+  - Los errores de la Tabla 4 se aplican al radiante geocéntrico (α_g, δ_g) y a la velocidad
+    de entrada. El clon se reconstruye en el pico de brillo con la inversa de la atracción
+    cenital y se integra con N cuerpos (`src/core/montecarlo.ts`). Sin perturbación,
+    reproduce la órbita nominal (prueba unitaria).
+  - Se recalcularon las 260 órbitas del grupo fiable; la nube de Chelyabinsk y su validación
+    se regeneraron.
+  - Cobertura con los 12 eventos calibrados del grupo fiable (`docs/reportes/cobertura-cneos.md`):
+    - dentro del 68 %, 35/48 comparaciones con el método nuevo (antes 37/48);
+    - dentro del 95 %, 45/48 (antes 44/48).
+  - Es una validación dentro de la muestra y con pocos eventos: orienta, no certifica. La
+    revisión por un especialista sigue fuera de nuestro alcance.
+- **M08.** `src/cneos/contrato.ts` comprueba, en la frontera de descarga y antes de guardar:
+  versión admitida, campos, recuento, longitud de filas, fechas válidas y únicas, números
+  finitos, rangos de coordenadas, altura y velocidad, ubicación y vector completos o ausentes,
+  y una cuarentena si desaparecen más de 5 eventos. Hay 13 pruebas con datos corruptos y la
+  respuesta en vivo del 2026-10-12 lo cumple. Advertencia, sin rechazo: 8 eventos cuyo
+  |v| difiere de la velocidad publicada (uno de 2018, en 18 km/s); figuran en el informe del
+  CNEOS.
+- **M27.** Leyenda «Qué se ve en esta vista» en la vista solar (pestaña Escena en móvil), con
+  la fuente y el método de cada capa y la advertencia de que la densidad no es una
+  probabilidad calibrada. El texto del método del CNEOS describe el rango como «variantes de
+  este modelo».
+
+Plan original:
 
 | Id  | Qué                                                                                                                                                                                                                    | Nuestra prioridad |
 | --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |

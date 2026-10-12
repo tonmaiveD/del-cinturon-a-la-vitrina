@@ -293,7 +293,7 @@ Fuente: Peña-Asensio, Socas-Navarro & Seligman 2025, A&A 701, A202 (arXiv:2508.
 
 - **Parametrización principal** (decidida antes de ver resultados): normales independientes con σ = mediana / 0.6745 (relación entre la mediana del valor absoluto y σ en una normal).
 - **Sensibilidad:** σ = mediana.
-- **Aproximación:** se perturba el radiante aparente del vector CNEOS con los σ del radiante geocéntrico.
+- **Dónde se aplican:** sobre el radiante geocéntrico (α_g, δ_g) y la velocidad de entrada, como los mide la Tabla 4; cada clon se reconstruye en el pico de brillo con la inversa de la atracción cenital y se integra igual que la órbita nominal (desde el 2026-10-12; antes se perturbaba el radiante aparente del vector con esos mismos σ).
 
 ## Resultados nominales (sin perturbar)
 

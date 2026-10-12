@@ -2,9 +2,8 @@ import { readFileSync } from 'node:fs';
 import { beforeAll, describe, expect, it } from 'vitest';
 import type { OrbitaCalculada, ResumenCneos } from '../../src/cneos/resumen';
 import { grupoBajoDd, leerEventos, registroDe } from '../../src/cneos/eventos';
-import { perturbarVelocidad } from '../../src/core/montecarlo';
+import { orbitaDeRadiante, radiantePerturbado } from '../../src/core/montecarlo';
 import { crearAzar } from '../../src/core/azar';
-import { orbitaDesdeBolido } from '../../src/core/orbita-bolido';
 import { dDrummond } from '../../src/core/similitud';
 import { Calibracion, CalidadCneos, RespuestaCneos } from '../../src/schema';
 
@@ -136,10 +135,7 @@ describe('órbitas calculadas (public/data/cneos)', () => {
       sigmaRaGrados: o.metodo.sigma.alfa_grados,
       sigmaDecGrados: o.metodo.sigma.delta_grados,
     };
-    const primero = orbitaDesdeBolido({
-      ...reg,
-      vEcefKmS: perturbarVelocidad(reg.vEcefKmS, inc, normal),
-    });
+    const primero = orbitaDeRadiante(radiantePerturbado(reg, inc, normal));
     expect(o.clones[0]![0]).toBeCloseTo(primero.elementos.a, 3);
     expect(o.clones[0]![1]).toBeCloseTo(primero.elementos.e, 4);
   });

@@ -3,6 +3,7 @@
  * Control de calidad de los datos y las órbitas del CNEOS (requiere `datos:cneos:orbitas`).
  */
 import { readFileSync, writeFileSync } from 'node:fs';
+import { UMBRAL_INCOHERENCIA_V } from '../src/cneos/contrato';
 import { grupoBajoDd } from '../src/cneos/eventos';
 import type { OrbitaCalculada, OrbitaCneos, ResumenCneos } from '../src/cneos/resumen';
 import { Calibracion } from '../src/schema';
@@ -15,6 +16,16 @@ const f = (x: number, d = 2) =>
 const pct = (a: number, b: number) => `${f((100 * a) / b, 1)} %`;
 
 const conOrbita = resumen.eventos.filter((e) => e.calidad === 'orbita');
+// Eventos cuyo |v| no coincide con la velocidad publicada (advertencia del contrato de entrada)
+const incoherentes = resumen.eventos
+  .filter((e) => e.v_ecef_kms && e.v_kms !== undefined)
+  .map((e) => ({
+    fecha: e.fecha.slice(0, 10),
+    vel: e.v_kms!,
+    modulo: Math.hypot(...e.v_ecef_kms!),
+  }))
+  .filter((x) => Math.abs(x.modulo - x.vel) > UMBRAL_INCOHERENCIA_V)
+  .sort((a, b) => b.modulo - b.vel - (a.modulo - a.vel));
 const todas = conOrbita.map((e) => leer<OrbitaCneos>(`public/data/cneos/orbitas/${e.id}.json`));
 const orbitas = todas.filter((o): o is OrbitaCalculada => !('error' in o));
 const sinCalcular = todas.filter((o) => 'error' in o);
@@ -67,7 +78,7 @@ const lineas = [
   '',
   '## Monte Carlo',
   '',
-  `${m.clones_pedidos} clones por evento, σ_v = ${f(m.sigma.v_kms, 3)} km/s, σ_α = ${f(m.sigma.alfa_grados, 3)}°, σ_δ = ${f(m.sigma.delta_grados, 3)}° (medianas de la Tabla 4 / 0,6745, igual que en la validación de Chelyabinsk), semilla derivada del id del evento. Retropropagación N cuerpos hasta 0,05 AU (método validado en la Fase 1).`,
+  `${m.clones_pedidos} clones por evento, σ_v = ${f(m.sigma.v_kms, 3)} km/s, σ_α = ${f(m.sigma.alfa_grados, 3)}°, σ_δ = ${f(m.sigma.delta_grados, 3)}° (medianas de la Tabla 4 / 0,6745, igual que en la validación de Chelyabinsk), semilla derivada del id del evento. Desde el 2026-10-12 los errores se aplican al radiante geocéntrico y a la velocidad de entrada, como los mide la Tabla 4, y cada clon se reconstruye en el pico de brillo con la inversa de la atracción cenital antes de integrarlo; antes se aplicaban a la dirección del vector aparente en ejes ECEF. Retropropagación N cuerpos hasta 0,05 AU (método validado en la Fase 1). Huella del método: \`${m.huella}\`. Cobertura de las nubes frente a los eventos calibrados: [cobertura-cneos.md](cobertura-cneos.md).`,
   '',
   `- Eventos sin órbita calculable: ${sinCalcular.length}${sinCalcular.length ? ` (${sinCalcular.map((o) => `${o.id}: ${'error' in o ? o.error : ''}`).join('; ')})` : ''}. La retropropagación no sale de la influencia terrestre en 60 días: velocidad geocéntrica muy baja, sin solución heliocéntrica con este método. Se muestran sin órbita, con el motivo.`,
   `- Clones descartados porque su integración falló: ${fallidos} de ${orbitas.length * m.clones_pedidos}. Eventos con más del 10 % de clones descartados: ${muchosFallidos.length}${muchosFallidos.length ? ` (${muchosFallidos.map((o) => `${o.id}: ${o.metodo.clones_fallidos}`).join('; ')})` : ''}. En ellos la nube puede estar sesgada hacia las soluciones que sí convergen.`,
@@ -75,6 +86,14 @@ const lineas = [
   `- Eventos con más de la mitad de los clones hiperbólicos: ${mayoriaHip.length}${mayoriaHip.length ? ` (${mayoriaHip.map((e) => `${e.fecha.slice(0, 10)}, ${f(e.v_kms ?? NaN, 1)} km/s`).join('; ')})` : ''}.`,
   '',
   'Una órbita hiperbólica calculada a partir del CNEOS no se interpreta aquí: puede ser consecuencia del error de la velocidad publicada. La escena la mostrará como hiperbólica, sin más lectura.',
+  '',
+  '## Coherencia interna de la fuente',
+  '',
+  `En ${incoherentes.length} eventos el módulo del vector de velocidad publicado difiere de la velocidad publicada (columna vel) en más de ${f(UMBRAL_INCOHERENCIA_V, 1)} km/s. Es un dato de la fuente que no se corrige; las órbitas usan el vector.`,
+  '',
+  '| Evento | vel publicada (km/s) | módulo del vector (km/s) |',
+  '| --- | --- | --- |',
+  ...incoherentes.map((x) => `| ${x.fecha} | ${f(x.vel, 1)} | ${f(x.modulo, 1)} |`),
   '',
   '## Eventos con órbita por año',
   '',

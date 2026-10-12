@@ -11,16 +11,19 @@ import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { crearAzar } from '../src/core/azar';
 import type { Elementos } from '../src/core/kepler';
-import { perturbarVelocidad, type IncertidumbreVelocidad } from '../src/core/montecarlo';
+import {
+  orbitaDeRadiante,
+  radiantePerturbado,
+  type IncertidumbreVelocidad,
+} from '../src/core/montecarlo';
 import { orbitaDesdeBolido, type ResultadoOrbita } from '../src/core/orbita-bolido';
+import { huellaMetodo } from './huella-metodo';
 import { semillaDe } from '../src/core/muestreo';
 import { leerEventos, registroDe, type EventoCneos } from '../src/cneos/eventos';
 import { CalidadCneos, RespuestaCneos } from '../src/schema';
 import type { OrbitaCalculada, OrbitaCneos, ResumenCneos } from '../src/cneos/resumen';
 
 const N_CLONES = 200;
-/** Cambiar si cambia el método: invalida todas las órbitas guardadas. */
-const VERSION_METODO = 1;
 const DIR = 'public/data/cneos';
 const DIR_ORBITAS = `${DIR}/orbitas`;
 const MAD_A_SIGMA = 1 / 0.6744897501960817;
@@ -37,6 +40,12 @@ const INC: IncertidumbreVelocidad = {
   sigmaDecGrados: bajo.delta_g_grados.mediana * MAD_A_SIGMA,
 };
 
+/**
+ * Huella del método (M18): núcleo orbital, efemérides y parámetros. Si cambia, todas las órbitas
+ * guardadas se recalculan solas (antes había que subir a mano un número de versión).
+ */
+const METODO = huellaMetodo({ INC, N_CLONES, tabla4: bajo, perturbacion: 'radiante-geocentrico' });
+
 const eventos = leerEventos(crudo.respuesta);
 mkdirSync(DIR_ORBITAS, { recursive: true });
 
@@ -51,10 +60,7 @@ const aGrados = (el: Elementos) => [
 ];
 
 function huella(ev: EventoCneos): string {
-  return createHash('sha256')
-    .update(JSON.stringify({ ev, INC, N_CLONES, VERSION_METODO }))
-    .digest('hex')
-    .slice(0, 16);
+  return createHash('sha256').update(JSON.stringify({ ev, METODO })).digest('hex').slice(0, 16);
 }
 
 function percentiles(xs: number[]): [number, number, number] | null {
@@ -78,9 +84,8 @@ function calcular(ev: EventoCneos): OrbitaCneos {
   let fallidos = 0;
   for (let k = 0; k < N_CLONES; k++) {
     try {
-      clones.push(
-        orbitaDesdeBolido({ ...reg, vEcefKmS: perturbarVelocidad(reg.vEcefKmS, INC, normal) }),
-      );
+      // Errores de la Tabla 4 aplicados al radiante geocéntrico y a la velocidad (M09)
+      clones.push(orbitaDeRadiante(radiantePerturbado(reg, INC, normal)));
     } catch {
       fallidos++;
     }
@@ -89,7 +94,8 @@ function calcular(ev: EventoCneos): OrbitaCneos {
     id: ev.id,
     huella: huella(ev),
     metodo: {
-      version: VERSION_METODO,
+      huella: METODO,
+      perturbacion: 'radiante-geocentrico',
       clones_pedidos: N_CLONES,
       clones_fallidos: fallidos,
       semilla: semillaDe(ev.id),
