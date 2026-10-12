@@ -42,7 +42,7 @@ Lo que depende del usuario corre en paralelo, y la Fase 4 se adelanta si llegan 
    - Dependabot: TypeScript >= 6.1 ignorado mientras typescript-eslint no lo admita.
    - Dato de rendimiento: el cambio al modo CNEOS tarda 1,2 s en local y 3,2–3,4 s en la CI
      (sin GPU, CPU ×4); es una medición informativa, para la ola 5 (M22).
-2. **Hecha en local (2026-10-12), pendiente de push y CI.** Etapa C completa (M18, M09, M08,
+2. **Hecha y publicada (2026-10-12).** Etapa C completa (M18, M09, M08,
    M27); detalle en `docs/deuda-tecnica.md`. Se recalcularon las 260 órbitas del CNEOS con los
    errores aplicados al radiante geocéntrico. Cobertura frente a los 12 eventos calibrados del
    grupo fiable: 35/48 dentro del 68 % y 45/48 dentro del 95 %. La validación de Chelyabinsk
