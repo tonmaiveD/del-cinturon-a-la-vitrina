@@ -362,7 +362,7 @@ el CNEOS acotada a Peña-Asensio et al. y LL5 ya estaban resueltos en la etapa 2
 Queda en manos del usuario: aprobar la ficha (`revision/ficha-chelyabinsk-para-revisar.md`) o
 pedir cambios.
 
-### Cuarta revisión de la ficha · validada el 2026-10-12 · **pendiente (etapa 4)**
+### Cuarta revisión de la ficha · validada el 2026-10-12 · **etapa 4 hecha el 2026-10-12**
 
 Documento «Mejoras priorizadas de la ficha de Chelyabinsk». Se validó contra el material
 suplementario de Popova et al. (págs. 17–19 y 3) y con el código del proyecto:
@@ -408,33 +408,45 @@ Las cifras de B y C son las de la auditoría, con 300 a 500 clones; se recalcula
 implementar. Las 24 piezas restantes no cambian: con Granvik & Brown, la nube desde el radiante
 ya reproduce las σ publicadas.
 
-**Plan de la etapa 4, con la opción C y el punto de Popova (una sesión):**
+**Decisión del usuario (2026-10-12): opción C y toda la figura desde el punto de Popova.**
 
-1. **Datos de Popova con su página:**
-   - la órbita con todas las cifras como línea central (S5B, pág. 19);
-   - el radiante aparente con V∞ (S5A);
-   - el punto e instante de entrada (pág. 17);
-   - el radiante geocéntrico del suplemento, para documentar la diferencia.
-2. **Estela de Chelyabinsk:** se calcula desde el radiante aparente y V∞ en el punto de Popova,
-   que es el método que la fuente describe, y se valida contra su órbita. Toda la figura sale
-   de una sola fuente y desaparece la altura convencional.
-3. **Nube de Chelyabinsk:**
-   - se sortean los elementos de la S5B y se conservan solo las órbitas a menos de 15 000 km
-     de la Tierra en el impacto;
-   - cada clon se coloca en su punto más cercano a la Tierra en ese instante;
-   - criterios y pruebas como en las demás piezas;
-   - la sensibilidad A/B/C queda registrada en `nubes.md`.
-4. **Ficha:**
-   - el método de Popova, Monte Carlo (P1);
-   - qué representa la nube con la opción C;
-   - la nota sobre σa (0,08 publicada frente a un máximo coherente de 0,062);
-   - «pasan rozando la Tierra; la pequeña separación se debe a que se calculan sin su
-     atracción»;
-   - la frase del 0 %;
-   - la 1σ conjunta pasa al reporte;
-   - el encabezado de la versión legible.
-5. **Reportes:** commit, árbol limpio o con cambios, versión de astronomy-engine y huella del
-   método en el encabezado de `nubes.md`, `chelyabinsk.md` y `trayectorias.md`.
+Resultado de la etapa 4:
+
+- **Datos con su página:**
+  - la órbita de Popova con todas las cifras (`orbitas[].cifras_completas`);
+  - la entrada en la atmósfera (`entrada_atmosferica`: instante 03:20:19,8; 54,445° N
+    64,565° E; 97,1 km; radiante aparente 328,62 ± 0,09°, +7,26 ± 0,10°; V∞ 19,16 ± 0,15);
+  - las notas sobre el radiante geocéntrico del suplemento y sobre σa.
+- **Estela.** Sale de `calcularDesdeEntrada`: radiante aparente y V∞ en el punto de Popova,
+  con la rotación terrestre y sin altura convencional. Frente a su órbita da D_D 0,00106 y
+  |z| ≤ 0,08. La auditoría la contrasta con `entrada_atmosferica`.
+- **Nube, opción C** (`nubeCondicionada`, `pipeline/nubes-pedigri.ts`):
+  - se aceptaron 300 de 70 457 sorteos, todos a menos de 15 000 km de la Tierra a las
+    03:20:19,8, con una mediana de unos 9000 km;
+  - σe 0,0093 (publicada 0,009) y σi 0,24° (0,24°); σq 0,0074, menor que 0,010 por el encuentro;
+    σa 0,042, por debajo del máximo coherente de 0,062;
+  - la línea central, con todas las cifras, pasa a unos 6000 km; con las cifras redondeadas
+    pasaba a unos 260 000 km;
+  - la sensibilidad A/B/C y la variante con el radio de captura (7994 km), que apenas cambia la
+    dispersión, están en `nubes.md` y en `nubes.json`.
+- **Ficha:**
+  - el Monte Carlo de Popova (P1);
+  - qué es la nube y qué reproduce;
+  - la nota sobre σa;
+  - «pasan rozando la Tierra», con la causa de la separación;
+  - la frase del 0 %;
+  - la velocidad geocéntrica frente a la de entrada, ahora en «Qué ocurrió».
+
+  La 1σ conjunta pasó al reporte, y el encabezado de la versión legible se actualizó.
+
+- **Reportes.** `nubes.md`, `chelyabinsk.md` y `trayectorias.md` llevan una línea de
+  procedencia: commit, si había cambios sin confirmar, versión de astronomy-engine, Node y una
+  huella del código y los datos de entrada. Si un reporte se genera antes de confirmar, la
+  línea lo dice y la huella identifica el contenido. `npm run datos:trayectorias -- informe`
+  regenera solo ese reporte, que ya incluye la estela de Chelyabinsk.
+- **Pruebas:** la opción C reproduce σe y σi, la línea central pasa junto a la Tierra y la
+  redondeada no, la sensibilidad A/B/C y la reproducibilidad de C y de una nube desde el
+  radiante. Hay 270 pruebas unitarias.
 
 ### Etapa D · CI y operación · **hecha el 2026-10-11** (ola 1)
 

@@ -22,8 +22,11 @@ import {
   type EntradaRadiante,
 } from '../src/core/orbita-bolido';
 import { dDrummond } from '../src/core/similitud';
-import { GRAD } from '../src/core/vector';
+import { eqjAEcef } from '../src/core/marcos';
+import { estadoGeocentrico, type RegistroBolido } from '../src/core/orbita-bolido';
+import { GRAD, type Vec3 } from '../src/core/vector';
 import { Meteorito, type Orbita, type Valor } from '../src/schema';
+import { procedenciaReporte } from './huella-metodo';
 import { trayectoriaHaciaAtras } from './trayectoria-comun';
 
 export const ALTURA_CONVENCIONAL_KM = 100;
@@ -79,9 +82,14 @@ export interface TrayectoriaPieza {
   metodo: string;
   instante_referencia: string;
   /** Origen del estado inicial: radiante publicado o vector de estado de JPL (telescópico). */
-  origen: 'radiante' | 'jpl';
+  /**
+   * Origen del estado inicial: radiante geocéntrico publicado, vector de estado de JPL
+   * (telescópico) o radiante aparente y velocidad de entrada medidos (Chelyabinsk, Popova).
+   */
+  origen: 'radiante' | 'jpl' | 'radiante-aparente';
   punto: { lat: number; lon: number; altura_km: number; altura_convencional: boolean };
   radiante?: { ra: number; dec: number; vg: number; fuente: string };
+  radiante_aparente?: { ra: number; dec: number; v: number; fuente: string };
   estado_jpl?: { fuente: string; jd_tdb: number; vector_geocentrico: number[] };
   validacion: Validacion;
   helio_ecl_au: number[][];
@@ -121,6 +129,83 @@ export function entradaPieza(m: Meteorito): {
   };
 }
 
+/**
+ * Registro de entrada a partir del radiante aparente (J2000) y la velocidad de entrada respecto
+ * a la superficie terrestre: el vector de velocidad se expresa en ECEF y el estado geocéntrico
+ * suma la rotación terrestre (hipótesis «ecef-relativa»), como corrigen Popova et al.
+ */
+export function registroDesdeRadianteAparente(
+  fecha: Date,
+  lat: number,
+  lon: number,
+  alturaKm: number,
+  raGrados: number,
+  decGrados: number,
+  vKmS: number,
+): RegistroBolido {
+  const [ra, de] = [raGrados * GRAD, decGrados * GRAD];
+  // El objeto viene DEL radiante: su velocidad apunta en sentido contrario
+  const vEqj: Vec3 = [
+    -vKmS * Math.cos(de) * Math.cos(ra),
+    -vKmS * Math.cos(de) * Math.sin(ra),
+    -vKmS * Math.sin(de),
+  ];
+  return {
+    fecha,
+    latGrados: lat,
+    lonGrados: lon,
+    alturaKm,
+    vEcefKmS: eqjAEcef(vEqj, Astro.MakeTime(fecha)),
+  };
+}
+
+/**
+ * Estela desde la entrada en la atmósfera que mide la fuente de la órbita (Chelyabinsk: radiante
+ * aparente, velocidad de entrada, punto e instante de Popova et al.), sin altura convencional.
+ */
+export function calcularDesdeEntrada(m: Meteorito): TrayectoriaPieza {
+  const e = m.entrada_atmosferica;
+  if (!e || !Object.values(e).every(verificado))
+    throw new Error(`${m.id}: falta la entrada en la atmósfera verificada`);
+  const reg = registroDesdeRadianteAparente(
+    new Date(String(e.instante.valor)),
+    num(e.lat),
+    num(e.lon),
+    num(e.altura),
+    num(e.ra_aparente),
+    num(e.dec_aparente),
+    num(e.v_entrada),
+  );
+  const { t, r, v } = estadoGeocentrico(reg, 'ecef-relativa');
+  const T = Astro.HelioState(Astro.Body.Earth, t);
+  const y0 = [T.x + r[0], T.y + r[1], T.z + r[2], T.vx + v[0], T.vy + v[1], T.vz + v[2]];
+  const validacion = validar(m, y0, t.ut, t.ut, 'dd-y-z');
+  const { helio, geo } = trayectoriaHaciaAtras(t, y0);
+  return {
+    id: m.id,
+    generado: new Date().toISOString(),
+    metodo:
+      'Estado en el punto de entrada a partir del radiante aparente y la velocidad de entrada medidos, con la rotación terrestre; integración N cuerpos hacia atrás con Sol, planetas, Tierra y Luna (astronomy-engine). Sin rozamiento atmosférico.',
+    instante_referencia: reg.fecha.toISOString(),
+    origen: 'radiante-aparente',
+    punto: {
+      lat: num(e.lat),
+      lon: num(e.lon),
+      altura_km: num(e.altura),
+      altura_convencional: false,
+    },
+    radiante_aparente: {
+      ra: num(e.ra_aparente),
+      dec: num(e.dec_aparente),
+      v: num(e.v_entrada),
+      fuente: e.ra_aparente.fuente,
+    },
+    validacion,
+    helio_ecl_au: helio,
+    geo_eqj_km: geo,
+  };
+}
+
 export function calcularPieza(m: Meteorito): TrayectoriaPieza {
   const { base, radiante } = entradaPieza(m);
   const r = m.radiante_geocentrico!;
@@ -156,7 +241,7 @@ export function calcularPieza(m: Meteorito): TrayectoriaPieza {
 }
 
 /** Contraste de la órbita que resulta del estado `y` (en `tEstado`) con la órbita principal. */
-function validar(
+export function validar(
   m: Meteorito,
   y: number[],
   tEstado: number,
@@ -255,18 +340,29 @@ export function calcularDesdeJpl(
   };
 }
 
+const TRAYECTORIA_CHELYABINSK = 'public/data/chelyabinsk-trayectoria.json';
+
 function informe(): string {
-  const filas = readdirSync(DIR)
+  const archivos = readdirSync(DIR)
     .filter((f) => f.endsWith('.json') && f !== 'indice.json')
-    .map((f) => JSON.parse(readFileSync(`${DIR}/${f}`, 'utf8')) as TrayectoriaPieza);
+    .map((f) => `${DIR}/${f}`);
+  // La de Chelyabinsk se genera aparte (npm run datos:trayectoria) pero se informa aquí
+  if (existsSync(TRAYECTORIA_CHELYABINSK)) archivos.push(TRAYECTORIA_CHELYABINSK);
+  const filas = archivos.map((f) => JSON.parse(readFileSync(f, 'utf8')) as TrayectoriaPieza);
   const lote = (id: string) =>
     Object.entries(LOTES).find(([, ids]) => ids.includes(id))?.[0] ?? '—';
   const f = (x: number | null) => (x === null ? '—' : x.toFixed(2));
   return [
     '# Trayectorias animadas de las piezas con pedigrí',
     '',
+    procedenciaReporte([
+      'pipeline/trayectorias-pedigri.ts',
+      'pipeline/trayectoria-chelyabinsk.ts',
+      ...readdirSync('data/pedigri').map((x) => `data/pedigri/${x}`),
+    ]),
+    '',
     'Generado por `npm run datos:trayectorias`. Cada trayectoria parte del radiante geocéntrico, v_g, instante y posición de referencia publicados (Granvik & Brown 2018) con una **altura convencional de ' +
-      `${ALTURA_CONVENCIONAL_KM} km** (la fuente no publica la altura) y se integra con N cuerpos hacia atrás 365 días. Antes de guardarla, la órbita resultante se contrasta con la órbita principal publicada (criterio de parada: D_D > ${UMBRAL_DD} o |z| > ${UMBRAL_Z} en a, e o i). Chelyabinsk tiene su propia trayectoria, calculada desde el vector del CNEOS (Fase 1).`,
+      `${ALTURA_CONVENCIONAL_KM} km** (la fuente no publica la altura) y se integra con N cuerpos hacia atrás 365 días. Antes de guardarla, la órbita resultante se contrasta con la órbita principal publicada (criterio de parada: D_D > ${UMBRAL_DD} o |z| > ${UMBRAL_Z} en a, e o i). Chelyabinsk tiene su propia trayectoria (\`npm run datos:trayectoria\`), calculada como describen Popova et al. 2013: desde su radiante aparente y su velocidad de entrada, en su punto e instante de entrada (97,1 km), sin altura convencional.`,
     '',
     '| Pieza | Lote | Origen | Órbita de referencia | Criterio | D_D | z(a) | z(e) | z(i) | Aprobada |',
     '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
@@ -274,7 +370,7 @@ function informe(): string {
       .sort((x, y) => lote(x.id).localeCompare(lote(y.id)) || x.id.localeCompare(y.id))
       .map(
         (t) =>
-          `| ${t.id} | ${lote(t.id)} | ${t.origen === 'jpl' ? 'vector de JPL' : 'radiante'} | ${t.validacion.fuente_orbita} | ${t.validacion.criterio === 'solo-dd' ? 'solo D_D' : 'D_D y z'} | ${t.validacion.dd.toFixed(4)} | ${f(t.validacion.z.a)} | ${f(t.validacion.z.e)} | ${f(t.validacion.z.i)} | ${t.validacion.aprobada ? 'sí' : '**no**'} |`,
+          `| ${t.id} | ${lote(t.id)} | ${{ jpl: 'vector de JPL', radiante: 'radiante', 'radiante-aparente': 'radiante aparente' }[t.origen]} | ${t.validacion.fuente_orbita} | ${t.validacion.criterio === 'solo-dd' ? 'solo D_D' : 'D_D y z'} | ${t.validacion.dd.toFixed(4)} | ${f(t.validacion.z.a)} | ${f(t.validacion.z.e)} | ${f(t.validacion.z.i)} | ${t.validacion.aprobada ? 'sí' : '**no**'} |`,
       ),
     '',
     '**Almahata Sitta (2008 TC3)** parte del vector de estado geocéntrico de JPL Horizons, obtenido con observaciones telescópicas antes del impacto, y no del radiante. Se valida solo con D_D (decisión del 2026-10-08): la σ formal de la órbita de JPL (~1e-6) es menor que la precisión de las efemérides de astronomy-engine (su Tierra difiere ~1100 km de la de JPL), por lo que |z| > 3 no indica una discrepancia física. Es el mismo cálculo aceptado en la Fase 2 (docs/reportes/cruzada.md, §B). El criterio se explica en la descripción de la escena.',
@@ -285,8 +381,13 @@ function informe(): string {
 // ---------- CLI ----------
 if (process.argv[1]?.endsWith('trayectorias-pedigri.ts')) {
   const lote = process.argv[2]?.toLowerCase();
+  if (lote === 'informe') {
+    // Solo regenera el reporte con las trayectorias ya guardadas
+    writeFileSync('docs/reportes/trayectorias.md', informe());
+    process.exit(0);
+  }
   if (!lote || !LOTES[lote]) {
-    console.error(`Uso: npm run datos:trayectorias -- <${Object.keys(LOTES).join('|')}>`);
+    console.error(`Uso: npm run datos:trayectorias -- <${Object.keys(LOTES).join('|')}|informe>`);
     process.exit(2);
   }
   mkdirSync(DIR, { recursive: true });

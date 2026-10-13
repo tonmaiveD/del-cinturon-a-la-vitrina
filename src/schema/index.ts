@@ -89,6 +89,22 @@ export const Orbita = z.object({
   Q: Valor.optional(), // AU
   M: Valor.optional(), // anomalía media en la época, grados
   tiempo_perihelio: Valor.optional(),
+  /**
+   * Los mismos elementos con todas las cifras que da la fuente, cuando las redondeadas no pasan
+   * junto a la Tierra (Popova et al. 2013, material suplementario). Solo para dibujar la línea
+   * central; la interfaz muestra los valores redondeados.
+   */
+  cifras_completas: z
+    .object({
+      a: z.number(),
+      e: z.number(),
+      i: z.number(),
+      omega: z.number(),
+      nodo: z.number(),
+      q: z.number(),
+      ubicacion: z.string(),
+    })
+    .optional(),
   /** Si esta órbita discrepa de otra más allá de su incertidumbre: dónde está documentado. */
   discrepancia_documentada: z.string().optional(),
 });
@@ -110,6 +126,21 @@ export const Meteorito = z.object({
    * brillo de Popova et al. y la posición, el comienzo de la trayectoria).
    */
   punto_trayectoria: z.object({ lat: Valor, lon: Valor, instante: Valor.optional() }).optional(),
+  /**
+   * Entrada en la atmósfera medida por la fuente de la órbita: instante, punto, radiante
+   * aparente (J2000) y velocidad de entrada. De ella sale la estela de Chelyabinsk.
+   */
+  entrada_atmosferica: z
+    .object({
+      instante: Valor,
+      lat: Valor,
+      lon: Valor,
+      altura: Valor, // km
+      ra_aparente: Valor, // grados
+      dec_aparente: Valor, // grados
+      v_entrada: Valor, // km/s, relativa a la superficie terrestre
+    })
+    .optional(),
   /** Alturas publicadas del paso por la atmósfera (km). */
   atmosfera: z
     .object({

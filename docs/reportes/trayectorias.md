@@ -1,9 +1,12 @@
 # Trayectorias animadas de las piezas con pedigrí
 
-Generado por `npm run datos:trayectorias`. Cada trayectoria parte del radiante geocéntrico, v_g, instante y posición de referencia publicados (Granvik & Brown 2018) con una **altura convencional de 100 km** (la fuente no publica la altura) y se integra con N cuerpos hacia atrás 365 días. Antes de guardarla, la órbita resultante se contrasta con la órbita principal publicada (criterio de parada: D_D > 0.1 o |z| > 3 en a, e o i). Chelyabinsk tiene su propia trayectoria, calculada desde el vector del CNEOS (Fase 1).
+Código: commit 7c426c4 con cambios sin confirmar · astronomy-engine 2.1.19 · Node v24.17.0 · huella del código y los datos de entrada 462713b967bcb56f
+
+Generado por `npm run datos:trayectorias`. Cada trayectoria parte del radiante geocéntrico, v_g, instante y posición de referencia publicados (Granvik & Brown 2018) con una **altura convencional de 100 km** (la fuente no publica la altura) y se integra con N cuerpos hacia atrás 365 días. Antes de guardarla, la órbita resultante se contrasta con la órbita principal publicada (criterio de parada: D_D > 0.1 o |z| > 3 en a, e o i). Chelyabinsk tiene su propia trayectoria (`npm run datos:trayectoria`), calculada como describen Popova et al. 2013: desde su radiante aparente y su velocidad de entrada, en su punto e instante de entrada (97,1 km), sin altura convencional.
 
 | Pieza | Lote | Origen | Órbita de referencia | Criterio | D_D | z(a) | z(e) | z(i) | Aprobada |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| chelyabinsk | — | radiante aparente | popova-2013-science | D_D y z | 0.0011 | 0.05 | 0.01 | -0.08 | sí |
 | benesov | a | radiante | granvik-brown-2018 | D_D y z | 0.0002 | 0.46 | 0.51 | 0.25 | sí |
 | innisfree | a | radiante | granvik-brown-2018 | D_D y z | 0.0004 | 0.01 | -0.01 | 0.02 | sí |
 | lost-city | a | radiante | granvik-brown-2018 | D_D y z | 0.0005 | 0.25 | 0.30 | -0.06 | sí |

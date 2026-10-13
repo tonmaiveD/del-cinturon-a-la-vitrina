@@ -358,11 +358,16 @@ export async function iniciar3D(
     });
   }
 
-  /** Descripción de la nube según su método (Almahata Sitta: órbita telescópica de JPL). */
-  const clavePieza = (id: string): Clave =>
-    solarCreada?.cat.metodoNube(id) === 'elementos'
-      ? 'desc.sistema-solar.pieza.jpl'
-      : 'desc.sistema-solar.pieza';
+  /**
+   * Descripción de la nube según su método (Almahata Sitta: órbita telescópica de JPL;
+   * Chelyabinsk: elementos condicionados al encuentro).
+   */
+  const clavePieza = (id: string): Clave => {
+    const metodo = solarCreada?.cat.metodoNube(id);
+    if (metodo === 'elementos') return 'desc.sistema-solar.pieza.jpl';
+    if (metodo === 'elementos-condicionados') return 'desc.sistema-solar.pieza.condicionada';
+    return 'desc.sistema-solar.pieza';
+  };
 
   let urlPendiente = 0;
   function guardarUrl(): void {

@@ -16,12 +16,11 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   cinco procedencias del material suplementario de Popova (en `.trabajo/popova-suplemento/`, no
   se redistribuye). Etapa 3 (auditoría V3) hecha: reporte de nubes reproducible (entradas,
   semillas, sensibilidad) y pruebas más estrictas.
-- **2026-10-12: cuarta revisión validada; siguiente paso, etapa 4** (plan en
-  `docs/deuda-tecnica.md`, «Cuarta revisión de la ficha»). Bloquea la aprobación una frase
-  incorrecta: Popova sí explica sus márgenes, con un Monte Carlo. **Falta que el usuario decida**
-  qué entradas alimentan la nube de Chelyabinsk (A actual, B radiante aparente, C elementos
-  de la S5B junto a la Tierra; recomendada C) y si toda la figura sale del punto de Popova.
-  Después: aprobación de la ficha y ola 3.
+- **2026-10-12: cuarta revisión hecha (etapa 4)**, con la opción C elegida por el usuario. La
+  estela de Chelyabinsk sale del radiante aparente y el punto de entrada de Popova, y su nube
+  sortea los elementos publicados y conserva las órbitas que pasan a menos de 15 000 km de la
+  Tierra. La ficha corrige lo del Monte Carlo. **Falta que el usuario apruebe la ficha**; después,
+  ola 3.
 - **Siguiente paso: ola 3 = Fase 4 (colección y fichas).** Necesita decisiones del usuario
   (ver «Fase 4» abajo). Si aún no las tiene, se puede empezar por lo que no las necesita: el
   modelo meteorito ≠ ejemplar (M33) y el manejo de campos privados (M32). Se lo propuse el
@@ -186,6 +185,9 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
 - 2026-10-12: **nubes desde el radiante** en todas las piezas salvo Almahata Sitta (órbita de
   JPL): se sortean α_g, δ_g y v_g y cada clon se integra como la estela. Sustituye al sorteo de
   elementos independientes, que daba órbitas que no pasan por la Tierra.
+- 2026-10-12: **Chelyabinsk, opción C**: su nube sortea los elementos publicados de Popova y
+  conserva las órbitas a menos de 15 000 km de la Tierra; su estela y su punto salen de Popova,
+  así que toda la figura viene de una sola fuente.
 - 2026-10-11: el usuario **mantiene el gmail como correo principal** de su cuenta de GitHub y
   quiere que **solo apaec@yahoo.com sea visible**. Autorizó reescribir la historia de la wiki y
   de `main` (hecho, con push forzado suyo). Nunca escribir el gmail en archivos del repo.
@@ -383,10 +385,11 @@ textura Blue Marble según las directrices de medios de NASA (verificado el 2026
   `src/camera/coreografia.ts` + pasos en `app3d.ts`; `prefers-reduced-motion` → corte directo.
   URL: `?pieza&t&vista&escala` o `?modo=cneos&evento&t&vista&escala` (`src/ui/estado-url.ts`).
 - Animación: Chelyabinsk con `public/data/chelyabinsk-trayectoria.json`
-  (`npm run datos:trayectoria`: estela N cuerpos desde el radiante de Popova en la posición e
-  instante de Granvik & Brown, 6 s antes del pico del CNEOS) y `chelyabinsk-orbitas.json`
-  (`npm run datos:nubes`: 300 órbitas desde el radiante de Popova que se mueven con Kepler); en
-  el globo, la entrada y el pico son los del CNEOS. Las otras 24 piezas con
+  (`npm run datos:trayectoria`: estela N cuerpos desde el radiante aparente, la velocidad, el
+  punto y el instante de entrada de Popova, a las 03:20:19,8, 6 s antes del pico del CNEOS) y
+  `chelyabinsk-orbitas.json` (`npm run datos:nubes`: 300 órbitas de la opción C, es decir,
+  elementos de Popova condicionados al encuentro, que se mueven con Kepler; la línea central es
+  la órbita con todas las cifras); en el globo, la entrada y el pico son los del CNEOS. Las otras 24 piezas con
   `public/data/trayectorias/<id>.json`.
 - Nubes del catálogo: `public/data/nubes.json` (160 formas por pieza, calculadas desde el
   radiante; Almahata Sitta, desde la órbita de JPL), cargado al crear la vista solar

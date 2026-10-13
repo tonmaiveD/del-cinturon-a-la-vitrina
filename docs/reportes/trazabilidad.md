@@ -3,10 +3,10 @@
 Generado por `npm run auditoria` (también se ejecuta en `npm run build`, que falla si hay
 errores). Cada dato que muestra la interfaz se contrasta con su valor de origen en `data/`.
 
-- Verificados: 521
+- Verificados: 519
 - Pendientes mostrados con aviso: 25
 - Calculados con método documentado: 30
-- Convenciones visuales o de notación: 27
+- Convenciones visuales o de notación: 28
 - **Errores: 0**
 
 ## Pieza: almahata-sitta
@@ -643,6 +643,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | {{hora}} | 03:20 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{diametro}} | 20 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{v_entrada}} | 19,16 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{vg}} | 15,3 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{alt_pico_cneos}} | 23,3 | cneos-fireball-api | verificado | borrador: no se publica en producción |
 | {{lat}} | 54,8° N | cneos-fireball-api | verificado | borrador: no se publica en producción |
 | {{lon}} | 61,1° E | cneos-fireball-api | verificado | borrador: no se publica en producción |
@@ -666,23 +667,20 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | {{p_imc}} | 25 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{n_31}} | resonancia de movimiento medio 3:1 con Júpiter | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{p_31}} | 11 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{n_ob}} | cinturón principal exterior | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{p_ob}} | 2 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{n_ob}} | cinturón principal exterior | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{n_jfc}} | cometas de la familia de Júpiter | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{p_jfc}} | 0 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{nivel_nube}} | 1σ | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{ra_sigma1}} | 0,8 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{dec_sigma1}} | 0,9 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{vg_sigma1}} | 0,2 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{vg}} | 15,3 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{v_entrada}} | 19,16 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{ra_sigma}} | 1,6 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{dec_sigma}} | 1,8 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{vg_sigma}} | 0,4 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{nivel_radiante}} | 2σ | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{a_sigma1}} | 0,08 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{q_sigma1}} | 0,010 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{e_sigma1}} | 0,009 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{i_sigma1}} | 0,24 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{nivel_nube}} | 1σ | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{q_sigma}} | 0,020 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{e_sigma}} | 0,018 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{i_sigma}} | 0,48 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{nivel_orbita}} | 2σ | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{a_sigma}} | 0,16 | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{nivel_orbita}} | 2σ | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{ref_errores_cneos}} | Peña-Asensio et al. 2025 | pena-asensio-2025 | verificado | borrador: no se publica en producción |
 | {{cneos_consultado}} | 1 de octubre de 2026 | cneos-fireball-api | verificado | borrador: no se publica en producción |
 
@@ -714,7 +712,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | tagish-lake | D_D 0.00074 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
 | villalbeto-de-la-pena | D_D 0.00105 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
 | zdar-nad-sazavou | D_D 0.00011 frente a granvik-brown-2018 | cálculo propio desde granvik-brown-2018 | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
-| chelyabinsk | D_D 0.00097 frente a popova-2013-science | cálculo propio desde popova-2013-science | calculado | radiante, v_g, posición e instante del dataset; altura convencional de 100 km declarada |
+| chelyabinsk | D_D 0.00106 frente a popova-2013-science | cálculo propio desde popova-2013-science | calculado | radiante aparente, velocidad, punto e instante de entrada de la fuente de la órbita principal (sin altura convencional) |
 
 ## Una sola órbita por pieza (texto y figura)
 
@@ -725,7 +723,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | benesov | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
 | bunburra-rockhole | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
 | buzzard-coulee | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
-| chelyabinsk | panel, nube del catálogo, estela del año previo, nube del recorrido, ficha {{a}}, ficha {{e}}, ficha {{i}}, ficha {{q}}, ficha {{Q}}, ficha {{a_sigma}}, ficha {{i_sigma}}, ficha {{a_sigma1}}, ficha {{i_sigma1}}, ficha {{ra_sigma1}}, ficha {{dec_sigma1}}, ficha {{vg_sigma1}}, ficha {{vg}} | popova-2013-science | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
+| chelyabinsk | panel, nube del catálogo, estela del año previo, nube del recorrido, ficha {{a}}, ficha {{e}}, ficha {{i}}, ficha {{q}}, ficha {{Q}}, ficha {{a_sigma}}, ficha {{i_sigma}}, ficha {{a_sigma1}}, ficha {{i_sigma1}}, ficha {{ra_sigma1}}, ficha {{dec_sigma1}}, ficha {{vg_sigma1}}, ficha {{vg}}, ficha {{q_sigma1}}, ficha {{e_sigma1}}, ficha {{q_sigma}}, ficha {{e_sigma}} | popova-2013-science | verificado | todo lo que cita o dibuja la órbita usa la principal |
 | ejby | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
 | grimsby | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
 | innisfree | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
@@ -776,6 +774,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | zona.resonancia-5-2 | 5 2 | src/i18n/es.json | convencion | nombre de la resonancia p:q |
 | zona.resonancia-2-1 | 2 1 | src/i18n/es.json | convencion | nombre de la resonancia p:q |
 | desc.sistema-solar.pieza | 1 | src/i18n/es.json | convencion | notación («1σ») |
+| desc.sistema-solar.pieza.condicionada | 1 | src/i18n/es.json | convencion | notación («1σ») |
 | desc.sistema-solar.pieza.jpl | 1 | src/i18n/es.json | convencion | notación («1σ») |
 | desc.regiones | 6 | src/i18n/es.json | convencion | nombre de la resonancia secular («ν6») |
 | cneos.evento.energia | 10 | src/i18n/es.json | convencion | unidad en que la API publica la energía radiada (10¹⁰ J) |

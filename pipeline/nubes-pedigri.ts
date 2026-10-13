@@ -23,14 +23,17 @@ import * as Astro from 'astronomy-engine';
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { gm } from '../src/core/dinamica';
 import { estadoDesdeElementos, type Elementos } from '../src/core/kepler';
-import { eqjAEcl } from '../src/core/marcos';
+import { eqjAEcl, KM_POR_AU } from '../src/core/marcos';
 import { nubeDesdeRadiante, orbitaDeRadiante } from '../src/core/montecarlo';
+import { crearAzar } from '../src/core/azar';
 import { muestrearOrbita, puntosForma, semillaDe, type FormaOrbita } from '../src/core/muestreo';
 import { dDrummond } from '../src/core/similitud';
 import { GRAD, type Vec3 } from '../src/core/vector';
 import { Meteorito, type Orbita, type Valor } from '../src/schema';
 import type { Catalogo, FormaNube, NubePieza, NubesPedigri } from '../src/ui/catalogo';
-import { DESDE_JPL, entradaPieza } from './trayectorias-pedigri';
+import { procedenciaReporte } from './huella-metodo';
+import { DESDE_JPL, entradaPieza, registroDesdeRadianteAparente } from './trayectorias-pedigri';
+import { orbitaDesdeBolido } from '../src/core/orbita-bolido';
 
 export const N_NUBE = 160;
 export const N_CHELYABINSK = 300;
@@ -38,6 +41,15 @@ export const UMBRAL_DIST_AU = 0.002;
 const UMBRAL_DD = 0.1;
 const MAX_DESCARTADOS = 0.1;
 const SALIDA = 'public/data/nubes.json';
+/**
+ * Piezas cuya nube sale de los elementos publicados condicionados al encuentro con la Tierra
+ * (decisión del usuario del 2026-10-12, opción C): en Chelyabinsk, los márgenes del radiante
+ * geocéntrico de Popova et al. son mucho más anchos de lo que implica su radiante aparente y no
+ * reproducen los de su órbita, que obtuvieron con un Monte Carlo (docs/reportes/nubes.md).
+ */
+export const CONDICIONADAS = new Set(['chelyabinsk']);
+/** Separación máxima con la Tierra en el instante de entrada: la de las nubes desde el radiante. */
+export const UMBRAL_ENCUENTRO_KM = 15000;
 const MU = gm('Sun');
 
 const leer = <T>(r: string) => JSON.parse(readFileSync(r, 'utf8')) as T;
@@ -83,6 +95,8 @@ interface Calculo {
   sigmas: Record<'a' | 'e' | 'i' | 'q', { nube: number; publicada: number | undefined }>;
   /** Valores centrales publicados de la órbita principal con su σ (1σ). */
   publicada: Partial<Record<'a' | 'e' | 'i' | 'q', { v: number; s?: number }>>;
+  /** Línea central del recorrido (solo `elementos-condicionados`). */
+  nominal?: ReturnType<typeof nubeCondicionada>['nominal'];
 }
 
 const CLAVES = ['a', 'e', 'i', 'q'] as const;
@@ -112,8 +126,171 @@ function sigmas(formas: FormaOrbita[], o: Orbita): Calculo['sigmas'] {
   };
 }
 
+/** Posición (eclíptica, au) del punto de anomalía excéntrica E de una órbita elíptica. */
+function posicionEnE(f: FormaOrbita, E: number): Vec3 {
+  const [cO, sO] = [Math.cos(f.nodo * GRAD), Math.sin(f.nodo * GRAD)];
+  const [cw, sw] = [Math.cos(f.omega * GRAD), Math.sin(f.omega * GRAD)];
+  const [ci, si] = [Math.cos(f.i * GRAD), Math.sin(f.i * GRAD)];
+  const X = f.a * (Math.cos(E) - f.e);
+  const Y = f.a * Math.sqrt(1 - f.e * f.e) * Math.sin(E);
+  return [
+    (cO * cw - sO * sw * ci) * X + (-cO * sw - sO * cw * ci) * Y,
+    (sO * cw + cO * sw * ci) * X + (-sO * sw + cO * cw * ci) * Y,
+    sw * si * X + cw * si * Y,
+  ];
+}
+
+/** Distancia mínima (au) entre una elipse y un punto, y la anomalía excéntrica donde se da. */
+export function distanciaMinima(f: FormaOrbita, T: Vec3): { d: number; E: number } {
+  const N = 1440;
+  let mejor = 0;
+  let dMejor = Infinity;
+  for (let k = 0; k < N; k++) {
+    const d = distancia(posicionEnE(f, (2 * Math.PI * k) / N), T);
+    if (d < dMejor) [dMejor, mejor] = [d, k];
+  }
+  // Sección áurea alrededor del mínimo de la malla
+  let [lo, hi] = [(2 * Math.PI * (mejor - 1)) / N, (2 * Math.PI * (mejor + 1)) / N];
+  const g = (Math.sqrt(5) - 1) / 2;
+  for (let k = 0; k < 80; k++) {
+    const x1 = hi - g * (hi - lo);
+    const x2 = lo + g * (hi - lo);
+    if (distancia(posicionEnE(f, x1), T) < distancia(posicionEnE(f, x2), T)) hi = x2;
+    else lo = x1;
+  }
+  const E = (lo + hi) / 2;
+  return { d: distancia(posicionEnE(f, E), T), E };
+}
+
+/**
+ * Opción C: se sortean q, e, i, ω y Ω publicados (normales independientes, σ a 1σ; a = q/(1 − e))
+ * y solo se conservan las órbitas que pasan a menos de `umbralKm` de la Tierra en el instante de
+ * entrada. Cada clon se coloca en su punto más cercano a la Tierra en ese instante.
+ */
+export function nubeCondicionada(m: Meteorito, n: number, umbralKm = UMBRAL_ENCUENTRO_KM) {
+  const o = orbitaPrincipal(m);
+  const cc = o.cifras_completas;
+  const e0 = m.entrada_atmosferica;
+  if (!cc || !e0 || !o.q) throw new Error(`${m.id}: faltan las cifras completas o la entrada`);
+  const instante = new Date(String(e0.instante.valor));
+  const t = Astro.MakeTime(instante);
+  const T = tierraEcl(t);
+  const sigma = {
+    q: o.q.sigma!,
+    e: o.e.sigma!,
+    i: o.i.sigma!,
+    omega: o.omega.sigma!,
+    nodo: o.nodo.sigma!,
+  };
+  const { normal } = crearAzar(semillaDe(m.id));
+  const umbral = umbralKm / KM_POR_AU;
+  const clones: Elementos[] = [];
+  const dist: number[] = [];
+  let probadas = 0;
+  while (clones.length < n && probadas < 1e7) {
+    probadas++;
+    const q = cc.q + normal() * sigma.q;
+    const e = cc.e + normal() * sigma.e;
+    const f: FormaOrbita = {
+      a: q / (1 - e),
+      e,
+      i: cc.i + normal() * sigma.i,
+      omega: cc.omega + normal() * sigma.omega,
+      nodo: cc.nodo + normal() * sigma.nodo,
+    };
+    if (!(e >= 0 && e < 1 && q > 0)) continue;
+    const { d, E } = distanciaMinima(f, T);
+    if (d >= umbral) continue;
+    const M = (((E - e * Math.sin(E)) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+    clones.push({
+      a: f.a,
+      e,
+      i: f.i * GRAD,
+      nodo: f.nodo * GRAD,
+      omega: f.omega * GRAD,
+      M,
+      epoca: t.ut,
+    });
+    dist.push(d);
+  }
+  const central = distanciaMinima({ a: cc.a, e: cc.e, i: cc.i, nodo: cc.nodo, omega: cc.omega }, T);
+  return {
+    clones,
+    dist,
+    probadas,
+    instante,
+    sigma,
+    centralKm: central.d * KM_POR_AU,
+    nominal: {
+      a: cc.a,
+      e: cc.e,
+      i: cc.i,
+      nodo: cc.nodo,
+      omega: cc.omega,
+      M: ((central.E - cc.e * Math.sin(central.E)) / GRAD + 360) % 360,
+      epoca_ut_j2000: t.ut,
+    },
+  };
+}
+
 export function calcularNube(m: Meteorito, catalogo: Catalogo, n = N_NUBE): Calculo {
   const o = orbitaPrincipal(m);
+  if (CONDICIONADAS.has(m.id)) {
+    const c = nubeCondicionada(m, n);
+    const formas = c.clones.map(formaDeElementos);
+    const med = (k: keyof FormaOrbita) => mediana(formas.map((x) => x[k]));
+    const dd = dDrummond(
+      {
+        q: med('a') * (1 - med('e')),
+        e: med('e'),
+        i: med('i') * GRAD,
+        nodo: med('nodo') * GRAD,
+        omega: med('omega') * GRAD,
+      },
+      {
+        q: num(o.a) * (1 - num(o.e)),
+        e: num(o.e),
+        i: num(o.i) * GRAD,
+        nodo: num(o.nodo) * GRAD,
+        omega: num(o.omega) * GRAD,
+      },
+    );
+    const dmax = Math.max(...c.dist);
+    const cc = o.cifras_completas!;
+    return {
+      nube: {
+        metodo: 'elementos-condicionados',
+        fuente: o.fuente,
+        semilla: semillaDe(m.id),
+        condicion: {
+          instante: c.instante.toISOString(),
+          umbral_km: UMBRAL_ENCUENTRO_KM,
+          probadas: c.probadas,
+          aceptadas: c.clones.length,
+          central: { q: cc.q, e: cc.e, i: cc.i, omega: cc.omega, nodo: cc.nodo },
+          sigma: c.sigma,
+        },
+        sorteadas: formas.length,
+        resumen: resumen(formas),
+        descartados: 0,
+        validacion: {
+          dd_centro: red(dd, 5),
+          dist_max_au: red(dmax, 6),
+          dist_mediana_au: red(mediana(c.dist), 6),
+          aprobada:
+            c.clones.length === n &&
+            dmax * KM_POR_AU < UMBRAL_ENCUENTRO_KM &&
+            dd <= UMBRAL_DD &&
+            c.centralKm < UMBRAL_ENCUENTRO_KM,
+        },
+        formas: formas.map(formaDe),
+      },
+      completas: c.clones,
+      sigmas: sigmas(formas, o),
+      publicada: publicadaDe(o),
+      nominal: c.nominal,
+    };
+  }
   if (DESDE_JPL.has(m.id)) {
     // Órbita telescópica: sorteo de sus elementos (σ formal de JPL, muy pequeña)
     const pc = catalogo.piezas.find((p) => p.id === m.id)?.orbita;
@@ -258,6 +435,24 @@ interface FilaSensibilidad {
  * nube variando una sola entrada cada vez y con los márgenes del radiante de Borovička et al.
  * 2013, cuya órbita también está en el dataset. Misma semilla y mismo número de órbitas.
  */
+/** σa máxima compatible con σq y σe (a = q/(1 − e), correlación perfecta). */
+function sigmaAMaxima(o: Orbita): number {
+  const q = o.q ? num(o.q) : num(o.a) * (1 - num(o.e));
+  const e = num(o.e);
+  return (o.q?.sigma ?? 0) / (1 - e) + (q / (1 - e) ** 2) * o.e.sigma!;
+}
+
+/** GM terrestre (km³/s², IAU) para el radio de captura. */
+const GM_TIERRA_KM3_S2 = 398600.4418;
+/**
+ * Radio de captura (km): parámetro de impacto máximo para chocar con una esfera de radio r
+ * (Tierra más atmósfera) llegando a v_g, r·√(1 + v_esc²/v_g²).
+ */
+export function radioCaptura(vgKmS: number, rKm = 6371 + 100): number {
+  const vEsc2 = (2 * GM_TIERRA_KM3_S2) / rKm;
+  return rKm * Math.sqrt(1 + vEsc2 / (vgKmS * vgKmS));
+}
+
 function sensibilidadChelyabinsk(m: Meteorito): FilaSensibilidad[] {
   const { base, radiante } = entradaPieza(m);
   const v = (x: Valor) => ({ v: num(x), s: x.sigma! });
@@ -276,24 +471,79 @@ function sensibilidadChelyabinsk(m: Meteorito): FilaSensibilidad[] {
   const es = (n: number) => n.toLocaleString('es', { maximumFractionDigits: 4 });
   const txt = (x: typeof r) =>
     `α ${es(x.ra.v)} ± ${es(x.ra.s)}°, δ ${es(x.dec.v)} ± ${es(x.dec.s)}°, v_g ${es(x.vg.v)} ± ${es(x.vg.s)} km/s`;
-  const casos: [string, typeof r][] = [
-    ['Popova: las tres entradas', r],
-    ['Popova: solo α_g', { ra: r.ra, dec: fija(r.dec), vg: fija(r.vg) }],
-    ['Popova: solo δ_g', { ra: fija(r.ra), dec: r.dec, vg: fija(r.vg) }],
-    ['Popova: solo v_g', { ra: fija(r.ra), dec: fija(r.dec), vg: r.vg }],
-    ['Borovička: las tres entradas', rb],
-  ];
-  return casos.map(([caso, x]) => {
-    const { clones } = nubeDesdeRadiante(base, x, N_CHELYABINSK, semillaDe(m.id));
-    const sigma = resumen(clones.map((c) => formaDeElementos(c.elementos)));
+  const fila = (caso: string, entrada: string, formas: FormaOrbita[]): FilaSensibilidad => {
+    const sigma = resumen(formas);
     return {
       caso,
-      entrada: txt(x),
+      entrada,
       sigma: Object.fromEntries(
         CLAVES.map((k) => [k, sigma[k].sigma]),
       ) as FilaSensibilidad['sigma'],
     };
-  });
+  };
+  const desdeRadiante = (x: typeof r) =>
+    nubeDesdeRadiante(base, x, N_CHELYABINSK, semillaDe(m.id)).clones.map((c) =>
+      formaDeElementos(c.elementos),
+    );
+  const filas: FilaSensibilidad[] = [
+    fila('A: radiante geocéntrico (Tabla 1)', txt(r), desdeRadiante(r)),
+    fila(
+      'A: solo α_g',
+      txt({ ra: r.ra, dec: fija(r.dec), vg: fija(r.vg) }),
+      desdeRadiante({ ra: r.ra, dec: fija(r.dec), vg: fija(r.vg) }),
+    ),
+    fila(
+      'A: solo δ_g',
+      txt({ ra: fija(r.ra), dec: r.dec, vg: fija(r.vg) }),
+      desdeRadiante({ ra: fija(r.ra), dec: r.dec, vg: fija(r.vg) }),
+    ),
+    fila(
+      'A: solo v_g',
+      txt({ ra: fija(r.ra), dec: fija(r.dec), vg: r.vg }),
+      desdeRadiante({ ra: fija(r.ra), dec: fija(r.dec), vg: r.vg }),
+    ),
+    fila('Borovička: radiante geocéntrico', txt(rb), desdeRadiante(rb)),
+  ];
+  // B: radiante aparente y velocidad de entrada (Tabla S5A), el método que describe Popova
+  const e = m.entrada_atmosferica!;
+  const { normal } = crearAzar(semillaDe(m.id));
+  const formasB: FormaOrbita[] = [];
+  while (formasB.length < N_CHELYABINSK) {
+    const reg = registroDesdeRadianteAparente(
+      new Date(String(e.instante.valor)),
+      num(e.lat),
+      num(e.lon),
+      num(e.altura),
+      num(e.ra_aparente) + normal() * e.ra_aparente.sigma!,
+      num(e.dec_aparente) + normal() * e.dec_aparente.sigma!,
+      num(e.v_entrada) + normal() * e.v_entrada.sigma!,
+    );
+    const el = orbitaDesdeBolido(reg, { hipotesis: 'ecef-relativa' }).elementos;
+    if (el.e < 1) formasB.push(formaDeElementos(el));
+  }
+  filas.push(
+    fila(
+      'B: radiante aparente y V∞ (Tabla S5A)',
+      `α ${es(num(e.ra_aparente))} ± ${es(e.ra_aparente.sigma!)}°, δ ${es(num(e.dec_aparente))} ± ${es(e.dec_aparente.sigma!)}°, V∞ ${es(num(e.v_entrada))} ± ${es(e.v_entrada.sigma!)} km/s`,
+      formasB,
+    ),
+  );
+  // C: elementos publicados condicionados al encuentro (la elegida) y con el radio de captura
+  const rc = radioCaptura(num(radiante.vg));
+  for (const [caso, umbral] of [
+    [`C: elementos de la S5B a < ${es(UMBRAL_ENCUENTRO_KM)} km (elegida)`, UMBRAL_ENCUENTRO_KM],
+    [`C con el radio de captura (< ${es(Math.round(rc))} km)`, rc],
+  ] as const) {
+    const c = nubeCondicionada(m, N_CHELYABINSK, umbral);
+    filas.push(
+      fila(
+        caso,
+        `q, e, i, ω, Ω con su σ; aceptadas ${c.clones.length} de ${es(c.probadas)}`,
+        c.clones.map(formaDeElementos),
+      ),
+    );
+  }
+  return filas;
 }
 
 function informe(
@@ -351,13 +601,18 @@ function informe(
     (x) =>
       `| ${x.caso} | ${x.entrada} | ${f(x.sigma.a, 3)} | ${f(x.sigma.e, 4)} | ${f(x.sigma.i, 2)} | ${f(x.sigma.q, 4)} |`,
   );
-  const s0 = sens.find((x) => x.caso === 'Popova: las tres entradas');
-  const principal = [...sens.filter((x) => x.caso.startsWith('Popova: solo'))].sort(
+  const caso = (inicio: string) => sens.find((x) => x.caso.startsWith(inicio));
+  const s0 = caso('A: radiante geocéntrico');
+  const principal = [...sens.filter((x) => x.caso.startsWith('A: solo'))].sort(
     (a, b) => b.sigma.i - a.sigma.i,
   )[0];
-  const bor = sens.find((x) => x.caso.startsWith('Borovička'));
+  const bor = caso('Borovička');
+  const sB = caso('B:');
+  const sC = caso('C: elementos');
+  const sCc = caso('C con el radio');
   const oBor = orb('borovicka-2013-nature');
   const oPop = orb('popova-2013-science');
+  const ncChely = nubes.piezas['chelyabinsk']?.condicion;
   /** σ de la nube frente a la publicada, elemento a elemento. */
   const coherencia = (x: FilaSensibilidad, o: Orbita) =>
     CLAVES.filter((k) => (k === 'q' ? o.q?.sigma : o[k].sigma))
@@ -377,11 +632,13 @@ function informe(
 
 Generado por \`npm run datos:nubes\` (\`pipeline/nubes-pedigri.ts\`) el ${nubes.generado.slice(0, 10)}. No editar a mano.
 
+${procedenciaReporte(['pipeline/nubes-pedigri.ts', 'pipeline/trayectorias-pedigri.ts', 'public/data/catalogo.json', 'data/verificacion/borovicka-2013-radiante.json', ...readdirSync('data/pedigri').map((x) => `data/pedigri/${x}`)])}
+
 ## Método
 
 ${nubes.metodo}
 
-Criterio de parada por pieza: el radiante central reproduce la órbita principal (D_D ≤ ${UMBRAL_DD}), todas las órbitas pasan a menos de ${UMBRAL_DIST_AU} au (${km(UMBRAL_DIST_AU)}) de la Tierra en el instante de referencia y se descarta como mucho el ${MAX_DESCARTADOS * 100} % de los sorteos (órbitas no elípticas).
+Criterio de parada por pieza: el radiante central reproduce la órbita principal (D_D ≤ ${UMBRAL_DD}), todas las órbitas pasan a menos de ${UMBRAL_DIST_AU} au (${km(UMBRAL_DIST_AU)}) de la Tierra en el instante de referencia y se descarta como mucho el ${MAX_DESCARTADOS * 100} % de los sorteos (órbitas no elípticas). En Chelyabinsk (método C): todas las órbitas a menos de ${f(UMBRAL_ENCUENTRO_KM, 0)} km de la Tierra en el instante de entrada, la órbita central publicada también, y la mediana de la nube a D_D ≤ ${UMBRAL_DD} de la órbita publicada.
 
 Hasta el 2026-10-12 cada nube sorteaba los elementos orbitales por separado. Con ese método, en 21 de las 25 piezas menos de la mitad de las órbitas pasaba a menos de 0,002 au de la Tierra (en Chelyabinsk, el 6 %; en Maribo y Villalbeto de la Peña, ninguna).
 
@@ -399,6 +656,12 @@ Cada nube se reproduce con estas entradas, su semilla (\`semillaDe(id)\`, FNV-1a
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${filasEntrada.join('\n')}
 
+${
+  ncChely
+    ? `Chelyabinsk (método C): órbita central de Popova et al. con todas sus cifras (q ${ncChely.central.q}, e ${ncChely.central.e}, i ${ncChely.central.i}°, ω ${ncChely.central.omega}°, Ω ${ncChely.central.nodo}°); σ a 1σ de la Tabla S5B: q ${ncChely.sigma.q}, e ${ncChely.sigma.e}, i ${ncChely.sigma.i}°, ω ${ncChely.sigma.omega}°, Ω ${ncChely.sigma.nodo}°; a = q/(1 − e). Instante de entrada ${ncChely.instante}, umbral ${ncChely.umbral_km.toLocaleString('es')} km, semilla ${nubes.piezas['chelyabinsk']!.semilla}, ${ncChely.aceptadas} órbitas aceptadas de ${ncChely.probadas.toLocaleString('es')} sorteos.`
+    : ''
+}
+
 ## Centro de la nube frente a la órbita publicada
 
 Mediana de las órbitas de la nube frente al valor central publicado; entre paréntesis, la diferencia en unidades de la σ publicada (1σ).
@@ -407,9 +670,9 @@ Mediana de las órbitas de la nube frente al valor central publicado; entre par�
 | --- | --- | --- | --- | --- |
 ${filasCentro.join('\n')}
 
-## Chelyabinsk: de dónde sale la diferencia en la dispersión
+## Chelyabinsk: qué entradas alimentan la nube
 
-Misma semilla y ${N_CHELYABINSK} órbitas en cada caso. Primero se varía una sola entrada cada vez con los márgenes de Popova et al.; después se usan el radiante y los márgenes de Borovička et al. 2013 (\`data/verificacion/borovicka-2013-radiante.json\`), cuya órbita también está en el dataset.
+Misma semilla y ${N_CHELYABINSK} órbitas en cada caso. A es el método de las demás piezas (radiante geocéntrico; antes también el de Chelyabinsk); se repite variando una sola entrada cada vez y con los márgenes de Borovička et al. 2013 (\`data/verificacion/borovicka-2013-radiante.json\`). B usa el radiante aparente y la velocidad de entrada de Popova et al., de los que dicen haber obtenido los márgenes de su órbita con un Monte Carlo (material suplementario, pág. 18). C, la elegida por el usuario el 2026-10-12, sortea los elementos de la Tabla S5B (1σ) y conserva solo las órbitas que pasan junto a la Tierra en el instante de entrada.
 
 | Caso | Entradas (1σ) | σa (au) | σe | σi (°) | σq (au) |
 | --- | --- | --- | --- | --- | --- |
@@ -418,19 +681,22 @@ ${sigmaPub('popova-2013-science')}
 ${sigmaPub('borovicka-2013-nature')}
 
 ${
-  s0 && principal && bor && oBor && oPop
-    ? `- Con los márgenes de Popova, la entrada que más dispersión produce en i es ${principal.caso.replace('Popova: solo ', '')} (σi ${f(principal.sigma.i, 2)}° de ${f(s0.sigma.i, 2)}°). La nube completa da σi ${f(s0.sigma.i, 2)}°, frente a ${f(oPop.i.sigma, 2)}° que Popova publica para la órbita: los márgenes del radiante de Popova, tratados como independientes, no reproducen los de su órbita (${coherencia(s0, oPop)}).
-- Con el radiante y los márgenes de Borovička, la nube da ${coherencia(bor, oBor)}. Su par de márgenes, radiante y órbita, es ${desajuste(bor, oBor) < desajuste(s0, oPop) ? 'bastante más coherente que el de Popova' : 'tan poco coherente como el de Popova'}. La órbita de Borovička es osculadora 60 días antes del impacto, así que esta comparación es orientativa.
-- Conclusión: la nube aplica fielmente los márgenes del radiante que publica Popova (ver las σ sorteadas arriba). La diferencia con los márgenes de su órbita está en la propia fuente, que no explica cómo obtuvo unos y otros, y sin su covarianza no se puede reconciliar. La ficha lo dice y no atribuye a la nube más precisión que la de su radiante.`
+  s0 && principal && bor && sB && sC && sCc && oBor && oPop && ncChely
+    ? `- **A.** Con los márgenes del radiante geocéntrico de Popova, la entrada que más dispersión produce en i es ${principal.caso.replace('A: solo ', '')} (σi ${f(principal.sigma.i, 2)}° de ${f(s0.sigma.i, 2)}°), y la nube sale más ancha que la órbita publicada (${coherencia(s0, oPop)}). Ese margen del radiante (±0,8° a 1σ en la Tabla 1; ±1,0° en el suplemento) es unas diez veces el del radiante aparente (±0,09°).
+- **Borovička.** Con su radiante y sus márgenes, la nube da ${coherencia(bor, oBor)}: su par de márgenes, radiante y órbita, es ${desajuste(bor, oBor) < desajuste(s0, oPop) ? 'bastante más coherente que el de Popova' : 'tan poco coherente como el de Popova'}. Su órbita es osculadora 60 días antes del impacto, así que esta comparación es orientativa.
+- **B.** El radiante aparente y la velocidad de entrada de Popova reproducen el centro de su órbita (la estela parte de ellos), pero con sus márgenes la nube sale más estrecha que la órbita publicada (${coherencia(sB, oPop)}). Una explicación posible es que su Monte Carlo incluyera otras fuentes de error que el suplemento no detalla.
+- **C (elegida).** Reproduce los márgenes publicados de e e i (${coherencia(sC, oPop)}). σq sale algo menor porque el encuentro con la Tierra la restringe, y σa (que la Tabla S5B no da) sale de q y e. La Tabla 1 da σa = ${f(oPop.a.sigma, 2)} au, más de lo que admiten σq y σe (${f(sigmaAMaxima(oPop), 3)} au como máximo, incluso con correlación perfecta). Se aceptaron ${ncChely.aceptadas} de ${ncChely.probadas.toLocaleString('es')} sorteos.
+- **C con el radio de captura.** Con el umbral más estricto que permite el choque, el radio de captura (Tierra más 100 km de atmósfera, ampliado por la atracción terrestre), la dispersión apenas cambia (${coherencia(sCc, oPop)}).
+`
     : ''
 }
-
 ## Cómo leerlo
 
 - La distancia es la que separa la posición de cada órbita del centro de la Tierra en el instante de referencia (con el método \`elementos\`, la distancia mínima de la elipse). Son órbitas pre-atmosféricas, calculadas sin la atracción de la Tierra en el último tramo, así que es normal que queden a unas decenas de miles de kilómetros: es la desviación que produce la gravedad terrestre. La estela del año previo, que sí la incluye, llega a la posición de referencia.
 - Piezas en las que la σ de la nube y la publicada difieren en más de un 40 % en a, e o i: ${distintas.join(', ') || 'ninguna'}.
-- La σ de la nube sale de propagar la incertidumbre del radiante y de v_g; la publicada es la de la órbita principal (1σ). No tienen por qué coincidir: las fuentes no publican cómo se relacionan sus errores (covarianza), y en algunas los márgenes del radiante y los de la órbita no son coherentes entre sí si se tratan como independientes. En Chelyabinsk, con los márgenes de Popova et al. (publicados a 2σ y convertidos aquí a 1σ), la nube es más estrecha en a y más ancha en i que la órbita publicada.
+- La σ de la nube sale de propagar la incertidumbre del radiante y de v_g; la publicada es la de la órbita principal (1σ). No tienen por qué coincidir: las fuentes no publican cómo se relacionan sus errores (covarianza), y en algunas los márgenes del radiante y los de la órbita no son coherentes entre sí si se tratan como independientes. Por eso Chelyabinsk usa el método C (sección anterior).
 - Granvik & Brown 2018 no declaran el nivel de la incertidumbre del radiante; se asume 1σ, como en el resto del dataset.
+- Cada valor se sortea de una normal con su σ a 1σ: en cada variable, cerca del 31,7 % de las muestras cae fuera de ±1σ, y con tres variables independientes alrededor del 68,2 % tiene al menos una fuera.
 - Las nubes muestran la dispersión de este modelo, no una probabilidad calibrada de por dónde pasó cada meteoroide.
 `;
 }
@@ -470,11 +736,11 @@ if (process.argv[1]?.endsWith('nubes-pedigri.ts')) {
           'public/data/chelyabinsk-orbitas.json',
           JSON.stringify({
             generado: new Date().toISOString(),
-            nota: 'Elementos eclípticos J2000 (grados, AU) en el instante de referencia. Nube: se sortean el radiante geocéntrico y v_g de la fuente con su σ a 1σ y cada clon se integra con N cuerpos, como la estela; las 160 primeras son las del catálogo. La nominal son los valores centrales publicados de la órbita.',
+            nota: 'Elementos eclípticos J2000 (grados, AU) en el instante de entrada de Popova et al. Nube: se sortean q, e, i, ω y Ω de la órbita publicada con su σ a 1σ (a = q/(1 − e)) y solo se conservan las órbitas que pasan a menos de 15 000 km de la Tierra en ese instante; cada una se coloca en su punto más cercano a la Tierra. Las 160 primeras son las del catálogo. La nominal es la órbita publicada con todas sus cifras (material suplementario, págs. 18–19).',
             fuente_orbita: orbitaPrincipal(m).fuente,
-            muestreo: { metodo: 'radiante', fuente: c.nube.fuente, semilla: semillaDe(m.id) },
+            muestreo: { metodo: c.nube.metodo, fuente: c.nube.fuente, semilla: semillaDe(m.id) },
             validacion: c.nube.validacion,
-            nominal: centralChelyabinsk(orbitaPrincipal(m)),
+            nominal: c.nominal ?? centralChelyabinsk(orbitaPrincipal(m)),
             clones: c.completas!.map((el) => ({
               a: el.a,
               e: el.e,
@@ -497,7 +763,7 @@ if (process.argv[1]?.endsWith('nubes-pedigri.ts')) {
   const nubes: NubesPedigri = {
     generado: new Date().toISOString(),
     metodo:
-      'Para cada pieza se sortean el radiante geocéntrico (α_g, δ_g) y la velocidad geocéntrica v_g publicados, con distribuciones normales independientes de desviación típica igual a su incertidumbre a 1σ, y cada clon se integra con N cuerpos desde la posición e instante de referencia (altura convencional de 100 km), igual que la estela del año previo; los elementos son los pre-atmosféricos en ese instante. Almahata Sitta: sorteo de los elementos de su órbita telescópica de JPL (σ formal).',
+      'Para cada pieza se sortean el radiante geocéntrico (α_g, δ_g) y la velocidad geocéntrica v_g publicados, con distribuciones normales independientes de desviación típica igual a su incertidumbre a 1σ, y cada clon se integra con N cuerpos desde la posición e instante de referencia (altura convencional de 100 km), igual que la estela del año previo; los elementos son los pre-atmosféricos en ese instante. Almahata Sitta: sorteo de los elementos de su órbita telescópica de JPL (σ formal). Chelyabinsk (decisión del 2026-10-12, método C): se sortean q, e, i, ω y Ω de la órbita de Popova et al. (Tabla S5B, 1σ; a = q/(1 − e)) y solo se conservan las órbitas que pasan a menos de 15 000 km de la Tierra en el instante de entrada; cada una se coloca en su punto más cercano a la Tierra en ese instante.',
     piezas,
     ...(sens && { sensibilidad_chelyabinsk: sens }),
   };

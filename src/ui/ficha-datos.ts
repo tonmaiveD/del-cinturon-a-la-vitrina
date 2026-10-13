@@ -120,23 +120,18 @@ export function contextoFicha(
     poner('i', dato(orbita.i, n));
     poner('q', dato(orbita.q, n));
     poner('Q', dato(orbita.Q, n));
-    // σ a 1σ (la de la nube) y tal como la publica la fuente
-    poner(
-      'a_sigma1',
-      dato(orbita.a, (v) => num(v.sigma ?? NaN, dec(v))),
-    );
-    poner(
-      'i_sigma1',
-      dato(orbita.i, (v) => num(v.sigma ?? NaN, dec(v))),
-    );
-    poner(
-      'a_sigma',
-      dato(orbita.a, (v) => num(v.sigma_publicada ?? v.sigma ?? NaN, dec(v))),
-    );
-    poner(
-      'i_sigma',
-      dato(orbita.i, (v) => num(v.sigma_publicada ?? v.sigma ?? NaN, dec(v))),
-    );
+    // σ a 1σ (la que usa la nube) y tal como la publica la fuente
+    for (const k of ['a', 'e', 'i', 'q'] as const) {
+      const v = orbita[k];
+      poner(
+        `${k}_sigma1`,
+        dato(v, (x) => num(x.sigma ?? NaN, dec(x))),
+      );
+      poner(
+        `${k}_sigma`,
+        dato(v, (x) => num(x.sigma_publicada ?? x.sigma ?? NaN, dec(x))),
+      );
+    }
     // El esquema guarda `sigma` siempre a 1σ: es la que usa la nube
     poner(
       'nivel_nube',

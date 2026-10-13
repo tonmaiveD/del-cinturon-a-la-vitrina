@@ -18,6 +18,7 @@ import {
 import { dDrummond, type ElementosAngulares } from '../src/core/similitud';
 import { GRAD } from '../src/core/vector';
 import { Calibracion, Meteorito, type Orbita, type Valor } from '../src/schema';
+import { procedenciaReporte } from './huella-metodo';
 
 const N_CLONES = 1000;
 const SEMILLA = 20130215;
@@ -303,10 +304,12 @@ La longitud y la altura del CNEOS encajan mejor con la disrupción secundaria qu
 const informe = `# Validación científica: Chelyabinsk (CNEOS → órbita heliocéntrica)
 
 > Generado por \`npm run validacion:chelyabinsk\` el ${new Date().toISOString().slice(0, 10)}. No editar a mano.
+>
+> ${procedenciaReporte(['pipeline/validacion-chelyabinsk.ts', 'data/cneos/chelyabinsk.json', 'data/pedigri/chelyabinsk.json', 'data/calibracion/pena-asensio-2025.json', 'data/verificacion/chelyabinsk-destellos.json'])}
 
 ## Veredicto
 
-> Desde el 2026-10-12 la web no dibuja esta nube. El recorrido de Chelyabinsk muestra la órbita de Popova et al. 2013, la misma que cita su ficha. Su nube se calcula sorteando el radiante y v_g de Popova dentro de su incertidumbre (\`npm run datos:nubes\`, \`docs/reportes/nubes.md\`). Con errores tratados como independientes, esos márgenes del radiante dan una nube más estrecha en a y más ancha en i que los márgenes que Popova publica para la órbita: las dos incertidumbres de la fuente no son coherentes entre sí sin su covarianza. Este cálculo desde el vector del CNEOS queda como comprobación independiente.
+> Desde el 2026-10-12 la web no dibuja esta nube. El recorrido de Chelyabinsk muestra la órbita de Popova et al. 2013, la misma que cita su ficha. Su estela se calcula como describen Popova et al., desde su radiante aparente y su velocidad de entrada, y su nube sortea los elementos publicados conservando solo las órbitas que pasan junto a la Tierra (\`npm run datos:trayectoria\`, \`npm run datos:nubes\`, \`docs/reportes/nubes.md\`, donde se comparan las alternativas). Este cálculo desde el vector del CNEOS queda como comprobación independiente.
 
 ${fallos.length === 0 ? `**APROBADA.** Ninguna órbita publicada verificada supera el criterio de parada (D_D > ${UMBRAL_DD} o algún elemento a, e, i, q fuera de 3σ de la nube Monte Carlo).` : `**CRITERIO DE PARADA ACTIVADO.**\n\n${fallos.map((x) => `- ${x}`).join('\n')}`}
 

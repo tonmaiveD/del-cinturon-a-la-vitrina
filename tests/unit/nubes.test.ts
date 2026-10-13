@@ -10,13 +10,20 @@ import { semillaDe } from '../../src/core/muestreo';
 import { Meteorito } from '../../src/schema';
 import type { Catalogo, NubesPedigri } from '../../src/ui/catalogo';
 import { entradaPieza } from '../../pipeline/trayectorias-pedigri';
+import {
+  distanciaMinima,
+  nubeCondicionada,
+  UMBRAL_ENCUENTRO_KM,
+} from '../../pipeline/nubes-pedigri';
+import { KM_POR_AU } from '../../src/core/marcos';
 
 const leer = <T>(r: string) => JSON.parse(readFileSync(r, 'utf8')) as T;
 const catalogo = leer<Catalogo>('public/data/catalogo.json');
 const nubes = leer<NubesPedigri>('public/data/nubes.json');
 const chely = leer<{
   fuente_orbita: string;
-  muestreo: { fuente: string };
+  muestreo: { metodo: string; fuente: string };
+  nominal: { a: number; e: number; i: number; nodo: number; omega: number; epoca_ut_j2000: number };
   clones: {
     a: number;
     e: number;
@@ -43,8 +50,11 @@ describe('nubes de órbitas de las piezas (public/data/nubes.json)', () => {
       expect(n.validacion.aprobada, p.id).toBe(true);
       expect(n.fuente, p.id).toBe(p.orbita!.fuente);
       expect(n.formas, p.id).toHaveLength(160);
-      // Solo la órbita telescópica de JPL se sortea por elementos
-      expect(n.metodo, p.id).toBe(p.id === 'almahata-sitta' ? 'elementos' : 'radiante');
+      // JPL (telescópica): sorteo por elementos; Chelyabinsk: elementos condicionados (opción C)
+      expect(n.metodo, p.id).toBe(
+        { 'almahata-sitta': 'elementos', chelyabinsk: 'elementos-condicionados' }[p.id] ??
+          'radiante',
+      );
     }
   });
 
@@ -94,25 +104,47 @@ describe('nubes de órbitas de las piezas (public/data/nubes.json)', () => {
   });
 });
 
-describe('nube del recorrido de Chelyabinsk', () => {
-  it('sale del radiante de Popova y sus 160 primeras órbitas son las del catálogo', () => {
+describe('nube del recorrido de Chelyabinsk (opción C)', () => {
+  const m = Meteorito.parse(leer('data/pedigri/chelyabinsk.json'));
+  const o = m.orbitas.find((x) => x.fuente === 'popova-2013-science')!;
+  const instante = new Date(String(m.entrada_atmosferica!.instante.valor));
+  const tierra = () => {
+    const v = Astro.HelioVector(Astro.Body.Earth, Astro.MakeTime(instante));
+    return eqjAEcl([v.x, v.y, v.z]);
+  };
+
+  it('sale de la órbita de Popova y sus 160 primeras órbitas son las del catálogo', () => {
     expect(chely.fuente_orbita).toBe('popova-2013-science');
-    expect(chely.muestreo.fuente).toBe('popova-2013-science');
+    expect(chely.muestreo).toMatchObject({
+      metodo: 'elementos-condicionados',
+      fuente: 'popova-2013-science',
+    });
     expect(chely.clones).toHaveLength(300);
+    const c = nubes.piezas['chelyabinsk']!.condicion!;
+    const cc = o.cifras_completas!;
+    expect(c.central).toEqual({ q: cc.q, e: cc.e, i: cc.i, omega: cc.omega, nodo: cc.nodo });
+    expect(c.sigma).toEqual({
+      q: o.q!.sigma,
+      e: o.e.sigma,
+      i: o.i.sigma,
+      omega: o.omega.sigma,
+      nodo: o.nodo.sigma,
+    });
     nubes.piezas['chelyabinsk']!.formas.forEach(([a, e, i, nodo, omega], k) => {
-      const c = chely.clones[k]!;
+      const g = chely.clones[k]!;
       for (const [x, y] of [
-        [a, c.a],
-        [e, c.e],
-        [i, c.i],
-        [nodo, c.nodo],
-        [omega, c.omega],
+        [a, g.a],
+        [e, g.e],
+        [i, g.i],
+        [nodo, g.nodo],
+        [omega, g.omega],
       ])
         expect(Math.abs(x! - y!)).toBeLessThan(1e-4);
     });
   });
 
-  it('en el instante de referencia, cada punto de la nube está junto a la Tierra', () => {
+  it('en el instante de entrada, cada punto de la nube está a menos de 15 000 km de la Tierra', () => {
+    const T = tierra();
     for (const c of chely.clones) {
       const t = c.epoca_ut_j2000;
       const r = estadoDesdeElementos(
@@ -128,47 +160,81 @@ describe('nube del recorrido de Chelyabinsk', () => {
         gm('Sun'),
         t,
       ).r;
-      const v = Astro.HelioVector(Astro.Body.Earth, Astro.MakeTime(t));
-      const T = eqjAEcl([v.x, v.y, v.z]);
-      expect(Math.hypot(r[0] - T[0], r[1] - T[1], r[2] - T[2])).toBeLessThan(0.002);
+      expect(Math.hypot(r[0] - T[0], r[1] - T[1], r[2] - T[2]) * KM_POR_AU).toBeLessThan(
+        UMBRAL_ENCUENTRO_KM,
+      );
     }
   });
 
-  it('la ficha dice bien que es más estrecha en a y más ancha en i que la órbita publicada', () => {
-    const o = catalogo.piezas.find((p) => p.id === 'chelyabinsk')!.orbita!;
-    expect(desviacion(chely.clones.map((c) => c.a))).toBeLessThan(o.a.s!);
-    expect(desviacion(chely.clones.map((c) => c.i))).toBeGreaterThan(o.i.s!);
+  it('la línea central (cifras completas) pasa junto a la Tierra; la redondeada, no', () => {
+    const T = tierra();
+    const n = chely.nominal;
+    expect(distanciaMinima(n, T).d * KM_POR_AU).toBeLessThan(UMBRAL_ENCUENTRO_KM);
+    const redondeada = {
+      a: o.a.valor as number,
+      e: o.e.valor as number,
+      i: o.i.valor as number,
+      nodo: o.nodo.valor as number,
+      omega: o.omega.valor as number,
+    };
+    expect(distanciaMinima(redondeada, T).d * KM_POR_AU).toBeGreaterThan(100000);
+  });
+
+  it('la ficha dice bien: reproduce σe y σi, σq sale menor y σa no llega a la del artículo', () => {
+    const sd = (f: (c: (typeof chely.clones)[number]) => number) => desviacion(chely.clones.map(f));
+    expect(Math.abs(sd((c) => c.e) / o.e.sigma! - 1)).toBeLessThan(0.15);
+    expect(Math.abs(sd((c) => c.i) / o.i.sigma! - 1)).toBeLessThan(0.15);
+    expect(sd((c) => c.a * (1 - c.e))).toBeLessThan(o.q!.sigma!);
+    // σa máxima compatible con σq y σe (a = q/(1 − e), correlación perfecta) < σa del artículo
+    const q = o.q!.valor as number;
+    const e = o.e.valor as number;
+    const maxima = o.q!.sigma! / (1 - e) + (q / (1 - e) ** 2) * o.e.sigma!;
+    expect(maxima).toBeLessThan(o.a.sigma!);
+    expect(sd((c) => c.a)).toBeLessThan(maxima);
   });
 });
 
-describe('sensibilidad de la nube de Chelyabinsk', () => {
-  it('la ficha dice bien que la mayor parte de la anchura en i viene del margen de la declinación', () => {
-    const sens = nubes.sensibilidad_chelyabinsk!;
-    const sigmaI = (caso: string) => sens.find((x) => x.caso === caso)!.sigma.i;
-    const todas = sigmaI('Popova: las tres entradas');
-    expect(sigmaI('Popova: solo δ_g') / todas).toBeGreaterThan(0.8);
-    expect(sigmaI('Popova: solo δ_g')).toBeGreaterThan(sigmaI('Popova: solo α_g'));
-    expect(sigmaI('Popova: solo δ_g')).toBeGreaterThan(sigmaI('Popova: solo v_g'));
+describe('sensibilidad de la nube de Chelyabinsk (docs/reportes/nubes.md)', () => {
+  const sens = nubes.sensibilidad_chelyabinsk!;
+  const caso = (inicio: string) => sens.find((x) => x.caso.startsWith(inicio))!.sigma;
+  it('A: la declinación da la mayor parte de σi y la nube sale más ancha que la órbita', () => {
+    expect(caso('A: solo δ_g').i / caso('A: radiante geocéntrico').i).toBeGreaterThan(0.8);
+    expect(caso('A: radiante geocéntrico').i).toBeGreaterThan(0.24 * 1.4);
+  });
+  it('B sale más estrecha que la órbita publicada y C la reproduce en i', () => {
+    expect(caso('B:').i).toBeLessThan(0.24 * 0.75);
+    expect(Math.abs(caso('C: elementos').i / 0.24 - 1)).toBeLessThan(0.15);
   });
 });
 
 describe('reproducibilidad', () => {
-  it('con sus entradas y su semilla se recalculan las mismas órbitas de Chelyabinsk', () => {
+  it('con su semilla se recalculan las mismas órbitas de Chelyabinsk (opción C)', () => {
     const m = Meteorito.parse(leer('data/pedigri/chelyabinsk.json'));
+    const { clones } = nubeCondicionada(m, 3);
+    clones.forEach((c, k) => {
+      const g = chely.clones[k]!;
+      expect(c.a).toBeCloseTo(g.a, 12);
+      expect(c.e).toBeCloseTo(g.e, 12);
+      expect(c.i / GRAD).toBeCloseTo(g.i, 10);
+      expect(c.M / GRAD).toBeCloseTo(g.M, 10);
+    });
+  });
+
+  it('con sus entradas y su semilla se recalculan las mismas órbitas de una nube desde el radiante', () => {
+    const m = Meteorito.parse(leer('data/pedigri/pribram.json'));
     const { base, radiante } = entradaPieza(m);
     const cs = (v: { valor: unknown; sigma?: number }) => ({ v: v.valor as number, s: v.sigma! });
     const { clones } = nubeDesdeRadiante(
       base,
       { ra: cs(radiante.ra), dec: cs(radiante.dec), vg: cs(radiante.vg) },
-      3,
-      semillaDe('chelyabinsk'),
+      2,
+      semillaDe('pribram'),
     );
     clones.forEach((c, k) => {
-      const g = chely.clones[k]!;
-      expect(c.elementos.a).toBeCloseTo(g.a, 12);
-      expect(c.elementos.e).toBeCloseTo(g.e, 12);
-      expect(c.elementos.i / GRAD).toBeCloseTo(g.i, 10);
-      expect(c.elementos.M / GRAD).toBeCloseTo(g.M, 10);
+      const [a, e, i] = nubes.piezas['pribram']!.formas[k]!;
+      expect(Math.abs(c.elementos.a - a)).toBeLessThan(1e-6);
+      expect(Math.abs(c.elementos.e - e)).toBeLessThan(1e-6);
+      expect(Math.abs(c.elementos.i / GRAD - i)).toBeLessThan(1e-4);
     });
   });
 });

@@ -5,6 +5,7 @@
  * de subir un número de versión.
  */
 import { createHash } from 'node:crypto';
+import { execSync } from 'node:child_process';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -32,4 +33,33 @@ export function huellaMetodo(parametros: unknown): string {
   h.update(`astronomy-engine@${versionInstalada('astronomy-engine')}`);
   h.update(JSON.stringify(parametros));
   return h.digest('hex').slice(0, 16);
+}
+
+/**
+ * Línea de procedencia para el encabezado de un reporte: commit, si había cambios sin confirmar,
+ * versión de las efemérides y una huella de los archivos que lo generan (código y datos), que
+ * identifica el contenido aunque el reporte se genere antes de confirmar.
+ */
+export function procedenciaReporte(archivos: string[]): string {
+  const sh = (c: string) => {
+    try {
+      return execSync(c, { stdio: ['ignore', 'pipe', 'ignore'] })
+        .toString()
+        .trim();
+    } catch {
+      return '';
+    }
+  };
+  const commit = sh('git rev-parse --short HEAD') || 'desconocido';
+  const sucio = sh(`git status --porcelain -- src pipeline data ${archivos.join(' ')}`) !== '';
+  const h = createHash('sha256');
+  const nucleo = readdirSync(DIR_NUCLEO)
+    .filter((x) => x.endsWith('.ts'))
+    .sort()
+    .map((x) => join(DIR_NUCLEO, x));
+  for (const f of [...nucleo, ...archivos].sort()) {
+    h.update(f);
+    h.update(readFileSync(f));
+  }
+  return `Código: commit ${commit}${sucio ? ' con cambios sin confirmar' : ''} · astronomy-engine ${versionInstalada('astronomy-engine')} · Node ${process.version} · huella del código y los datos de entrada ${h.digest('hex').slice(0, 16)}`;
 }

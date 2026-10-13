@@ -1,10 +1,12 @@
 # Validación científica: Chelyabinsk (CNEOS → órbita heliocéntrica)
 
 > Generado por `npm run validacion:chelyabinsk` el 2026-10-12. No editar a mano.
+>
+> Código: commit 7c426c4 con cambios sin confirmar · astronomy-engine 2.1.19 · Node v24.17.0 · huella del código y los datos de entrada ed979a076536bbfe
 
 ## Veredicto
 
-> Desde el 2026-10-12 la web no dibuja esta nube. El recorrido de Chelyabinsk muestra la órbita de Popova et al. 2013, la misma que cita su ficha. Su nube se calcula sorteando el radiante y v_g de Popova dentro de su incertidumbre (`npm run datos:nubes`, `docs/reportes/nubes.md`). Con errores tratados como independientes, esos márgenes del radiante dan una nube más estrecha en a y más ancha en i que los márgenes que Popova publica para la órbita: las dos incertidumbres de la fuente no son coherentes entre sí sin su covarianza. Este cálculo desde el vector del CNEOS queda como comprobación independiente.
+> Desde el 2026-10-12 la web no dibuja esta nube. El recorrido de Chelyabinsk muestra la órbita de Popova et al. 2013, la misma que cita su ficha. Su estela se calcula como describen Popova et al., desde su radiante aparente y su velocidad de entrada, y su nube sortea los elementos publicados conservando solo las órbitas que pasan junto a la Tierra (`npm run datos:trayectoria`, `npm run datos:nubes`, `docs/reportes/nubes.md`, donde se comparan las alternativas). Este cálculo desde el vector del CNEOS queda como comprobación independiente.
 
 **APROBADA.** Ninguna órbita publicada verificada supera el criterio de parada (D_D > 0.1 o algún elemento a, e, i, q fuera de 3σ de la nube Monte Carlo).
 
@@ -76,7 +78,7 @@ Fuente: Peña-Asensio, Socas-Navarro & Seligman 2025, A&A 701, A202 (arXiv:2508.
 
 Radiante geocéntrico de Popova et al. 2013 (1σ): α = 333.2 ± 0.8°, δ = 0.3 ± 0.9°, Vg = 15.3 ± 0.2 km/s.
 
-Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1000 clones): 34.3 s.
+Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1000 clones): 34.4 s.
 
 ## Monte Carlo
 

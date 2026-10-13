@@ -50,7 +50,9 @@ test('una pieza sin trayectoria mantiene el recorrido desactivado y lo explica',
   await expect(page.locator('#nota-recorrido')).toContainText('todavía no está disponible');
 });
 
-test('al volver a Chelyabinsk se restaura su trayectoria del CNEOS', async ({ page }) => {
+test('al volver a Chelyabinsk se restaura su recorrido (entrada del CNEOS y estela de Popova)', async ({
+  page,
+}) => {
   await page.goto('/?pieza=peekskill');
   await listo(page);
   await expect(page.locator('#recorrido')).toBeEnabled();

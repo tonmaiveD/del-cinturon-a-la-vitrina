@@ -150,9 +150,10 @@ export type FormaNube = [number, number, number, number, number];
 export interface NubePieza {
   /**
    * `radiante`: se sortean el radiante y v_g publicados y cada clon se integra como la estela;
-   * `elementos`: se sortean los elementos de la órbita (solo la órbita telescópica de JPL).
+   * `elementos`: se sortean los elementos de la órbita (solo la órbita telescópica de JPL);
+   * `elementos-condicionados`: ver `condicion`.
    */
-  metodo: 'radiante' | 'elementos';
+  metodo: 'radiante' | 'elementos' | 'elementos-condicionados';
   fuente: string;
   /** Semilla del sorteo (`semillaDe(id)`): con ella y `entrada` la nube se reproduce. */
   semilla: number;
@@ -168,6 +169,18 @@ export interface NubePieza {
     nivel_sigma_publicado: string;
     /** σ de los valores que se sortearon de verdad (comprueba el procedimiento). */
     sigma_sorteada: { ra: number; dec: number; vg: number };
+  };
+  /**
+   * Método `elementos-condicionados` (Chelyabinsk): se sortean los elementos publicados con su
+   * σ y solo se conservan las órbitas que pasan a menos de `umbral_km` de la Tierra.
+   */
+  condicion?: {
+    instante: string;
+    umbral_km: number;
+    probadas: number;
+    aceptadas: number;
+    central: { q: number; e: number; i: number; omega: number; nodo: number };
+    sigma: { q: number; e: number; i: number; omega: number; nodo: number };
   };
   /** Órbitas generadas (en Chelyabinsk, 300; `formas` guarda las 160 primeras). */
   sorteadas: number;

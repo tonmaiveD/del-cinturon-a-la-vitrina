@@ -46,7 +46,8 @@
       "nivel_sigma": "2-sigma",
       "fuente": "popova-2013-science",
       "ubicacion": "Tabla 1",
-      "estado": "verificado"
+      "estado": "verificado",
+      "nota": "El material suplementario (sección 1.1, pág. 17) da otro margen para el mismo valor, sin nivel: ±1,0°. Los dos son mucho más anchos de lo que implica el radiante aparente (±0,09°)."
     },
     "dec": {
       "valor": 0.3,
@@ -56,7 +57,8 @@
       "nivel_sigma": "2-sigma",
       "fuente": "popova-2013-science",
       "ubicacion": "Tabla 1",
-      "estado": "verificado"
+      "estado": "verificado",
+      "nota": "El material suplementario (sección 1.1, pág. 17) da otro margen para el mismo valor, sin nivel: ±1,1°. Los dos son mucho más anchos de lo que implica el radiante aparente (±0,10°)."
     },
     "v_geocentrica": {
       "valor": 15.3,
@@ -66,7 +68,8 @@
       "nivel_sigma": "2-sigma",
       "fuente": "popova-2013-science",
       "ubicacion": "Tabla 1",
-      "estado": "verificado"
+      "estado": "verificado",
+      "nota": "El material suplementario (sección 1.1, pág. 17) da otro margen para el mismo valor, sin nivel: ±0,2 km/s."
     },
     "v_entrada": {
       "valor": 19.16,
@@ -99,7 +102,8 @@
         "nivel_sigma": "2-sigma",
         "fuente": "popova-2013-science",
         "ubicacion": "Tabla 1",
-        "estado": "verificado"
+        "estado": "verificado",
+        "nota": "Tabla 1 del artículo (±0,16 a 2σ). La Tabla S5B del material suplementario (1σ) no da incertidumbre para a. Con σq = 0,010 y σe = 0,009, a = q/(1 − e) no admite una σa mayor de 0,062 ni con correlación perfecta: este margen no es coherente con los de q y e (docs/reportes/nubes.md)."
       },
       "e": {
         "valor": 0.581,
@@ -170,6 +174,15 @@
         "ubicacion": "Tabla 1",
         "estado": "verificado",
         "nota": "σ en días."
+      },
+      "cifras_completas": {
+        "a": 1.76327,
+        "e": 0.580953,
+        "i": 4.928787,
+        "omega": 108.301927,
+        "nodo": 326.442018,
+        "q": 0.738893,
+        "ubicacion": "material suplementario, sección «Preatmospheric Orbit», págs. 18–19: «Expressed with additional digits, the nominal orbit has…»; la fuente aclara que la órbita con estas cifras pasa junto a la Tierra"
       }
     },
     {
@@ -615,6 +628,73 @@
       "ubicacion": "arXiv:1804.07229v1, tabla table:orbits (época MJD 56338.139120); la tabla table:trajectorydata da la misma hora redondeada (3,3389 h UTC)",
       "estado": "verificado",
       "nota": "Instante de la posición de referencia: comienzo de la trayectoria, a unos 95 km según Borovička et al. 2013 (Tabla 1). Es anterior al pico de brillo de fecha_caida."
+    }
+  },
+  "entrada_atmosferica": {
+    "instante": {
+      "valor": "2013-02-15T03:20:19.8Z",
+      "unidad": "UTC",
+      "fuente": "popova-2013-science",
+      "ubicacion": "material suplementario, sección 1.1, pág. 17: «reference date and time: February 15, 2013 at 03:20:19.8 UT»",
+      "estado": "verificado",
+      "nota": "La Tabla S1 (pág. 3) da la primera detección a las 03:20:20.8, a la misma altura y posición: hay 1 s de diferencia dentro de la fuente. Se usa la hora de referencia del texto, la de la solución del radiante."
+    },
+    "lat": {
+      "valor": 54.445,
+      "unidad": "grados",
+      "fuente": "popova-2013-science",
+      "ubicacion": "material suplementario, sección 1.1, pág. 17 y Tabla S1",
+      "estado": "verificado",
+      "nota": "Punto de entrada a 97,1 km. La Tabla S1 da ±0,018° (sin nivel)."
+    },
+    "lon": {
+      "valor": 64.565,
+      "unidad": "grados",
+      "fuente": "popova-2013-science",
+      "ubicacion": "material suplementario, sección 1.1, pág. 17 y Tabla S1",
+      "estado": "verificado",
+      "nota": "La Tabla S1 da ±0,030° (sin nivel)."
+    },
+    "altura": {
+      "valor": 97.1,
+      "unidad": "km",
+      "fuente": "popova-2013-science",
+      "ubicacion": "material suplementario, sección 1.1, pág. 17 y Tabla S5A",
+      "estado": "verificado",
+      "nota": "Altura de comienzo (Hb), también en la Tabla 1 del artículo (97,1 ± 1,6 km a 2σ)."
+    },
+    "ra_aparente": {
+      "valor": 328.62,
+      "unidad": "grados",
+      "sigma": 0.09,
+      "sigma_publicada": 0.09,
+      "nivel_sigma": "formal-sin-nivel",
+      "fuente": "popova-2013-science",
+      "ubicacion": "material suplementario, sección 1.1, pág. 17 (texto) y Tabla S5A (pág. 18)",
+      "estado": "verificado",
+      "nota": "Incertidumbre «±» sin nivel declarado en el suplemento; se asume 1σ (la Tabla S5B de la misma sección declara 1σ, y V∞ ±0,15 coincide con ±0,30 a 2σ de la Tabla 1)."
+    },
+    "dec_aparente": {
+      "valor": 7.26,
+      "unidad": "grados",
+      "sigma": 0.1,
+      "sigma_publicada": 0.1,
+      "nivel_sigma": "formal-sin-nivel",
+      "fuente": "popova-2013-science",
+      "ubicacion": "material suplementario, sección 1.1, pág. 17 (texto) y Tabla S5A (pág. 18)",
+      "estado": "verificado",
+      "nota": "Incertidumbre «±» sin nivel declarado en el suplemento; se asume 1σ (la Tabla S5B de la misma sección declara 1σ, y V∞ ±0,15 coincide con ±0,30 a 2σ de la Tabla 1)."
+    },
+    "v_entrada": {
+      "valor": 19.16,
+      "unidad": "km/s",
+      "sigma": 0.15,
+      "sigma_publicada": 0.15,
+      "nivel_sigma": "formal-sin-nivel",
+      "fuente": "popova-2013-science",
+      "ubicacion": "material suplementario, sección 1.1, pág. 17 (texto) y Tabla S5A (pág. 18)",
+      "estado": "verificado",
+      "nota": "Incertidumbre «±» sin nivel declarado en el suplemento; se asume 1σ (la Tabla S5B de la misma sección declara 1σ, y V∞ ±0,15 coincide con ±0,30 a 2σ de la Tabla 1)."
     }
   },
   "atmosfera": {

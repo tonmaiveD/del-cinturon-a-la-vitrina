@@ -60,6 +60,7 @@ export const CIFRAS_PERMITIDAS: Record<string, { cifras: string[]; motivo: strin
   'desc.sistema-solar': { cifras: ['1'], motivo: 'notación («1σ»)' },
   'desc.sistema-solar.pieza': { cifras: ['1'], motivo: 'notación («1σ»)' },
   'desc.sistema-solar.pieza.jpl': { cifras: ['1'], motivo: 'notación («1σ»)' },
+  'desc.sistema-solar.pieza.condicionada': { cifras: ['1'], motivo: 'notación («1σ»)' },
   'zona.resonancia-3-1': { cifras: ['3', '1'], motivo: 'nombre de la resonancia p:q' },
   'zona.resonancia-5-2': { cifras: ['5', '2'], motivo: 'nombre de la resonancia p:q' },
   'zona.resonancia-2-1': { cifras: ['2', '1'], motivo: 'nombre de la resonancia p:q' },
@@ -331,7 +332,14 @@ export function auditar(e: EntradaAuditoria): Fila[] {
       if (!m) fallos.push('pieza inexistente en el dataset');
       else if (
         Date.parse(tr.instante_referencia) !==
-        Date.parse(String((m.punto_trayectoria?.instante ?? m.fecha_caida).valor))
+        Date.parse(
+          String(
+            (tr.origen === 'radiante-aparente'
+              ? m.entrada_atmosferica?.instante
+              : (m.punto_trayectoria?.instante ?? m.fecha_caida)
+            )?.valor,
+          ),
+        )
       )
         fallos.push('instante distinto del dataset');
       let nota: string;
@@ -348,6 +356,29 @@ export function auditar(e: EntradaAuditoria): Fila[] {
         if (tr.validacion.criterio !== 'solo-dd' || tr.validacion.fuente_orbita !== 'jpl-horizons')
           fallos.push('criterio de validación no documentado para JPL');
         nota = `estado de JPL (data/verificacion/originales.json); criterio solo D_D (σ formal de JPL menor que la precisión de las efemérides; decisión del 2026-10-08), declarado en pantalla`;
+      } else if (tr.origen === 'radiante-aparente') {
+        const en = m?.entrada_atmosferica;
+        const ra = tr.radiante_aparente;
+        if (!en || !ra) fallos.push('pieza sin entrada en la atmósfera en el dataset');
+        else {
+          if (ra.ra !== en.ra_aparente.valor || ra.dec !== en.dec_aparente.valor)
+            fallos.push('radiante aparente distinto del dataset');
+          if (ra.v !== en.v_entrada.valor) fallos.push('velocidad de entrada distinta del dataset');
+          if (!Object.values(en).every((x) => x.estado === 'verificado'))
+            fallos.push('entrada sin verificar');
+          if (
+            tr.punto.lat !== en.lat.valor ||
+            tr.punto.lon !== en.lon.valor ||
+            tr.punto.altura_km !== en.altura.valor ||
+            tr.punto.altura_convencional
+          )
+            fallos.push('punto de entrada distinto del dataset');
+          if (ra.fuente !== m!.orbita_principal)
+            fallos.push('la entrada no es de la fuente de la órbita principal');
+        }
+        if (tr.validacion.criterio !== 'dd-y-z') fallos.push('criterio de validación relajado');
+        nota =
+          'radiante aparente, velocidad, punto e instante de entrada de la fuente de la órbita principal (sin altura convencional)';
       } else {
         const r = m?.radiante_geocentrico;
         const pt = m?.punto_trayectoria;
@@ -375,7 +406,7 @@ export function auditar(e: EntradaAuditoria): Fila[] {
         fuente:
           tr.origen === 'jpl'
             ? 'cálculo propio desde el estado de jpl-horizons'
-            : `cálculo propio desde ${tr.radiante?.fuente ?? '—'}`,
+            : `cálculo propio desde ${(tr.radiante ?? tr.radiante_aparente)?.fuente ?? '—'}`,
         estado: fallos.length ? 'error' : 'calculado',
         nota: fallos.length ? fallos.join('; ') : nota,
       });
@@ -423,6 +454,10 @@ export function auditar(e: EntradaAuditoria): Fila[] {
         'dec_sigma1',
         'vg_sigma1',
         'vg',
+        'q_sigma1',
+        'e_sigma1',
+        'q_sigma',
+        'e_sigma',
       ])
         if (fichaCtx.ctx[k]) usos.push([`ficha {{${k}}}`, fichaCtx.ctx[k]!.fuente]);
     const distintos = usos.filter(([, f]) => f !== principal);
