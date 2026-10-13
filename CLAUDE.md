@@ -9,8 +9,7 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 
 - **2026-10-12: revisión de la ficha de Chelyabinsk hecha** (auditoría consolidada que trajo
   el usuario; detalle en `docs/deuda-tecnica.md`). El recorrido de Chelyabinsk ya dibuja la
-  órbita de Popova, la misma que cita la ficha; la nube del CNEOS queda como validación. La
-  ficha sigue en `borrador` a la espera de su aprobación.
+  órbita de Popova, la misma que cita la ficha; la nube del CNEOS queda como validación.
 - **2026-10-12: segunda revisión de la ficha hecha** (etapas 1 y 2): las nubes de las 25
   piezas se calculan desde el radiante (`npm run datos:nubes`); la ficha cita la tabla S1 y las
   cinco procedencias del material suplementario de Popova (en `.trabajo/popova-suplemento/`, no
@@ -23,11 +22,14 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 - **2026-10-12: quinta revisión hecha (auditoría V5).** La nube de Chelyabinsk conserva las
   órbitas que chocan en la aproximación de dos cuerpos (parámetro de impacto ≤ radio de captura,
   `src/ciencia/encuentro.ts`); el umbral de 15 000 km dejaba pasar 89 de 300 sin choque. Ficha y
-  reporte de nubes al día. **Falta que el usuario apruebe la ficha**; después, ola 3.
+  reporte de nubes al día.
+- **2026-10-12: ficha de Chelyabinsk aprobada** por el usuario (revisor Pablo Hoffenberg,
+  commit 0558d0a) y publicada; la prueba e2e de accesibilidad comprueba que aparece en
+  producción sin aviso de borrador.
 - **Siguiente paso: ola 3 = Fase 4 (colección y fichas).** Necesita decisiones del usuario
   (ver «Fase 4» abajo). Si aún no las tiene, se puede empezar por lo que no las necesita: el
   modelo meteorito ≠ ejemplar (M33) y el manejo de campos privados (M32). Se lo propuse el
-  2026-10-12 y está pendiente su respuesta.
+  2026-10-12 y de nuevo el 2026-10-13; está pendiente su respuesta.
 - **Fases 0–3 cerradas** (`docs/cierres/fase-1.md`, `fase-2.md`, `fase-3.md`; la 3 confirmada
   el 2026-10-09) y **olas 0, 1 y 2 de la hoja de ruta hechas y publicadas** (etapas A, B, C y D
   de la deuda técnica).
@@ -100,7 +102,10 @@ directas y sin muletillas.
   dónde salen los datos, Método y límites, Actualización diaria de bólidos, Licencias,
   Arquitectura y desarrollo, Historial de cambios; más `_Sidebar` y `_Footer`. Se actualizó con
   la ola 2.
-- **Mantenimiento:** se actualiza al cerrar cada ola, sin quedar como una etapa aparte.
+- **Mantenimiento:** se actualiza en el mismo paso que cualquier cambio que afecte a lo que
+  explica (método, datos, interfaz, publicación), además del repaso al cerrar cada ola; no queda
+  como una etapa aparte. El 2026-10-13 se detectó que la revisión V5, hecha en otra sesión, no la
+  había actualizado.
 - **Cómo se trabaja.** La wiki es un repositorio git aparte, clonado en
   `~/Proyectos/del-cinturon-a-la-vitrina.wiki` y añadido a GitHub Desktop. Yo hago commits en
   local con apaec@yahoo.com (configurado en el repo) y el usuario sube con «Push origin».
@@ -110,7 +115,6 @@ En paralelo, del usuario:
 
 - colección pública o privada;
 - lista de piezas;
-- aprobar la ficha de Chelyabinsk;
 - PDF de MetBull;
 - clave de la API (al llegar a la Fase 4);
 - marca del amigo y los MP3;
@@ -144,11 +148,6 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
 
 ### Pendientes del usuario (sin urgencia)
 
-- ~~Ficha de Chelyabinsk~~: **aprobada el 2026-10-12** (`content/fichas/chelyabinsk.md`, reescrita el
-  2026-10-12 tras la auditoría consolidada): versión legible en
-  `revision/ficha-chelyabinsk-para-revisar.md` (regenerar con `.trabajo/ficha-legible.ts` si
-  cambia). Respuesta esperada: «apruebo» + nombre del revisor (→ `estado: aprobada`,
-  `revisado_por`, `fecha_revision`) o cambios en sus palabras.
 - **MetBull**: PDF de cada registro en `revision/metbull/` (instrucciones dadas: buscar en
   https://www.lpi.usra.edu/meteor/metbull.php, Archivo → Imprimir → Guardar como PDF). Con ellos:
   nombres oficiales (hoy los 25 «pendiente»), masa recuperada y punto de caída. Chelyabinsk: 57165.

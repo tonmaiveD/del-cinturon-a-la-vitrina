@@ -280,8 +280,10 @@ describe('reproducibilidad', () => {
     );
     clones.forEach((c, k) => {
       const [a, e, i] = nubes.piezas['pribram']!.formas[k]!;
-      expect(Math.abs(c.elementos.a - a)).toBeLessThan(1e-6);
-      expect(Math.abs(c.elementos.e - e)).toBeLessThan(1e-6);
+      // nubes.json guarda a y e con 6 decimales (hasta 5e-7 de redondeo) y la integración N
+      // cuerpos difiere un poco entre macOS y Linux: en la CI salió 1,47e-6 (2026-10-13)
+      expect(Math.abs(c.elementos.a - a)).toBeLessThan(1e-5);
+      expect(Math.abs(c.elementos.e - e)).toBeLessThan(1e-5);
       expect(Math.abs(c.elementos.i / GRAD - i)).toBeLessThan(1e-4);
     });
   });
