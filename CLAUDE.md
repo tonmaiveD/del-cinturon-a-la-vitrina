@@ -19,8 +19,11 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 - **2026-10-12: cuarta revisión hecha (etapa 4)**, con la opción C elegida por el usuario. La
   estela de Chelyabinsk sale del radiante aparente y el punto de entrada de Popova, y su nube
   sortea los elementos publicados y conserva las órbitas que pasan a menos de 15 000 km de la
-  Tierra. La ficha corrige lo del Monte Carlo. **Falta que el usuario apruebe la ficha**; después,
-  ola 3.
+  Tierra. La ficha corrige lo del Monte Carlo.
+- **2026-10-12: quinta revisión hecha (auditoría V5).** La nube de Chelyabinsk conserva las
+  órbitas que chocan en la aproximación de dos cuerpos (parámetro de impacto ≤ radio de captura,
+  `src/ciencia/encuentro.ts`); el umbral de 15 000 km dejaba pasar 89 de 300 sin choque. Ficha y
+  reporte de nubes al día. **Falta que el usuario apruebe la ficha**; después, ola 3.
 - **Siguiente paso: ola 3 = Fase 4 (colección y fichas).** Necesita decisiones del usuario
   (ver «Fase 4» abajo). Si aún no las tiene, se puede empezar por lo que no las necesita: el
   modelo meteorito ≠ ejemplar (M33) y el manejo de campos privados (M32). Se lo propuse el
@@ -37,9 +40,9 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`cneos-diario.yml`, 07:30 UTC, con retrasos posibles) y Dependabot revisa dependencias los
   lunes.
 - **Verificación al 2026-10-12:**
-  - 255 tests unitarios y 80 e2e (escritorio y móvil), más la medición de rendimiento
+  - 274 tests unitarios y 80 e2e (escritorio y móvil), más la medición de rendimiento
     (aislada: `npm run e2e:rendimiento`; en paralelo con las demás roza el límite de 3 s);
-  - auditoría: 587 datos, 0 errores;
+  - auditoría: 603 datos, 0 errores;
   - carga inicial unos 2,8 s en 4G lento;
   - cambio al modo CNEOS: 1,2 s en local y 3,2–3,4 s en la CI sin GPU. Esa medición
     informativa falla en la CI y no bloquea; queda para la ola 5.
@@ -186,7 +189,8 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
   JPL): se sortean α_g, δ_g y v_g y cada clon se integra como la estela. Sustituye al sorteo de
   elementos independientes, que daba órbitas que no pasan por la Tierra.
 - 2026-10-12: **Chelyabinsk, opción C**: su nube sortea los elementos publicados de Popova y
-  conserva las órbitas a menos de 15 000 km de la Tierra; su estela y su punto salen de Popova,
+  conserva las órbitas que chocan con la Tierra (desde la auditoría V5, parámetro de impacto ≤
+  radio de captura; antes, a menos de 15 000 km); su estela y su punto salen de Popova,
   así que toda la figura viene de una sola fuente.
 - 2026-10-11: el usuario **mantiene el gmail como correo principal** de su cuenta de GitHub y
   quiere que **solo apaec@yahoo.com sea visible**. Autorizó reescribir la historia de la wiki y
@@ -391,6 +395,8 @@ textura Blue Marble según las directrices de medios de NASA (verificado el 2026
   elementos de Popova condicionados al encuentro, que se mueven con Kepler; la línea central es
   la órbita con todas las cifras); en el globo, la entrada y el pico son los del CNEOS. Las otras 24 piezas con
   `public/data/trayectorias/<id>.json`.
+- Encuentro con la Tierra: `src/ciencia/encuentro.ts` (parámetro de impacto, radio de captura),
+  fuera de `src/core` a propósito para no cambiar la huella del CNEOS.
 - Nubes del catálogo: `public/data/nubes.json` (160 formas por pieza, calculadas desde el
   radiante; Almahata Sitta, desde la órbita de JPL), cargado al crear la vista solar
   (`cat.fijarNubes`). Validación en `docs/reportes/nubes.md`. Cambiar `src/core/` cambia la

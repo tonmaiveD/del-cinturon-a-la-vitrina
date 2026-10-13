@@ -11,9 +11,11 @@ import { Meteorito } from '../../src/schema';
 import type { Catalogo, NubesPedigri } from '../../src/ui/catalogo';
 import { entradaPieza } from '../../pipeline/trayectorias-pedigri';
 import {
+  CRITERIO_ENCUENTRO,
+  cumpleCriterio,
   distanciaMinima,
+  encuentroCon,
   nubeCondicionada,
-  UMBRAL_ENCUENTRO_KM,
 } from '../../pipeline/nubes-pedigri';
 import { KM_POR_AU } from '../../src/core/marcos';
 
@@ -143,33 +145,72 @@ describe('nube del recorrido de Chelyabinsk (opción C)', () => {
     });
   });
 
-  it('en el instante de entrada, cada punto de la nube está a menos de 15 000 km de la Tierra', () => {
+  const enRadianes = (c: (typeof chely.clones)[number]) => ({
+    a: c.a,
+    e: c.e,
+    i: c.i * GRAD,
+    nodo: c.nodo * GRAD,
+    omega: c.omega * GRAD,
+    M: c.M * GRAD,
+    epoca: c.epoca_ut_j2000,
+  });
+
+  it('cada órbita de la nube choca con la Tierra: parámetro de impacto ≤ radio de captura', () => {
     const T = tierra();
+    const t = Astro.MakeTime(instante);
     for (const c of chely.clones) {
-      const t = c.epoca_ut_j2000;
-      const r = estadoDesdeElementos(
-        {
-          a: c.a,
-          e: c.e,
-          i: c.i * GRAD,
-          nodo: c.nodo * GRAD,
-          omega: c.omega * GRAD,
-          M: c.M * GRAD,
-          epoca: t,
-        },
-        gm('Sun'),
-        t,
-      ).r;
-      expect(Math.hypot(r[0] - T[0], r[1] - T[1], r[2] - T[2]) * KM_POR_AU).toBeLessThan(
-        UMBRAL_ENCUENTRO_KM,
-      );
+      expect(c.epoca_ut_j2000).toBeCloseTo(t.ut, 9);
+      const x = encuentroCon(enRadianes(c), t);
+      expect(x.bKm).toBeLessThanOrEqual(x.radioCapturaKm);
+      expect(cumpleCriterio(x, CRITERIO_ENCUENTRO)).toBe(true);
+      // Cada órbita está en su punto más cercano a la Tierra en ese instante
+      const r = estadoDesdeElementos(enRadianes(c), gm('Sun'), t.ut).r;
+      const d = Math.hypot(r[0] - T[0], r[1] - T[1], r[2] - T[2]) * KM_POR_AU;
+      expect(Math.abs(d - x.distanciaKm)).toBeLessThan(1);
+      expect(d - distanciaMinima(c, T).d * KM_POR_AU).toBeLessThan(1);
+      // Regresión (2026-10-12): radio de captura de 7873 a 8111 km, distancia < 13 400 km
+      expect(x.radioCapturaKm).toBeGreaterThan(7700);
+      expect(x.radioCapturaKm).toBeLessThan(8300);
+      expect(d).toBeLessThan(15000);
     }
   });
 
-  it('la línea central (cifras completas) pasa junto a la Tierra; la redondeada, no', () => {
+  it('el criterio acepta las órbitas calculadas desde estados reales de entrada', () => {
+    // Clones desde el radiante geocéntrico de Popova (caso A): chocan por construcción
+    const { base, radiante } = entradaPieza(m);
+    const cs = (v: { valor: unknown; sigma?: number }) => ({ v: v.valor as number, s: v.sigma! });
+    const { clones } = nubeDesdeRadiante(
+      base,
+      { ra: cs(radiante.ra), dec: cs(radiante.dec), vg: cs(radiante.vg) },
+      4,
+      semillaDe(m.id),
+    );
+    const t = Astro.MakeTime(base.fecha);
+    for (const c of clones) {
+      const x = encuentroCon(c.elementos, t);
+      expect(x.bKm).toBeLessThanOrEqual(x.radioCapturaKm);
+      // …aunque en ese instante estén más lejos que el radio de captura: la distancia
+      // geométrica no es la magnitud que se compara con él
+      expect(x.distanciaKm).toBeGreaterThan(x.radioCapturaKm);
+    }
+  });
+
+  it('la línea central (cifras completas) choca con la Tierra; la redondeada pasa lejos', () => {
     const T = tierra();
     const n = chely.nominal;
-    expect(distanciaMinima(n, T).d * KM_POR_AU).toBeLessThan(UMBRAL_ENCUENTRO_KM);
+    const x = encuentroCon(
+      {
+        a: n.a,
+        e: n.e,
+        i: n.i * GRAD,
+        nodo: n.nodo * GRAD,
+        omega: n.omega * GRAD,
+        M: (n as { M?: number }).M! * GRAD,
+        epoca: n.epoca_ut_j2000,
+      },
+      Astro.MakeTime(instante),
+    );
+    expect(x.bKm).toBeLessThanOrEqual(x.radioCapturaKm);
     const redondeada = {
       a: o.a.valor as number,
       e: o.e.valor as number,
@@ -180,11 +221,12 @@ describe('nube del recorrido de Chelyabinsk (opción C)', () => {
     expect(distanciaMinima(redondeada, T).d * KM_POR_AU).toBeGreaterThan(100000);
   });
 
-  it('la ficha dice bien: reproduce σe y σi, σq sale menor y σa no llega a la del artículo', () => {
+  it('la ficha dice bien: reproduce σe y σi, σq y σω salen menores y σa no llega a la del artículo', () => {
     const sd = (f: (c: (typeof chely.clones)[number]) => number) => desviacion(chely.clones.map(f));
     expect(Math.abs(sd((c) => c.e) / o.e.sigma! - 1)).toBeLessThan(0.15);
     expect(Math.abs(sd((c) => c.i) / o.i.sigma! - 1)).toBeLessThan(0.15);
     expect(sd((c) => c.a * (1 - c.e))).toBeLessThan(o.q!.sigma!);
+    expect(sd((c) => c.omega)).toBeLessThan(o.omega.sigma!);
     // σa máxima compatible con σq y σe (a = q/(1 − e), correlación perfecta) < σa del artículo
     const q = o.q!.valor as number;
     const e = o.e.valor as number;
@@ -204,6 +246,12 @@ describe('sensibilidad de la nube de Chelyabinsk (docs/reportes/nubes.md)', () =
   it('B sale más estrecha que la órbita publicada y C la reproduce en i', () => {
     expect(caso('B:').i).toBeLessThan(0.24 * 0.75);
     expect(Math.abs(caso('C: elementos').i / 0.24 - 1)).toBeLessThan(0.15);
+  });
+  it('A cumple el criterio de C y el criterio anterior dejaba pasar órbitas sin choque', () => {
+    const enc = (inicio: string) => sens.find((x) => x.caso.startsWith(inicio))!.encuentro!;
+    expect(enc('A: radiante geocéntrico').sin_choque).toBe(0);
+    expect(enc('C: elementos').sin_choque).toBe(0);
+    expect(enc('C con el criterio anterior').sin_choque).toBeGreaterThan(0);
   });
 });
 

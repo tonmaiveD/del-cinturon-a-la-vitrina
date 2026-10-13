@@ -448,6 +448,42 @@ Resultado de la etapa 4:
   redondeada no, la sensibilidad A/B/C y la reproducibilidad de C y de una nube desde el
   radiante. Hay 270 pruebas unitarias.
 
+### Quinta revisión de la ficha (auditoría V5) · **hecha el 2026-10-12**
+
+La auditoría V5 se validó antes de aplicarla. Su diagnóstico del criterio de encuentro era
+correcto, pero la corrección que proponía (cambiar 15 000 por 7994 km sobre la misma distancia)
+no lo era: el radio de captura se compara con el parámetro de impacto, no con la distancia
+geométrica en un instante. Medido:
+
+- las órbitas calculadas desde estados reales de entrada (método A) tienen un parámetro de
+  impacto de 7476 a 7707 km, por debajo del radio de captura (unos 7990 km), pero en el
+  instante de entrada están a entre 13 199 y 14 716 km de la Tierra;
+- con el criterio anterior (distancia < 15 000 km), 89 de las 300 órbitas de la nube no habrían
+  chocado (parámetro de impacto de hasta 11 171 km).
+
+Resultado:
+
+- **Criterio nuevo** (`src/ciencia/encuentro.ts`, fuera de `src/core` para no cambiar la huella
+  del CNEOS): cada órbita sorteada se coloca en su punto más cercano a la Tierra a las
+  03:20:19,8 y se conserva si su parámetro de impacto no supera su radio de captura,
+  r·√(1 + v_esc²/v_g²), con r = 6371 + 100 km. La altura de atmósfera es un parámetro.
+- **Nube:** 300 órbitas aceptadas de 108 763 sorteos (0,276 %); parámetro de impacto de 4926 a
+  7997 km; distancia de 5109 a 13 342 km; σa 0,039, σe 0,0088, σi 0,24°, σq 0,0072, σω 1,21°.
+  La línea central tiene un parámetro de impacto de 5870 km frente a un radio de captura de 7994.
+- **Reporte de las nubes:** criterio, tasa de aceptación, mínimo, mediana y máximo del parámetro
+  de impacto, del radio de captura y de la distancia, desfase de la máxima aproximación, columna
+  σω, comprobación del criterio con el método A y comparación con el criterio anterior.
+- **Ficha:** el párrafo de la nube describe el criterio (radio de captura de unos 8000 km,
+  calculado desde la v_g de Popova), dice que el tercio fuera de margen es del sorteo inicial y
+  que la nube sale más estrecha en la distancia y la orientación del perihelio. La nota sobre σa
+  dice que se basa en una propagación lineal y que la documentación no explica la diferencia. La
+  estela se describe con las mediciones de entrada de Popova, y la energía como «energía de
+  impacto total del evento».
+- **Pruebas:** 274 unitarias. Nuevas: cada órbita de la nube cumple el criterio, el criterio
+  acepta las órbitas calculadas desde estados reales, la línea central choca, σω sale menor que la
+  publicada, el criterio anterior dejaba pasar órbitas sin choque y las funciones de encuentro.
+- No cambian la visualización ni los datos astronómicos.
+
 ### Etapa D · CI y operación · **hecha el 2026-10-11** (ola 1)
 
 Resultado:

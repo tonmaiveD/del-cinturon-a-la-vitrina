@@ -1,4 +1,5 @@
 /** Construye el contexto de la ficha a partir del dataset (solo valores verificados). */
+import { radioCaptura } from '../ciencia/encuentro';
 import type { Meteorito, Valor } from '../schema';
 import { citaCorta } from './catalogo';
 import type { ContextoFicha, DatoFicha } from './ficha';
@@ -160,6 +161,12 @@ export function contextoFicha(
       );
     }
     poner('vg', dato(r.v_geocentrica, n));
+    // Radio de captura para la v_g publicada (el de cada órbita de la nube varía con su velocidad,
+    // de ahí el redondeo a centenas): el criterio de encuentro que describe la ficha
+    poner(
+      'radio_captura',
+      dato(r.v_geocentrica, (v) => num(Math.round(radioCaptura(v.valor as number) / 100) * 100, 0)),
+    );
     poner(
       'nivel_radiante',
       dato(r.ra, (v) => NIVEL[v.nivel_sigma ?? '1-sigma']!),

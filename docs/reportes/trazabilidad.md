@@ -3,7 +3,7 @@
 Generado por `npm run auditoria` (también se ejecuta en `npm run build`, que falla si hay
 errores). Cada dato que muestra la interfaz se contrasta con su valor de origen en `data/`.
 
-- Verificados: 519
+- Verificados: 520
 - Pendientes mostrados con aviso: 25
 - Calculados con método documentado: 30
 - Convenciones visuales o de notación: 28
@@ -679,6 +679,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | {{e_sigma}} | 0,018 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{i_sigma}} | 0,48 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{nivel_orbita}} | 2σ | popova-2013-science | verificado | borrador: no se publica en producción |
+| {{radio_captura}} | 8000 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{a_sigma}} | 0,16 | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{nivel_orbita}} | 2σ | popova-2013-science | verificado | borrador: no se publica en producción |
 | {{ref_errores_cneos}} | Peña-Asensio et al. 2025 | pena-asensio-2025 | verificado | borrador: no se publica en producción |

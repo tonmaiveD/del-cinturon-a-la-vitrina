@@ -172,15 +172,26 @@ export interface NubePieza {
   };
   /**
    * Método `elementos-condicionados` (Chelyabinsk): se sortean los elementos publicados con su
-   * σ y solo se conservan las órbitas que pasan a menos de `umbral_km` de la Tierra.
+   * σ, cada órbita se coloca en su punto más cercano a la Tierra en `instante` y solo se
+   * conserva si su parámetro de impacto no supera el radio de captura (`src/ciencia/encuentro.ts`).
    */
   condicion?: {
     instante: string;
-    umbral_km: number;
+    criterio: 'parametro-impacto';
+    altura_atmosfera_km: number;
+    radio_tierra_km: number;
     probadas: number;
     aceptadas: number;
     central: { q: number; e: number; i: number; omega: number; nodo: number };
     sigma: { q: number; e: number; i: number; omega: number; nodo: number };
+    /** Mínimo, mediana y máximo del encuentro de las órbitas aceptadas, y el de la central. */
+    encuentro: {
+      b_km: Rango;
+      radio_captura_km: Rango;
+      distancia_km: Rango;
+      desfase_min: Rango;
+      central: { b_km: number; radio_captura_km: number; distancia_km: number };
+    };
   };
   /** Órbitas generadas (en Chelyabinsk, 300; `formas` guarda las 160 primeras). */
   sorteadas: number;
@@ -206,6 +217,20 @@ export interface NubesPedigri {
   sensibilidad_chelyabinsk?: {
     caso: string;
     entrada: string;
-    sigma: Record<'a' | 'e' | 'i' | 'q', number>;
+    sigma: Record<'a' | 'e' | 'i' | 'q' | 'omega', number>;
+    /** Encuentro con la Tierra (casos A y C): `sin_choque` = órbitas con b > radio de captura. */
+    encuentro?: {
+      b_km: Rango;
+      radio_captura_km: Rango;
+      distancia_km: Rango;
+      sin_choque: number;
+    };
   }[];
+}
+
+/** Mínimo, mediana y máximo de una magnitud. */
+export interface Rango {
+  min: number;
+  mediana: number;
+  max: number;
 }

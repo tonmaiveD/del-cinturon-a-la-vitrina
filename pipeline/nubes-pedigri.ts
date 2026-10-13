@@ -13,6 +13,11 @@
  * Criterio de parada por pieza: el radiante central reproduce la órbita principal (D_D ≤ 0,1),
  * todas las órbitas pasan a menos de 0,002 au de la Tierra y se descarta como mucho el 10 %.
  *
+ * Chelyabinsk (opción C, decisión del usuario del 2026-10-12) sortea los elementos publicados y
+ * conserva las órbitas que chocan con la Tierra en la aproximación de dos cuerpos: parámetro de
+ * impacto ≤ radio de captura (`src/ciencia/encuentro.ts`; auditoría V5). Hasta entonces se exigía
+ * una distancia geométrica < 15 000 km, que medía otra cosa y dejaba pasar órbitas sin choque.
+ *
  * Salidas:
  * - public/data/nubes.json: 160 formas por pieza (las que dibuja el catálogo);
  * - public/data/chelyabinsk-orbitas.json: 300 órbitas completas para el recorrido (las 160
@@ -31,6 +36,13 @@ import { dDrummond } from '../src/core/similitud';
 import { GRAD, type Vec3 } from '../src/core/vector';
 import { Meteorito, type Orbita, type Valor } from '../src/schema';
 import type { Catalogo, FormaNube, NubePieza, NubesPedigri } from '../src/ui/catalogo';
+import {
+  ALTURA_ATMOSFERA_KM,
+  instanteMaximaAproximacion,
+  parametroImpacto,
+  RADIO_TIERRA_KM,
+  radioCaptura,
+} from '../src/ciencia/encuentro';
 import { procedenciaReporte } from './huella-metodo';
 import { DESDE_JPL, entradaPieza, registroDesdeRadianteAparente } from './trayectorias-pedigri';
 import { orbitaDesdeBolido } from '../src/core/orbita-bolido';
@@ -48,9 +60,22 @@ const SALIDA = 'public/data/nubes.json';
  * reproducen los de su órbita, que obtuvieron con un Monte Carlo (docs/reportes/nubes.md).
  */
 export const CONDICIONADAS = new Set(['chelyabinsk']);
-/** Separación máxima con la Tierra en el instante de entrada: la de las nubes desde el radiante. */
-export const UMBRAL_ENCUENTRO_KM = 15000;
+/** Cómo se decide que una órbita sorteada choca con la Tierra en el instante de entrada. */
+export type CriterioEncuentro =
+  | { tipo: 'parametro-impacto'; alturaAtmosferaKm: number }
+  | { tipo: 'distancia'; umbralKm: number };
+/**
+ * Criterio vigente (auditoría V5, 2026-10-12): parámetro de impacto ≤ radio de captura de cada
+ * clon, con la altura de atmósfera como parámetro.
+ */
+export const CRITERIO_ENCUENTRO: CriterioEncuentro = {
+  tipo: 'parametro-impacto',
+  alturaAtmosferaKm: ALTURA_ATMOSFERA_KM,
+};
+/** Criterio anterior (distancia geométrica < 15 000 km), solo para la comparación del reporte. */
+export const CRITERIO_ANTERIOR: CriterioEncuentro = { tipo: 'distancia', umbralKm: 15000 };
 const MU = gm('Sun');
+const SEG_POR_DIA = 86400;
 
 const leer = <T>(r: string) => JSON.parse(readFileSync(r, 'utf8')) as T;
 const num = (v: Valor) => v.valor as number;
@@ -73,6 +98,61 @@ const formaDeElementos = (el: Elementos): FormaOrbita => ({
 function tierraEcl(t: Astro.AstroTime): Vec3 {
   const v = Astro.HelioVector(Astro.Body.Earth, t);
   return eqjAEcl([v.x, v.y, v.z]);
+}
+/** Posición (au) y velocidad (au/día) heliocéntricas de la Tierra en la eclíptica J2000. */
+function tierraEstadoEcl(t: Astro.AstroTime): { r: Vec3; v: Vec3 } {
+  const s = Astro.HelioState(Astro.Body.Earth, t);
+  return { r: eqjAEcl([s.x, s.y, s.z]), v: eqjAEcl([s.vx, s.vy, s.vz]) };
+}
+
+/** Encuentro de una órbita (en su posición en t) con la Tierra, en la aproximación de dos cuerpos. */
+export interface Encuentro {
+  /** Distancia geométrica a la Tierra en el instante (km). */
+  distanciaKm: number;
+  /** Parámetro de impacto (km). */
+  bKm: number;
+  /** Velocidad relativa a la Tierra, sin su atracción (km/s). */
+  vgKmS: number;
+  /** Radio de captura para esa velocidad (km). */
+  radioCapturaKm: number;
+  /** Minutos entre el instante y la máxima aproximación de la trayectoria relativa recta. */
+  desfaseMin: number;
+}
+
+/** Encuentro con la Tierra de unos elementos (radianes, época t) en el instante t. */
+export function encuentroCon(
+  el: Elementos,
+  t: Astro.AstroTime,
+  alturaAtmosferaKm = ALTURA_ATMOSFERA_KM,
+): Encuentro {
+  const s = estadoDesdeElementos(el, MU, t.ut);
+  const T = tierraEstadoEcl(t);
+  const r: Vec3 = [s.r[0] - T.r[0], s.r[1] - T.r[1], s.r[2] - T.r[2]];
+  const v: Vec3 = [s.v[0] - T.v[0], s.v[1] - T.v[1], s.v[2] - T.v[2]];
+  const vgKmS = (Math.hypot(...v) * KM_POR_AU) / SEG_POR_DIA;
+  return {
+    distanciaKm: Math.hypot(...r) * KM_POR_AU,
+    bKm: parametroImpacto(r, v) * KM_POR_AU,
+    vgKmS,
+    radioCapturaKm: radioCaptura(vgKmS, RADIO_TIERRA_KM + alturaAtmosferaKm),
+    desfaseMin: instanteMaximaAproximacion(r, v) * 1440,
+  };
+}
+
+/** ¿Cumple el encuentro el criterio? */
+export function cumpleCriterio(x: Encuentro, criterio: CriterioEncuentro): boolean {
+  return criterio.tipo === 'parametro-impacto'
+    ? x.bKm <= x.radioCapturaKm
+    : x.distanciaKm < criterio.umbralKm;
+}
+
+/** Mínimo, mediana y máximo, redondeados. */
+function rango(xs: number[], d = 0) {
+  return {
+    min: red(Math.min(...xs), d),
+    mediana: red(mediana(xs), d),
+    max: red(Math.max(...xs), d),
+  };
 }
 const distancia = (a: Vec3, b: Vec3) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 const mediana = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)]!;
@@ -162,12 +242,31 @@ export function distanciaMinima(f: FormaOrbita, T: Vec3): { d: number; E: number
   return { d: distancia(posicionEnE(f, E), T), E };
 }
 
+/** Elementos (radianes) de una forma colocada en el punto de anomalía excéntrica E en la época t. */
+function elementosEnE(f: FormaOrbita, E: number, epoca: number): Elementos {
+  const M = (((E - f.e * Math.sin(E)) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+  return {
+    a: f.a,
+    e: f.e,
+    i: f.i * GRAD,
+    nodo: f.nodo * GRAD,
+    omega: f.omega * GRAD,
+    M,
+    epoca,
+  };
+}
+
 /**
- * Opción C: se sortean q, e, i, ω y Ω publicados (normales independientes, σ a 1σ; a = q/(1 − e))
- * y solo se conservan las órbitas que pasan a menos de `umbralKm` de la Tierra en el instante de
- * entrada. Cada clon se coloca en su punto más cercano a la Tierra en ese instante.
+ * Opción C: se sortean q, e, i, ω y Ω publicados (normales independientes, σ a 1σ; a = q/(1 − e)).
+ * Cada órbita se coloca en su punto más cercano a la Tierra en el instante de entrada y solo se
+ * conserva si cumple el criterio de encuentro: por defecto, que en la aproximación de dos cuerpos
+ * su parámetro de impacto no supere el radio de captura (choca con la Tierra).
  */
-export function nubeCondicionada(m: Meteorito, n: number, umbralKm = UMBRAL_ENCUENTRO_KM) {
+export function nubeCondicionada(
+  m: Meteorito,
+  n: number,
+  criterio: CriterioEncuentro = CRITERIO_ENCUENTRO,
+) {
   const o = orbitaPrincipal(m);
   const cc = o.cifras_completas;
   const e0 = m.entrada_atmosferica;
@@ -175,6 +274,7 @@ export function nubeCondicionada(m: Meteorito, n: number, umbralKm = UMBRAL_ENCU
   const instante = new Date(String(e0.instante.valor));
   const t = Astro.MakeTime(instante);
   const T = tierraEcl(t);
+  const altura = criterio.tipo === 'parametro-impacto' ? criterio.alturaAtmosferaKm : undefined;
   const sigma = {
     q: o.q.sigma!,
     e: o.e.sigma!,
@@ -183,9 +283,8 @@ export function nubeCondicionada(m: Meteorito, n: number, umbralKm = UMBRAL_ENCU
     nodo: o.nodo.sigma!,
   };
   const { normal } = crearAzar(semillaDe(m.id));
-  const umbral = umbralKm / KM_POR_AU;
   const clones: Elementos[] = [];
-  const dist: number[] = [];
+  const encuentros: Encuentro[] = [];
   let probadas = 0;
   while (clones.length < n && probadas < 1e7) {
     probadas++;
@@ -199,28 +298,26 @@ export function nubeCondicionada(m: Meteorito, n: number, umbralKm = UMBRAL_ENCU
       nodo: cc.nodo + normal() * sigma.nodo,
     };
     if (!(e >= 0 && e < 1 && q > 0)) continue;
-    const { d, E } = distanciaMinima(f, T);
-    if (d >= umbral) continue;
-    const M = (((E - e * Math.sin(E)) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-    clones.push({
-      a: f.a,
-      e,
-      i: f.i * GRAD,
-      nodo: f.nodo * GRAD,
-      omega: f.omega * GRAD,
-      M,
-      epoca: t.ut,
-    });
-    dist.push(d);
+    const { E } = distanciaMinima(f, T);
+    const el = elementosEnE(f, E, t.ut);
+    const x = encuentroCon(el, t, altura);
+    if (!cumpleCriterio(x, criterio)) continue;
+    clones.push(el);
+    encuentros.push(x);
   }
-  const central = distanciaMinima({ a: cc.a, e: cc.e, i: cc.i, nodo: cc.nodo, omega: cc.omega }, T);
+  const fc = { a: cc.a, e: cc.e, i: cc.i, nodo: cc.nodo, omega: cc.omega };
+  const central = distanciaMinima(fc, T);
+  const encuentroCentral = encuentroCon(elementosEnE(fc, central.E, t.ut), t, altura);
   return {
     clones,
-    dist,
+    encuentros,
+    dist: encuentros.map((x) => x.distanciaKm / KM_POR_AU),
     probadas,
     instante,
     sigma,
-    centralKm: central.d * KM_POR_AU,
+    criterio,
+    encuentroCentral,
+    centralCumple: cumpleCriterio(encuentroCentral, criterio),
     nominal: {
       a: cc.a,
       e: cc.e,
@@ -257,6 +354,7 @@ export function calcularNube(m: Meteorito, catalogo: Catalogo, n = N_NUBE): Calc
     );
     const dmax = Math.max(...c.dist);
     const cc = o.cifras_completas!;
+    const enc = c.encuentros;
     return {
       nube: {
         metodo: 'elementos-condicionados',
@@ -264,11 +362,27 @@ export function calcularNube(m: Meteorito, catalogo: Catalogo, n = N_NUBE): Calc
         semilla: semillaDe(m.id),
         condicion: {
           instante: c.instante.toISOString(),
-          umbral_km: UMBRAL_ENCUENTRO_KM,
+          criterio: 'parametro-impacto',
+          altura_atmosfera_km: ALTURA_ATMOSFERA_KM,
+          radio_tierra_km: RADIO_TIERRA_KM,
           probadas: c.probadas,
           aceptadas: c.clones.length,
           central: { q: cc.q, e: cc.e, i: cc.i, omega: cc.omega, nodo: cc.nodo },
           sigma: c.sigma,
+          encuentro: {
+            b_km: rango(enc.map((x) => x.bKm)),
+            radio_captura_km: rango(enc.map((x) => x.radioCapturaKm)),
+            distancia_km: rango(enc.map((x) => x.distanciaKm)),
+            desfase_min: rango(
+              enc.map((x) => x.desfaseMin),
+              1,
+            ),
+            central: {
+              b_km: red(c.encuentroCentral.bKm, 0),
+              radio_captura_km: red(c.encuentroCentral.radioCapturaKm, 0),
+              distancia_km: red(c.encuentroCentral.distanciaKm, 0),
+            },
+          },
         },
         sorteadas: formas.length,
         resumen: resumen(formas),
@@ -279,9 +393,9 @@ export function calcularNube(m: Meteorito, catalogo: Catalogo, n = N_NUBE): Calc
           dist_mediana_au: red(mediana(c.dist), 6),
           aprobada:
             c.clones.length === n &&
-            dmax * KM_POR_AU < UMBRAL_ENCUENTRO_KM &&
+            enc.every((x) => cumpleCriterio(x, c.criterio)) &&
             dd <= UMBRAL_DD &&
-            c.centralKm < UMBRAL_ENCUENTRO_KM,
+            c.centralCumple,
         },
         formas: formas.map(formaDe),
       },
@@ -427,7 +541,25 @@ function centralChelyabinsk(o: Orbita) {
 interface FilaSensibilidad {
   caso: string;
   entrada: string;
-  sigma: Record<(typeof CLAVES)[number], number>;
+  sigma: Record<(typeof CLAVES)[number] | 'omega', number>;
+  /** Parámetro de impacto frente al radio de captura (solo los casos A y C). */
+  encuentro?: {
+    b_km: { min: number; mediana: number; max: number };
+    radio_captura_km: { min: number; mediana: number; max: number };
+    distancia_km: { min: number; mediana: number; max: number };
+    /** Órbitas cuyo parámetro de impacto supera su radio de captura (no chocarían). */
+    sin_choque: number;
+  };
+}
+
+/** Resumen del encuentro de un conjunto de órbitas con la Tierra. */
+function resumenEncuentro(enc: Encuentro[]): FilaSensibilidad['encuentro'] {
+  return {
+    b_km: rango(enc.map((x) => x.bKm)),
+    radio_captura_km: rango(enc.map((x) => x.radioCapturaKm)),
+    distancia_km: rango(enc.map((x) => x.distanciaKm)),
+    sin_choque: enc.filter((x) => !cumpleCriterio(x, CRITERIO_ENCUENTRO)).length,
+  };
 }
 
 /**
@@ -440,17 +572,6 @@ function sigmaAMaxima(o: Orbita): number {
   const q = o.q ? num(o.q) : num(o.a) * (1 - num(o.e));
   const e = num(o.e);
   return (o.q?.sigma ?? 0) / (1 - e) + (q / (1 - e) ** 2) * o.e.sigma!;
-}
-
-/** GM terrestre (km³/s², IAU) para el radio de captura. */
-const GM_TIERRA_KM3_S2 = 398600.4418;
-/**
- * Radio de captura (km): parámetro de impacto máximo para chocar con una esfera de radio r
- * (Tierra más atmósfera) llegando a v_g, r·√(1 + v_esc²/v_g²).
- */
-export function radioCaptura(vgKmS: number, rKm = 6371 + 100): number {
-  const vEsc2 = (2 * GM_TIERRA_KM3_S2) / rKm;
-  return rKm * Math.sqrt(1 + vEsc2 / (vgKmS * vgKmS));
 }
 
 function sensibilidadChelyabinsk(m: Meteorito): FilaSensibilidad[] {
@@ -471,22 +592,41 @@ function sensibilidadChelyabinsk(m: Meteorito): FilaSensibilidad[] {
   const es = (n: number) => n.toLocaleString('es', { maximumFractionDigits: 4 });
   const txt = (x: typeof r) =>
     `α ${es(x.ra.v)} ± ${es(x.ra.s)}°, δ ${es(x.dec.v)} ± ${es(x.dec.s)}°, v_g ${es(x.vg.v)} ± ${es(x.vg.s)} km/s`;
-  const fila = (caso: string, entrada: string, formas: FormaOrbita[]): FilaSensibilidad => {
+  const fila = (
+    caso: string,
+    entrada: string,
+    formas: FormaOrbita[],
+    encuentros?: Encuentro[],
+  ): FilaSensibilidad => {
     const sigma = resumen(formas);
     return {
       caso,
       entrada,
-      sigma: Object.fromEntries(
-        CLAVES.map((k) => [k, sigma[k].sigma]),
-      ) as FilaSensibilidad['sigma'],
+      sigma: {
+        ...(Object.fromEntries(CLAVES.map((k) => [k, sigma[k].sigma])) as Record<
+          (typeof CLAVES)[number],
+          number
+        >),
+        omega: red(desviacion(formas.map((x) => x.omega)), 4),
+      },
+      ...(encuentros && { encuentro: resumenEncuentro(encuentros) }),
     };
   };
   const desdeRadiante = (x: typeof r) =>
     nubeDesdeRadiante(base, x, N_CHELYABINSK, semillaDe(m.id)).clones.map((c) =>
       formaDeElementos(c.elementos),
     );
+  // A completa: además, su encuentro con la Tierra. Son órbitas calculadas desde estados de
+  // entrada (no se sortean elementos), así que sirven para comprobar el criterio de C.
+  const clonesA = nubeDesdeRadiante(base, r, N_CHELYABINSK, semillaDe(m.id)).clones;
+  const tA = Astro.MakeTime(base.fecha);
   const filas: FilaSensibilidad[] = [
-    fila('A: radiante geocéntrico (Tabla 1)', txt(r), desdeRadiante(r)),
+    fila(
+      'A: radiante geocéntrico (Tabla 1)',
+      txt(r),
+      clonesA.map((c) => formaDeElementos(c.elementos)),
+      clonesA.map((c) => encuentroCon(c.elementos, tA)),
+    ),
     fila(
       'A: solo α_g',
       txt({ ra: r.ra, dec: fija(r.dec), vg: fija(r.vg) }),
@@ -528,18 +668,19 @@ function sensibilidadChelyabinsk(m: Meteorito): FilaSensibilidad[] {
       formasB,
     ),
   );
-  // C: elementos publicados condicionados al encuentro (la elegida) y con el radio de captura
-  const rc = radioCaptura(num(radiante.vg));
-  for (const [caso, umbral] of [
-    [`C: elementos de la S5B a < ${es(UMBRAL_ENCUENTRO_KM)} km (elegida)`, UMBRAL_ENCUENTRO_KM],
-    [`C con el radio de captura (< ${es(Math.round(rc))} km)`, rc],
+  // C: elementos publicados condicionados al encuentro: el criterio vigente y el anterior
+  const anterior = CRITERIO_ANTERIOR.tipo === 'distancia' ? CRITERIO_ANTERIOR.umbralKm : NaN;
+  for (const [caso, criterio] of [
+    ['C: elementos de la S5B, b ≤ radio de captura (elegida)', CRITERIO_ENCUENTRO],
+    [`C con el criterio anterior (distancia < ${es(anterior)} km)`, CRITERIO_ANTERIOR],
   ] as const) {
-    const c = nubeCondicionada(m, N_CHELYABINSK, umbral);
+    const c = nubeCondicionada(m, N_CHELYABINSK, criterio);
     filas.push(
       fila(
         caso,
         `q, e, i, ω, Ω con su σ; aceptadas ${c.clones.length} de ${es(c.probadas)}`,
         c.clones.map(formaDeElementos),
+        c.encuentros,
       ),
     );
   }
@@ -595,12 +736,16 @@ function informe(
     const o = orb(fuente);
     if (!o) return '—';
     const q = o.q?.sigma;
-    return `| Publicada: órbita de ${fuente} (1σ) | — | ${f(o.a.sigma, 3)} | ${f(o.e.sigma, 4)} | ${f(o.i.sigma, 2)} | ${f(q, 4)} |`;
+    return `| Publicada: órbita de ${fuente} (1σ) | — | ${f(o.a.sigma, 3)} | ${f(o.e.sigma, 4)} | ${f(o.i.sigma, 2)} | ${f(q, 4)} | ${f(o.omega.sigma, 2)} |`;
   };
   const filasSens = sens.map(
     (x) =>
-      `| ${x.caso} | ${x.entrada} | ${f(x.sigma.a, 3)} | ${f(x.sigma.e, 4)} | ${f(x.sigma.i, 2)} | ${f(x.sigma.q, 4)} |`,
+      `| ${x.caso} | ${x.entrada} | ${f(x.sigma.a, 3)} | ${f(x.sigma.e, 4)} | ${f(x.sigma.i, 2)} | ${f(x.sigma.q, 4)} | ${f(x.sigma.omega, 2)} |`,
   );
+  const tasa = (c: { aceptadas: number; probadas: number }) =>
+    f((100 * c.aceptadas) / c.probadas, 3);
+  const rangoKm = (r: { min: number; mediana: number; max: number }) =>
+    `${f(r.min, 0)}, ${f(r.mediana, 0)} y ${f(r.max, 0)} km`;
   const caso = (inicio: string) => sens.find((x) => x.caso.startsWith(inicio));
   const s0 = caso('A: radiante geocéntrico');
   const principal = [...sens.filter((x) => x.caso.startsWith('A: solo'))].sort(
@@ -609,7 +754,7 @@ function informe(
   const bor = caso('Borovička');
   const sB = caso('B:');
   const sC = caso('C: elementos');
-  const sCc = caso('C con el radio');
+  const sCc = caso('C con el criterio anterior');
   const oBor = orb('borovicka-2013-nature');
   const oPop = orb('popova-2013-science');
   const ncChely = nubes.piezas['chelyabinsk']?.condicion;
@@ -638,7 +783,7 @@ ${procedenciaReporte(['pipeline/nubes-pedigri.ts', 'pipeline/trayectorias-pedigr
 
 ${nubes.metodo}
 
-Criterio de parada por pieza: el radiante central reproduce la órbita principal (D_D ≤ ${UMBRAL_DD}), todas las órbitas pasan a menos de ${UMBRAL_DIST_AU} au (${km(UMBRAL_DIST_AU)}) de la Tierra en el instante de referencia y se descarta como mucho el ${MAX_DESCARTADOS * 100} % de los sorteos (órbitas no elípticas). En Chelyabinsk (método C): todas las órbitas a menos de ${f(UMBRAL_ENCUENTRO_KM, 0)} km de la Tierra en el instante de entrada, la órbita central publicada también, y la mediana de la nube a D_D ≤ ${UMBRAL_DD} de la órbita publicada.
+Criterio de parada por pieza: el radiante central reproduce la órbita principal (D_D ≤ ${UMBRAL_DD}), todas las órbitas pasan a menos de ${UMBRAL_DIST_AU} au (${km(UMBRAL_DIST_AU)}) de la Tierra en el instante de referencia y se descarta como mucho el ${MAX_DESCARTADOS * 100} % de los sorteos (órbitas no elípticas). En Chelyabinsk (método C): todas las órbitas chocan con la Tierra en la aproximación de dos cuerpos (parámetro de impacto menor o igual que el radio de captura, con ${ALTURA_ATMOSFERA_KM} km de atmósfera sobre ${RADIO_TIERRA_KM} km de radio terrestre), la órbita central publicada también, y la mediana de la nube a D_D ≤ ${UMBRAL_DD} de la órbita publicada.
 
 Hasta el 2026-10-12 cada nube sorteaba los elementos orbitales por separado. Con ese método, en 21 de las 25 piezas menos de la mitad de las órbitas pasaba a menos de 0,002 au de la Tierra (en Chelyabinsk, el 6 %; en Maribo y Villalbeto de la Peña, ninguna).
 
@@ -658,7 +803,9 @@ ${filasEntrada.join('\n')}
 
 ${
   ncChely
-    ? `Chelyabinsk (método C): órbita central de Popova et al. con todas sus cifras (q ${ncChely.central.q}, e ${ncChely.central.e}, i ${ncChely.central.i}°, ω ${ncChely.central.omega}°, Ω ${ncChely.central.nodo}°); σ a 1σ de la Tabla S5B: q ${ncChely.sigma.q}, e ${ncChely.sigma.e}, i ${ncChely.sigma.i}°, ω ${ncChely.sigma.omega}°, Ω ${ncChely.sigma.nodo}°; a = q/(1 − e). Instante de entrada ${ncChely.instante}, umbral ${ncChely.umbral_km.toLocaleString('es')} km, semilla ${nubes.piezas['chelyabinsk']!.semilla}, ${ncChely.aceptadas} órbitas aceptadas de ${ncChely.probadas.toLocaleString('es')} sorteos.`
+    ? `Chelyabinsk (método C): órbita central de Popova et al. con todas sus cifras (q ${ncChely.central.q}, e ${ncChely.central.e}, i ${ncChely.central.i}°, ω ${ncChely.central.omega}°, Ω ${ncChely.central.nodo}°); σ a 1σ de la Tabla S5B: q ${ncChely.sigma.q}, e ${ncChely.sigma.e}, i ${ncChely.sigma.i}°, ω ${ncChely.sigma.omega}°, Ω ${ncChely.sigma.nodo}°; a = q/(1 − e). Instante de entrada ${ncChely.instante}; criterio: parámetro de impacto menor o igual que el radio de captura (Tierra de ${ncChely.radio_tierra_km} km más ${ncChely.altura_atmosfera_km} km de atmósfera); semilla ${nubes.piezas['chelyabinsk']!.semilla}; ${ncChely.aceptadas} órbitas aceptadas de ${ncChely.probadas.toLocaleString('es')} sorteos (${tasa(ncChely)} %).
+
+Encuentro de las órbitas aceptadas (mínimo, mediana y máximo): parámetro de impacto ${rangoKm(ncChely.encuentro.b_km)}; radio de captura ${rangoKm(ncChely.encuentro.radio_captura_km)}; distancia a la Tierra en el instante de entrada ${rangoKm(ncChely.encuentro.distancia_km)}. La máxima aproximación de la trayectoria relativa cae entre ${f(ncChely.encuentro.desfase_min.min, 1)} y ${f(ncChely.encuentro.desfase_min.max, 1)} minutos del instante de entrada. Órbita central: parámetro de impacto ${f(ncChely.encuentro.central.b_km, 0)} km frente a un radio de captura de ${f(ncChely.encuentro.central.radio_captura_km, 0)} km, a ${f(ncChely.encuentro.central.distancia_km, 0)} km de la Tierra.`
     : ''
 }
 
@@ -672,21 +819,33 @@ ${filasCentro.join('\n')}
 
 ## Chelyabinsk: qué entradas alimentan la nube
 
-Misma semilla y ${N_CHELYABINSK} órbitas en cada caso. A es el método de las demás piezas (radiante geocéntrico; antes también el de Chelyabinsk); se repite variando una sola entrada cada vez y con los márgenes de Borovička et al. 2013 (\`data/verificacion/borovicka-2013-radiante.json\`). B usa el radiante aparente y la velocidad de entrada de Popova et al., de los que dicen haber obtenido los márgenes de su órbita con un Monte Carlo (material suplementario, pág. 18). C, la elegida por el usuario el 2026-10-12, sortea los elementos de la Tabla S5B (1σ) y conserva solo las órbitas que pasan junto a la Tierra en el instante de entrada.
+Misma semilla y ${N_CHELYABINSK} órbitas en cada caso. A es el método de las demás piezas (radiante geocéntrico; antes también el de Chelyabinsk); se repite variando una sola entrada cada vez y con los márgenes de Borovička et al. 2013 (\`data/verificacion/borovicka-2013-radiante.json\`). B usa el radiante aparente y la velocidad de entrada de Popova et al., de los que dicen haber obtenido los márgenes de su órbita con un Monte Carlo (material suplementario, pág. 18). C, la elegida por el usuario el 2026-10-12, sortea los elementos de la Tabla S5B (1σ) y conserva solo las órbitas que chocan con la Tierra en el instante de entrada en la aproximación de dos cuerpos (parámetro de impacto menor o igual que el radio de captura); también se muestra con el criterio anterior, una distancia geométrica de 15.000 km.
 
-| Caso | Entradas (1σ) | σa (au) | σe | σi (°) | σq (au) |
-| --- | --- | --- | --- | --- | --- |
+| Caso | Entradas (1σ) | σa (au) | σe | σi (°) | σq (au) | σω (°) |
+| --- | --- | --- | --- | --- | --- | --- |
 ${filasSens.join('\n')}
 ${sigmaPub('popova-2013-science')}
 ${sigmaPub('borovicka-2013-nature')}
 
 ${
-  s0 && principal && bor && sB && sC && sCc && oBor && oPop && ncChely
+  s0 &&
+  principal &&
+  bor &&
+  sB &&
+  sC &&
+  sCc &&
+  oBor &&
+  oPop &&
+  ncChely &&
+  s0.encuentro &&
+  sC.encuentro &&
+  sCc.encuentro
     ? `- **A.** Con los márgenes del radiante geocéntrico de Popova, la entrada que más dispersión produce en i es ${principal.caso.replace('A: solo ', '')} (σi ${f(principal.sigma.i, 2)}° de ${f(s0.sigma.i, 2)}°), y la nube sale más ancha que la órbita publicada (${coherencia(s0, oPop)}). Ese margen del radiante (±0,8° a 1σ en la Tabla 1; ±1,0° en el suplemento) es unas diez veces el del radiante aparente (±0,09°).
+- **Comprobación del criterio de C con A.** Las órbitas de A no se sortean por elementos: se calculan desde estados de entrada en la atmósfera, así que chocan por construcción. ${s0.encuentro.sin_choque === 0 ? 'Todas cumplen el criterio de C' : `**${s0.encuentro.sin_choque} no cumplen el criterio de C**`}: parámetro de impacto ${rangoKm(s0.encuentro.b_km)} (mínimo, mediana y máximo), frente a un radio de captura de unos ${f(s0.encuentro.radio_captura_km.mediana, 0)} km. En el instante de entrada están a ${rangoKm(s0.encuentro.distancia_km)} de la Tierra: la distancia geométrica no es la magnitud que se compara con el radio de captura.
 - **Borovička.** Con su radiante y sus márgenes, la nube da ${coherencia(bor, oBor)}: su par de márgenes, radiante y órbita, es ${desajuste(bor, oBor) < desajuste(s0, oPop) ? 'bastante más coherente que el de Popova' : 'tan poco coherente como el de Popova'}. Su órbita es osculadora 60 días antes del impacto, así que esta comparación es orientativa.
 - **B.** El radiante aparente y la velocidad de entrada de Popova reproducen el centro de su órbita (la estela parte de ellos), pero con sus márgenes la nube sale más estrecha que la órbita publicada (${coherencia(sB, oPop)}). Una explicación posible es que su Monte Carlo incluyera otras fuentes de error que el suplemento no detalla.
-- **C (elegida).** Reproduce los márgenes publicados de e e i (${coherencia(sC, oPop)}). σq sale algo menor porque el encuentro con la Tierra la restringe, y σa (que la Tabla S5B no da) sale de q y e. La Tabla 1 da σa = ${f(oPop.a.sigma, 2)} au, más de lo que admiten σq y σe (${f(sigmaAMaxima(oPop), 3)} au como máximo, incluso con correlación perfecta). Se aceptaron ${ncChely.aceptadas} de ${ncChely.probadas.toLocaleString('es')} sorteos.
-- **C con el radio de captura.** Con el umbral más estricto que permite el choque, el radio de captura (Tierra más 100 km de atmósfera, ampliado por la atracción terrestre), la dispersión apenas cambia (${coherencia(sCc, oPop)}).
+- **C (elegida).** Reproduce los márgenes publicados de e e i (${coherencia(sC, oPop)}). σq y σω (${f(sC.sigma.omega, 2)}° frente a ${f(oPop.omega.sigma, 2)}°) salen menores porque el encuentro con la Tierra los restringe, y σa (que la Tabla S5B no da) sale de q y e. Con una propagación lineal, la σa que publica la Tabla 1 (${f(oPop.a.sigma, 2)} au) es mayor de lo que admiten σq y σe (${f(sigmaAMaxima(oPop), 3)} au como máximo, incluso con correlación perfecta); la documentación disponible no explica la diferencia. Se aceptaron ${ncChely.aceptadas} de ${ncChely.probadas.toLocaleString('es')} sorteos (${tasa(ncChely)} %).
+- **Criterio anterior.** Con una distancia geométrica menor que 15.000 km en el instante de entrada, ${sCc.encuentro.sin_choque} de las ${N_CHELYABINSK} órbitas aceptadas no chocarían: su parámetro de impacto supera su radio de captura (llega a ${f(sCc.encuentro.b_km.max, 0)} km). La dispersión casi no cambia (${coherencia(sCc, oPop)}).
 `
     : ''
 }
@@ -695,6 +854,7 @@ ${
 - La distancia es la que separa la posición de cada órbita del centro de la Tierra en el instante de referencia (con el método \`elementos\`, la distancia mínima de la elipse). Son órbitas pre-atmosféricas, calculadas sin la atracción de la Tierra en el último tramo, así que es normal que queden a unas decenas de miles de kilómetros: es la desviación que produce la gravedad terrestre. La estela del año previo, que sí la incluye, llega a la posición de referencia.
 - Piezas en las que la σ de la nube y la publicada difieren en más de un 40 % en a, e o i: ${distintas.join(', ') || 'ninguna'}.
 - La σ de la nube sale de propagar la incertidumbre del radiante y de v_g; la publicada es la de la órbita principal (1σ). No tienen por qué coincidir: las fuentes no publican cómo se relacionan sus errores (covarianza), y en algunas los márgenes del radiante y los de la órbita no son coherentes entre sí si se tratan como independientes. Por eso Chelyabinsk usa el método C (sección anterior).
+- En Chelyabinsk, cada órbita sorteada se coloca en su punto más cercano a la Tierra en el instante de entrada y se acepta si su parámetro de impacto (la distancia a la que su trayectoria relativa, recta y sin la atracción terrestre, pasaría del centro de la Tierra) no supera el radio de captura r·√(1 + v_esc²/v_g²), con r el radio terrestre más la atmósfera y v_g la velocidad relativa de esa órbita. Es una aproximación de dos cuerpos: no simula el encuentro ni el paso por la atmósfera, y condiciona la geometría de la órbita, no reconstruye la distribución completa de los errores de observación originales.
 - Granvik & Brown 2018 no declaran el nivel de la incertidumbre del radiante; se asume 1σ, como en el resto del dataset.
 - Cada valor se sortea de una normal con su σ a 1σ: en cada variable, cerca del 31,7 % de las muestras cae fuera de ±1σ, y con tres variables independientes alrededor del 68,2 % tiene al menos una fuera.
 - Las nubes muestran la dispersión de este modelo, no una probabilidad calibrada de por dónde pasó cada meteoroide.
@@ -736,7 +896,7 @@ if (process.argv[1]?.endsWith('nubes-pedigri.ts')) {
           'public/data/chelyabinsk-orbitas.json',
           JSON.stringify({
             generado: new Date().toISOString(),
-            nota: 'Elementos eclípticos J2000 (grados, AU) en el instante de entrada de Popova et al. Nube: se sortean q, e, i, ω y Ω de la órbita publicada con su σ a 1σ (a = q/(1 − e)) y solo se conservan las órbitas que pasan a menos de 15 000 km de la Tierra en ese instante; cada una se coloca en su punto más cercano a la Tierra. Las 160 primeras son las del catálogo. La nominal es la órbita publicada con todas sus cifras (material suplementario, págs. 18–19).',
+            nota: 'Elementos eclípticos J2000 (grados, AU) en el instante de entrada de Popova et al. Nube: se sortean q, e, i, ω y Ω de la órbita publicada con su σ a 1σ (a = q/(1 − e)); cada órbita se coloca en su punto más cercano a la Tierra en ese instante y solo se conserva si su parámetro de impacto no supera el radio de captura (choca en la aproximación de dos cuerpos). Las 160 primeras son las del catálogo. La nominal es la órbita publicada con todas sus cifras (material suplementario, págs. 18–19).',
             fuente_orbita: orbitaPrincipal(m).fuente,
             muestreo: { metodo: c.nube.metodo, fuente: c.nube.fuente, semilla: semillaDe(m.id) },
             validacion: c.nube.validacion,
@@ -763,7 +923,7 @@ if (process.argv[1]?.endsWith('nubes-pedigri.ts')) {
   const nubes: NubesPedigri = {
     generado: new Date().toISOString(),
     metodo:
-      'Para cada pieza se sortean el radiante geocéntrico (α_g, δ_g) y la velocidad geocéntrica v_g publicados, con distribuciones normales independientes de desviación típica igual a su incertidumbre a 1σ, y cada clon se integra con N cuerpos desde la posición e instante de referencia (altura convencional de 100 km), igual que la estela del año previo; los elementos son los pre-atmosféricos en ese instante. Almahata Sitta: sorteo de los elementos de su órbita telescópica de JPL (σ formal). Chelyabinsk (decisión del 2026-10-12, método C): se sortean q, e, i, ω y Ω de la órbita de Popova et al. (Tabla S5B, 1σ; a = q/(1 − e)) y solo se conservan las órbitas que pasan a menos de 15 000 km de la Tierra en el instante de entrada; cada una se coloca en su punto más cercano a la Tierra en ese instante.',
+      'Para cada pieza se sortean el radiante geocéntrico (α_g, δ_g) y la velocidad geocéntrica v_g publicados, con distribuciones normales independientes de desviación típica igual a su incertidumbre a 1σ, y cada clon se integra con N cuerpos desde la posición e instante de referencia (altura convencional de 100 km), igual que la estela del año previo; los elementos son los pre-atmosféricos en ese instante. Almahata Sitta: sorteo de los elementos de su órbita telescópica de JPL (σ formal). Chelyabinsk (decisión del 2026-10-12, método C): se sortean q, e, i, ω y Ω de la órbita de Popova et al. (Tabla S5B, 1σ; a = q/(1 − e)); cada órbita se coloca en su punto más cercano a la Tierra en el instante de entrada y solo se conserva si su parámetro de impacto no supera el radio de captura, es decir, si choca con la Tierra en la aproximación de dos cuerpos (desde el 2026-10-12, auditoría V5; antes, distancia geométrica < 15 000 km).',
     piezas,
     ...(sens && { sensibilidad_chelyabinsk: sens }),
   };
