@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitest/config';
-import { fichasPublicables } from './pipeline/fichas-publicables';
+import { fichasPublicables } from './pipeline/fichas-publicables.ts';
 
 export default defineConfig({
   // GitHub Pages sirve el sitio bajo /<repositorio>/: la CI pasa la ruta en BASE_PUBLICA

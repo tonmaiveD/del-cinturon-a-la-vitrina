@@ -6,7 +6,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { Plugin } from 'vite';
-import { leerFicha } from '../src/ui/ficha';
+import { leerFicha } from '../src/ui/ficha.ts';
 
 export const DIR_FICHAS = 'content/fichas';
 const ID = 'virtual:fichas';
