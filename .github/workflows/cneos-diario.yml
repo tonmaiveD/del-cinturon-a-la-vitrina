@@ -15,7 +15,8 @@ concurrency:
 
 jobs:
   actualizar:
-    runs-on: ubuntu-latest
+    # Imagen fijada, como en ci.yml
+    runs-on: ubuntu-24.04
     timeout-minutes: 120
     permissions:
       contents: write

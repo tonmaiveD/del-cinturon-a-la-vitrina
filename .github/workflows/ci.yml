@@ -16,10 +16,12 @@ permissions:
   contents: read
 
 # Las acciones están fijadas al commit de una versión publicada (Dependabot propone las nuevas).
+# La imagen del runner también está fijada (ubuntu-24.04): `ubuntu-latest` pasa a Ubuntu 26 el
+# 2026-10-19; actualizarla a mano, comprobando la CI, cuando convenga.
 
 jobs:
   verificar:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       portada: ${{ steps.huella.outputs.portada }}
     steps:
@@ -65,7 +67,7 @@ jobs:
   # Dependencias de producción con vulnerabilidades conocidas de severidad alta: el workflow
   # queda en rojo (aviso por correo), pero no bloquea la publicación de datos
   dependencias:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -79,7 +81,7 @@ jobs:
   publicar:
     needs: verificar
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       pages: write
       id-token: write
