@@ -76,9 +76,12 @@ test('todos los controles son alcanzables con el teclado y el diálogo devuelve 
   await expect(boton).toBeFocused({ timeout: 15_000 });
 });
 
-test('en producción la ficha en borrador no se publica', async ({ page }) => {
+test('en producción se publica la ficha aprobada de Chelyabinsk', async ({ page }) => {
   await page.goto('/');
   await abrirPestana(page, 'info');
-  await expect(page.getByRole('button', { name: 'Fuentes y créditos' })).toBeVisible();
-  await expect(page.locator('#abrir-ficha')).toBeHidden();
+  const boton = page.locator('#abrir-ficha');
+  await expect(boton).toBeVisible();
+  await boton.click();
+  await expect(page.getByRole('dialog')).toContainText('Qué ocurrió');
+  await expect(page.getByRole('dialog')).not.toContainText('Borrador');
 });

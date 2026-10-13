@@ -144,7 +144,7 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
 
 ### Pendientes del usuario (sin urgencia)
 
-- **Ficha de Chelyabinsk** (`content/fichas/chelyabinsk.md`, `borrador`, reescrita el
+- ~~Ficha de Chelyabinsk~~: **aprobada el 2026-10-12** (`content/fichas/chelyabinsk.md`, reescrita el
   2026-10-12 tras la auditoría consolidada): versión legible en
   `revision/ficha-chelyabinsk-para-revisar.md` (regenerar con `.trabajo/ficha-legible.ts` si
   cambia). Respuesta esperada: «apruebo» + nombre del revisor (→ `estado: aprobada`,

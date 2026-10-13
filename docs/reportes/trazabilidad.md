@@ -635,55 +635,55 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | --- | --- | --- | --- | --- |
 | nube de órbitas | 300 órbitas (public/data/chelyabinsk-orbitas.json) | popova-2013-science | calculado | muestreo de la órbita principal con su σ (1σ), elementos independientes; la trayectoria del año previo está en la sección de trayectorias animadas |
 
-## Ficha: chelyabinsk (borrador)
+## Ficha: chelyabinsk (aprobada)
 
 | Elemento | Valor | Fuente | Estado | Nota |
 | --- | --- | --- | --- | --- |
-| {{fecha}} | 15 de febrero de 2013 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{hora}} | 03:20 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{diametro}} | 20 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{v_entrada}} | 19,16 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{vg}} | 15,3 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{alt_pico_cneos}} | 23,3 | cneos-fireball-api | verificado | borrador: no se publica en producción |
-| {{lat}} | 54,8° N | cneos-fireball-api | verificado | borrador: no se publica en producción |
-| {{lon}} | 61,1° E | cneos-fireball-api | verificado | borrador: no se publica en producción |
-| {{v_pico_cneos}} | 18,6 | cneos-fireball-api | verificado | borrador: no se publica en producción |
-| {{alt_pico_popova}} | 29,7 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{alt_destello}} | 24 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{energia_kt}} | 441 | cneos-fireball-api | verificado | borrador: no se publica en producción |
-| {{ref_energia}} | Brown et al. 2002 | brown-2002 | verificado | borrador: no se publica en producción |
-| {{energia_radiada_kt}} | 90 | cneos-fireball-api | verificado | borrador: no se publica en producción |
-| {{clase}} | LL5 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{tipo_petrologico}} | 5 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{a}} | 1,76 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{e}} | 0,581 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{i}} | 4,93 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{q}} | 0,739 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{Q}} | 2,78 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{modelo_procedencia}} | Bottke et al. 2002 | bottke-2002 | verificado | borrador: no se publica en producción |
-| {{n_nu6}} | resonancia secular ν6 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{p_nu6}} | 62 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{n_imc}} | región de cruzadores intermedios de Marte (IMC) | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{p_imc}} | 25 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{n_31}} | resonancia de movimiento medio 3:1 con Júpiter | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{p_31}} | 11 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{p_ob}} | 2 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{n_ob}} | cinturón principal exterior | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{n_jfc}} | cometas de la familia de Júpiter | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{p_jfc}} | 0 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{nivel_nube}} | 1σ | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{q_sigma1}} | 0,010 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{e_sigma1}} | 0,009 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{i_sigma1}} | 0,24 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{q_sigma}} | 0,020 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{e_sigma}} | 0,018 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{i_sigma}} | 0,48 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{nivel_orbita}} | 2σ | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{radio_captura}} | 8000 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{a_sigma}} | 0,16 | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{nivel_orbita}} | 2σ | popova-2013-science | verificado | borrador: no se publica en producción |
-| {{ref_errores_cneos}} | Peña-Asensio et al. 2025 | pena-asensio-2025 | verificado | borrador: no se publica en producción |
-| {{cneos_consultado}} | 1 de octubre de 2026 | cneos-fireball-api | verificado | borrador: no se publica en producción |
+| {{fecha}} | 15 de febrero de 2013 | popova-2013-science | verificado |  |
+| {{hora}} | 03:20 | popova-2013-science | verificado |  |
+| {{diametro}} | 20 | popova-2013-science | verificado |  |
+| {{v_entrada}} | 19,16 | popova-2013-science | verificado |  |
+| {{vg}} | 15,3 | popova-2013-science | verificado |  |
+| {{alt_pico_cneos}} | 23,3 | cneos-fireball-api | verificado |  |
+| {{lat}} | 54,8° N | cneos-fireball-api | verificado |  |
+| {{lon}} | 61,1° E | cneos-fireball-api | verificado |  |
+| {{v_pico_cneos}} | 18,6 | cneos-fireball-api | verificado |  |
+| {{alt_pico_popova}} | 29,7 | popova-2013-science | verificado |  |
+| {{alt_destello}} | 24 | popova-2013-science | verificado |  |
+| {{energia_kt}} | 441 | cneos-fireball-api | verificado |  |
+| {{ref_energia}} | Brown et al. 2002 | brown-2002 | verificado |  |
+| {{energia_radiada_kt}} | 90 | cneos-fireball-api | verificado |  |
+| {{clase}} | LL5 | popova-2013-science | verificado |  |
+| {{tipo_petrologico}} | 5 | popova-2013-science | verificado |  |
+| {{a}} | 1,76 | popova-2013-science | verificado |  |
+| {{e}} | 0,581 | popova-2013-science | verificado |  |
+| {{i}} | 4,93 | popova-2013-science | verificado |  |
+| {{q}} | 0,739 | popova-2013-science | verificado |  |
+| {{Q}} | 2,78 | popova-2013-science | verificado |  |
+| {{modelo_procedencia}} | Bottke et al. 2002 | bottke-2002 | verificado |  |
+| {{n_nu6}} | resonancia secular ν6 | popova-2013-science | verificado |  |
+| {{p_nu6}} | 62 | popova-2013-science | verificado |  |
+| {{n_imc}} | región de cruzadores intermedios de Marte (IMC) | popova-2013-science | verificado |  |
+| {{p_imc}} | 25 | popova-2013-science | verificado |  |
+| {{n_31}} | resonancia de movimiento medio 3:1 con Júpiter | popova-2013-science | verificado |  |
+| {{p_31}} | 11 | popova-2013-science | verificado |  |
+| {{p_ob}} | 2 | popova-2013-science | verificado |  |
+| {{n_ob}} | cinturón principal exterior | popova-2013-science | verificado |  |
+| {{n_jfc}} | cometas de la familia de Júpiter | popova-2013-science | verificado |  |
+| {{p_jfc}} | 0 | popova-2013-science | verificado |  |
+| {{nivel_nube}} | 1σ | popova-2013-science | verificado |  |
+| {{q_sigma1}} | 0,010 | popova-2013-science | verificado |  |
+| {{e_sigma1}} | 0,009 | popova-2013-science | verificado |  |
+| {{i_sigma1}} | 0,24 | popova-2013-science | verificado |  |
+| {{q_sigma}} | 0,020 | popova-2013-science | verificado |  |
+| {{e_sigma}} | 0,018 | popova-2013-science | verificado |  |
+| {{i_sigma}} | 0,48 | popova-2013-science | verificado |  |
+| {{nivel_orbita}} | 2σ | popova-2013-science | verificado |  |
+| {{radio_captura}} | 8000 | popova-2013-science | verificado |  |
+| {{a_sigma}} | 0,16 | popova-2013-science | verificado |  |
+| {{nivel_orbita}} | 2σ | popova-2013-science | verificado |  |
+| {{ref_errores_cneos}} | Peña-Asensio et al. 2025 | pena-asensio-2025 | verificado |  |
+| {{cneos_consultado}} | 1 de octubre de 2026 | cneos-fireball-api | verificado |  |
 
 ## Trayectorias animadas (piezas con pedigrí)
 

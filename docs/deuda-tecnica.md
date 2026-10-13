@@ -484,6 +484,12 @@ Resultado:
   publicada, el criterio anterior dejaba pasar órbitas sin choque y las funciones de encuentro.
 - No cambian la visualización ni los datos astronómicos.
 
+### Ficha de Chelyabinsk · **aprobada el 2026-10-12**
+
+El usuario la aprobó (revisor Pablo Hoffenberg) tras las etapas 1 a 4 y la revisión V5, hecha en
+otra sesión (commits 4552763 y 2c3f0fd: criterio de encuentro por parámetro de impacto). Desde
+ahora se publica en producción; la prueba e2e de accesibilidad lo comprueba.
+
 ### Etapa D · CI y operación · **hecha el 2026-10-11** (ola 1)
 
 Resultado:

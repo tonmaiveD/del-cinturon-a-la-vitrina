@@ -1,9 +1,9 @@
 ---
 pieza: chelyabinsk
-estado: borrador
+estado: aprobada
 redaccion: Claude (manual, fase 1; revisada tras la auditoría consolidada del 2026-10-11 y la auditoría V5 del 2026-10-12), sin generación automática
-revisado_por:
-fecha_revision:
+revisado_por: Pablo Hoffenberg
+fecha_revision: 2026-10-12
 ---
 
 ## Qué ocurrió
