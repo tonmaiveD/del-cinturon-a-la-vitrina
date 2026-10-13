@@ -37,6 +37,10 @@ test('selección de pieza: lista, procedencia en dos capas, URL y vista solar', 
   await expect(page.locator('#procedencia')).toContainText('Según Popova et al. 2013');
   await expect(page.locator('#procedencia')).toContainText('Según Granvik y Brown 2018');
   await expect(page.locator('#procedencia')).toContainText('Confianza media');
+  // Posición de referencia de Chelyabinsk: el punto de entrada de Popova, donde empieza la estela
+  await expect(page.locator('#procedencia')).toContainText(
+    'Posición de referencia de la trayectoria luminosa: 54,445° N, 64,565° E (Popova',
+  );
 
   await abrirPestana(page, 'explorar');
   await page.locator('#pieza').selectOption('zdar-nad-sazavou');

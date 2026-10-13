@@ -25,9 +25,21 @@ function orbitaPrincipal(m: Meteorito): Orbita | undefined {
   );
 }
 
+/**
+ * Posición de referencia del panel y del marcador: el punto de entrada que publica la fuente de
+ * la órbita principal, si lo publica (es donde empieza la estela: Chelyabinsk, Popova et al.);
+ * si no, la del dataset (Granvik & Brown).
+ */
+function posicionReferencia(m: Meteorito): { lat: Valor; lon: Valor } | undefined {
+  const en = m.entrada_atmosferica;
+  if (en && en.lat.fuente === m.orbita_principal && verificado(en.lat) && verificado(en.lon))
+    return en;
+  return m.punto_trayectoria;
+}
+
 function pieza(m: Meteorito, regiones: RegionesOrigen): PiezaCatalogo {
   const o = orbitaPrincipal(m);
-  const pt = m.punto_trayectoria;
+  const pt = posicionReferencia(m);
   const escape = new Map<string, PiezaCatalogo['escape'][number]>();
   for (const p of m.procedencia ?? []) {
     if (!verificado(p.probabilidad)) continue;

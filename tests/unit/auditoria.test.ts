@@ -158,6 +158,24 @@ describe('auditoría de trazabilidad', () => {
     expect(errores(e3).map((f) => f.elemento)).toEqual(['novato']);
   });
 
+  it('Chelyabinsk: la posición de referencia es el punto de entrada de Popova, donde empieza la estela', () => {
+    const e = entrada();
+    expect(pieza(e, 'chelyabinsk').punto!.fuente).toBe('popova-2013-science');
+    // El panel con la posición de Granvik & Brown (coherente con su dato, pero de otra fuente)
+    const gb = e.meteoritos.find((m) => m.id === 'chelyabinsk')!.punto_trayectoria!;
+    pieza(e, 'chelyabinsk').punto = {
+      lat: gb.lat.valor as number,
+      lon: gb.lon.valor as number,
+      fuente: gb.lat.fuente,
+    };
+    expect(errores(e).map((f) => [f.elemento, f.nota])).toEqual([
+      ['chelyabinsk', 'usan otra órbita: posición de referencia (granvik-brown-2018)'],
+    ]);
+    const e2 = entrada();
+    pieza(e2, 'chelyabinsk').punto!.lon += 0.01;
+    expect(errores(e2).map((f) => f.elemento)).toEqual(['posición de referencia: lon']);
+  });
+
   it('detecta una nube del catálogo de otra fuente o que no pasa por la Tierra', () => {
     const e = entrada();
     e.nubes!.piezas['maribo']!.fuente = 'otra';

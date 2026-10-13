@@ -490,6 +490,22 @@ El usuario la aprobó (revisor Pablo Hoffenberg) tras las etapas 1 a 4 y la revi
 otra sesión (commits 4552763 y 2c3f0fd: criterio de encuentro por parámetro de impacto). Desde
 ahora se publica en producción; la prueba e2e de accesibilidad lo comprueba.
 
+### Mantenimiento corto · **hecho el 2026-10-13** (antes de la ola 3)
+
+- **Imagen del runner fijada.** Los cuatro jobs (`ci.yml` y `cneos-diario.yml`) usan
+  `ubuntu-24.04` en vez de `ubuntu-latest`, que pasa a Ubuntu 26 el 2026-10-19. Se actualiza a
+  mano, comprobando la CI.
+- **Aviso de Vite** (`configLoader: 'native'`): los dos imports sin extensión
+  (`vite.config.ts` y `pipeline/fichas-publicables.ts`) llevan `.ts`, con
+  `allowImportingTsExtensions` en `tsconfig.json` (posible porque no se emite JavaScript).
+- **Posición de referencia de Chelyabinsk.** El catálogo usa el punto de entrada de la fuente
+  de la órbita principal cuando lo publica (`entrada_atmosferica`: Popova, 54,445° N,
+  64,565° E), que es donde empieza la estela, y si no, `punto_trayectoria` (Granvik & Brown, a
+  unos 6 km al oeste en Chelyabinsk). El dato de Granvik & Brown se conserva para la
+  verificación cruzada. La auditoría contrasta el panel con el dato que corresponde y la
+  sección H incluye la posición de referencia entre los usos de la órbita principal; un test
+  unitario y uno e2e lo comprueban.
+
 ### Etapa D · CI y operación · **hecha el 2026-10-11** (ola 1)
 
 Resultado:

@@ -194,20 +194,13 @@ export function auditar(e: EntradaAuditoria): Fila[] {
     contrastar(s, 'clase', p.clase.valor, m.clase, p.clase.fuente);
     contrastar(s, 'fecha', p.fecha, m.fecha_caida, m.fecha_caida.fuente);
     if (p.punto) {
-      contrastar(
-        s,
-        'posición de referencia: lat',
-        p.punto.lat,
-        m.punto_trayectoria?.lat,
-        p.punto.fuente,
-      );
-      contrastar(
-        s,
-        'posición de referencia: lon',
-        p.punto.lon,
-        m.punto_trayectoria?.lon,
-        p.punto.fuente,
-      );
+      // El punto de entrada (de la fuente de la órbita principal) o la posición de referencia
+      const ref =
+        m.entrada_atmosferica?.lat.fuente === p.punto.fuente
+          ? m.entrada_atmosferica
+          : m.punto_trayectoria;
+      contrastar(s, 'posición de referencia: lat', p.punto.lat, ref?.lat, p.punto.fuente);
+      contrastar(s, 'posición de referencia: lon', p.punto.lon, ref?.lon, p.punto.fuente);
     }
     if (p.orbita) {
       const o = m.orbitas.find((x) => x.fuente === p.orbita!.fuente);
@@ -434,6 +427,8 @@ export function auditar(e: EntradaAuditoria): Fila[] {
     if (e.nubes) usos.push(['nube del catálogo', nube?.fuente]);
     if (conTrayectoria.has(m.id))
       usos.push(['estela del año previo', e.trayectorias!.leer(m.id).validacion.fuente_orbita]);
+    // Si la estela sale del punto de entrada publicado, el panel lo muestra como referencia
+    if (m.entrada_atmosferica) usos.push(['posición de referencia', p?.punto?.fuente]);
     if (m.id === 'chelyabinsk' && e.nubeChelyabinsk)
       usos.push([
         'nube del recorrido',

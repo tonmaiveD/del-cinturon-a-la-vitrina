@@ -131,8 +131,8 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | nombre | Chelyabinsk | metbull | pendiente-marcado | se muestra con el aviso «pendiente de verificación» |
 | clase | LL5 | popova-2013-science | verificado |  |
 | fecha | 2013-02-15T03:20:32.2Z | popova-2013-science | verificado |  |
-| posición de referencia: lat | 54.454 | granvik-brown-2018 | verificado |  |
-| posición de referencia: lon | 64.477 | granvik-brown-2018 | verificado |  |
+| posición de referencia: lat | 54.445 | popova-2013-science | verificado |  |
+| posición de referencia: lon | 64.565 | popova-2013-science | verificado |  |
 | órbita: a | 1.76 ± 0.08 | popova-2013-science | verificado |  |
 | órbita: e | 0.581 ± 0.009 | popova-2013-science | verificado |  |
 | órbita: i | 4.93 ± 0.24 | popova-2013-science | verificado |  |
@@ -724,7 +724,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | benesov | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
 | bunburra-rockhole | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
 | buzzard-coulee | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
-| chelyabinsk | panel, nube del catálogo, estela del año previo, nube del recorrido, ficha {{a}}, ficha {{e}}, ficha {{i}}, ficha {{q}}, ficha {{Q}}, ficha {{a_sigma}}, ficha {{i_sigma}}, ficha {{a_sigma1}}, ficha {{i_sigma1}}, ficha {{ra_sigma1}}, ficha {{dec_sigma1}}, ficha {{vg_sigma1}}, ficha {{vg}}, ficha {{q_sigma1}}, ficha {{e_sigma1}}, ficha {{q_sigma}}, ficha {{e_sigma}} | popova-2013-science | verificado | todo lo que cita o dibuja la órbita usa la principal |
+| chelyabinsk | panel, nube del catálogo, estela del año previo, posición de referencia, nube del recorrido, ficha {{a}}, ficha {{e}}, ficha {{i}}, ficha {{q}}, ficha {{Q}}, ficha {{a_sigma}}, ficha {{i_sigma}}, ficha {{a_sigma1}}, ficha {{i_sigma1}}, ficha {{ra_sigma1}}, ficha {{dec_sigma1}}, ficha {{vg_sigma1}}, ficha {{vg}}, ficha {{q_sigma1}}, ficha {{e_sigma1}}, ficha {{q_sigma}}, ficha {{e_sigma}} | popova-2013-science | verificado | todo lo que cita o dibuja la órbita usa la principal |
 | ejby | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
 | grimsby | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |
 | innisfree | panel, nube del catálogo, estela del año previo | granvik-brown-2018 | verificado | todo lo que cita o dibuja la órbita usa la principal; la nube sale de su radiante y todas sus órbitas pasan por la Tierra |

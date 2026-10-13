@@ -21,6 +21,10 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   - estela de Chelyabinsk desde el radiante aparente, la V∞ y el punto de entrada de Popova;
   - material suplementario de Popova en `.trabajo/popova-suplemento/` (no se redistribuye);
   - reportes con commit, versión de astronomy-engine y huella de entradas.
+- **Mantenimiento corto hecho el 2026-10-13** (detalle en `docs/deuda-tecnica.md`): imagen
+  del runner fijada a `ubuntu-24.04`; imports con `.ts` (sin aviso de Vite); la posición de
+  referencia de Chelyabinsk en el panel y el marcador es el punto de entrada de Popova, el mismo
+  de la estela (la auditoría lo comprueba en la sección H).
 - **Lección del 2026-10-13:** la revisión V5 (otra sesión) no actualizó la wiki; se corrigió
   y ahora la regla es actualizarla en el mismo paso que cada cambio que afecte a lo que explica.
 
@@ -32,12 +36,9 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
    fuera del build público), con propuesta antes de implementar. Decisiones del usuario
    pendientes: colección pública o privada (M10, hosting), lista de piezas, API key de Claude;
    M29 (licencias por activo, Blue Marble) si habrá uso comercial. Ver «Fase 4» abajo.
-2. **Mantenimiento corto** (se ofreció hacerlo junto con el inicio de la ola 3):
-   - fijar `ubuntu-24.04` en los workflows antes del 2026-10-19 (`ubuntu-latest` pasa a 26);
-   - aviso de Vite (`configLoader: 'native'`): imports sin extensión en `vite.config.ts` y
-     `pipeline/fichas-publicables.ts`;
-   - opcional: posición de referencia de Chelyabinsk en el panel con el punto de Popova
-     (54,445° N, 64,565° E) en vez del de Granvik & Brown (~6 km).
+2. ~~Mantenimiento corto~~ **hecho el 2026-10-13** (runner fijado, aviso de Vite, punto de
+   Popova en el panel). Siguiente: etapa 2 de la propuesta del 2026-10-13, M33 + M32 (modelo
+   `Ejemplar` y campos privados en `data/coleccion/privado/`, ignorado por git), pendiente de OK.
 3. **Ola 4 (presentación para la tienda):** iluminación de día (M35), marca, música con los MP3
    del usuario, M34, M36; M12 solo si hace falta captar tráfico.
 4. **Ola 5 (optimización y ampliación):** M13–M15 y M22 (rendimiento; modo CNEOS > 3 s en la
@@ -57,7 +58,7 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`cneos-diario.yml`, 07:30 UTC, con retrasos posibles) y Dependabot revisa dependencias los
   lunes.
 - **Verificación al 2026-10-13:**
-  - 274 tests unitarios y 80 e2e (escritorio y móvil), más la medición de rendimiento
+  - 275 tests unitarios y 80 e2e (escritorio y móvil), más la medición de rendimiento
     (aislada: `npm run e2e:rendimiento`; en paralelo con las demás roza el límite de 3 s);
   - auditoría: 603 datos, 0 errores;
   - carga inicial unos 2,8 s en 4G lento;
@@ -272,7 +273,8 @@ M29, M31–M42) está repartido en las olas 3–5 de la hoja de ruta.
   - **Bot del CNEOS:** pasa las e2e antes de guardar en `main`.
   - **Dependencias:** Dependabot propone PR semanales con 14 días de espera (se integran a
     mano tras la CI); `npm audit` de producción en un job aparte que no bloquea la publicación.
-  - **Acciones:** fijadas por SHA.
+  - **Acciones:** fijadas por SHA. **Runner:** `ubuntu-24.04` fijo (desde 2026-10-13); cambiarlo
+    a mano comprobando la CI.
   - Para reproducir la CI en local: `BASE_PUBLICA=/del-cinturon-a-la-vitrina/ npm run build`
     y luego `BASE_PUBLICA=/del-cinturon-a-la-vitrina/ E2E_DIST_LISTO=1 npm run e2e`.
 - **Reversión si la web publicada falla** (el paso «Comprobación de la web publicada» da error
@@ -331,7 +333,8 @@ ubicación, 260 con órbita (2 no calculables, guardadas con `error`), 100 no fi
 altura. Reporte: `npm run reporte:cneos`.
 
 **F2-E4, escena de las 25 caídas:** `public/data/catalogo.json` (`npm run datos:catalogo`);
-marcadores de tamaño fijo en `punto_trayectoria` («posición de referencia», no punto de caída);
+marcadores de tamaño fijo en la «posición de referencia» (no punto de caída): `punto_trayectoria`,
+o `entrada_atmosferica` si es de la fuente de la órbita principal (Chelyabinsk, desde 2026-10-13);
 nubes por pieza (σ 1σ, elementos independientes, declarado), LOD (`DISTANCIA_LOD` 6 AU), mezcla
 **normal** (la aditiva satura el HDR); Hungaria/Phocaea solo contornos; panel con región de
 escape y progenitor separados; filtros por clase y confianza; `?pieza=`.
