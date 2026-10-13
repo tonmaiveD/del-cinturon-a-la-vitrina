@@ -5,31 +5,46 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 
 ## Retomar aquí
 
-### Estado (2026-10-12)
+### Estado (2026-10-13)
 
-- **2026-10-12: revisión de la ficha de Chelyabinsk hecha** (auditoría consolidada que trajo
-  el usuario; detalle en `docs/deuda-tecnica.md`). El recorrido de Chelyabinsk ya dibuja la
-  órbita de Popova, la misma que cita la ficha; la nube del CNEOS queda como validación.
-- **2026-10-12: segunda revisión de la ficha hecha** (etapas 1 y 2): las nubes de las 25
-  piezas se calculan desde el radiante (`npm run datos:nubes`); la ficha cita la tabla S1 y las
-  cinco procedencias del material suplementario de Popova (en `.trabajo/popova-suplemento/`, no
-  se redistribuye). Etapa 3 (auditoría V3) hecha: reporte de nubes reproducible (entradas,
-  semillas, sensibilidad) y pruebas más estrictas.
-- **2026-10-12: cuarta revisión hecha (etapa 4)**, con la opción C elegida por el usuario. La
-  estela de Chelyabinsk sale del radiante aparente y el punto de entrada de Popova, y su nube
-  sortea los elementos publicados y conserva las órbitas que pasan a menos de 15 000 km de la
-  Tierra. La ficha corrige lo del Monte Carlo.
-- **2026-10-12: quinta revisión hecha (auditoría V5).** La nube de Chelyabinsk conserva las
-  órbitas que chocan en la aproximación de dos cuerpos (parámetro de impacto ≤ radio de captura,
-  `src/ciencia/encuentro.ts`); el umbral de 15 000 km dejaba pasar 89 de 300 sin choque. Ficha y
-  reporte de nubes al día.
-- **2026-10-12: ficha de Chelyabinsk aprobada** por el usuario (revisor Pablo Hoffenberg,
-  commit 0558d0a) y publicada; la prueba e2e de accesibilidad comprueba que aparece en
-  producción sin aviso de borrador.
-- **Siguiente paso: ola 3 = Fase 4 (colección y fichas).** Necesita decisiones del usuario
-  (ver «Fase 4» abajo). Si aún no las tiene, se puede empezar por lo que no las necesita: el
-  modelo meteorito ≠ ejemplar (M33) y el manejo de campos privados (M32). Se lo propuse el
-  2026-10-12 y de nuevo el 2026-10-13; está pendiente su respuesta.
+- **Todo subido y publicado.** El proyecto (último commit `b8c6e9a`) y la wiki (`6f3dcf0`)
+  están al día con GitHub; la CI de `b8c6e9a` pasó y la web en vivo incluye la ficha aprobada.
+- **Ficha de Chelyabinsk aprobada y publicada** (revisor Pablo Hoffenberg, 2026-10-12, commit
+  `0558d0a`) tras cinco revisiones del 2026-10-11/12; detalle completo en
+  `docs/deuda-tecnica.md` (secciones «Revisión de la ficha…» a «Ficha de Chelyabinsk
+  aprobada»). Resumen de lo que quedó:
+  - una sola órbita por pieza (texto, nube, estela y panel), comprobada por la auditoría;
+  - nubes de las 24 piezas de Granvik & Brown y JPL desde el radiante (`npm run datos:nubes`,
+    `docs/reportes/nubes.md`); Chelyabinsk, opción C: elementos de Popova (S5B) que chocan
+    con la Tierra (parámetro de impacto ≤ radio de captura, `src/ciencia/encuentro.ts`,
+    auditoría V5 hecha en otra sesión, commits `4552763` y `2c3f0fd`);
+  - estela de Chelyabinsk desde el radiante aparente, la V∞ y el punto de entrada de Popova;
+  - material suplementario de Popova en `.trabajo/popova-suplemento/` (no se redistribuye);
+  - reportes con commit, versión de astronomy-engine y huella de entradas.
+- **Lección del 2026-10-13:** la revisión V5 (otra sesión) no actualizó la wiki; se corrigió
+  y ahora la regla es actualizarla en el mismo paso que cada cambio que afecte a lo que explica.
+
+### Pendientes por prioridad (lista dada al usuario el 2026-10-13)
+
+1. **Ola 3 = Fase 4 (colección y fichas).** Recomendado empezar por lo que no necesita
+   decisiones: **M33** (meteorito ≠ ejemplar: SKU, masa de la muestra, fotos, procedencia; nunca
+   la masa total como masa del ejemplar) y **M32** (campos privados: costos, proveedores, EXIF
+   fuera del build público), con propuesta antes de implementar. Decisiones del usuario
+   pendientes: colección pública o privada (M10, hosting), lista de piezas, API key de Claude;
+   M29 (licencias por activo, Blue Marble) si habrá uso comercial. Ver «Fase 4» abajo.
+2. **Mantenimiento corto** (se ofreció hacerlo junto con el inicio de la ola 3):
+   - fijar `ubuntu-24.04` en los workflows antes del 2026-10-19 (`ubuntu-latest` pasa a 26);
+   - aviso de Vite (`configLoader: 'native'`): imports sin extensión en `vite.config.ts` y
+     `pipeline/fichas-publicables.ts`;
+   - opcional: posición de referencia de Chelyabinsk en el panel con el punto de Popova
+     (54,445° N, 64,565° E) en vez del de Granvik & Brown (~6 km).
+3. **Ola 4 (presentación para la tienda):** iluminación de día (M35), marca, música con los MP3
+   del usuario, M34, M36; M12 solo si hace falta captar tráfico.
+4. **Ola 5 (optimización y ampliación):** M13–M15 y M22 (rendimiento; modo CNEOS > 3 s en la
+   CI), M16, M17, M31, M37, M38, M39, M41, M42; recorrido animado de los bólidos del CNEOS.
+5. **Del usuario:** decisiones de la Fase 4, PDF de MetBull (M11), marca y MP3, caídas
+   posteriores a 2016, revisar PR de Dependabot, purga opcional de commits reescritos.
+
 - **Fases 0–3 cerradas** (`docs/cierres/fase-1.md`, `fase-2.md`, `fase-3.md`; la 3 confirmada
   el 2026-10-09) y **olas 0, 1 y 2 de la hoja de ruta hechas y publicadas** (etapas A, B, C y D
   de la deuda técnica).
@@ -41,7 +56,7 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (ver «CI desde la Etapa D» en las notas operativas). El CNEOS se actualiza solo cada día
   (`cneos-diario.yml`, 07:30 UTC, con retrasos posibles) y Dependabot revisa dependencias los
   lunes.
-- **Verificación al 2026-10-12:**
+- **Verificación al 2026-10-13:**
   - 274 tests unitarios y 80 e2e (escritorio y móvil), más la medición de rendimiento
     (aislada: `npm run e2e:rendimiento`; en paralelo con las demás roza el límite de 3 s);
   - auditoría: 603 datos, 0 errores;
