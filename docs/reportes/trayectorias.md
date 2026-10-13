@@ -1,6 +1,6 @@
 # Trayectorias animadas de las piezas con pedigrí
 
-Código: commit 7c426c4 con cambios sin confirmar · astronomy-engine 2.1.19 · Node v24.17.0 · huella del código y los datos de entrada 462713b967bcb56f
+Código: commit 4552763 · astronomy-engine 2.1.19 · Node v22.22.0 · huella del código y los datos de entrada 462713b967bcb56f
 
 Generado por `npm run datos:trayectorias`. Cada trayectoria parte del radiante geocéntrico, v_g, instante y posición de referencia publicados (Granvik & Brown 2018) con una **altura convencional de 100 km** (la fuente no publica la altura) y se integra con N cuerpos hacia atrás 365 días. Antes de guardarla, la órbita resultante se contrasta con la órbita principal publicada (criterio de parada: D_D > 0.1 o |z| > 3 en a, e o i). Chelyabinsk tiene su propia trayectoria (`npm run datos:trayectoria`), calculada como describen Popova et al. 2013: desde su radiante aparente y su velocidad de entrada, en su punto e instante de entrada (97,1 km), sin altura convencional.
 

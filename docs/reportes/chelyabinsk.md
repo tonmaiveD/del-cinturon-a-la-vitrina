@@ -1,8 +1,8 @@
 # Validación científica: Chelyabinsk (CNEOS → órbita heliocéntrica)
 
-> Generado por `npm run validacion:chelyabinsk` el 2026-10-12. No editar a mano.
+> Generado por `npm run validacion:chelyabinsk` el 2026-10-13. No editar a mano.
 >
-> Código: commit 7c426c4 con cambios sin confirmar · astronomy-engine 2.1.19 · Node v24.17.0 · huella del código y los datos de entrada ed979a076536bbfe
+> Código: commit 4552763 · astronomy-engine 2.1.19 · Node v22.22.0 · huella del código y los datos de entrada ed979a076536bbfe
 
 ## Veredicto
 
@@ -78,7 +78,7 @@ Fuente: Peña-Asensio, Socas-Navarro & Seligman 2025, A&A 701, A202 (arXiv:2508.
 
 Radiante geocéntrico de Popova et al. 2013 (1σ): α = 333.2 ± 0.8°, δ = 0.3 ± 0.9°, Vg = 15.3 ± 0.2 km/s.
 
-Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1000 clones): 34.4 s.
+Retropropagación: 6.2 días hasta 0.05 AU. Tiempo total del Monte Carlo (3 × 1000 clones): 66.6 s.
 
 ## Monte Carlo
 

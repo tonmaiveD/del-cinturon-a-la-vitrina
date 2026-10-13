@@ -2,7 +2,7 @@
 
 Generado por `npm run datos:nubes` (`pipeline/nubes-pedigri.ts`) el 2026-10-13. No editar a mano.
 
-Código: commit dcc8ea2 con cambios sin confirmar · astronomy-engine 2.1.19 · Node v22.22.0 · huella del código y los datos de entrada c24bc87ddfb7596d
+Código: commit 4552763 · astronomy-engine 2.1.19 · Node v22.22.0 · huella del código y los datos de entrada 78609811f9b33379
 
 ## Método
 
