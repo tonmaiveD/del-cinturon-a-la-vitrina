@@ -562,6 +562,12 @@ Plan original:
 - **M37** dividir `app3d.ts` (826 líneas) cuando la Fase 4 lo exija, no antes.
 - **M38** i18n: la estimación de «uno o dos días» del documento para tu amigo es optimista; con
   revisión son 3–5 días por idioma.
+  **Confirmado el 2026-10-14:** habrá versión en inglés de EE. UU. después de la Fase 4; lo que
+  se diseñe antes (M33, fichas de la Fase 4) se prepara para dos idiomas. Medido: 227 textos de
+  interfaz (~2500 palabras), ~500 palabras de textos del dataset visibles, la ficha de
+  Chelyabinsk (~900, con aprobación propia en inglés), `'es'` fijo en 5 archivos (números con
+  coma decimal, fechas), 151 comprobaciones de texto en las e2e. Esfuerzo: 2–3 sesiones más la
+  revisión del usuario; coste continuo: cada texto nuevo, dos veces.
 - **M39** escalado a un catálogo grande; **M41** caídas posteriores a 2016 (ya era una
   decisión pendiente tuya); **M42** ficha exportable.
 

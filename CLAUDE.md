@@ -43,6 +43,8 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
    del usuario, M34, M36; M12 solo si hace falta captar tráfico.
 4. **Ola 5 (optimización y ampliación):** M13–M15 y M22 (rendimiento; modo CNEOS > 3 s en la
    CI), M16, M17, M31, M37, M38, M39, M41, M42; recorrido animado de los bólidos del CNEOS.
+   **M38 (inglés de EE. UU.) confirmado por el usuario el 2026-10-14**: se hará después de la
+   Fase 4; mientras tanto, todo lo nuevo se diseña para dos idiomas.
 5. **Del usuario:** decisiones de la Fase 4, PDF de MetBull (M11), marca y MP3, caídas
    posteriores a 2016, revisar PR de Dependabot, purga opcional de commits reescritos.
 
@@ -207,6 +209,12 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
   conserva las órbitas que chocan con la Tierra (desde la auditoría V5, parámetro de impacto ≤
   radio de captura; antes, a menos de 15 000 km); su estela y su punto salen de Popova,
   así que toda la figura viene de una sola fuente.
+- 2026-10-14: **habrá versión en inglés de EE. UU.** (M38), más adelante: después de la Fase 4
+  (antes, en la ola 4, solo si la tienda vende sobre todo en EE. UU.). Desde ya, lo nuevo se
+  diseña bilingüe sin traducir aún: textos visibles por clave o con campos por idioma (nunca
+  frases en código ni en valores científicos), formatos con el idioma activo y fichas con
+  aprobación por idioma. Estimación medida: 227 textos de interfaz (~2500 palabras), ~500 del
+  dataset, la ficha (~900), 5 archivos con `'es'` fijo; 2–3 sesiones más la revisión del inglés.
 - 2026-10-11: el usuario **mantiene el gmail como correo principal** de su cuenta de GitHub y
   quiere que **solo apaec@yahoo.com sea visible**. Autorizó reescribir la historia de la wiki y
   de `main` (hecho, con push forzado suyo). Nunca escribir el gmail en archivos del repo.
