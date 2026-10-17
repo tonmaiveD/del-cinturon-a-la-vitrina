@@ -10,7 +10,15 @@
       },
       "tipo": {
         "type": "string",
-        "enum": ["articulo", "circular", "base-de-datos", "api", "software", "textura"]
+        "enum": [
+          "articulo",
+          "circular",
+          "base-de-datos",
+          "api",
+          "software",
+          "textura",
+          "registro-coleccion"
+        ]
       },
       "cita": {
         "type": "string",

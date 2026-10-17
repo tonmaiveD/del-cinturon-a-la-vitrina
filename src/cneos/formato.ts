@@ -1,4 +1,5 @@
 /** Textos y cifras del modo CNEOS (sin Three.js). */
+import { fijo } from '../i18n/formato';
 import type { CalidadEvento, EventoCneos } from './eventos';
 import type { Percentiles } from './resumen';
 
@@ -33,8 +34,7 @@ export const COLOR_LEYENDA: Record<GrupoLeyenda, string> = {
   'sin-ubicacion': '#7d8494',
 };
 
-const num = (x: number, dec: number) =>
-  x.toLocaleString('es', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+const num = fijo;
 
 /** Dos cifras significativas, sin notación científica para el rango habitual. */
 export function dosCifras(x: number): string {

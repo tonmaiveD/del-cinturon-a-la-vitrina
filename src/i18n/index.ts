@@ -4,6 +4,9 @@ type Clave = keyof typeof es;
 const diccionarios: Record<string, Record<Clave, string>> = { es };
 let idioma = 'es';
 
+/** Idioma activo de la interfaz (código del diccionario). */
+export const idiomaActivo = (): string => idioma;
+
 export function fijarIdioma(codigo: string): void {
   if (codigo in diccionarios) idioma = codigo;
 }

@@ -4,6 +4,7 @@
  * fuente) y asociación con cuerpo progenitor (con su confianza).
  */
 import { t } from '../i18n';
+import { fijo } from '../i18n/formato';
 import {
   cumpleFiltro,
   GRUPOS,
@@ -32,8 +33,7 @@ function decimales(x: number): number {
   const d = (mantisa!.split('.')[1] ?? '').length;
   return exponente ? Math.max(0, d - Number(exponente)) : d;
 }
-export const numero = (x: number, dec = decimales(x)) =>
-  x.toLocaleString('es', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+export const numero = (x: number, dec = decimales(x)) => fijo(x, dec);
 /**
  * «valor ± σ» sin precisión ficticia: cada número conserva como máximo sus decimales publicados y
  * como máximo los que corresponden a dos cifras significativas de σ (nunca se añaden cifras).

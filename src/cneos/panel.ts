@@ -3,6 +3,7 @@
  * evento seleccionado. Nunca se presenta como tiempo real (principio 4).
  */
 import { t } from '../i18n';
+import { fecha, fijo, numero } from '../i18n/formato';
 import {
   COLOR_LEYENDA,
   comparacionChelyabinsk,
@@ -31,16 +32,15 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, texto?: string, clase
   if (clase) e.className = clase;
   return e;
 }
-const num = (x: number, dec: number) =>
-  x.toLocaleString('es', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+const num = fijo;
 /** Valor tal como lo publica el CNEOS (sin redondear; solo formato local). */
-const publicado = (x: number) => x.toLocaleString('es', { maximumFractionDigits: 6 });
+const publicado = (x: number) => numero(x, { maximumFractionDigits: 6 });
 export const fechaUtc = (iso: string, conHora = true) =>
-  new Intl.DateTimeFormat('es', {
+  fecha(new Date(iso), {
     dateStyle: 'long',
     ...(conHora && { timeStyle: 'short' }),
     timeZone: 'UTC',
-  }).format(new Date(iso));
+  });
 const coord = (v: number, pos: string, neg: string) =>
   `${num(Math.abs(v), 1)}° ${v >= 0 ? pos : neg}`;
 

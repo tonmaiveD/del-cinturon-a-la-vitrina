@@ -1,5 +1,6 @@
 /** Construye el contexto de la ficha a partir del dataset (solo valores verificados). */
 import { radioCaptura } from '../ciencia/encuentro';
+import { fecha as formatoFecha, fijo } from '../i18n/formato';
 import type { Meteorito, Valor } from '../schema';
 import { citaCorta } from './catalogo';
 import type { ContextoFicha, DatoFicha } from './ficha';
@@ -25,8 +26,7 @@ const FUENTE_ENERGIA_IMPACTO = 'brown-2002';
 /** Errores típicos del CNEOS por grupo (Tabla 4), usados en la validación con Chelyabinsk. */
 const FUENTE_ERRORES_CNEOS = 'pena-asensio-2025';
 
-const num = (x: number, dec: number) =>
-  x.toLocaleString('es', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+const num = fijo;
 const NIVEL: Record<string, string> = {
   '1-sigma': '1σ',
   '2-sigma': '2σ',
@@ -58,19 +58,17 @@ export function contextoFicha(
   const fecha = new Date(String(m.fecha_caida.valor));
   poner(
     'fecha',
-    dato(m.fecha_caida, () =>
-      new Intl.DateTimeFormat('es', { dateStyle: 'long', timeZone: 'UTC' }).format(fecha),
-    ),
+    dato(m.fecha_caida, () => formatoFecha(fecha, { dateStyle: 'long', timeZone: 'UTC' })),
   );
   poner(
     'hora',
     dato(m.fecha_caida, () =>
-      new Intl.DateTimeFormat('es', {
+      formatoFecha(fecha, {
         hour: '2-digit',
         minute: '2-digit',
         hourCycle: 'h23',
         timeZone: 'UTC',
-      }).format(fecha),
+      }),
     ),
   );
   poner(
@@ -103,9 +101,7 @@ export function contextoFicha(
     num(Math.round((Number(c('energy')) * J_POR_UNIDAD_ENERGY) / J_POR_KT), 0),
   );
   ctx.cneos_consultado = desdeCneos(
-    new Intl.DateTimeFormat('es', { dateStyle: 'long', timeZone: 'UTC' }).format(
-      new Date(cneos.consultado),
-    ),
+    formatoFecha(new Date(cneos.consultado), { dateStyle: 'long', timeZone: 'UTC' }),
   );
   poner('ref_energia', cita(FUENTE_ENERGIA_IMPACTO));
   // Errores típicos del CNEOS con los que se valida la órbita calculada desde su vector

@@ -3,6 +3,7 @@ import cneos from '../data/cneos/chelyabinsk.json';
 import pedigri from '../data/pedigri/chelyabinsk.json';
 import { crearSecuencia, type Paso } from './camera/coreografia';
 import { t } from './i18n';
+import { fecha as fechaLocal, numero } from './i18n/formato';
 import { PLANETAS } from './scene/cuerpos';
 import type { PanelCneos } from './cneos/panel';
 import type { OrbitaCneos } from './cneos/resumen';
@@ -48,11 +49,9 @@ function radioMeteoroideKm(): number | undefined {
 }
 
 const formatoFecha = (d: Date) =>
-  new Intl.DateTimeFormat('es', { dateStyle: 'long', timeStyle: 'short', timeZone: 'UTC' }).format(
-    d,
-  );
+  fechaLocal(d, { dateStyle: 'long', timeStyle: 'short', timeZone: 'UTC' });
 const coord = (v: number, pos: string, neg: string) =>
-  `${Math.abs(v).toLocaleString('es', { maximumFractionDigits: 1 })}° ${v >= 0 ? pos : neg}`;
+  `${numero(Math.abs(v), { maximumFractionDigits: 1 })}° ${v >= 0 ? pos : neg}`;
 
 export interface DatosEscena {
   orbitas: DatosOrbitas;
@@ -274,8 +273,8 @@ export async function iniciar3D(
         : t(chely ? 'tiempo.antes' : 'tiempo.antes-referencia', {
             dias:
               dias >= 1
-                ? `${dias.toLocaleString('es', { maximumFractionDigits: 1 })} d`
-                : `${(dias * 24).toLocaleString('es', { maximumFractionDigits: 1 })} h`,
+                ? `${numero(dias, { maximumFractionDigits: 1 })} d`
+                : `${numero(dias * 24, { maximumFractionDigits: 1 })} h`,
           });
     return t('tiempo.relativo', { fecha: formatoFecha(new Date(ms)), rel });
   }
@@ -315,7 +314,7 @@ export async function iniciar3D(
       return vista === 'tierra'
         ? t('desc.tierra', {
             fecha: formatoFecha(bolido.fecha),
-            alt: bolido.alturaKm.toLocaleString('es'),
+            alt: numero(bolido.alturaKm),
             lat: coord(bolido.latGrados, 'N', 'S'),
             lon: coord(bolido.lonGrados, 'E', 'O'),
           })
@@ -345,7 +344,7 @@ export async function iniciar3D(
       }).trimEnd()}${
         trayPieza!.origen === 'jpl'
           ? t('desc.sistema-solar.pieza.tray.jpl', {
-              dd: trayPieza!.validacion.dd.toLocaleString('es', { maximumFractionDigits: 5 }),
+              dd: numero(trayPieza!.validacion.dd, { maximumFractionDigits: 5 }),
             })
           : t('desc.sistema-solar.pieza.tray')
       } ${descripcionRegiones()}`;
@@ -599,9 +598,7 @@ export async function iniciar3D(
     impacto = Date.parse(ev.fecha);
     bolidos.seleccionar(id);
     etiquetaBolido!.element.textContent = t('etiqueta.cneos', {
-      fecha: new Intl.DateTimeFormat('es', { dateStyle: 'medium', timeZone: 'UTC' }).format(
-        new Date(ev.fecha),
-      ),
+      fecha: fechaLocal(new Date(ev.fecha), { dateStyle: 'medium', timeZone: 'UTC' }),
     });
     reloj.fijarRango(impacto - 365 * DIA_MS, impacto, tInicial ?? impacto);
     bRecorrido.disabled = true;

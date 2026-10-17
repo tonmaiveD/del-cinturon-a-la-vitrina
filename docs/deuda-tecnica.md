@@ -506,6 +506,58 @@ ahora se publica en producción; la prueba e2e de accesibilidad lo comprueba.
   sección H incluye la posición de referencia entre los usos de la órbita principal; un test
   unitario y uno e2e lo comprueban.
 
+### Evaluación de un tercero (2026-10-17) · validada contra el código
+
+Evaluación de solo lectura del repositorio (copia en la conversación del 2026-10-17). Sus datos
+se comprobaron: `app3d.ts` tiene 1027 líneas (826 en la auditoría del 2026-10-09),
+`sourcemap: true` en producción, tres respaldos con el gmail en `.trabajo/` (~35 MB), `'es'`
+fijo en 5 archivos, `MutationObserver` solo en `hoja.ts`. Las notas por dimensión no se usan.
+Qué se adopta y en qué orden:
+
+1. **Etapa 2 (M33 + M32)** con la centralización de formatos por idioma: **hecha el
+   2026-10-17** (abajo).
+2. **Huella del CNEOS por grafo de imports.** La evaluación propone una lista explícita de
+   archivos; se descarta porque se desactualiza sin aviso. Además encontramos una laguna que no
+   menciona: la huella solo cubre `src/core/`, así que un cambio en `registroDe()`
+   (`src/cneos/eventos.ts`) o en la lógica de `pipeline/cneos-orbitas.ts` dejaría órbitas
+   guardadas obsoletas. Solución: huella sobre el cierre transitivo de imports de
+   `cneos-orbitas.ts`; permite devolver `encuentro.ts` a `src/core/`. Coste: un recálculo de las
+   260 órbitas.
+3. **Dividir `app3d.ts`** (M37) antes de la interfaz de ejemplares: coreografía, controlador del
+   modo CNEOS y textos descriptivos en módulos propios, sin cambiar comportamiento; un estado
+   tipado en lugar de leer el DOM solo si esa interfaz lo pide.
+4. **Mapas de fuentes**: desactivarlos o `'hidden'` si la colección pasa a privada (M10).
+5. **Modo CNEOS sin GPU** (M22, ola 5): medir con un perfil antes de optimizar; la evaluación
+   supone que el coste es la geometría, sin medirlo.
+
+No se adopta: cambiar el flujo con GitHub Desktop (decisión del usuario, riesgo cubierto por
+`--ff-only` y la comprobación `ls-remote`). Recordatorio que sí vale: `.gitignore` no protege
+una copia comprimida de la carpeta (respaldos con el gmail y, desde la etapa 2, lo privado).
+
+### Etapa 2 de la Fase 4 · M33 y M32 · **hecha el 2026-10-17**
+
+Modelo y protecciones, sin interfaz todavía (guía en `docs/coleccion.md`):
+
+- **M33.** `src/schema/coleccion.ts`: `Ejemplar` (SKU, meteorito por id, tipo, `masa_muestra`
+  en gramos de una fuente `registro-coleccion`, fotos, custodia, revisión por idioma) y
+  `MeteoritoColeccion` (meteoritos sin órbita, sin campo de órbita). `src/coleccion/vista.ts`:
+  recorrido si es una caída con órbita; si no, procedencia por clase (sin la asociación de
+  2008 TC3, que es solo de Almahata Sitta); clase ambigua → sin procedencia, con motivo.
+  `pipeline/coleccion.ts` (dentro de `npm run validate`): SKU y fotos únicos, meteorito
+  existente, masa propia menor que la total, revisión en inglés solo con textos en inglés.
+- **M32.** Esquemas públicos estrictos (un costo en el archivo público no valida);
+  `EjemplarPrivado` en `data/coleccion/privado/` (en `.gitignore`; un test comprueba que git lo
+  ignora y no tiene nada de ella); `npm run datos:fotos` publica solo las fotos de ejemplares
+  aprobados, sin EXIF/XMP/IPTC/ICC; `verificar-dist` rechaza claves y textos privados, textos de
+  ejemplares en borrador y fotos con metadatos en `dist/`. El campo privado de notas se llama
+  `notas_privadas` porque `"notas":` ya aparece en el bundle (fuentes.json).
+- **Formatos por idioma.** `src/i18n/formato.ts` (`numero`, `fijo`, `fecha`) sustituye los 17
+  usos de `'es'` fijo; un test impide volver a fijar el idioma fuera de `src/i18n/`.
+- Esquemas JSON regenerados (`docs/esquemas/`, el de meteorito estaba desactualizado) y los tres
+  de la colección.
+- Queda para la interfaz: dónde y cómo se muestran los ejemplares, la ficha del ejemplar
+  (separada de la divulgativa) y, si hiciera falta, un campo de certificado.
+
 ### Etapa D · CI y operación · **hecha el 2026-10-11** (ola 1)
 
 Resultado:

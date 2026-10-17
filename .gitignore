@@ -8,3 +8,7 @@ playwright-report
 .claude/settings.local.json
 .trabajo/
 revision/
+
+# Parte privada de la colección (M32): costos, proveedores, notas y fotos originales.
+# El repositorio es público; esta carpeta nunca se sube. Necesita su propio respaldo.
+data/coleccion/privado/

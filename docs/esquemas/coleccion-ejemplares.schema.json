@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "sku": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+      },
+      "meteorito": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      },
+      "tipo": {
+        "type": "string",
+        "enum": ["individual", "fragmento", "corte", "lamina", "otro"]
+      },
+      "masa_muestra": {
+        "type": "object",
+        "properties": {
+          "valor": {
+            "type": ["number", "string"]
+          },
+          "unidad": {
+            "type": "string"
+          },
+          "sigma": {
+            "type": "number",
+            "minimum": 0
+          },
+          "sigma_publicada": {
+            "type": "number",
+            "minimum": 0
+          },
+          "nivel_sigma": {
+            "type": "string",
+            "enum": ["1-sigma", "2-sigma", "3-sigma", "formal-sin-nivel"]
+          },
+          "fuente": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "ubicacion": {
+            "type": "string"
+          },
+          "estado": {
+            "type": "string",
+            "enum": ["verificado", "pendiente"]
+          },
+          "nota": {
+            "type": "string"
+          }
+        },
+        "required": ["valor", "fuente", "estado"],
+        "additionalProperties": false
+      },
+      "fotos": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "archivo": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*\\.(jpe?g|png|webp|tiff?|heic)$"
+            },
+            "descripcion": {
+              "type": "object",
+              "properties": {
+                "es": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "en": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": ["es"],
+              "additionalProperties": false
+            },
+            "credito": {
+              "type": "string",
+              "minLength": 1
+            },
+            "licencia": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": ["archivo", "descripcion", "credito", "licencia"],
+          "additionalProperties": false
+        }
+      },
+      "custodia": {
+        "type": "object",
+        "properties": {
+          "es": {
+            "type": "string",
+            "minLength": 1
+          },
+          "en": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["es"],
+        "additionalProperties": false
+      },
+      "revision": {
+        "type": "object",
+        "properties": {
+          "es": {
+            "type": "object",
+            "properties": {
+              "estado": {
+                "type": "string",
+                "enum": ["borrador", "aprobada"]
+              },
+              "revisado_por": {
+                "type": "string",
+                "minLength": 1
+              },
+              "fecha_revision": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              }
+            },
+            "required": ["estado"],
+            "additionalProperties": false
+          },
+          "en": {
+            "type": "object",
+            "properties": {
+              "estado": {
+                "type": "string",
+                "enum": ["borrador", "aprobada"]
+              },
+              "revisado_por": {
+                "type": "string",
+                "minLength": 1
+              },
+              "fecha_revision": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              }
+            },
+            "required": ["estado"],
+            "additionalProperties": false
+          }
+        },
+        "required": ["es"],
+        "additionalProperties": false
+      }
+    },
+    "required": ["sku", "meteorito", "tipo", "masa_muestra", "fotos", "revision"],
+    "additionalProperties": false
+  }
+}

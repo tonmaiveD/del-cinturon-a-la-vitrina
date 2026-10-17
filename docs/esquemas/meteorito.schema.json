@@ -415,6 +415,286 @@
       "required": ["lat", "lon"],
       "additionalProperties": false
     },
+    "entrada_atmosferica": {
+      "type": "object",
+      "properties": {
+        "instante": {
+          "type": "object",
+          "properties": {
+            "valor": {
+              "type": ["number", "string"]
+            },
+            "unidad": {
+              "type": "string"
+            },
+            "sigma": {
+              "type": "number",
+              "minimum": 0
+            },
+            "sigma_publicada": {
+              "type": "number",
+              "minimum": 0
+            },
+            "nivel_sigma": {
+              "type": "string",
+              "enum": ["1-sigma", "2-sigma", "3-sigma", "formal-sin-nivel"]
+            },
+            "fuente": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "ubicacion": {
+              "type": "string"
+            },
+            "estado": {
+              "type": "string",
+              "enum": ["verificado", "pendiente"]
+            },
+            "nota": {
+              "type": "string"
+            }
+          },
+          "required": ["valor", "fuente", "estado"],
+          "additionalProperties": false
+        },
+        "lat": {
+          "type": "object",
+          "properties": {
+            "valor": {
+              "type": ["number", "string"]
+            },
+            "unidad": {
+              "type": "string"
+            },
+            "sigma": {
+              "type": "number",
+              "minimum": 0
+            },
+            "sigma_publicada": {
+              "type": "number",
+              "minimum": 0
+            },
+            "nivel_sigma": {
+              "type": "string",
+              "enum": ["1-sigma", "2-sigma", "3-sigma", "formal-sin-nivel"]
+            },
+            "fuente": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "ubicacion": {
+              "type": "string"
+            },
+            "estado": {
+              "type": "string",
+              "enum": ["verificado", "pendiente"]
+            },
+            "nota": {
+              "type": "string"
+            }
+          },
+          "required": ["valor", "fuente", "estado"],
+          "additionalProperties": false
+        },
+        "lon": {
+          "type": "object",
+          "properties": {
+            "valor": {
+              "type": ["number", "string"]
+            },
+            "unidad": {
+              "type": "string"
+            },
+            "sigma": {
+              "type": "number",
+              "minimum": 0
+            },
+            "sigma_publicada": {
+              "type": "number",
+              "minimum": 0
+            },
+            "nivel_sigma": {
+              "type": "string",
+              "enum": ["1-sigma", "2-sigma", "3-sigma", "formal-sin-nivel"]
+            },
+            "fuente": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "ubicacion": {
+              "type": "string"
+            },
+            "estado": {
+              "type": "string",
+              "enum": ["verificado", "pendiente"]
+            },
+            "nota": {
+              "type": "string"
+            }
+          },
+          "required": ["valor", "fuente", "estado"],
+          "additionalProperties": false
+        },
+        "altura": {
+          "type": "object",
+          "properties": {
+            "valor": {
+              "type": ["number", "string"]
+            },
+            "unidad": {
+              "type": "string"
+            },
+            "sigma": {
+              "type": "number",
+              "minimum": 0
+            },
+            "sigma_publicada": {
+              "type": "number",
+              "minimum": 0
+            },
+            "nivel_sigma": {
+              "type": "string",
+              "enum": ["1-sigma", "2-sigma", "3-sigma", "formal-sin-nivel"]
+            },
+            "fuente": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "ubicacion": {
+              "type": "string"
+            },
+            "estado": {
+              "type": "string",
+              "enum": ["verificado", "pendiente"]
+            },
+            "nota": {
+              "type": "string"
+            }
+          },
+          "required": ["valor", "fuente", "estado"],
+          "additionalProperties": false
+        },
+        "ra_aparente": {
+          "type": "object",
+          "properties": {
+            "valor": {
+              "type": ["number", "string"]
+            },
+            "unidad": {
+              "type": "string"
+            },
+            "sigma": {
+              "type": "number",
+              "minimum": 0
+            },
+            "sigma_publicada": {
+              "type": "number",
+              "minimum": 0
+            },
+            "nivel_sigma": {
+              "type": "string",
+              "enum": ["1-sigma", "2-sigma", "3-sigma", "formal-sin-nivel"]
+            },
+            "fuente": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "ubicacion": {
+              "type": "string"
+            },
+            "estado": {
+              "type": "string",
+              "enum": ["verificado", "pendiente"]
+            },
+            "nota": {
+              "type": "string"
+            }
+          },
+          "required": ["valor", "fuente", "estado"],
+          "additionalProperties": false
+        },
+        "dec_aparente": {
+          "type": "object",
+          "properties": {
+            "valor": {
+              "type": ["number", "string"]
+            },
+            "unidad": {
+              "type": "string"
+            },
+            "sigma": {
+              "type": "number",
+              "minimum": 0
+            },
+            "sigma_publicada": {
+              "type": "number",
+              "minimum": 0
+            },
+            "nivel_sigma": {
+              "type": "string",
+              "enum": ["1-sigma", "2-sigma", "3-sigma", "formal-sin-nivel"]
+            },
+            "fuente": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "ubicacion": {
+              "type": "string"
+            },
+            "estado": {
+              "type": "string",
+              "enum": ["verificado", "pendiente"]
+            },
+            "nota": {
+              "type": "string"
+            }
+          },
+          "required": ["valor", "fuente", "estado"],
+          "additionalProperties": false
+        },
+        "v_entrada": {
+          "type": "object",
+          "properties": {
+            "valor": {
+              "type": ["number", "string"]
+            },
+            "unidad": {
+              "type": "string"
+            },
+            "sigma": {
+              "type": "number",
+              "minimum": 0
+            },
+            "sigma_publicada": {
+              "type": "number",
+              "minimum": 0
+            },
+            "nivel_sigma": {
+              "type": "string",
+              "enum": ["1-sigma", "2-sigma", "3-sigma", "formal-sin-nivel"]
+            },
+            "fuente": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "ubicacion": {
+              "type": "string"
+            },
+            "estado": {
+              "type": "string",
+              "enum": ["verificado", "pendiente"]
+            },
+            "nota": {
+              "type": "string"
+            }
+          },
+          "required": ["valor", "fuente", "estado"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["instante", "lat", "lon", "altura", "ra_aparente", "dec_aparente", "v_entrada"],
+      "additionalProperties": false
+    },
     "atmosfera": {
       "type": "object",
       "properties": {
@@ -1066,6 +1346,34 @@
               }
             },
             "required": ["valor", "fuente", "estado"],
+            "additionalProperties": false
+          },
+          "cifras_completas": {
+            "type": "object",
+            "properties": {
+              "a": {
+                "type": "number"
+              },
+              "e": {
+                "type": "number"
+              },
+              "i": {
+                "type": "number"
+              },
+              "omega": {
+                "type": "number"
+              },
+              "nodo": {
+                "type": "number"
+              },
+              "q": {
+                "type": "number"
+              },
+              "ubicacion": {
+                "type": "string"
+              }
+            },
+            "required": ["a", "e", "i", "omega", "nodo", "q", "ubicacion"],
             "additionalProperties": false
           },
           "discrepancia_documentada": {

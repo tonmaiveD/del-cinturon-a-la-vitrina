@@ -5,7 +5,7 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 
 ## Retomar aquí
 
-### Estado (2026-10-13)
+### Estado (2026-10-17)
 
 - **Todo subido y publicado.** El proyecto (último commit `b8c6e9a`) y la wiki (`6f3dcf0`)
   están al día con GitHub; la CI de `b8c6e9a` pasó y la web en vivo incluye la ficha aprobada.
@@ -25,20 +25,27 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   del runner fijada a `ubuntu-24.04`; imports con `.ts` (sin aviso de Vite); la posición de
   referencia de Chelyabinsk en el panel y el marcador es el punto de entrada de Popova, el mismo
   de la estela (la auditoría lo comprueba en la sección H).
+- **Etapa 2 de la Fase 4 (M33 + M32) hecha el 2026-10-17**, sin interfaz todavía: modelo
+  `Ejemplar`/`MeteoritoColeccion`/`EjemplarPrivado` (`src/schema/coleccion.ts`), vista por
+  ejemplar (`src/coleccion/vista.ts`), validación (`pipeline/coleccion.ts`), fotos sin metadatos
+  (`npm run datos:fotos`), `verificar-dist` contra lo privado; formatos por idioma en
+  `src/i18n/formato.ts`. Guía: `docs/coleccion.md`. Detalle y evaluación del tercero en
+  `docs/deuda-tecnica.md`.
 - **Lección del 2026-10-13:** la revisión V5 (otra sesión) no actualizó la wiki; se corrigió
   y ahora la regla es actualizarla en el mismo paso que cada cambio que afecte a lo que explica.
 
-### Pendientes por prioridad (lista dada al usuario el 2026-10-13)
+### Pendientes por prioridad (orden acordado el 2026-10-17, tras la evaluación del tercero)
 
-1. **Ola 3 = Fase 4 (colección y fichas).** Recomendado empezar por lo que no necesita
-   decisiones: **M33** (meteorito ≠ ejemplar: SKU, masa de la muestra, fotos, procedencia; nunca
-   la masa total como masa del ejemplar) y **M32** (campos privados: costos, proveedores, EXIF
-   fuera del build público), con propuesta antes de implementar. Decisiones del usuario
-   pendientes: colección pública o privada (M10, hosting), lista de piezas, API key de Claude;
-   M29 (licencias por activo, Blue Marble) si habrá uso comercial. Ver «Fase 4» abajo.
-2. ~~Mantenimiento corto~~ **hecho el 2026-10-13** (runner fijado, aviso de Vite, punto de
-   Popova en el panel). Siguiente: etapa 2 de la propuesta del 2026-10-13, M33 + M32 (modelo
-   `Ejemplar` y campos privados en `data/coleccion/privado/`, ignorado por git), pendiente de OK.
+1. **Ola 3 = Fase 4 (colección y fichas).** Hechos el mantenimiento corto (2026-10-13) y la
+   etapa 2, M33 + M32 (2026-10-17). Siguen, etapa por etapa (el usuario dio el OK al orden):
+   - **etapa 3: huella del CNEOS por grafo de imports** de `pipeline/cneos-orbitas.ts` (cierra
+     la laguna de `registroDe()` y de la lógica del propio pipeline; `encuentro.ts` vuelve a
+     `src/core/`; un recálculo de las 260 órbitas);
+   - **etapa 4: dividir `app3d.ts`** (M37) antes de la interfaz de ejemplares;
+   - luego la interfaz de ejemplares y las fichas con la API, que necesitan las decisiones del
+     usuario: colección pública o privada (M10, hosting; si privada, mapas de fuentes fuera),
+     lista de piezas, API key de Claude; M29 si habrá uso comercial. Ver «Fase 4» abajo.
+2. ~~Mantenimiento corto~~ **hecho el 2026-10-13** (runner fijado, aviso de Vite, punto de Popova).
 3. **Ola 4 (presentación para la tienda):** iluminación de día (M35), marca, música con los MP3
    del usuario, M34, M36; M12 solo si hace falta captar tráfico.
 4. **Ola 5 (optimización y ampliación):** M13–M15 y M22 (rendimiento; modo CNEOS > 3 s en la
@@ -60,7 +67,7 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`cneos-diario.yml`, 07:30 UTC, con retrasos posibles) y Dependabot revisa dependencias los
   lunes.
 - **Verificación al 2026-10-13:**
-  - 275 tests unitarios y 80 e2e (escritorio y móvil), más la medición de rendimiento
+  - 290 tests unitarios y 80 e2e (al 2026-10-17) (escritorio y móvil), más la medición de rendimiento
     (aislada: `npm run e2e:rendimiento`; en paralelo con las demás roza el límite de 3 s);
   - auditoría: 603 datos, 0 errores;
   - carga inicial unos 2,8 s en 4G lento;
@@ -391,6 +398,8 @@ textura Blue Marble según las directrices de medios de NASA (verificado el 2026
 - Datos: `npm run datos` (validación Chelyabinsk + trayectoria), `npm run datos:pedigri`
   (Granvik & Brown + JPL 2008 TC3 + catálogo), `npm run datos:texturas`, `npm run verificacion:cruzada`
 - CNEOS: `npm run datos:cneos` (descarga + órbitas), `npm run reporte:cneos`.
+- Colección: `npm run datos:fotos` (fotos limpias de los ejemplares aprobados); guía en
+  `docs/coleccion.md`; `npm run schemas` exporta los esquemas a `docs/esquemas/`.
 - Nubes de las piezas: `npm run datos:nubes` (unos 50 s; incluido en `datos:pedigri`).
   Recorridos: `npm run datos:trayectorias -- <a|b|c>`.
 - `npm run cierre:video` / `cierre:fase-2` / `cierre:fase-3` (requieren `build`): video y
@@ -432,6 +441,12 @@ textura Blue Marble según las directrices de medios de NASA (verificado el 2026
   test prohíbe cifras escritas a mano. Admiten enlaces `[texto](https://…)`. Solo se publican las
   `aprobada` con `revisado_por` y `fecha_revision`. En Fase 4 se generarán con la API de Claude
   en build, nunca en el navegador.
+- Colección (Fase 4): meteorito ≠ ejemplar. `src/schema/coleccion.ts` (esquemas estrictos;
+  lo privado en `data/coleccion/privado/`, ignorado por git), `src/coleccion/vista.ts`
+  (recorrido o procedencia por clase, nunca una órbita inventada), `pipeline/coleccion.ts`
+  (reglas en `npm run validate`), `pipeline/coleccion-fotos.ts`, `pipeline/verificar-dist.ts`.
+- Formato de números y fechas: solo `src/i18n/formato.ts` (idioma activo; un test prohíbe
+  fijar `'es'` en otro sitio). Lo nuevo se diseña bilingüe (`TextoIdiomas`, revisión por idioma).
 - e2e contra `pipeline/servidor-estatico.ts` (gzip, como un hosting real; `vite preview` no
   comprime y falsea la medición).
 

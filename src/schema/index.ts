@@ -13,11 +13,20 @@ export const Estado = z.enum(ESTADOS);
 export const CONFIANZAS = ['alto', 'medio', 'especulativo'] as const;
 export const Confianza = z.enum(CONFIANZAS);
 
-const idSlug = z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'id en kebab-case ASCII');
+export const idSlug = z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'id en kebab-case ASCII');
 
 export const Fuente = z.object({
   id: idSlug,
-  tipo: z.enum(['articulo', 'circular', 'base-de-datos', 'api', 'software', 'textura']),
+  /** `registro-coleccion`: pesajes y datos propios de la colección (masa de cada ejemplar). */
+  tipo: z.enum([
+    'articulo',
+    'circular',
+    'base-de-datos',
+    'api',
+    'software',
+    'textura',
+    'registro-coleccion',
+  ]),
   cita: z.string().min(1),
   doi: z
     .string()

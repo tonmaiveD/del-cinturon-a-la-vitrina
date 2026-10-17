@@ -33,7 +33,8 @@
     "reporte:cneos": "tsx pipeline/reporte-cneos.ts",
     "cierre:fase-3": "tsx pipeline/grabar-fase-3.ts",
     "datos:trayectorias": "tsx pipeline/trayectorias-pedigri.ts",
-    "validacion:cobertura": "tsx pipeline/cobertura-cneos.ts"
+    "validacion:cobertura": "tsx pipeline/cobertura-cneos.ts",
+    "datos:fotos": "tsx pipeline/coleccion-fotos.ts"
   },
   "license": "MIT",
   "type": "module",

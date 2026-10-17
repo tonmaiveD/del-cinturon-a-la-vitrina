@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      },
+      "nombre_oficial": {
+        "type": "object",
+        "properties": {
+          "valor": {
+            "type": ["number", "string"]
+          },
+          "unidad": {
+            "type": "string"
+          },
+          "sigma": {
+            "type": "number",
+            "minimum": 0
+          },
+          "sigma_publicada": {
+            "type": "number",
+            "minimum": 0
+          },
+          "nivel_sigma": {
+            "type": "string",
+            "enum": ["1-sigma", "2-sigma", "3-sigma", "formal-sin-nivel"]
+          },
+          "fuente": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "ubicacion": {
+            "type": "string"
+          },
+          "estado": {
+            "type": "string",
+            "enum": ["verificado", "pendiente"]
+          },
+          "nota": {
+            "type": "string"
+          }
+        },
+        "required": ["valor", "fuente", "estado"],
+        "additionalProperties": false
+      },
+      "metbull_id": {
+        "type": "integer",
+        "exclusiveMinimum": 0,
+        "maximum": 9007199254740991
+      },
+      "clase": {
+        "type": "object",
+        "properties": {
+          "valor": {
+            "type": ["number", "string"]
+          },
+          "unidad": {
+            "type": "string"
+          },
+          "sigma": {
+            "type": "number",
+            "minimum": 0
+          },
+          "sigma_publicada": {
+            "type": "number",
+            "minimum": 0
+          },
+          "nivel_sigma": {
+            "type": "string",
+            "enum": ["1-sigma", "2-sigma", "3-sigma", "formal-sin-nivel"]
+          },
+          "fuente": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "ubicacion": {
+            "type": "string"
+          },
+          "estado": {
+            "type": "string",
+            "enum": ["verificado", "pendiente"]
+          },
+          "nota": {
+            "type": "string"
+          }
+        },
+        "required": ["valor", "fuente", "estado"],
+        "additionalProperties": false
+      },
+      "masa_total": {
+        "type": "object",
+        "properties": {
+          "valor": {
+            "type": ["number", "string"]
+          },
+          "unidad": {
+            "type": "string"
+          },
+          "sigma": {
+            "type": "number",
+            "minimum": 0
+          },
+          "sigma_publicada": {
+            "type": "number",
+            "minimum": 0
+          },
+          "nivel_sigma": {
+            "type": "string",
+            "enum": ["1-sigma", "2-sigma", "3-sigma", "formal-sin-nivel"]
+          },
+          "fuente": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "ubicacion": {
+            "type": "string"
+          },
+          "estado": {
+            "type": "string",
+            "enum": ["verificado", "pendiente"]
+          },
+          "nota": {
+            "type": "string"
+          }
+        },
+        "required": ["valor", "fuente", "estado"],
+        "additionalProperties": false
+      }
+    },
+    "required": ["id", "nombre_oficial", "clase"],
+    "additionalProperties": false
+  }
+}

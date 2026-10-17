@@ -10,6 +10,7 @@ import {
   referenciasDeFuente,
   type Fuente,
 } from '../src/schema';
+import { erroresColeccion, RUTAS_COLECCION, type DatosColeccion } from './coleccion';
 
 export interface Archivo {
   ruta: string;
@@ -23,6 +24,8 @@ export interface Dataset {
   escape?: unknown;
   /** data/cneos/eventos.json y data/calibracion/pena-asensio-2025-tabla4.json */
   cneos?: { eventos: unknown; calidad: unknown };
+  /** Archivos de data/coleccion/ (Fase 4); la parte privada no lleva referencias a fuentes. */
+  coleccion?: DatosColeccion;
 }
 
 function erroresZod(ruta: string, error: z.ZodError): string[] {
@@ -86,6 +89,21 @@ export function validarDataset(ds: Dataset): string[] {
         errores.push(
           `data/regiones-origen.json: "${id}" no tiene asociación ni motivo en sin_asociacion`,
         );
+  }
+
+  if (ds.coleccion) {
+    const pedigri = ds.pedigri.flatMap((a) => {
+      const m = Meteorito.safeParse(a.contenido);
+      return m.success ? [m.data] : [];
+    });
+    if (regiones.success)
+      errores.push(
+        ...erroresColeccion(ds.coleccion, { fuentes: porId, pedigri, regiones: regiones.data }),
+      );
+    if (ds.coleccion.ejemplares !== undefined)
+      archivos.push({ ruta: RUTAS_COLECCION.ejemplares, contenido: ds.coleccion.ejemplares });
+    if (ds.coleccion.meteoritos !== undefined)
+      archivos.push({ ruta: RUTAS_COLECCION.meteoritos, contenido: ds.coleccion.meteoritos });
   }
 
   for (const a of archivos) {

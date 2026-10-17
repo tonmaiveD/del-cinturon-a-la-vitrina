@@ -1,6 +1,7 @@
 /** CLI: `npm run validate`. Falla el build si el dataset no es válido. */
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { leerColeccion } from './coleccion';
 import { validarDataset } from './validar';
 
 const leer = (ruta: string): unknown => JSON.parse(readFileSync(ruta, 'utf8'));
@@ -14,6 +15,7 @@ const errores = validarDataset({
     eventos: leer('data/cneos/eventos.json'),
     calidad: leer('data/calibracion/pena-asensio-2025-tabla4.json'),
   },
+  coleccion: leerColeccion(),
   pedigri: readdirSync(dirPedigri)
     .filter((f) => f.endsWith('.json'))
     .map((f) => ({ ruta: join(dirPedigri, f), contenido: leer(join(dirPedigri, f)) })),
