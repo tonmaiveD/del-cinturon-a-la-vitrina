@@ -37,10 +37,10 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 ### Pendientes por prioridad (orden acordado el 2026-10-17, tras la evaluación del tercero)
 
 1. **Ola 3 = Fase 4 (colección y fichas).** Hechos el mantenimiento corto (2026-10-13), la
-   etapa 2, M33 + M32, y la etapa 3, huella del CNEOS por grafo de imports (las dos el
-   2026-10-17). Siguen, etapa por etapa (el usuario dio el OK al orden):
-   - **etapa 4: dividir `app3d.ts`** (M37) antes de la interfaz de ejemplares;
-   - luego la interfaz de ejemplares y las fichas con la API, que necesitan las decisiones del
+   etapa 2, M33 + M32, la etapa 3, huella del CNEOS por grafo de imports, y la etapa 4,
+   `app3d.ts` dividido (M37) (las tres el 2026-10-17). Sigue:
+   - la interfaz de ejemplares (con el estado central tipado si la pide; el controlador del modo
+     CNEOS sigue en `app3d.ts` hasta entonces) y la interfaz de ejemplares y las fichas con la API, que necesitan las decisiones del
      usuario: colección pública o privada (M10, hosting; si privada, mapas de fuentes fuera),
      lista de piezas, API key de Claude; M29 si habrá uso comercial. Ver «Fase 4» abajo.
 2. ~~Mantenimiento corto~~ **hecho el 2026-10-13** (runner fijado, aviso de Vite, punto de Popova).
@@ -65,7 +65,7 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`cneos-diario.yml`, 07:30 UTC, con retrasos posibles) y Dependabot revisa dependencias los
   lunes.
 - **Verificación al 2026-10-13:**
-  - 293 tests unitarios y 80 e2e (al 2026-10-17) (escritorio y móvil), más la medición de rendimiento
+  - 298 tests unitarios y 80 e2e (al 2026-10-17) (escritorio y móvil), más la medición de rendimiento
     (aislada: `npm run e2e:rendimiento`; en paralelo con las demás roza el límite de 3 s);
   - auditoría: 603 datos, 0 errores;
   - carga inicial unos 2,8 s en 4G lento;
@@ -311,7 +311,7 @@ instante de referencia (llega a 63 km sobre 20,84° N 31,72° E). N cuerpos 365 
 (`dd-y-z`) o solo D_D (`solo-dd`, Almahata: D_D 0,00028; z = 17, 32, 5,7σ por la σ formal de
 JPL). Resto: D_D ≤ 0,0019. Salidas `public/data/trayectorias/<id>.json` + `indice.json`,
 `docs/reportes/trayectorias.md`. Escena: `tierra.fijarBolido`, `solar.fijarTrayectoria`,
-`mostrarNubeChelyabinsk`/`mostrarTrayectoria`; `cargarTrayectoriaPieza` en `app3d.ts`; durante
+`mostrarNubeChelyabinsk`/`mostrarTrayectoria`; `cargarTrayectoriaPieza` en `app3d.ts` (carga con caché en `src/ui/trayectorias.ts`); durante
 el recorrido solo se ve la nube de la pieza. Auditoría sección G. Panel: `conSigma` redondea
 según σ sin añadir cifras.
 
@@ -421,7 +421,11 @@ textura Blue Marble según las directrices de medios de NASA (verificado el 2026
   Medido: texto ~0,45 s, escena lista 2,7–2,9 s en 4G lento (los datos del CNEOS y las
   trayectorias de las piezas se cargan bajo demanda).
 - Tiempo: `src/timeline/reloj.ts` (365 días antes del pico → pico); secuencia en
-  `src/camera/coreografia.ts` + pasos en `app3d.ts`; `prefers-reduced-motion` → corte directo.
+  `src/camera/coreografia.ts` + pasos en `src/camera/recorrido.ts`; `prefers-reduced-motion` →
+  corte directo. Desde el 2026-10-17 (M37) `app3d.ts` (736 líneas) solo orquesta estado,
+  selección y modos: los textos de la escena son funciones puras en
+  `src/ui/descripcion-escena.ts` (con tests unitarios), la cámara por teclado y los atajos en
+  `src/ui/teclado.ts` y la selección con el puntero en `src/scene/puntero.ts`.
   URL: `?pieza&t&vista&escala` o `?modo=cneos&evento&t&vista&escala` (`src/ui/estado-url.ts`).
 - Animación: Chelyabinsk con `public/data/chelyabinsk-trayectoria.json`
   (`npm run datos:trayectoria`: estela N cuerpos desde el radiante aparente, la velocidad, el

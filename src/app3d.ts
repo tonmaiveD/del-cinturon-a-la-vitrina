@@ -1,9 +1,10 @@
-import { Raycaster, Vector2, Vector3 } from 'three';
+import { Vector3 } from 'three';
 import cneos from '../data/cneos/chelyabinsk.json';
 import pedigri from '../data/pedigri/chelyabinsk.json';
-import { crearSecuencia, type Paso } from './camera/coreografia';
+import { crearSecuencia } from './camera/coreografia';
+import { DURACIONES, pasosRecorrido } from './camera/recorrido';
 import { t } from './i18n';
-import { fecha as fechaLocal, numero } from './i18n/formato';
+import { fecha as fechaLocal } from './i18n/formato';
 import { PLANETAS } from './scene/cuerpos';
 import type { PanelCneos } from './cneos/panel';
 import type { OrbitaCneos } from './cneos/resumen';
@@ -11,21 +12,32 @@ import { crearCatalogoSolar } from './scene/catalogo-solar';
 import type { NubesPedigri } from './ui/catalogo';
 import { crearBolidosTierra, type BolidosTierra } from './scene/cneos-tierra';
 import { crearNubeCneos } from './scene/cneos-solar';
-import { ALTURA_INICIO_KM } from './scene/trayectoria-entrada';
 import { crearMarcadoresTierra } from './scene/catalogo-tierra';
 import { crearMotor, type NombreVista } from './scene/escena';
 import { crearVistaSistemaSolar, EXAGERACION, type DatosOrbitas } from './scene/sistema-solar';
+import { conectarPuntero } from './scene/puntero';
 import { crearVistaTierra, type DatosBolido } from './scene/tierra';
 import type { Muestra } from './timeline/interpolacion';
 import { crearReloj, VELOCIDADES } from './timeline/reloj';
 import { escribirEstadoUrl, leerEstadoUrl, type Modo } from './ui/estado-url';
 import type { ControlModo } from './ui/modo';
 import { avisarError, quitarAviso } from './ui/avisos';
+import {
+  capasLeyenda,
+  claveIrAlFinal,
+  DIA_MS,
+  descripcionVista as describir,
+  nodosLeyenda,
+  textoAvisoEscala,
+  textoFecha as fechaRelativa,
+  textoLlegada,
+  type Clave,
+  type EstadoDescrito,
+} from './ui/descripcion-escena';
 import { areaLibre, type ControlHoja } from './ui/hoja';
-import { coordenada, nombrePieza, type PanelPieza } from './ui/panel-pieza';
-
-type Clave = Parameters<typeof t>[0];
-const DIA_MS = 86400000;
+import { nombrePieza, type PanelPieza } from './ui/panel-pieza';
+import { conectarAtajos, conectarCamara } from './ui/teclado';
+import { crearCargaTrayectorias, type TrayectoriaPieza } from './ui/trayectorias';
 
 function registroCneos(): DatosBolido {
   const { fields, data } = cneos.respuesta;
@@ -47,11 +59,6 @@ function radioMeteoroideKm(): number | undefined {
     .diametro_preatmosferico;
   return d && d.estado === 'verificado' ? d.valor / 2000 : undefined;
 }
-
-const formatoFecha = (d: Date) =>
-  fechaLocal(d, { dateStyle: 'long', timeStyle: 'short', timeZone: 'UTC' });
-const coord = (v: number, pos: string, neg: string) =>
-  `${numero(Math.abs(v), { maximumFractionDigits: 1 })}° ${v >= 0 ? pos : neg}`;
 
 export interface DatosEscena {
   orbitas: DatosOrbitas;
@@ -153,18 +160,9 @@ export async function iniciar3D(
   let panelCneos: PanelCneos | undefined;
   let bolidos: BolidosTierra | undefined;
   let etiquetaBolido: ReturnType<typeof motor.etiqueta> | undefined;
-  // Trayectorias animadas de las piezas con pedigrí (calculadas en el pipeline, una por archivo)
-  interface TrayectoriaPieza {
-    id: string;
-    instante_referencia: string;
-    origen: 'radiante' | 'jpl';
-    punto: { lat: number; lon: number; altura_km: number };
-    validacion: { dd: number; criterio: 'dd-y-z' | 'solo-dd' };
-    helio_ecl_au: Muestra[];
-    geo_eqj_km: Muestra[];
-  }
+  // Trayectorias animadas de las piezas con pedigrí
   let indiceTray = new Set<string>();
-  const cacheTray = new Map<string, Promise<TrayectoriaPieza>>();
+  const cargarTrayectoria = crearCargaTrayectorias();
   /** Trayectoria de la pieza seleccionada (no Chelyabinsk), ya cargada. */
   let trayPieza: TrayectoriaPieza | null = null;
   /** La escena tiene cargada una trayectoria distinta de la de Chelyabinsk. */
@@ -263,110 +261,31 @@ export async function iniciar3D(
 
   const movimientoReducido = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  function textoFecha(ms: number): string {
-    const dias = (impacto - ms) / DIA_MS;
-    // Chelyabinsk y los bólidos del CNEOS tienen pico de brillo; las demás piezas, instante de referencia
-    const chely = modo === 'cneos' || panel.actual() === 'chelyabinsk';
-    const rel =
-      dias < 1 / 1440
-        ? t(chely ? 'tiempo.en-impacto' : 'tiempo.en-referencia')
-        : t(chely ? 'tiempo.antes' : 'tiempo.antes-referencia', {
-            dias:
-              dias >= 1
-                ? `${numero(dias, { maximumFractionDigits: 1 })} d`
-                : `${numero(dias * 24, { maximumFractionDigits: 1 })} h`,
-          });
-    return t('tiempo.relativo', { fecha: formatoFecha(new Date(ms)), rel });
-  }
-
-  const fuenteCorta = (id: string) => catalogo.fuentes[id] ?? id;
-  function descripcionRegiones(): string {
-    const zona = (id: string) => catalogo.zonas.find((z) => z.id === id);
-    return t('desc.regiones', {
-      f_hungaria: (zona('hungaria')?.fuentes ?? []).map(fuenteCorta).join('; '),
-      f_phocaea: (zona('phocaea')?.fuentes ?? []).map(fuenteCorta).join('; '),
-      resonancias: catalogo.resonancias.map((r) => `${r.p}:${r.q}`).join(', '),
-    });
-  }
-  function descripcionCneos(): string {
-    const ev = panelCneos!.evento(panelCneos!.actual())!;
-    const fecha = formatoFecha(new Date(impacto));
-    if (vista === 'tierra')
-      return t('desc.tierra.cneos', {
-        fecha,
-        n: panelCneos!.visibles().size,
-        tray:
-          ev.v_ecef_kms && ev.alt_km !== undefined
-            ? t('desc.tierra.cneos.tray', { alto: ALTURA_INICIO_KM })
-            : ev.lat === undefined
-              ? t('desc.tierra.cneos.sin-ubicacion')
-              : '',
-        consultado: formatoFecha(new Date(panelCneos!.resumen.consultado)),
-      });
-    return nClonesCneos > 0
-      ? t('desc.sistema-solar.cneos', { fecha, n: nClonesCneos })
-      : t('desc.sistema-solar.cneos.sin', { fecha });
-  }
-  function descripcionVista(): string {
-    if (modo === 'cneos' && panelCneos) return descripcionCneos();
-    const p = piezaDe(panel.actual());
-    if (p.id === 'chelyabinsk')
-      return vista === 'tierra'
-        ? t('desc.tierra', {
-            fecha: formatoFecha(bolido.fecha),
-            alt: numero(bolido.alturaKm),
-            lat: coord(bolido.latGrados, 'N', 'S'),
-            lon: coord(bolido.lonGrados, 'E', 'O'),
-          })
-        : `${t('desc.sistema-solar', { fecha: formatoFecha(bolido.fecha), n: orbitas.clones.length })} ${descripcionRegiones()}`;
-    const fecha = formatoFecha(new Date(impacto));
-    const animada = trayPieza?.id === p.id;
-    if (vista === 'tierra')
-      return (
-        t('desc.tierra.pieza', {
-          fecha,
-          nombre: nombrePieza(p),
-          lat: p.punto ? coordenada(p.punto.lat, 'N', 'S') : '—',
-          lon: p.punto ? coordenada(p.punto.lon, 'E', 'O') : '—',
-          n: panel.visibles().size,
-        }) +
-        (animada
-          ? ` ${t(trayPieza!.origen === 'jpl' ? 'desc.tierra.pieza.aprox.jpl' : 'desc.tierra.pieza.aprox', { alto: trayPieza!.punto.altura_km })}`
-          : '')
-      );
-    if (animada)
-      return `${t(clavePieza(p.id), {
-        fecha,
-        nombre: nombrePieza(p),
-        n: solarCreada?.cat.nClonesSeleccion() ?? 0,
-        fuente: p.orbita ? fuenteCorta(p.orbita.fuente) : '—',
-        regiones: '',
-      }).trimEnd()}${
-        trayPieza!.origen === 'jpl'
-          ? t('desc.sistema-solar.pieza.tray.jpl', {
-              dd: numero(trayPieza!.validacion.dd, { maximumFractionDigits: 5 }),
-            })
-          : t('desc.sistema-solar.pieza.tray')
-      } ${descripcionRegiones()}`;
-    return t(clavePieza(p.id), {
-      fecha,
-      nombre: nombrePieza(p),
-      n: solarCreada?.cat.nClonesSeleccion() ?? 0,
-      fuente: p.orbita ? fuenteCorta(p.orbita.fuente) : '—',
-      regiones: descripcionRegiones(),
-    });
-  }
-
-  /**
-   * Descripción de la nube según su método (Almahata Sitta: órbita telescópica de JPL;
-   * Chelyabinsk: elementos condicionados al encuentro).
-   */
-  const clavePieza = (id: string): Clave => {
-    const metodo = solarCreada?.cat.metodoNube(id);
-    if (metodo === 'elementos') return 'desc.sistema-solar.pieza.jpl';
-    if (metodo === 'elementos-condicionados') return 'desc.sistema-solar.pieza.condicionada';
-    return 'desc.sistema-solar.pieza';
-  };
+  /** Instantánea del estado para los textos de la escena (src/ui/descripcion-escena.ts). */
+  const estadoDescrito = (): EstadoDescrito => ({
+    modo,
+    vista,
+    impacto,
+    catalogo,
+    pieza: piezaDe(panel.actual()),
+    nVisibles: panel.visibles().size,
+    bolido,
+    nOrbitasChelyabinsk: orbitas.clones.length,
+    trayPieza,
+    nClonesSeleccion: solarCreada?.cat.nClonesSeleccion() ?? 0,
+    metodoNube: solarCreada?.cat.metodoNube(panel.actual()),
+    ...(modo === 'cneos' &&
+      panelCneos && {
+        cneos: {
+          evento: panelCneos.evento(panelCneos.actual())!,
+          nVisibles: panelCneos.visibles().size,
+          consultado: panelCneos.resumen.consultado,
+          nClones: nClonesCneos,
+        },
+      }),
+  });
+  const descripcionVista = () => describir(estadoDescrito());
+  const textoFecha = (ms: number) => fechaRelativa(ms, estadoDescrito());
 
   let urlPendiente = 0;
   function guardarUrl(): void {
@@ -394,32 +313,13 @@ export async function iniciar3D(
     interruptor.setAttribute('aria-checked', String(escalaVisual));
     tierra.aplicarEscala(escalaVisual);
     solarCreada?.solar.aplicarEscala(escalaVisual);
-    avisoEscala.textContent = escalaVisual
-      ? t(
-          (vista === 'tierra'
-            ? conMeteoroide()
-              ? 'escala.visual.tierra'
-              : 'escala.visual.tierra.pieza'
-            : conMeteoroide()
-              ? 'escala.visual.sistema-solar'
-              : 'escala.visual.sistema-solar.sin-meteoroide') as Clave,
-          {
-            sol: EXAGERACION.sol,
-            planetas: EXAGERACION.planetas,
-            jupiter: EXAGERACION.jupiter,
-          },
-        )
-      : t('escala.real');
+    avisoEscala.textContent = textoAvisoEscala(escalaVisual, vista, conMeteoroide(), EXAGERACION);
     avisoMarcadores.hidden = vista !== 'tierra';
     avisoMarcadores.textContent = t(
       modo === 'cneos' ? 'escala.marcadores.cneos' : 'escala.marcadores',
     );
     // El final del recorrido es el pico de brillo (Chelyabinsk y CNEOS) o el punto de referencia
-    bImpacto.textContent = t(
-      modo === 'cneos' || panel.actual() === 'chelyabinsk'
-        ? 'tiempo.ir-pico'
-        : 'tiempo.ir-referencia',
-    );
+    bImpacto.textContent = t(claveIrAlFinal(estadoDescrito()));
     if (!secuencia.activa()) descripcion.textContent = descripcionVista();
     actualizarLeyendaCapas();
     // Nombre de lo seleccionado en la cabecera de la hoja móvil
@@ -446,47 +346,13 @@ export async function iniciar3D(
     solarCreada.etiquetaNube.element.textContent = t('etiqueta.nube', { nombre: nombrePieza(p) });
   }
 
-  // Leyenda por capa de la vista solar (M27): fuente y método de lo que se dibuja, con la
-  // advertencia de que la densidad de una nube no es una probabilidad calibrada. Los colores
-  // son los de src/scene/catalogo-solar.ts, sistema-solar.ts y cneos-solar.ts.
+  // Leyenda por capa de la vista solar (M27)
   const leyendaCapas = $('#leyenda-capas');
   const listaCapas = $('#leyenda-capas-lista');
   function actualizarLeyendaCapas(): void {
     leyendaCapas.hidden = vista !== 'sistema-solar';
     if (leyendaCapas.hidden) return;
-    const capas: [string, Clave][] =
-      modo === 'cneos'
-        ? [['#6fd3ff', 'capas.cneos']]
-        : [
-            ...(panel.actual() === 'chelyabinsk'
-              ? ([
-                  ['#ff9a3c', 'capas.chelyabinsk'],
-                  ['#ffd08a', 'capas.estela'],
-                ] as [string, Clave][])
-              : ([
-                  ['#6fd3ff', 'capas.seleccion'],
-                  ...(trayPieza ? [['#ffe2b8', 'capas.estela']] : []),
-                ] as [string, Clave][])),
-            ['#8f9bd6', 'capas.otras'],
-            ['#9be7a8', 'capas.hungaria'],
-            ['#f0b6ff', 'capas.phocaea'],
-            ['#ffd36b', 'capas.resonancias'],
-          ];
-    listaCapas.replaceChildren(
-      ...capas.map(([color, clave]) => {
-        const li = document.createElement('li');
-        const punto = document.createElement('span');
-        punto.className = 'punto';
-        punto.style.background = color;
-        punto.setAttribute('aria-hidden', 'true');
-        li.append(punto, t(clave));
-        return li;
-      }),
-    );
-    const nota = document.createElement('li');
-    nota.className = 'nota';
-    nota.textContent = t('capas.densidad');
-    listaCapas.append(nota);
+    listaCapas.replaceChildren(...nodosLeyenda(capasLeyenda(estadoDescrito(), trayPieza !== null)));
   }
 
   /** Ajusta escena, reloj y panel a la pieza seleccionada; `t` opcional (estado de la URL). */
@@ -534,11 +400,8 @@ export async function iniciar3D(
     const pedido = pedidoTray;
     let tr: TrayectoriaPieza;
     try {
-      if (!cacheTray.has(id))
-        cacheTray.set(id, cargarJson<TrayectoriaPieza>(`data/trayectorias/${id}.json`));
-      tr = await cacheTray.get(id)!;
+      tr = await cargarTrayectoria(id);
     } catch {
-      cacheTray.delete(id);
       if (pedido === pedidoTray)
         avisarError('trayectoria', t('error.trayectoria'), () => void cargarTrayectoriaPieza(id));
       return;
@@ -673,98 +536,23 @@ export async function iniciar3D(
   });
 
   // ---------- Secuencia cinematográfica ----------
-  const lerp = (a: Vector3, b: Vector3, p: number) => a.clone().lerp(b, p);
   const irDias = (d: number) => reloj.irA(impacto + d * DIA_MS);
-  const narrar = (k: Clave) => (descripcion.textContent = t(k));
-  const fundir = (opacidad: number) => (p: number) =>
-    (fundido.style.opacity = String(opacidad === 1 ? p : 1 - p));
-  let desde = encuadreTierra();
-  // Cámara de seguimiento en la llegada: detrás y al costado del meteoroide, mirando a la Tierra
-  const ARRIBA = new Vector3(0, 1, 0);
-  const camaraSeguimiento = (): Vector3 => {
-    const met = tierra.meteoroide.position.clone();
-    const d = met.length();
-    const lado = met
-      .clone()
-      .cross(ARRIBA)
-      .normalize()
-      .multiplyScalar(0.05 * d);
-    return met.multiplyScalar(1.25).add(lado);
-  };
-
-  const pasos: Paso[] = [
-    {
-      duracion: 2.5,
-      alEmpezar: () => {
-        vista = 'tierra';
-        refrescarVista();
-        narrar('narr.alejar');
-        irDias(0);
-        desde = { pos: camT.camara.position.clone(), obj: camT.controles.target.clone() };
-      },
-      alAvanzar: (p) =>
-        fijarCamara('tierra', lerp(desde.pos, dirBolido.clone().multiplyScalar(40), p), ORIGEN),
+  const pasos = pasosRecorrido({
+    irDias,
+    narrar: (k: Clave) => (descripcion.textContent = t(k)),
+    irAVista: (v) => {
+      vista = v;
+      refrescarVista();
     },
-    { duracion: 0.6, alAvanzar: fundir(1) },
-    {
-      duracion: 0.6,
-      alEmpezar: () => {
-        vista = 'sistema-solar';
-        refrescarVista();
-        narrar('narr.sistema');
-        irDias(-365);
-        fijarCamara('sistema-solar', encuadreSolar().pos, ORIGEN);
-      },
-      alAvanzar: fundir(0),
-    },
-    {
-      duracion: 7,
-      alAvanzar: (p) => {
-        irDias(-365 + 362 * p);
-        const ang = p * 0.7;
-        const base = encuadreSolar().pos;
-        fijarCamara('sistema-solar', base.applyAxisAngle(new Vector3(0, 1, 0), ang), ORIGEN);
-      },
-    },
-    {
-      duracion: 2.5,
-      alEmpezar: () => {
-        narrar('narr.acercar');
-        desde = { pos: asegurarSolar().camS.camara.position.clone(), obj: ORIGEN.clone() };
-      },
-      alAvanzar: (p) => {
-        irDias(-3 + 2 * p);
-        const tierraPos = asegurarSolar().solar.posicionTierra();
-        const destino = tierraPos.clone().add(new Vector3(0.06, 0.1, 0.12));
-        fijarCamara('sistema-solar', lerp(desde.pos, destino, p), lerp(desde.obj, tierraPos, p));
-      },
-    },
-    { duracion: 0.6, alAvanzar: fundir(1) },
-    {
-      duracion: 0.6,
-      alEmpezar: () => {
-        vista = 'tierra';
-        refrescarVista();
-        narrar('narr.llegada');
-      },
-      alAvanzar: fundir(0),
-    },
-    {
-      duracion: 4.5,
-      alAvanzar: (p) => {
-        irDias(-1 * (1 - p) ** 2 - (20 / 1440) * p);
-        fijarCamara('tierra', camaraSeguimiento(), ORIGEN);
-      },
-    },
-    {
-      duracion: 2,
-      alEmpezar: () => (desde = { pos: camT.camara.position.clone(), obj: ORIGEN.clone() }),
-      alAvanzar: (p) => {
-        irDias((-20 / 1440) * (1 - p));
-        fijarCamara('tierra', lerp(desde.pos, encuadreTierra().pos.multiplyScalar(0.7), p), ORIGEN);
-      },
-    },
-  ];
+    fijarCamara,
+    fundido: (o) => (fundido.style.opacity = String(o)),
+    encuadreTierra,
+    encuadreSolar,
+    posicionCamara: (v) => (v === 'tierra' ? camT : asegurarSolar().camS).camara.position,
+    dirBolido: () => dirBolido,
+    posicionTierraSolar: () => asegurarSolar().solar.posicionTierra(),
+    posicionMeteoroide: () => tierra.meteoroide.position,
+  });
 
   function terminarSecuencia(): void {
     secuencia.detener();
@@ -778,13 +566,8 @@ export async function iniciar3D(
     bRecorrido.disabled = false;
     solarCreada?.cat.filtrar(panel.visibles());
     refrescarVista();
-    const p = piezaDe(panel.actual());
     // El mensaje de llegada se antepone: la descripción del método y sus límites no desaparecen
-    const llegada =
-      p.id === 'chelyabinsk'
-        ? t('narr.final', { fecha: formatoFecha(bolido.fecha) })
-        : t('narr.final.pieza', { nombre: nombrePieza(p), fecha: formatoFecha(new Date(impacto)) });
-    descripcion.textContent = `${llegada} ${descripcionVista()}`;
+    descripcion.textContent = `${textoLlegada(estadoDescrito())} ${descripcionVista()}`;
   }
   const secuencia = crearSecuencia(pasos, terminarSecuencia);
 
@@ -811,14 +594,8 @@ export async function iniciar3D(
     secuencia.iniciar();
   }
 
-  // Duración del recorrido: escala el tiempo de la animación sin cambiar su coreografía. Es
-  // independiente de la velocidad de «Reproducir», que avanza el reloj de la simulación.
-  const DURACIONES = [
-    { clave: 'corto', factor: 0.5 },
-    { clave: 'normal', factor: 1 },
-    { clave: 'largo', factor: 2 },
-    { clave: 'muy-largo', factor: 4 },
-  ] as const;
+  // Duración del recorrido (DURACIONES): independiente de la velocidad de «Reproducir», que
+  // avanza el reloj de la simulación.
   const duracionBase = pasos.reduce((s, p) => s + p.duracion, 0);
   const selDuracion = $<HTMLSelectElement>('#duracion-recorrido');
   for (const d of DURACIONES)
@@ -865,64 +642,18 @@ export async function iniciar3D(
     if (secuencia.activa()) terminarSecuencia();
     reloj.irA(reloj.min + (Number(deslizador.value) / 10000) * (reloj.max - reloj.min));
   });
-  // ---------- Cámara sin arrastrar (M04): botones y teclado con el foco en la escena ----------
-  const PASO_GIRO = Math.PI / 12;
-  const PASO_ZOOM = 1.25;
-  function moverCamara(accion: string): void {
-    if (secuencia.activa()) terminarSecuencia();
-    const c = vista === 'tierra' ? camT : asegurarSolar().camS;
-    const ctl = c.controles;
-    if (accion === 'izquierda') ctl.rotateLeft(PASO_GIRO);
-    else if (accion === 'derecha') ctl.rotateLeft(-PASO_GIRO);
-    else if (accion === 'arriba') ctl.rotateUp(PASO_GIRO);
-    else if (accion === 'abajo') ctl.rotateUp(-PASO_GIRO);
-    // En OrbitControls, dollyOut acerca la cámara y dollyIn la aleja (comprobado en camara.spec.ts)
-    else if (accion === 'acercar') ctl.dollyOut(PASO_ZOOM);
-    else if (accion === 'alejar') ctl.dollyIn(PASO_ZOOM);
-    else if (accion === 'restablecer')
-      fijarCamara(vista, (vista === 'tierra' ? encuadreTierra() : encuadreSolar()).pos, ORIGEN);
-  }
-  for (const b of document.querySelectorAll<HTMLButtonElement>('[data-camara]'))
-    b.addEventListener('click', () => moverCamara(b.dataset.camara!));
-  const TECLAS_CAMARA: Record<string, string> = {
-    ArrowLeft: 'izquierda',
-    ArrowRight: 'derecha',
-    ArrowUp: 'arriba',
-    ArrowDown: 'abajo',
-    '+': 'acercar',
-    '=': 'acercar',
-    '-': 'alejar',
-    '0': 'restablecer',
-  };
-  canvas.addEventListener('keydown', (ev) => {
-    const accion = TECLAS_CAMARA[ev.key];
-    if (!accion || ev.ctrlKey || ev.metaKey || ev.altKey) return;
-    ev.preventDefault();
-    ev.stopPropagation(); // las flechas no mueven el reloj cuando el foco está en la escena
-    moverCamara(accion);
+  // Cámara sin arrastrar (M04) y atajos de teclado
+  conectarCamara(canvas, {
+    antes: () => secuencia.activa() && terminarSecuencia(),
+    controles: () => (vista === 'tierra' ? camT : asegurarSolar().camS).controles,
+    restablecer: () =>
+      fijarCamara(vista, (vista === 'tierra' ? encuadreTierra() : encuadreSolar()).pos, ORIGEN),
   });
-
-  window.addEventListener('keydown', (ev) => {
-    if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
-    // Con un diálogo abierto, el teclado no altera la escena de fondo
-    if (document.querySelector('dialog[open]')) return;
-    const objetivo = ev.target as HTMLElement;
-    // Solo se ceden las teclas que el propio control usa
-    const enCampo = objetivo.closest('input, select, textarea') !== null;
-    const enActivable = objetivo.closest('button, summary, a') !== null;
-    if (ev.key === 'Escape') {
-      if (secuencia.activa()) terminarSecuencia();
-    } else if (ev.key === ' ') {
-      if (enCampo || enActivable) return;
-      ev.preventDefault();
-      bReproducir.click();
-    } else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') {
-      if (enCampo) return;
-      reloj.irA(reloj.estado().t + (ev.key === 'ArrowLeft' ? -DIA_MS : DIA_MS));
-    } else if (ev.key.toLowerCase() === 'i' && !enCampo && !enActivable) {
-      // Atajo de una letra (WCAG 2.1.4): solo sin foco en un control, nunca desde un botón o campo
-      bImpacto.click();
-    }
+  conectarAtajos({
+    escape: () => secuencia.activa() && terminarSecuencia(),
+    reproducir: () => bReproducir.click(),
+    moverDia: (signo) => reloj.irA(reloj.estado().t + signo * DIA_MS),
+    irAlFinal: () => bImpacto.click(),
   });
 
   panel.alSeleccionar((id) => modo === 'pedigri' && aplicarPieza(id));
@@ -951,52 +682,33 @@ export async function iniciar3D(
   void cargarIndiceTray();
   if (cneosCtl.modo.actual() === 'cneos') void cambiarModo('cneos', inicial.t);
 
-  // Selección con el ratón: clic (sin arrastre) sobre un marcador del globo
-  const rayo = new Raycaster();
-  const ndc = new Vector2();
-  function piezaBajoPuntero(ev: PointerEvent): string | undefined {
-    if (vista !== 'tierra') return undefined;
-    const r = canvas.getBoundingClientRect();
-    ndc.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
-    rayo.setFromCamera(ndc, camT.camara);
-    if (modo === 'cneos' && bolidos) {
-      const [hitB] = rayo.intersectObject(bolidos.malla);
-      return hitB?.instanceId !== undefined
-        ? bolidos.eventoDeInstancia(hitB.instanceId)
-        : undefined;
-    }
-    const [hit] = rayo.intersectObject(marcadores.malla);
-    return hit?.instanceId !== undefined ? marcadores.piezaDeInstancia(hit.instanceId) : undefined;
-  }
-  let inicioPuntero: { x: number; y: number } | undefined;
-  canvas.addEventListener(
-    'pointerdown',
-    (ev) => (inicioPuntero = { x: ev.clientX, y: ev.clientY }),
-  );
-  canvas.addEventListener('pointerup', (ev) => {
-    const ini = inicioPuntero;
-    inicioPuntero = undefined;
-    if (!ini) return;
-    const hoja = cneosCtl.hoja;
-    if (Math.hypot(ev.clientX - ini.x, ev.clientY - ini.y) > 5) {
+  // Selección con el ratón o el dedo sobre un marcador del globo
+  conectarPuntero(canvas, {
+    camara: () => camT.camara,
+    seleccionables: () => {
+      if (vista !== 'tierra') return undefined;
+      if (modo === 'cneos')
+        return (
+          bolidos && { malla: bolidos.malla, idDeInstancia: (k) => bolidos!.eventoDeInstancia(k) }
+        );
+      return { malla: marcadores.malla, idDeInstancia: (k) => marcadores.piezaDeInstancia(k) };
+    },
+    alArrastrar: () => {
       // Girar el globo con el dedo baja la hoja móvil, como al mover un mapa
+      const hoja = cneosCtl.hoja;
       if (hoja.activa() && hoja.altura() !== 'compacta') hoja.fijarAltura('compacta');
-      return;
-    }
-    const id = piezaBajoPuntero(ev);
-    if (!id) return;
-    // Tocar un marcador abre su ficha en la hoja móvil
-    if (hoja.activa()) {
-      hoja.mostrarPestana('explorar');
-      if (hoja.altura() === 'compacta') hoja.fijarAltura('media');
-    }
-    if (modo === 'cneos') {
-      if (id !== panelCneos?.actual()) panelCneos?.seleccionar(id);
-    } else if (id !== panel.actual()) panel.seleccionar(id);
-  });
-  canvas.addEventListener('pointermove', (ev) => {
-    if (ev.buttons) return;
-    canvas.classList.toggle('apuntando', piezaBajoPuntero(ev) !== undefined);
+    },
+    alSeleccionar: (id) => {
+      // Tocar un marcador abre su ficha en la hoja móvil
+      const hoja = cneosCtl.hoja;
+      if (hoja.activa()) {
+        hoja.mostrarPestana('explorar');
+        if (hoja.altura() === 'compacta') hoja.fijarAltura('media');
+      }
+      if (modo === 'cneos') {
+        if (id !== panelCneos?.actual()) panelCneos?.seleccionar(id);
+      } else if (id !== panel.actual()) panel.seleccionar(id);
+    },
   });
 
   // Marca de "listo": primera textura cargada y un cuadro dibujado (métrica de carga)

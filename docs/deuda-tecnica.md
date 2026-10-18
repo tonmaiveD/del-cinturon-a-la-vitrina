@@ -523,7 +523,7 @@ Qué se adopta y en qué orden:
    guardadas obsoletas. Solución: huella sobre el cierre transitivo de imports de
    `cneos-orbitas.ts`; permite devolver `encuentro.ts` a `src/core/`. Coste: un recálculo de las
    260 órbitas.
-3. **Dividir `app3d.ts`** (M37) antes de la interfaz de ejemplares: coreografía, controlador del
+3. **Dividir `app3d.ts`** (M37; **hecha el 2026-10-17**, abajo) antes de la interfaz de ejemplares: coreografía, controlador del
    modo CNEOS y textos descriptivos en módulos propios, sin cambiar comportamiento; un estado
    tipado en lugar de leer el DOM solo si esa interfaz lo pide.
 4. **Mapas de fuentes**: desactivarlos o `'hidden'` si la colección pasa a privada (M10).
@@ -557,6 +557,24 @@ Modelo y protecciones, sin interfaz todavía (guía en `docs/coleccion.md`):
   de la colección.
 - Queda para la interfaz: dónde y cómo se muestran los ejemplares, la ficha del ejemplar
   (separada de la divulgativa) y, si hiciera falta, un campo de certificado.
+
+### Etapa 4 de la Fase 4 · `app3d.ts` dividido (M37) · **hecha el 2026-10-17**
+
+De 1027 a 736 líneas, sin cambiar comportamiento (80 e2e iguales; carga 2,8 s y modo CNEOS
+1,2 s, como antes). Salieron con una interfaz explícita:
+
+- `src/ui/descripcion-escena.ts`: descripción accesible de cada vista, fecha relativa, botón
+  del final, mensaje de llegada, aviso de escala y leyenda de capas, como funciones puras de una
+  instantánea del estado (`EstadoDescrito`); 5 tests unitarios nuevos (antes solo las e2e).
+- `src/camera/recorrido.ts`: los 9 pasos del recorrido y sus duraciones, sobre un contexto
+  (`ContextoRecorrido`).
+- `src/ui/teclado.ts`: cámara con botones y teclas (M04) y atajos globales.
+- `src/scene/puntero.ts`: selección con el puntero (clic frente a arrastre).
+- `src/ui/trayectorias.ts`: tipo y carga con caché de las trayectorias de las piezas.
+
+Queda en `app3d.ts` el orquestador: estado, vista solar bajo demanda, selección de pieza y el
+controlador del modo CNEOS, que comparten estado. Sacarlo exige el estado central tipado, que se
+introducirá con la interfaz de ejemplares si la pide (punto 8 de la evaluación).
 
 ### Etapa 3 de la Fase 4 · huella del CNEOS por grafo de imports · **hecha el 2026-10-17**
 
