@@ -1,5 +1,5 @@
 /** Construye el contexto de la ficha a partir del dataset (solo valores verificados). */
-import { radioCaptura } from '../ciencia/encuentro';
+import { radioCaptura } from '../core/encuentro';
 import { fecha as formatoFecha, fijo } from '../i18n/formato';
 import type { Meteorito, Valor } from '../schema';
 import { citaCorta } from './catalogo';

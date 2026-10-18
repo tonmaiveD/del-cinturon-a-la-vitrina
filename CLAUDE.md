@@ -16,7 +16,7 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   - una sola órbita por pieza (texto, nube, estela y panel), comprobada por la auditoría;
   - nubes de las 24 piezas de Granvik & Brown y JPL desde el radiante (`npm run datos:nubes`,
     `docs/reportes/nubes.md`); Chelyabinsk, opción C: elementos de Popova (S5B) que chocan
-    con la Tierra (parámetro de impacto ≤ radio de captura, `src/ciencia/encuentro.ts`,
+    con la Tierra (parámetro de impacto ≤ radio de captura, `src/core/encuentro.ts`,
     auditoría V5 hecha en otra sesión, commits `4552763` y `2c3f0fd`);
   - estela de Chelyabinsk desde el radiante aparente, la V∞ y el punto de entrada de Popova;
   - material suplementario de Popova en `.trabajo/popova-suplemento/` (no se redistribuye);
@@ -36,11 +36,9 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 
 ### Pendientes por prioridad (orden acordado el 2026-10-17, tras la evaluación del tercero)
 
-1. **Ola 3 = Fase 4 (colección y fichas).** Hechos el mantenimiento corto (2026-10-13) y la
-   etapa 2, M33 + M32 (2026-10-17). Siguen, etapa por etapa (el usuario dio el OK al orden):
-   - **etapa 3: huella del CNEOS por grafo de imports** de `pipeline/cneos-orbitas.ts` (cierra
-     la laguna de `registroDe()` y de la lógica del propio pipeline; `encuentro.ts` vuelve a
-     `src/core/`; un recálculo de las 260 órbitas);
+1. **Ola 3 = Fase 4 (colección y fichas).** Hechos el mantenimiento corto (2026-10-13), la
+   etapa 2, M33 + M32, y la etapa 3, huella del CNEOS por grafo de imports (las dos el
+   2026-10-17). Siguen, etapa por etapa (el usuario dio el OK al orden):
    - **etapa 4: dividir `app3d.ts`** (M37) antes de la interfaz de ejemplares;
    - luego la interfaz de ejemplares y las fichas con la API, que necesitan las decisiones del
      usuario: colección pública o privada (M10, hosting; si privada, mapas de fuentes fuera),
@@ -67,7 +65,7 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`cneos-diario.yml`, 07:30 UTC, con retrasos posibles) y Dependabot revisa dependencias los
   lunes.
 - **Verificación al 2026-10-13:**
-  - 290 tests unitarios y 80 e2e (al 2026-10-17) (escritorio y móvil), más la medición de rendimiento
+  - 293 tests unitarios y 80 e2e (al 2026-10-17) (escritorio y móvil), más la medición de rendimiento
     (aislada: `npm run e2e:rendimiento`; en paralelo con las demás roza el límite de 3 s);
   - auditoría: 603 datos, 0 errores;
   - carga inicial unos 2,8 s en 4G lento;
@@ -341,7 +339,10 @@ sesgada (> 10 % descartados). Auditoría sección F; test: ningún texto dice «
 **F3-E1, datos y órbitas del CNEOS:** `npm run datos:cneos` = descarga cruda
 (`data/cneos/eventos.json`, solo si cambia) + órbitas (`public/data/cneos/eventos.json` y
 `orbitas/<id>.json`, 200 clones, incremental por huella; `CNEOS_FRAGMENTO=k/n` en paralelo; la
-primera pasada tardó ~45 min en 7 procesos). `grupoBajoDd`: año ≥ 2018 o E_i ≥ 0,45 kt (Tabla 4
+primera pasada tardó ~45 min en 7 procesos). Desde el 2026-10-17 el cálculo está en
+`pipeline/cneos-calculo.ts` y la huella (`pipeline/cneos-metodo.ts`) cubre ese archivo y sus
+imports de ejecución (`dependenciasDelMetodo`), incluido `registroDe()`; un test falla si las
+órbitas guardadas no corresponden al código actual. `grupoBajoDd`: año ≥ 2018 o E_i ≥ 0,45 kt (Tabla 4
 en `data/calibracion/pena-asensio-2025-tabla4.json`); conservadora con los 18 calibrados (0
 falsos positivos; Košice y Baird Bay quedan sin órbita). Al 2026-10-07: 1074 eventos, 888 con
 ubicación, 260 con órbita (2 no calculables, guardadas con `error`), 100 no fiables, 3 sin
@@ -429,13 +430,15 @@ textura Blue Marble según las directrices de medios de NASA (verificado el 2026
   elementos de Popova condicionados al encuentro, que se mueven con Kepler; la línea central es
   la órbita con todas las cifras); en el globo, la entrada y el pico son los del CNEOS. Las otras 24 piezas con
   `public/data/trayectorias/<id>.json`.
-- Encuentro con la Tierra: `src/ciencia/encuentro.ts` (parámetro de impacto, radio de captura),
-  fuera de `src/core` a propósito para no cambiar la huella del CNEOS.
+- Encuentro con la Tierra: `src/core/encuentro.ts` (parámetro de impacto, radio de captura).
+  Estuvo en `src/ciencia/` hasta el 2026-10-17; ya no hace falta porque la huella del CNEOS
+  sigue los imports del cálculo y no todo `src/core/`.
 - Nubes del catálogo: `public/data/nubes.json` (160 formas por pieza, calculadas desde el
   radiante; Almahata Sitta, desde la órbita de JPL), cargado al crear la vista solar
-  (`cat.fijarNubes`). Validación en `docs/reportes/nubes.md`. Cambiar `src/core/` cambia la
-  huella del CNEOS: hay que recalcular sus órbitas en local (`CNEOS_FRAGMENTO=k/4` en paralelo
-  y una pasada final), o lo hará el bot en la CI.
+  (`cat.fijarNubes`). Validación en `docs/reportes/nubes.md`. Cambiar un archivo que use el
+  cálculo del CNEOS (lista en `tests/unit/huella-metodo.test.ts`) cambia su huella: hay que
+  recalcular las órbitas en local (`CNEOS_FRAGMENTO=k/7` en 7 procesos, ~4 min, y una pasada
+  final) y subirlas con el cambio; el test lo exige y el bot no cabría en su tiempo límite.
 - Fichas: `content/fichas/*.md`, plantillas con `{{clave}}` resueltas desde el dataset
   (`src/ui/ficha-datos.ts`, que también nombra modelos y fórmulas desde `fuentes.json`); un
   test prohíbe cifras escritas a mano. Admiten enlaces `[texto](https://…)`. Solo se publican las

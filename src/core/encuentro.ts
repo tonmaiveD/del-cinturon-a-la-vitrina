@@ -5,10 +5,11 @@
  * captura r·√(1 + v_esc²/v_g²), que amplía el radio de choque por el enfoque gravitatorio.
  * Es una aproximación: no simula el encuentro ni el paso por la atmósfera.
  *
- * Está fuera de src/core a propósito: la huella del método del CNEOS (pipeline/huella-metodo.ts)
- * se calcula con los archivos de src/core, y estas funciones no intervienen en esas órbitas.
+ * Estuvo en src/ciencia/ hasta el 2026-10-17 para no cambiar la huella del método del CNEOS,
+ * que entonces cubría todo src/core. Ahora la huella sigue los imports del cálculo
+ * (pipeline/cneos-metodo.ts) y este archivo no está entre ellos.
  */
-import type { Vec3 } from '../core/vector';
+import type { Vec3 } from './vector';
 
 /** GM terrestre (km³/s², IAU). */
 export const GM_TIERRA_KM3_S2 = 398600.4418;

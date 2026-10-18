@@ -4,7 +4,7 @@ import {
   instanteMaximaAproximacion,
   parametroImpacto,
   radioCaptura,
-} from '../../src/ciencia/encuentro';
+} from '../../src/core/encuentro';
 
 describe('encuentro con la Tierra (aproximación de dos cuerpos)', () => {
   it('parámetro de impacto e instante de máxima aproximación de una recta', () => {

@@ -463,7 +463,7 @@ geométrica en un instante. Medido:
 
 Resultado:
 
-- **Criterio nuevo** (`src/ciencia/encuentro.ts`, fuera de `src/core` para no cambiar la huella
+- **Criterio nuevo** (`src/ciencia/encuentro.ts`, hoy `src/core/encuentro.ts`; fuera de `src/core` para no cambiar la huella
   del CNEOS): cada órbita sorteada se coloca en su punto más cercano a la Tierra a las
   03:20:19,8 y se conserva si su parámetro de impacto no supera su radio de captura,
   r·√(1 + v_esc²/v_g²), con r = 6371 + 100 km. La altura de atmósfera es un parámetro.
@@ -516,7 +516,7 @@ Qué se adopta y en qué orden:
 
 1. **Etapa 2 (M33 + M32)** con la centralización de formatos por idioma: **hecha el
    2026-10-17** (abajo).
-2. **Huella del CNEOS por grafo de imports.** La evaluación propone una lista explícita de
+2. **Huella del CNEOS por grafo de imports** (**hecha el 2026-10-17**, abajo). La evaluación propone una lista explícita de
    archivos; se descarta porque se desactualiza sin aviso. Además encontramos una laguna que no
    menciona: la huella solo cubre `src/core/`, así que un cambio en `registroDe()`
    (`src/cneos/eventos.ts`) o en la lógica de `pipeline/cneos-orbitas.ts` dejaría órbitas
@@ -557,6 +557,27 @@ Modelo y protecciones, sin interfaz todavía (guía en `docs/coleccion.md`):
   de la colección.
 - Queda para la interfaz: dónde y cómo se muestran los ejemplares, la ficha del ejemplar
   (separada de la divulgativa) y, si hiciera falta, un campo de certificado.
+
+### Etapa 3 de la Fase 4 · huella del CNEOS por grafo de imports · **hecha el 2026-10-17**
+
+- El cálculo de cada órbita pasó a `pipeline/cneos-calculo.ts`; `pipeline/cneos-orbitas.ts`
+  conserva la lectura, la caché y el resumen, y `pipeline/cneos-metodo.ts` los parámetros y la
+  huella (separada para que retocarla no obligue a recalcular).
+- `dependenciasDelMetodo` (`pipeline/huella-metodo.ts`) recorre los imports de ejecución desde
+  el archivo del cálculo (sin `import type`) y la huella suma la versión de cada paquete
+  externo. Hoy cubre `pipeline/cneos-calculo.ts`, `src/cneos/eventos.ts` (`registroDe()`, la
+  laguna) y nueve archivos de `src/core/`; deja fuera `resonancias`, `similitud`, `encuentro`,
+  el esquema y el resumen.
+- `encuentro.ts` volvió a `src/core/` (estaba en `src/ciencia/` solo por la huella).
+- Test nuevo (`tests/unit/huella-metodo.test.ts`): falla si alguna órbita guardada no
+  corresponde al código actual, así que un cambio en el cálculo no llega a `main` sin recalcular
+  en local (el bot no podría hacerlo en su tiempo límite).
+- Recálculo: 260 órbitas en 7 procesos, unos 4 minutos (no 45: aquella cifra era de la primera
+  pasada, con otro método). Las 260 salieron **idénticas a las anteriores salvo la huella**
+  (`05d8fa3622d57dfd` → `3f9ef82a84dd4f50`) y el resumen público, idéntico byte a byte: el
+  cambio no alteró ningún resultado. `docs/reportes/cneos.md` regenerado (solo cambia la huella).
+- `procedenciaReporte` (encabezado informativo de los reportes) sigue usando `src/core/` más los
+  archivos que se le pasan; no decide recálculos.
 
 ### Etapa D · CI y operación · **hecha el 2026-10-11** (ola 1)
 

@@ -15,7 +15,7 @@
  *
  * Chelyabinsk (opción C, decisión del usuario del 2026-10-12) sortea los elementos publicados y
  * conserva las órbitas que chocan con la Tierra en la aproximación de dos cuerpos: parámetro de
- * impacto ≤ radio de captura (`src/ciencia/encuentro.ts`; auditoría V5). Hasta entonces se exigía
+ * impacto ≤ radio de captura (`src/core/encuentro.ts`; auditoría V5). Hasta entonces se exigía
  * una distancia geométrica < 15 000 km, que medía otra cosa y dejaba pasar órbitas sin choque.
  *
  * Salidas:
@@ -42,7 +42,7 @@ import {
   parametroImpacto,
   RADIO_TIERRA_KM,
   radioCaptura,
-} from '../src/ciencia/encuentro';
+} from '../src/core/encuentro';
 import { procedenciaReporte } from './huella-metodo';
 import { DESDE_JPL, entradaPieza, registroDesdeRadianteAparente } from './trayectorias-pedigri';
 import { orbitaDesdeBolido } from '../src/core/orbita-bolido';

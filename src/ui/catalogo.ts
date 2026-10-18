@@ -173,7 +173,7 @@ export interface NubePieza {
   /**
    * Método `elementos-condicionados` (Chelyabinsk): se sortean los elementos publicados con su
    * σ, cada órbita se coloca en su punto más cercano a la Tierra en `instante` y solo se
-   * conserva si su parámetro de impacto no supera el radio de captura (`src/ciencia/encuentro.ts`).
+   * conserva si su parámetro de impacto no supera el radio de captura (`src/core/encuentro.ts`).
    */
   condicion?: {
     instante: string;
