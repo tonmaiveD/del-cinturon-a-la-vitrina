@@ -5,6 +5,7 @@ import { crearSecuencia } from './camera/coreografia';
 import { DURACIONES, pasosRecorrido } from './camera/recorrido';
 import { t } from './i18n';
 import { fecha as fechaLocal } from './i18n/formato';
+import { idiomaDeUrl } from './i18n/idioma';
 import { PLANETAS } from './scene/cuerpos';
 import type { PanelCneos } from './cneos/panel';
 import type { OrbitaCneos } from './cneos/resumen';
@@ -306,6 +307,7 @@ export async function iniciar3D(
         vista,
         escalaVisual,
         luzPresentacion,
+        idioma: idiomaDeUrl(),
       });
       history.replaceState(null, '', q);
     }, 400);

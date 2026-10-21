@@ -3,7 +3,8 @@
  * (no depende de Three.js). Dos capas que nunca se mezclan: región de escape (probabilidades por
  * fuente) y asociación con cuerpo progenitor (con su confianza).
  */
-import { t } from '../i18n';
+import { t, tDato } from '../i18n';
+import { claveAsociacion, claveRegion, claveSinAsociacion } from '../i18n/datos';
 import { fijo } from '../i18n/formato';
 import {
   cumpleFiltro,
@@ -73,7 +74,10 @@ function bloqueEscape(p: PiezaCatalogo, catalogo: Catalogo): HTMLElement {
       const li = el('li');
       const texto =
         r.sigma === undefined ? `${numero(r.p)} %` : `${numero(r.p)} ± ${numero(r.sigma)} %`;
-      li.append(el('span', r.nombre, 'region'), el('span', texto, 'valor'));
+      li.append(
+        el('span', tDato(claveRegion(r.region), r.nombre), 'region'),
+        el('span', texto, 'valor'),
+      );
       const barra = el('span', undefined, 'barra');
       barra.setAttribute('aria-hidden', 'true');
       const relleno = el('span');
@@ -106,13 +110,19 @@ function bloqueProgenitor(p: PiezaCatalogo, catalogo: Catalogo): HTMLElement {
   if ('confianza' in a) {
     const linea = el('p', undefined, 'asociacion');
     linea.append(
-      el('strong', a.nombre),
+      el('strong', tDato(claveAsociacion(a.id, 'nombre'), a.nombre)),
       ' ',
       el('span', t(`confianza.${a.confianza}` as Clave), `insignia confianza-${a.confianza}`),
     );
-    sec.append(linea, el('p', a.justificacion, 'nota'));
+    sec.append(
+      linea,
+      el('p', tDato(claveAsociacion(a.id, 'justificacion'), a.justificacion), 'nota'),
+    );
   } else {
-    sec.append(el('p', t('procedencia.sin-asociacion'), 'asociacion'), el('p', a.sin, 'nota'));
+    sec.append(
+      el('p', t('procedencia.sin-asociacion'), 'asociacion'),
+      el('p', tDato(claveSinAsociacion(p.id), a.sin), 'nota'),
+    );
   }
   sec.append(el('p', t('procedencia.fuentes', { fuentes: citas }), 'nota'));
   return sec;

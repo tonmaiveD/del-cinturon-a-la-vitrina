@@ -558,6 +558,26 @@ Modelo y protecciones, sin interfaz todavía (guía en `docs/coleccion.md`):
 - Queda para la interfaz: dónde y cómo se muestran los ejemplares, la ficha del ejemplar
   (separada de la divulgativa) y, si hiciera falta, un campo de certificado.
 
+### M38 · etapa E1, infraestructura de idiomas · **hecha el 2026-10-21**
+
+Sin traducir aún (guía en `docs/idiomas.md`). Decisiones del usuario: detección del navegador,
+unidades métricas, revisa él, wiki solo en español.
+
+- Elección al cargar (`?lang=` → navegador → español) y selector que recarga con `?lang=`
+  (cabecera; en pantallas ≤ 640 px pasa a la pestaña Info, porque en la cabecera le quitaba a la
+  escena del 320×568 más de lo que admite la prueba). La URL conserva `lang` si se pidió.
+- `virtual:idiomas`: un idioma solo entra en el build aprobado (`src/i18n/revision.json`, con
+  revisor y fecha); en desarrollo, todos; `IDIOMAS_VISTA_PREVIA=en` para un build de revisión.
+  Cada idioma va en su fragmento y solo se descarga si se elige (carga inicial igual: 2,8 s).
+- Textos de datos (25, 484 palabras: regiones de escape, asociaciones, motivos) con clave
+  estable y traducción guardada junto a su original: si el español cambia, se muestra el
+  español y un test lo señala.
+- Auditoría: cifras en otros idiomas con las mismas excepciones, y ninguna cifra nueva en una
+  traducción de datos. `verificar-dist`: ningún texto de un idioma en borrador en `dist/`.
+  Tests: mismas claves y parámetros; nada de «live»/«real-time»; completo y al día si aprobado.
+- e2e `tests/e2e/idioma.spec.ts` (se salta sin inglés en el build): `lang="en-US"`, punto
+  decimal, vuelta al español, navegador en inglés. Verificada con un diccionario temporal.
+
 ### M35 · iluminación de presentación y tema de marca · **hecha el 2026-10-21** (parte)
 
 Pedido del amigo («que siempre sea de día» y adaptar el aspecto a la tienda):

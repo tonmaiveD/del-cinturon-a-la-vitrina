@@ -91,6 +91,14 @@ export interface EntradaAuditoria {
   escape: RegionEscape[];
   catalogo: Catalogo;
   textos: Record<string, string>;
+  /**
+   * Otros idiomas (M38): interfaz con las mismas claves que `textos` y traducciones de los textos
+   * de datos con su original. Valen las mismas reglas de cifras: ninguna nueva.
+   */
+  idiomas?: Record<
+    string,
+    { interfaz: Record<string, string>; datos: Record<string, { es: string; en?: string }> }
+  >;
   ficha?: { cruda: string; cneos: Parameters<typeof contextoFicha>[1] };
   /** Nube del recorrido de Chelyabinsk (public/data/chelyabinsk-orbitas.json). */
   nubeChelyabinsk?: {
@@ -572,6 +580,41 @@ export function auditar(e: EntradaAuditoria): Fila[] {
       estado: ok ? 'convencion' : 'error',
       nota: ok ? permitido.motivo : 'cifra escrita a mano: debe venir del dataset como parámetro',
     });
+  }
+  // Otros idiomas: la interfaz sigue las mismas excepciones por clave; en las traducciones de
+  // datos solo pueden aparecer las cifras del original
+  const cifrasDe = (s: string): string[] => s.replace(/\{\w+\}/g, '').match(/\d+/g) ?? [];
+  for (const [idioma, { interfaz, datos }] of Object.entries(e.idiomas ?? {})) {
+    for (const [clave, texto] of Object.entries(interfaz)) {
+      const cifras = cifrasDe(texto);
+      if (!cifras.length) continue;
+      const permitido = CIFRAS_PERMITIDAS[clave];
+      const ok = permitido && cifras.every((c) => permitido.cifras.includes(c));
+      filas.push({
+        seccion: 'Cifras en los textos de la interfaz',
+        elemento: `${idioma}: ${clave}`,
+        valor: cifras.join(' '),
+        fuente: `src/i18n/${idioma}.json`,
+        estado: ok ? 'convencion' : 'error',
+        nota: ok ? permitido.motivo : 'cifra escrita a mano: debe venir del dataset como parámetro',
+      });
+    }
+    for (const [clave, d] of Object.entries(datos)) {
+      const cifras = cifrasDe(d.en ?? '');
+      if (!cifras.length) continue;
+      const original = cifrasDe(d.es);
+      const nuevas = cifras.filter((c) => !original.includes(c));
+      filas.push({
+        seccion: 'Cifras en los textos de la interfaz',
+        elemento: `${idioma}: ${clave}`,
+        valor: cifras.join(' '),
+        fuente: `src/i18n/datos.${idioma}.json`,
+        estado: nuevas.length ? 'error' : 'convencion',
+        nota: nuevas.length
+          ? `cifras que no están en el original: ${nuevas.join(' ')}`
+          : 'las mismas cifras que el texto original del dataset',
+      });
+    }
   }
   const radio = Math.round(e.radioVisualMeteoroideKm / 1e5) * 1e5;
   filas.push({

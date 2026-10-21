@@ -2,7 +2,8 @@
  * Arranque ligero: textos, panel, ficha y fuentes se muestran de inmediato; la escena 3D
  * (Three.js, astronomy-engine) se descarga después con import() dinámico.
  */
-import { t } from './i18n';
+import { idiomaActivo, t } from './i18n';
+import { montarSelectorIdioma, prepararIdioma } from './i18n/idioma';
 import { montarDialogos } from './ui/dialogos';
 import { avisarError, hayWebgl } from './ui/avisos';
 import { montarHoja } from './ui/hoja';
@@ -23,7 +24,10 @@ const datos = precargar<DatosEscena>({
 
 const catalogo = cargarJson<Catalogo>('data/catalogo.json');
 
+// El idioma se elige antes de escribir ningún texto (si es el español, no hay que esperar nada)
+await prepararIdioma();
 aplicarTextos();
+montarSelectorIdioma(idiomaActivo());
 montarDialogos();
 const hoja = montarHoja();
 // En pantallas pequeñas los filtros empiezan plegados (cada pestaña de la hoja ya separa el resto)

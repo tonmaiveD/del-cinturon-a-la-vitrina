@@ -12,6 +12,8 @@ export interface EstadoUrl {
   escalaVisual: boolean;
   /** Luz de presentación (siempre de día, por defecto) o luz real del Sol: `luz=real`. */
   luzPresentacion?: boolean;
+  /** Idioma pedido en la URL (`lang`), que se conserva; sin él, el del navegador. */
+  idioma?: string;
 }
 
 const VISTAS: Vista[] = ['tierra', 'sistema-solar'];
@@ -45,5 +47,6 @@ export function escribirEstadoUrl(e: EstadoUrl): string {
   p.set('escala', e.escalaVisual ? 'visual' : 'real');
   // La luz de presentación es la de partida: solo se escribe la real
   if (e.luzPresentacion === false) p.set('luz', 'real');
+  if (e.idioma) p.set('lang', e.idioma);
   return `?${p.toString()}`;
 }

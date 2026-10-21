@@ -1,5 +1,5 @@
 /** CLI: `npm run auditoria` → docs/reportes/trazabilidad.md. Sale con error si hay discrepancias. */
-import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { KM_POR_AU } from '../src/core/marcos';
 import { RADIO_VISUAL_METEOROIDE_AU } from '../src/scene/sistema-solar';
 import type { OrbitaCneos, ResumenCneos } from '../src/cneos/resumen';
@@ -13,6 +13,7 @@ import {
 } from '../src/schema';
 import type { Catalogo } from '../src/ui/catalogo';
 import { auditar, informe } from './auditoria';
+import { leerRevisiones, rutasIdioma } from './idiomas-publicables';
 import { ALTURA_CONVENCIONAL_KM, type TrayectoriaPieza } from './trayectorias-pedigri';
 
 const leer = <T = unknown>(ruta: string): T => JSON.parse(readFileSync(ruta, 'utf8')) as T;
@@ -26,6 +27,17 @@ const filas = auditar({
   escape: RegionEscape.array().parse(leer('data/regiones-escape.json')),
   catalogo: leer<Catalogo>('public/data/catalogo.json'),
   textos: leer('src/i18n/es.json'),
+  idiomas: Object.fromEntries(
+    Object.keys(leerRevisiones())
+      .filter((c) => existsSync(rutasIdioma(c).interfaz))
+      .map((c) => [
+        c,
+        {
+          interfaz: leer(rutasIdioma(c).interfaz),
+          datos: existsSync(rutasIdioma(c).datos) ? leer(rutasIdioma(c).datos) : {},
+        },
+      ]),
+  ),
   ficha: {
     cruda: readFileSync('content/fichas/chelyabinsk.md', 'utf8'),
     cneos,

@@ -11,6 +11,7 @@ import { leerFicha } from '../src/ui/ficha';
 import { leerColeccion, type DatosColeccion } from './coleccion';
 import { metadatosSensibles } from './coleccion-fotos';
 import { leerFichasCrudas } from './fichas-publicables';
+import { idiomasIncluidos, leerRevisiones, rutasIdioma } from './idiomas-publicables';
 
 /** Fragmentos literales de la plantilla (entre marcadores), largos y sin caracteres que JSON escape. */
 export function testigos(cuerpo: string, n = 5): string[] {
@@ -74,6 +75,35 @@ export async function fotosConMetadatos(dir: string): Promise<string[]> {
   return errores;
 }
 
+/**
+ * Idiomas sin aprobar (y no pedidos en `IDIOMAS_VISTA_PREVIA`): ninguno de sus textos de interfaz
+ * o de datos puede aparecer en dist/.
+ */
+export function idiomasBorradorEnDist(dir: string, i18n = 'src/i18n'): string[] {
+  const revisiones = leerRevisiones(i18n);
+  const incluidos = idiomasIncluidos(revisiones, false, undefined, i18n);
+  const buscados: [string, string][] = [];
+  for (const codigo of Object.keys(revisiones).filter((c) => !incluidos.includes(c))) {
+    const r = rutasIdioma(codigo, i18n);
+    const leer = (p: string): unknown =>
+      existsSync(p) ? (JSON.parse(readFileSync(p, 'utf8')) as unknown) : {};
+    const interfaz = Object.values(leer(r.interfaz) as Record<string, string>);
+    const datos = Object.values(leer(r.datos) as Record<string, { en?: string }>).map((d) => d.en);
+    for (const s of [...interfaz, ...datos])
+      if (s !== undefined && s.length >= 30 && testigo(s))
+        buscados.push([s, `idioma ${codigo} (borrador)`]);
+  }
+  const errores: string[] = [];
+  if (!buscados.length) return errores;
+  for (const [p, txt] of textosDe(dir))
+    for (const [s, motivo] of buscados)
+      if (txt.includes(s)) {
+        errores.push(`${motivo} aparece en ${p}`);
+        break;
+      }
+  return errores;
+}
+
 export function borradoresEnDist(dir: string, crudas: Record<string, string>): string[] {
   const textos = textosDe(dir);
   const errores: string[] = [];
@@ -93,11 +123,12 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const errores = [
     ...borradoresEnDist(dir, leerFichasCrudas()),
     ...coleccionEnDist(dir, leerColeccion()),
+    ...idiomasBorradorEnDist(dir),
     ...(await fotosConMetadatos(dir)),
   ];
   if (errores.length) {
     console.error(errores.join('\n'));
     process.exit(1);
   }
-  console.log(`dist sin fichas ni ejemplares en borrador ni datos privados (${dir}).`);
+  console.log(`dist sin borradores (fichas, ejemplares, idiomas) ni datos privados (${dir}).`);
 }

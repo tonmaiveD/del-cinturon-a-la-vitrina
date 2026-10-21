@@ -133,6 +133,20 @@ describe('auditoría de trazabilidad', () => {
     expect(errores(e3).map((f) => f.elemento)).toEqual(['órbitas y nubes calculadas']);
   });
 
+  it('otros idiomas: las mismas reglas de cifras; una traducción no añade cifras al original', () => {
+    const e = entrada();
+    e.idiomas = {
+      en: {
+        interfaz: { 'app.titulo': 'From the belt to the showcase', 'pieza.titulo': 'Top 25' },
+        datos: {
+          'region:hungaria': { es: 'Región de 2 grupos', en: 'Region of 2 groups' },
+          'region:phocaea': { es: 'Región Phocaea', en: 'Phocaea region, 3 families' },
+        },
+      },
+    };
+    expect(errores(e).map((f) => f.elemento)).toEqual(['en: pieza.titulo', 'en: region:phocaea']);
+  });
+
   it('ningún texto de la interfaz dice «en vivo» (los datos del CNEOS no son en tiempo real)', () => {
     for (const [clave, texto] of Object.entries(entrada().textos))
       expect(texto, clave).not.toMatch(/en vivo|live/i);

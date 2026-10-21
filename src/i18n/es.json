@@ -231,5 +231,6 @@
   "luz.aviso.real": "Luz real: el globo está iluminado por el Sol de ese instante y la parte de noche se ve oscura.",
   "desc.luz.presentacion": "El globo se muestra siempre de día, con una luz de presentación que no corresponde a la posición real del Sol.",
   "desc.luz.real": "El globo está iluminado por el Sol de ese instante.",
-  "etiqueta.bolido.pieza": "Final de la aproximación calculada"
+  "etiqueta.bolido.pieza": "Final de la aproximación calculada",
+  "idioma.etiqueta": "Idioma"
 }

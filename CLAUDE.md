@@ -36,6 +36,12 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   CSS inyectadas por `pipeline/tema-css.ts`, colores de capa compartidos con la leyenda). Guía:
   `docs/marca.md`. Corregidos de paso: la etiqueta «Pico de brillo (CNEOS)» en piezas sin dato
   del CNEOS y el color de la estela en la leyenda de las piezas.
+- **M38, etapa E1 (infraestructura de idiomas) hecha el 2026-10-21**, sin traducir aún: idioma
+  por `?lang=` o navegador, selector (oculto con solo español), `virtual:idiomas`
+  (`pipeline/idiomas-publicables.ts`: borradores solo en desarrollo o con
+  `IDIOMAS_VISTA_PREVIA=en`), textos de datos traducibles con su original (`src/i18n/datos.ts`,
+  `tDato`), auditoría y `verificar-dist` para otros idiomas. Guía: `docs/idiomas.md`.
+  Siguiente: **etapa E2**, traducir (`en.json`, `datos.en.json`, ficha) para revisión del usuario.
 - **Lección del 2026-10-13:** la revisión V5 (otra sesión) no actualizó la wiki; se corrigió
   y ahora la regla es actualizarla en el mismo paso que cada cambio que afecte a lo que explica.
 
@@ -72,7 +78,7 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`cneos-diario.yml`, 07:30 UTC, con retrasos posibles) y Dependabot revisa dependencias los
   lunes.
 - **Verificación al 2026-10-13:**
-  - 304 tests unitarios y 82 e2e (al 2026-10-21) (escritorio y móvil), más la medición de rendimiento
+  - 310 tests unitarios y 82 e2e, más 2 de idioma que se activan con el inglés (al 2026-10-21) (escritorio y móvil), más la medición de rendimiento
     (aislada: `npm run e2e:rendimiento`; en paralelo con las demás roza el límite de 3 s);
   - auditoría: 603 datos, 0 errores;
   - carga inicial unos 2,8 s en 4G lento;
@@ -236,6 +242,8 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
 - 2026-10-21: «customization de look» = **adaptar la web a la marca de la tienda** (no temas
   elegibles por el visitante). Globo **siempre de día por defecto**, rotulado, con luz real
   opcional.
+- 2026-10-21: inglés (M38): **detección del idioma del navegador**, **unidades métricas** en
+  los dos idiomas, **revisa el usuario**, **wiki solo en español** por ahora.
 - 2026-10-11: el usuario **mantiene el gmail como correo principal** de su cuenta de GitHub y
   quiere que **solo apaec@yahoo.com sea visible**. Autorizó reescribir la historia de la wiki y
   de `main` (hecho, con push forzado suyo). Nunca escribir el gmail en archivos del repo.
@@ -471,6 +479,10 @@ textura Blue Marble según las directrices de medios de NASA (verificado el 2026
 - Tema de marca (M35): `src/tema.ts` (interfaz → variables CSS inyectadas en `index.html` por
   `pipeline/tema-css.ts`; capas de la escena y de la leyenda; grupos del CNEOS). Luz del globo:
   `fijarIluminacion` en `src/scene/tierra.ts` (presentación desde detrás de la cámara, o el Sol).
+- Idiomas (M38): `src/i18n/idioma.ts` (elige al cargar; el selector recarga con `?lang=`),
+  `src/i18n/eleccion.ts`, `virtual:idiomas` (`pipeline/idiomas-publicables.ts`),
+  `src/i18n/revision.json` (aprobación por idioma), traducciones de datos con su original
+  (`src/i18n/datos.ts`, `tDato`). Guía: `docs/idiomas.md`.
 - Formato de números y fechas: solo `src/i18n/formato.ts` (idioma activo; un test prohíbe
   fijar `'es'` en otro sitio). Lo nuevo se diseña bilingüe (`TextoIdiomas`, revisión por idioma).
 - e2e contra `pipeline/servidor-estatico.ts` (gzip, como un hosting real; `vite preview` no

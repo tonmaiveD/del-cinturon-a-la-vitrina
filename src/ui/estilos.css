@@ -56,6 +56,34 @@ body {
   color: var(--texto-suave);
   font-size: 0.9rem;
 }
+/* Selector de idioma (en la cabecera; en pantallas pequeñas, en la pestaña Info). La cabecera no
+   recibe clics, el selector sí; en el móvil, letra de 16 px (sin zoom automático de iOS) */
+.cabecera .linea-estado {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  align-items: center;
+  margin-top: 6px;
+}
+.cabecera .linea-estado .estado {
+  margin-top: 0;
+}
+.idioma:not([hidden]) {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+  pointer-events: auto;
+}
+.idioma select {
+  font: inherit;
+  color: var(--texto);
+  background: var(--superficie-alta);
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  padding: 2px 6px;
+}
 .cabecera .estado {
   margin-top: 6px;
   font-size: 0.8rem;
@@ -169,6 +197,9 @@ summary:focus-visible {
   }
   .cabecera p:not(.estado) {
     display: none;
+  }
+  .idioma select {
+    font-size: 16px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

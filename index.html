@@ -20,7 +20,13 @@
     <header class="cabecera">
       <h1 data-i18n="app.titulo"></h1>
       <p data-i18n="app.subtitulo"></p>
-      <p class="estado" data-i18n="app.estado"></p>
+      <div class="linea-estado">
+        <p class="estado" data-i18n="app.estado"></p>
+        <div class="idioma" hidden>
+          <label for="idioma" data-i18n="idioma.etiqueta"></label>
+          <select id="idioma"></select>
+        </div>
+      </div>
     </header>
     <div id="hoja" class="hoja">
       <div class="hoja-cabeza">
