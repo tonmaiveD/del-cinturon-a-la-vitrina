@@ -238,5 +238,8 @@
   "cardinal.S": "S",
   "cardinal.E": "E",
   "cardinal.O": "W",
-  "formato.porcentaje": "{v}%"
+  "formato.porcentaje": "{v}%",
+  "economico.etiqueta": "Low-power mode",
+  "economico.aviso": "Low-power mode: lower resolution and no glow effect, to use less battery. The data are the same.",
+  "economico.aviso.auto": "Low-power mode turned on automatically because the scene was running slowly on this device. It uses a lower resolution and no glow effect, but the data are the same."
 }

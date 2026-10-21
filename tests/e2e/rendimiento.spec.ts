@@ -132,13 +132,38 @@ test('fps con las 25 nubes de órbitas (vista solar, nivel de detalle cercano)',
   await page.goto('/?pieza=zdar-nad-sazavou&vista=sistema-solar');
   await page.waitForFunction(() => performance.getEntriesByName('nubes').length > 0);
   await expect(page.locator('#descripcion')).toContainText('160 órbitas posibles');
-  await page.waitForTimeout(4000); // el promedio móvil de fps se estabiliza
-  const fps = await page.evaluate(() =>
-    (window as unknown as { __app: { motor: { fps(): number } } }).__app.motor.fps(),
+  // En reposo la escena ya no se redibuja (M14): se mantiene activa mientras se mide. Se miden
+  // los dos modos por separado, sin la activación automática del económico (M13)
+  const medir = (economico: boolean) =>
+    page.evaluate(async (eco) => {
+      const m = (
+        window as unknown as {
+          __app: {
+            motor: {
+              sinAutomatico(): void;
+              fijarEconomico(si: boolean): void;
+              invalidar(ms: number): void;
+              fps(): number;
+            };
+          };
+        }
+      ).__app.motor;
+      m.sinAutomatico();
+      m.fijarEconomico(eco);
+      m.invalidar(6000);
+      await new Promise((r) => setTimeout(r, 4000)); // el promedio móvil se estabiliza
+      return m.fps();
+    }, economico);
+  const fps = await medir(false);
+  const fpsEconomico = await medir(true);
+  guardar(info.project.name, 'fps vista solar', { normal: fps, economico: fpsEconomico });
+  info.annotations.push({
+    type: 'fps',
+    description: `${fps.toFixed(1)} / ${fpsEconomico.toFixed(1)}`,
+  });
+  console.log(
+    `[${info.project.name}] fps vista solar con catálogo: normal ${fps.toFixed(1)} · económico ${fpsEconomico.toFixed(1)}`,
   );
-  guardar(info.project.name, 'fps vista solar', fps);
-  info.annotations.push({ type: 'fps', description: fps.toFixed(1) });
-  console.log(`[${info.project.name}] fps vista solar con catálogo: ${fps.toFixed(1)}`);
   // Navegador sin GPU (renderizado por software): solo se registra; el objetivo de 30 fps en
   // móvil se mide en dispositivo real
   expect(fps).toBeGreaterThan(0);

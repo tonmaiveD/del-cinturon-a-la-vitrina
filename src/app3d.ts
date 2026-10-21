@@ -109,6 +109,7 @@ export async function iniciar3D(
     { muestras: trayectoria.geo_eqj_km, referencia: refTrayectoria },
     radioMet,
     (reintentar) => avisarError('textura', t('error.textura'), reintentar),
+    () => motor.invalidar(),
   );
   motor.alContexto((perdido) =>
     perdido ? avisarError('contexto', t('error.contexto')) : quitarAviso('contexto'),
@@ -141,6 +142,7 @@ export async function iniciar3D(
     obj: ORIGEN.clone(),
   });
   function fijarCamara(vista: NombreVista, pos: Vector3, obj: Vector3): void {
+    motor.invalidar();
     const c = vista === 'tierra' ? camT : asegurarSolar().camS;
     c.camara.position.copy(pos);
     c.controles.target.copy(obj);
@@ -225,6 +227,7 @@ export async function iniciar3D(
     solar.actualizarTiempo(new Date(reloj.estado().t));
     fijarCamara('sistema-solar', encuadreSolar().pos, ORIGEN);
     motor.activar(motor.activa()); // oculta las etiquetas nuevas si la vista no está activa
+    motor.invalidar();
     return solarCreada;
   }
 
@@ -237,6 +240,7 @@ export async function iniciar3D(
       // que la precede (llegada, movimiento reducido)
       const antes = descripcionVista();
       solarCreada!.cat.fijarNubes(n);
+      motor.invalidar();
       marcar('nubes');
       const texto = descripcion.textContent ?? '';
       if (!secuencia.activa() && texto.endsWith(antes))
@@ -319,6 +323,7 @@ export async function iniciar3D(
   const conMeteoroide = () =>
     modo === 'pedigri' && (panel.actual() === 'chelyabinsk' || trayPieza?.id === panel.actual());
   function refrescarVista(): void {
+    motor.invalidar();
     if (vista === 'sistema-solar') asegurarSolar();
     motor.activar(vista);
     for (const b of botonesVista) b.setAttribute('aria-pressed', String(b.dataset.vista === vista));
@@ -465,6 +470,7 @@ export async function iniciar3D(
       quitarAviso('orbita');
       nClonesCneos = o.clones.length;
       asegurarSolar().nubeCneos.fijar(o.clones, o.nominal);
+      motor.invalidar();
       marcar('cneos-nube');
       aplicarModoSolar();
       if (!secuencia.activa()) descripcion.textContent = descripcionVista();
@@ -543,6 +549,7 @@ export async function iniciar3D(
   }
 
   reloj.alCambiar((e) => {
+    motor.invalidar();
     const f = new Date(e.t);
     tierra.actualizarTiempo(f);
     solarCreada?.solar.actualizarTiempo(f);
@@ -630,6 +637,7 @@ export async function iniciar3D(
   let tiempoRecorrido = 0;
   motor.alCuadro((dt) => {
     if (secuencia.activa()) {
+      motor.invalidar();
       tiempoRecorrido += dt;
       secuencia.avanzar(dt / Number(selDuracion.value));
     } else reloj.avanzar(dt);
@@ -649,6 +657,35 @@ export async function iniciar3D(
   bLuz.addEventListener('click', () => {
     luzPresentacion = !luzPresentacion;
     refrescarVista();
+  });
+  // Modo económico (M13): la elección manual se recuerda en este navegador
+  const bEconomico = $<HTMLButtonElement>('#economico');
+  const avisoEconomico = $('#aviso-economico');
+  const CLAVE_ECONOMICO = 'modo-economico';
+  const mostrarEconomico = (si: boolean, automatico: boolean) => {
+    bEconomico.setAttribute('aria-checked', String(si));
+    avisoEconomico.hidden = !si;
+    avisoEconomico.textContent = t(automatico ? 'economico.aviso.auto' : 'economico.aviso');
+  };
+  motor.alEconomico(mostrarEconomico);
+  try {
+    const guardado = localStorage.getItem(CLAVE_ECONOMICO);
+    if (guardado !== null) {
+      motor.sinAutomatico();
+      motor.fijarEconomico(guardado === '1');
+    }
+  } catch {
+    // Sin almacenamiento local: la elección dura lo que la página
+  }
+  mostrarEconomico(motor.economico(), false);
+  bEconomico.addEventListener('click', () => {
+    motor.sinAutomatico();
+    motor.fijarEconomico(!motor.economico());
+    try {
+      localStorage.setItem(CLAVE_ECONOMICO, motor.economico() ? '1' : '0');
+    } catch {
+      // idem
+    }
   });
   bRecorrido.addEventListener('click', verRecorrido);
   bSaltar.addEventListener('click', terminarSecuencia);

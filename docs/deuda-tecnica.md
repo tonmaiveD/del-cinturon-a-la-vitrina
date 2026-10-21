@@ -566,6 +566,26 @@ errores (M17, M16; reporte por GitHub Issues) → **O5** CSP por `<meta>` (M31) 
 exportable (M42). Fuera por ahora: M39 (sin carga objetivo), M41 (decisión del usuario) y el
 recorrido animado de los bólidos del CNEOS (función nueva, a pedido).
 
+### O2 · no trabajar de más (M14 y M13) · **hecha el 2026-10-21**
+
+- **Dibujo bajo demanda** (`src/scene/escena.ts`): el bucle sigue en cada cuadro del navegador,
+  pero solo dibuja si algo cambió: `invalidar()` desde la app (estado, reloj, recorrido, cámara,
+  cargas tardías de nubes, textura y nube del CNEOS), los controles (`update()` y su evento
+  `change`, incluida la inercia) y cualquier interacción con la página. Tras cada aviso dibuja al
+  menos 3 cuadros, aunque el navegador estuviera ocupado (crear la vista solar lo bloquea). En
+  reposo, un cuadro por segundo como red de seguridad. Con la pestaña oculta, el bucle se para.
+- **Modo económico**: interruptor `#economico` (aviso `#aviso-economico`, elección recordada en
+  `localStorage`); DPR 1 y sin postprocesado (el mapeo de tonos lo hace el renderer). Se activa
+  solo si los cuadros a ritmo completo tardan más de 1/24 s durante 3 s, y no vuelve solo
+  (histéresis); una elección manual desactiva lo automático en la sesión. La información
+  científica no cambia; solo se pierde el halo de los marcadores.
+- **Medido** (local, la máquina con carga 7–9): cuadros dibujados en 3 s de reposo, 3 (antes,
+  todos: ~180 a 60 fps); vista solar sin GPU, 29,6 fps normal y 60 en económico (antes 28,6,
+  solo normal); modo CNEOS, panel 802 ms y nube 1642 ms (antes 1216 y 1831); carga inicial sin
+  cambio (escena 2801 ms, dentro del ruido). La batería e2e completa pasó de 6,4 a 3,9 min.
+- **Pendiente del usuario**: probar en su iPhone (recorrido, vista solar, modo económico, batería
+  y temperatura tras unos minutos).
+
 ### O1 · medir antes de optimizar (M22) · **hecha el 2026-10-21**
 
 - **Hitos** con User Timing (`src/ui/metricas.ts`, sin enviar nada): `texto`, `catalogo`,

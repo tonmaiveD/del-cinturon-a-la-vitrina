@@ -1,4 +1,14 @@
-/** Renderer, postprocesado (bloom), cámaras y controles de las dos vistas. */
+/**
+ * Renderer, postprocesado (bloom), cámaras y controles de las dos vistas.
+ *
+ * Dibujo bajo demanda (M14): el bucle corre en cada cuadro del navegador, pero solo dibuja si
+ * algo cambió (cámara o su inercia, reloj, recorrido, interfaz: `invalidar`). En reposo dibuja
+ * un cuadro por segundo como red de seguridad, por si algún cambio no avisó. Con la pestaña
+ * oculta el bucle se detiene.
+ *
+ * Modo económico (M13): resolución 1:1 y sin el efecto de brillo (bloom), con la misma
+ * información científica. Se elige a mano o se activa solo si la escena va lenta.
+ */
 import {
   BloomEffect,
   EffectComposer,
@@ -7,7 +17,15 @@ import {
   ToneMappingEffect,
   ToneMappingMode,
 } from 'postprocessing';
-import { HalfFloatType, type Object3D, PerspectiveCamera, type Scene, WebGLRenderer } from 'three';
+import {
+  ACESFilmicToneMapping,
+  HalfFloatType,
+  NoToneMapping,
+  type Object3D,
+  PerspectiveCamera,
+  type Scene,
+  WebGLRenderer,
+} from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
@@ -36,7 +54,9 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
   });
   // Móviles: DPR limitado para sostener el objetivo de 30 fps con bloom en GPU de gama media
   const movil = window.matchMedia('(max-width: 900px), (pointer: coarse)').matches;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, movil ? 1.5 : 2));
+  const dprNormal = Math.min(window.devicePixelRatio, movil ? 1.5 : 2);
+  renderer.setPixelRatio(dprNormal);
+  let economico = false;
   const etiquetas = new CSS2DRenderer({ element: capaEtiquetas });
 
   const vistas = new Map<NombreVista, Vista>();
@@ -55,6 +75,7 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
     const controles = new OrbitControls(camara, canvas);
     controles.enableDamping = true;
     controles.enabled = nombre === activa;
+    controles.addEventListener('change', () => invalidar());
     const composer = new EffectComposer(renderer, { frameBufferType: HalfFloatType });
     composer.addPass(new RenderPass(escena, camara));
     composer.addPass(
@@ -117,10 +138,14 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
     areaLibre = f;
     ajustar();
   }
-  window.addEventListener('resize', ajustar);
+  window.addEventListener('resize', () => {
+    ajustar();
+    invalidar();
+  });
 
   function activar(nombre: NombreVista): void {
     activa = nombre;
+    invalidar();
     for (const [n, v] of vistas) {
       v.controles.enabled = n === nombre;
       // CSS2DRenderer solo actualiza la escena que renderiza: hay que ocultar a mano las demás
@@ -139,9 +164,27 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
     ganchos.add(f);
   }
 
-  // Medición de fps (promedio móvil) para verificación de rendimiento
+  // ---------- Dibujo bajo demanda ----------
+  /** Instante (performance.now) hasta el que se dibuja a ritmo completo. */
+  let activoHasta = 0;
+  const RED_DE_SEGURIDAD_MS = 1000;
+  /** Cuadros que se dibujan seguro tras un aviso, aunque el navegador estuviera ocupado. */
+  let cuadrosPendientes = 0;
+  /** Pide dibujar durante `ms` (por defecto, el tiempo de una transición corta). */
+  function invalidar(ms = 400): void {
+    activoHasta = Math.max(activoHasta, performance.now() + ms);
+    cuadrosPendientes = Math.max(cuadrosPendientes, 3);
+  }
+  // Cualquier interacción con la página puede cambiar lo que se ve
+  for (const ev of ['pointerdown', 'pointerup', 'wheel', 'keydown', 'touchstart'])
+    window.addEventListener(ev, () => invalidar(), { passive: true });
+  let ultimoDibujo = 0;
+  let dibujados = 0;
+
+  // Medición de fps (promedio móvil de los cuadros dibujados a ritmo completo)
   let fps = 0;
   let ultimo = performance.now();
+  let ultimoActivo = 0;
   const oyentesContexto = new Set<(perdido: boolean) => void>();
   canvas.addEventListener('webglcontextlost', (e) => {
     e.preventDefault(); // permite que el navegador lo restaure
@@ -153,18 +196,68 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
     oyentesContexto.forEach((f) => f(false));
   });
   renderer.setAnimationLoop(bucle);
+  // Pestaña oculta: nada que dibujar ni calcular; al volver, un cuadro nuevo
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) renderer.setAnimationLoop(null);
+    else {
+      ultimo = performance.now();
+      renderer.setAnimationLoop(bucle);
+      invalidar();
+    }
+  });
   function bucle(): void {
     const ahora = performance.now();
     const dt = Math.min(0.1, (ahora - ultimo) / 1000);
-    fps = fps * 0.95 + (1000 / Math.max(1, ahora - ultimo)) * 0.05;
     ultimo = ahora;
     ganchos.forEach((f) => f(dt));
     const v = vistas.get(activa);
     if (!v) return;
-    v.controles.update();
+    // La inercia de los controles sigue moviendo la cámara después de soltar
+    if (v.controles.update()) invalidar();
+    const activo = ahora < activoHasta || cuadrosPendientes > 0;
+    if (cuadrosPendientes > 0) cuadrosPendientes--;
+    if (!activo && ahora - ultimoDibujo < RED_DE_SEGURIDAD_MS) return;
+    if (activo && ultimoActivo) {
+      fps = fps * 0.95 + (1000 / Math.max(1, ahora - ultimoActivo)) * 0.05;
+      medirLentitud(ahora - ultimoActivo);
+    }
+    ultimoActivo = activo ? ahora : 0;
+    ultimoDibujo = ahora;
+    dibujados++;
     v.alCuadro?.(v.camara);
-    v.composer.render();
+    if (economico) renderer.render(v.escena, v.camara);
+    else v.composer.render();
     etiquetas.render(v.escena, v.camara);
+  }
+
+  // ---------- Modo económico ----------
+  const oyentesEconomico = new Set<(si: boolean, automatico: boolean) => void>();
+  function fijarEconomico(si: boolean, automatico = false): void {
+    if (si === economico) return;
+    economico = si;
+    renderer.setPixelRatio(si ? 1 : dprNormal);
+    // Sin el postprocesado, el mapeo de tonos lo hace el propio renderer
+    renderer.toneMapping = si ? ACESFilmicToneMapping : NoToneMapping;
+    tamano = '';
+    ajustar();
+    invalidar();
+    oyentesEconomico.forEach((f) => f(si, automatico));
+  }
+  /**
+   * Activación automática con histéresis: si los cuadros a ritmo completo tardan más de 1/24 s
+   * de media durante 3 s seguidos, se pasa al modo económico y no se vuelve solo (evita oscilar).
+   */
+  const LENTO_MS = 1000 / 24;
+  let lentoDesde = 0;
+  let mediaCuadro = 0;
+  let automaticoPermitido = true;
+  function medirLentitud(msCuadro: number): void {
+    mediaCuadro = mediaCuadro ? mediaCuadro * 0.9 + msCuadro * 0.1 : msCuadro;
+    if (economico || !automaticoPermitido) return;
+    const ahora = performance.now();
+    if (mediaCuadro <= LENTO_MS) lentoDesde = 0;
+    else if (!lentoDesde) lentoDesde = ahora;
+    else if (ahora - lentoDesde > 3000) fijarEconomico(true, true);
   }
 
   const vista = (n: NombreVista) => vistas.get(n)!;
@@ -179,5 +272,13 @@ export function crearMotor(canvas: HTMLCanvasElement, capaEtiquetas: HTMLElement
     alContexto: (f: (perdido: boolean) => void) => oyentesContexto.add(f),
     activa: () => activa,
     fps: () => fps,
+    invalidar,
+    /** Cuadros dibujados desde el inicio (para medir el trabajo en reposo). */
+    dibujados: () => dibujados,
+    fijarEconomico,
+    economico: () => economico,
+    /** El usuario eligió a mano: la activación automática queda desactivada en la sesión. */
+    sinAutomatico: () => (automaticoPermitido = false),
+    alEconomico: (f: (si: boolean, automatico: boolean) => void) => oyentesEconomico.add(f),
   };
 }

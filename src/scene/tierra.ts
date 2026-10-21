@@ -74,6 +74,8 @@ export function crearVistaTierra(
   radioMeteoroideKm?: number,
   /** Fallo de la textura inicial: el globo queda sin imagen y se ofrece reintentar. */
   alFallarTextura?: (reintentar: () => void) => void,
+  /** Llegó una textura nueva: hay que volver a dibujar (dibujo bajo demanda). */
+  alCambiarTextura?: () => void,
 ) {
   const escena = new Scene();
   escena.background = new Color(0x000000);
@@ -110,6 +112,7 @@ export function crearVistaTierra(
         material.color.set(0xffffff);
         material.needsUpdate = true;
         if (k === 0) alCargarPrimera?.();
+        alCambiarTextura?.();
         cargar(k + 1);
       },
       undefined,

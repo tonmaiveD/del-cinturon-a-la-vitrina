@@ -238,5 +238,8 @@
   "cardinal.S": "S",
   "cardinal.E": "E",
   "cardinal.O": "O",
-  "formato.porcentaje": "{v} %"
+  "formato.porcentaje": "{v} %",
+  "economico.etiqueta": "Modo económico",
+  "economico.aviso": "Modo económico: menos resolución y sin el brillo de la escena, para gastar menos batería. Los datos son los mismos.",
+  "economico.aviso.auto": "El modo económico se activó solo porque la escena iba lenta en este dispositivo. Usa menos resolución y no dibuja el brillo, pero los datos son los mismos."
 }

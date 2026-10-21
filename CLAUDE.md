@@ -50,8 +50,10 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 - **Ola 5 en curso (plan del 2026-10-21, O1–O6 en `docs/deuda-tecnica.md`).** O1 (medir, M22)
   hecha: hitos con User Timing (`src/ui/metricas.ts`), prueba de rendimiento con mediana de 3,
   LCP/CLS/tareas largas, y presupuestos de tamaño que bloquean el build
-  (`pipeline/presupuestos.ts`). Siguiente: **O2** (render bajo demanda, pausa en segundo plano,
-  modo económico; el usuario probará en su iPhone).
+  (`pipeline/presupuestos.ts`). O2 hecha: dibujo bajo demanda (`invalidar()` en
+  `src/scene/escena.ts`; en reposo 1 cuadro/s), pausa con la pestaña oculta y modo económico
+  (manual y automático con histéresis). Pendiente: la prueba del usuario en su iPhone.
+  Siguiente: **O3** (coste inicial y modo CNEOS, M15).
 - **Lección del 2026-10-13:** la revisión V5 (otra sesión) no actualizó la wiki; se corrigió
   y ahora la regla es actualizarla en el mismo paso que cada cambio que afecte a lo que explica.
 
@@ -88,7 +90,7 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`cneos-diario.yml`, 07:30 UTC, con retrasos posibles) y Dependabot revisa dependencias los
   lunes.
 - **Verificación al 2026-10-13:**
-  - 317 tests unitarios y 84 e2e con el inglés publicado (al 2026-10-21) (escritorio y móvil), más la medición de rendimiento
+  - 317 tests unitarios y 88 e2e (al 2026-10-21) (escritorio y móvil), más la medición de rendimiento
     (aislada: `npm run e2e:rendimiento`; en paralelo con las demás roza el límite de 3 s);
   - auditoría: 603 datos, 0 errores;
   - carga inicial unos 2,8 s en 4G lento;
@@ -489,6 +491,9 @@ textura Blue Marble según las directrices de medios de NASA (verificado el 2026
   lo privado en `data/coleccion/privado/`, ignorado por git), `src/coleccion/vista.ts`
   (recorrido o procedencia por clase, nunca una órbita inventada), `pipeline/coleccion.ts`
   (reglas en `npm run validate`), `pipeline/coleccion-fotos.ts`, `pipeline/verificar-dist.ts`.
+- Dibujo bajo demanda (M14): cualquier cambio visible debe llamar a `motor.invalidar()` (ya lo
+  hacen `refrescarVista`, `fijarCamara`, el reloj, el recorrido y las cargas tardías); si no, se
+  verá con hasta 1 s de retraso (red de seguridad). Modo económico (M13): `motor.fijarEconomico`.
 - Tema de marca (M35): `src/tema.ts` (interfaz → variables CSS inyectadas en `index.html` por
   `pipeline/tema-css.ts`; capas de la escena y de la leyenda; grupos del CNEOS). Luz del globo:
   `fijarIluminacion` en `src/scene/tierra.ts` (presentación desde detrás de la cámara, o el Sol).
