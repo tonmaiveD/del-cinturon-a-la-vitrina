@@ -2,6 +2,7 @@ import { execSync } from 'node:child_process';
 import { defineConfig } from 'vitest/config';
 import { fichasPublicables } from './pipeline/fichas-publicables.ts';
 import { idiomasPublicables } from './pipeline/idiomas-publicables.ts';
+import { csp } from './pipeline/csp.ts';
 import { precargas } from './pipeline/precargas.ts';
 import { temaCss } from './pipeline/tema-css.ts';
 
@@ -21,7 +22,7 @@ function commitActual(): string {
 
 export default defineConfig({
   // GitHub Pages sirve el sitio bajo /<repositorio>/: la CI pasa la ruta en BASE_PUBLICA
-  plugins: [fichasPublicables(), idiomasPublicables(), temaCss(), precargas()],
+  plugins: [fichasPublicables(), idiomasPublicables(), temaCss(), precargas(), csp()],
   base: process.env.BASE_PUBLICA ?? '/',
   // Idiomas en revisión local (pipeline/idiomas-publicables.ts); vacío en la CI y en producción
   define: {

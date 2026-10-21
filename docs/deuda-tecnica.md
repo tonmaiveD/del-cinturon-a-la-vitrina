@@ -566,6 +566,23 @@ errores (M17, M16; reporte por GitHub Issues) → **O5** CSP por `<meta>` (M31) 
 exportable (M42). Fuera por ahora: M39 (sin carga objetivo), M41 (decisión del usuario) y el
 recorrido animado de los bólidos del CNEOS (función nueva, a pedido).
 
+### O5 · política de seguridad de contenido (M31) · **hecha el 2026-10-21**
+
+- `pipeline/csp.ts` (solo en el build) pone una CSP en `<meta>`, porque Pages no admite
+  cabeceras: todo del propio sitio (`default-src`, `script-src`, `connect-src`, `font-src`),
+  imágenes también `data:`/`blob:` (texturas de Three.js), `object-src 'none'`,
+  `form-action 'none'`, `base-uri 'self'`, `upgrade-insecure-requests`, y `Referrer-Policy`
+  `strict-origin-when-cross-origin` también en `<meta>`. Sin `unsafe-inline`: el único estilo en
+  línea, el del tema, va autorizado por su huella SHA-256, calculada en el build; si apareciera
+  otro script o estilo en línea, el build falla.
+- No se puede por `<meta>`: `frame-ancestors` (quién puede incrustar la web) y
+  `X-Content-Type-Options`; exigen cabeceras, es decir, otro hosting (M10) si la tienda la
+  incrusta. Pages ya sirve los tipos MIME correctos.
+- e2e `tests/e2e/csp.spec.ts`: ninguna violación en los recorridos principales (Tierra, vista
+  solar, recorrido, ficha, fuentes, modo CNEOS, inglés) y un script inyectado no se ejecuta;
+  98 e2e con el build de Pages. Probado solo en Chromium: Safari se verá en la prueba del
+  usuario en su iPhone.
+
 ### O4 · estado operativo y errores (M17 y M16) · **hecha el 2026-10-21**
 
 - **Tres fechas del CNEOS**: `pipeline/cneos-descargar.ts` escribe en cada consulta válida, con
