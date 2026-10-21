@@ -1,11 +1,12 @@
 import { defineConfig } from 'vitest/config';
 import { fichasPublicables } from './pipeline/fichas-publicables.ts';
 import { idiomasPublicables } from './pipeline/idiomas-publicables.ts';
+import { precargas } from './pipeline/precargas.ts';
 import { temaCss } from './pipeline/tema-css.ts';
 
 export default defineConfig({
   // GitHub Pages sirve el sitio bajo /<repositorio>/: la CI pasa la ruta en BASE_PUBLICA
-  plugins: [fichasPublicables(), idiomasPublicables(), temaCss()],
+  plugins: [fichasPublicables(), idiomasPublicables(), temaCss(), precargas()],
   base: process.env.BASE_PUBLICA ?? '/',
   // Idiomas en revisión local (pipeline/idiomas-publicables.ts); vacío en la CI y en producción
   define: { __VISTA_PREVIA__: JSON.stringify(process.env.IDIOMAS_VISTA_PREVIA ?? '') },

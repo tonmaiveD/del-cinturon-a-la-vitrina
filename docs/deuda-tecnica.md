@@ -566,6 +566,35 @@ errores (M17, M16; reporte por GitHub Issues) → **O5** CSP por `<meta>` (M31) 
 exportable (M42). Fuera por ahora: M39 (sin carga objetivo), M41 (decisión del usuario) y el
 recorrido animado de los bólidos del CNEOS (función nueva, a pedido).
 
+### O3 · coste inicial y modo CNEOS (M15) · **hecha el 2026-10-21**
+
+Primero se midió (perfil de CPU y traza del navegador, con 4G lento y CPU ×4, sin GPU y con la
+GPU real del Mac en Chromium con ventana):
+
+- **El código de la app no es el problema**: ninguna función pasa de unas decenas de ms.
+- **Modo CNEOS «lento» en la CI = artefacto**: sin GPU, el navegador compone por software y lee
+  cada cuadro de WebGL (`GLES2::ReadPixels`, ~790 ms del cambio de modo). Con GPU real no
+  aparece y el cambio ocupa el hilo principal 237 ms en total. Los > 3 s de la CI no reflejan
+  un equipo real; la medición sigue siendo informativa allí.
+- **Carga inicial con GPU real**: 4 tareas largas (~320 ms), sobre todo la compilación de los
+  sombreadores (`GetProgramiv`, que espera a la GPU) y la creación del contexto WebGL.
+  Desactivar `checkShaderErrors` quitaba esa espera de la traza, pero los hitos con GPU real
+  quedaban iguales (escena 2230 frente a 2224 ms, mismas tareas largas): la compilación pasaba
+  al primer dibujo. **Se revirtió**, porque además ocultaría errores de sombreadores.
+- **La red quedaba a medias** entre los 170 y los 520 ms: los datos iniciales y la textura se
+  pedían solo cuando el script de entrada se ejecutaba. **Cambio adoptado**: `pipeline/
+precargas.ts` los anuncia en el HTML (`<link rel="preload">`) con los mismos modos CORS que la
+  petición real; un test unitario comprueba que las rutas coinciden y una e2e
+  (`tests/e2e/precargas.spec.ts`) que cada uno se descarga una sola vez y se usa.
+- **Probado y descartado**: precargar también el módulo 3D (mismo resultado, con o sin
+  `fetchpriority="low"`) y cargar `postprocessing` después del primer cuadro (17,6 kB gzip, ~9 %
+  del módulo: ganaría ~100–150 ms a cambio de que el brillo apareciera de golpe; no compensa).
+
+**Resultado** (local, mediana de 3, sin GPU): escena 2752 → 2590 ms (−6 %); texto 523 → 622 ms
+(+100 ms: el script de entrada comparte la red con las precargas; el primer pintado no cambia,
+~440 ms); modo CNEOS, panel 1216 → 880 ms y nube completa 1831 → 1226 ms (junto con O2). Con GPU
+real, escena 2224 → 2081 ms. De paso, ESLint ignora `.trabajo/` y `revision/`.
+
 ### O2 · no trabajar de más (M14 y M13) · **hecha el 2026-10-21**
 
 - **Dibujo bajo demanda** (`src/scene/escena.ts`): el bucle sigue en cada cuadro del navegador,

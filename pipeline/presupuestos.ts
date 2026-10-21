@@ -24,12 +24,15 @@ const assets = (dist: string, patron: RegExp) =>
     .filter((f) => patron.test(f))
     .map((f) => `assets/${f}`);
 
-/** Lo que pide la página antes de ejecutar nada: HTML, script de entrada, precargas y estilos. */
+/**
+ * Lo que pide la página antes de ejecutar nada: HTML, script de entrada, sus precargas y estilos.
+ * El módulo 3D tiene su propio presupuesto y no cuenta aquí aunque algún día se precargue.
+ */
 export function cargaInicial(dist: string): string[] {
   const html = readFileSync(join(dist, 'index.html'), 'utf8');
-  const refs = [...html.matchAll(/(?:src|href)="([^"]+\.(?:js|css))"/g)].map((m) =>
-    m[1]!.replace(/^.*?assets\//, 'assets/'),
-  );
+  const refs = [...html.matchAll(/(?:src|href)="([^"]+\.(?:js|css))"/g)]
+    .map((m) => m[1]!.replace(/^.*?assets\//, 'assets/'))
+    .filter((f) => !/^assets\/app3d-/.test(f));
   return ['index.html', ...new Set(refs)];
 }
 

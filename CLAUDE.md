@@ -53,7 +53,9 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`pipeline/presupuestos.ts`). O2 hecha: dibujo bajo demanda (`invalidar()` en
   `src/scene/escena.ts`; en reposo 1 cuadro/s), pausa con la pestaña oculta y modo económico
   (manual y automático con histéresis). Pendiente: la prueba del usuario en su iPhone.
-  Siguiente: **O3** (coste inicial y modo CNEOS, M15).
+  O3 hecha: precargas de datos y textura en el HTML (`pipeline/precargas.ts`; escena −6 %,
+  texto +100 ms); el modo CNEOS lento en la CI es un artefacto de la composición por software
+  (con GPU real, 237 ms). Siguiente: **O4** (estado operativo y errores, M17 y M16).
 - **Lección del 2026-10-13:** la revisión V5 (otra sesión) no actualizó la wiki; se corrigió
   y ahora la regla es actualizarla en el mismo paso que cada cambio que afecte a lo que explica.
 
@@ -90,7 +92,7 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`cneos-diario.yml`, 07:30 UTC, con retrasos posibles) y Dependabot revisa dependencias los
   lunes.
 - **Verificación al 2026-10-13:**
-  - 317 tests unitarios y 88 e2e (al 2026-10-21) (escritorio y móvil), más la medición de rendimiento
+  - 318 tests unitarios y 90 e2e (al 2026-10-21) (escritorio y móvil), más la medición de rendimiento
     (aislada: `npm run e2e:rendimiento`; en paralelo con las demás roza el límite de 3 s);
   - auditoría: 603 datos, 0 errores;
   - carga inicial unos 2,8 s en 4G lento;
@@ -280,7 +282,8 @@ M29, M31–M42) está repartido en las olas 3–5 de la hoja de ruta.
 - Lectura sensacionalista de las 5 órbitas hiperbólicas (llevan aviso).
 - Criterio de fiabilidad del CNEOS basado en 18 eventos calibrados.
 - Rendimiento en móviles de gama baja sin medir. En la CI sin GPU, el cambio al modo CNEOS
-  pasa de 3 s, aunque en local tarda 1,2 s.
+  pasa de 3 s: es la composición por software de WebGL (`ReadPixels`), no la app; con GPU
+  real ocupa 237 ms (medido el 2026-10-21, O3).
 - 8 eventos del CNEOS tienen |v| incoherente con la velocidad publicada (dato de la fuente,
   documentado en `docs/reportes/cneos.md`).
 - Dependabot abre PR semanales: revisarlos con el usuario. Nunca integrar a ciegas cambios que
