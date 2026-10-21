@@ -1,1 +1,7 @@
-{ "en": { "estado": "borrador" } }
+{
+  "en": {
+    "estado": "aprobada",
+    "revisado_por": "Pablo Hoffenberg",
+    "fecha_revision": "2026-10-21"
+  }
+}

@@ -33,7 +33,7 @@
   },
   "asociacion:asteroide-2008-tc3:justificacion": {
     "es": "2008 TC3 se descubrió con telescopio unas 20 horas antes de impactar; sus restos se recuperaron como los meteoritos Almahata Sitta (Borovička et al. 2015). Es el vínculo directo entre un asteroide observado y sus meteoritos, no la identificación del cuerpo progenitor de las ureilitas, que sigue sin establecerse.",
-    "en": "2008 TC3 was discovered by telescope about 20 hours before impact; its remains were recovered as the Almahata Sitta meteorites (Borovička et al. 2015). It is the direct link between an observed asteroid and its meteorites, not the identification of the parent body of the ureilites, which remains unestablished."
+    "en": "2008 TC3 was discovered by telescope about 20 hours before impact, and its remains were recovered as the Almahata Sitta meteorites (Borovička et al. 2015). It is the direct link between an observed asteroid and its meteorites. It does not identify the parent body of the ureilites, which has not been established."
   },
   "asociacion:hebe-h:nombre": {
     "es": "(6) Hebe u otros cuerpos del cinturón interior",
@@ -45,11 +45,11 @@
   },
   "sin-asociacion:benesov": {
     "es": "Caída heterogénea (H5/LL3.5); no se asigna a una sola familia.",
-    "en": "Heterogeneous fall (H5/LL3.5); not assigned to a single family."
+    "en": "Heterogeneous fall (H5/LL3.5), not assigned to a single family."
   },
   "sin-asociacion:bunburra-rockhole": {
     "es": "Eucrita anómala: su clasificación no permite asignarla a Vesta sin una fuente primaria específica, que no se ha leído. Su ruta de escape (ν6) sí está en el dataset.",
-    "en": "Anomalous eucrite: its classification does not allow assigning it to Vesta without a specific primary source, which has not been read. Its escape route (ν6) is in the dataset."
+    "en": "Anomalous eucrite. Its classification does not allow assigning it to Vesta without a specific primary source, which has not been read. Its escape route (ν6) is in the dataset."
   },
   "region:cruzadores-marte": {
     "es": "Región de cruzadores intermedios de Marte (IMC)",
@@ -69,7 +69,7 @@
   },
   "sin-asociacion:innisfree": {
     "es": "Clasificación disputada (L5 o LL5 según la fuente, citado por Granvik & Brown 2018); no se asigna a ninguna familia.",
-    "en": "Disputed classification (L5 or LL5 depending on the source, cited by Granvik & Brown 2018); not assigned to any family."
+    "en": "Disputed classification (L5 or LL5 depending on the source, cited by Granvik & Brown 2018), so it is not assigned to any family."
   },
   "asociacion:gefion-l:nombre": {
     "es": "Familia Gefion (propuesta, en conflicto con las órbitas medidas)",
@@ -101,11 +101,11 @@
   },
   "licencia:Datos del Gobierno de EE. UU.; la documentación no indica licencia explícita": {
     "es": "Datos del Gobierno de EE. UU.; la documentación no indica licencia explícita",
-    "en": "U.S. Government data; the documentation states no explicit license"
+    "en": "U.S. Government data, with no explicit license in the documentation"
   },
   "licencia:Datos del Gobierno de EE. UU.; la página no indica licencia explícita": {
     "es": "Datos del Gobierno de EE. UU.; la página no indica licencia explícita",
-    "en": "U.S. Government data; the page states no explicit license"
+    "en": "U.S. Government data, with no explicit license on the page"
   },
   "licencia:MIT": {
     "es": "MIT",
@@ -117,7 +117,7 @@
   },
   "licencia:Cita bibliográfica; copia de repositorio institucional para uso personal": {
     "es": "Cita bibliográfica; copia de repositorio institucional para uso personal",
-    "en": "Bibliographic citation; institutional repository copy for personal use"
+    "en": "Bibliographic citation (institutional repository copy for personal use)"
   },
   "licencia:Licencia de distribución de arXiv": {
     "es": "Licencia de distribución de arXiv",
@@ -129,7 +129,7 @@
   },
   "licencia:Contenido de NASA: en general no sujeto a copyright en EE. UU.; uso educativo e informativo (incluidas páginas web) permitido reconociendo a NASA como fuente": {
     "es": "Contenido de NASA: en general no sujeto a copyright en EE. UU.; uso educativo e informativo (incluidas páginas web) permitido reconociendo a NASA como fuente",
-    "en": "NASA content: generally not subject to copyright in the U.S.; educational and informational use (including web pages) is allowed with NASA credited as the source"
+    "en": "NASA content, generally not subject to copyright in the U.S. Educational and informational use, including web pages, is allowed with NASA credited as the source"
   },
   "licencia:Dato del Gobierno de EE. UU.": {
     "es": "Dato del Gobierno de EE. UU.",
@@ -137,7 +137,7 @@
   },
   "licencia:Cita bibliográfica; preprint arXiv": {
     "es": "Cita bibliográfica; preprint arXiv",
-    "en": "Bibliographic citation; arXiv preprint"
+    "en": "Bibliographic citation (arXiv preprint)"
   },
   "licencia:Datos del Gobierno de EE. UU.": {
     "es": "Datos del Gobierno de EE. UU.",
@@ -145,7 +145,7 @@
   },
   "licencia:Cita bibliográfica; versión de autor": {
     "es": "Cita bibliográfica; versión de autor",
-    "en": "Bibliographic citation; author's version"
+    "en": "Bibliographic citation (author's version)"
   },
   "licencia:Documento del Gobierno de EE. UU.": {
     "es": "Documento del Gobierno de EE. UU.",

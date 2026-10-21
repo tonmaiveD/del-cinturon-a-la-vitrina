@@ -558,7 +558,7 @@ Modelo y protecciones, sin interfaz todavía (guía en `docs/coleccion.md`):
 - Queda para la interfaz: dónde y cómo se muestran los ejemplares, la ficha del ejemplar
   (separada de la divulgativa) y, si hiciera falta, un campo de certificado.
 
-### M38 · etapa E2, traducción al inglés · **hecha el 2026-10-21, en borrador**
+### M38 · etapa E2, traducción al inglés · **aprobada y publicada el 2026-10-21**
 
 - `src/i18n/en.json` (todas las claves, mismos parámetros), `src/i18n/datos.en.json` (25 textos
   de datos y 13 licencias, cada uno con su original) y `content/fichas/chelyabinsk.en.md`
@@ -585,6 +585,12 @@ Modelo y protecciones, sin interfaz todavía (guía en `docs/coleccion.md`):
   outer main belt»; en la ficha, los nombres de región conservan la mayúscula de los nombres
   propios («the Jupiter-family comets»). Ningún texto en inglés añade afirmaciones que no estén
   en el español (se retiró una sobre Benešov durante la revisión).
+- **Aprobación del usuario** (2026-10-21, Pablo Hoffenberg), con una pasada previa de estilo
+  pedida por él: frases directas en la prosa (ficha, descripciones, avisos, justificaciones,
+  licencias), sin rayas ni dos puntos o punto y coma como recurso; las etiquetas de interfaz del
+  tipo «Visual scale: …» se mantienen. Con el inglés en el build pasan las 84 e2e; el visitante
+  en español no descarga el fragmento inglés (29 kB). Medición de carga con la máquina cargada
+  (promedio 8–13 en 8 núcleos): 2,94 s, dentro del límite; los fps bajaron por la carga.
 
 ### M38 · etapa E1, infraestructura de idiomas · **hecha el 2026-10-21**
 

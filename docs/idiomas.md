@@ -29,6 +29,15 @@ Las pruebas e2e usan un navegador en español (`locale: 'es-ES'` en `playwright.
 con el inglés publicado, un navegador en inglés abriría la web en inglés y las pruebas que
 esperan textos en español fallarían. Con el build de revisión pasan las 84.
 
+## Editar después de aprobar
+
+El inglés aprobado se puede editar cuando haga falta en `en.json`, `datos.en.json` o
+`content/fichas/chelyabinsk.en.md`. Como está aprobado, los tests exigen que siga completo: si
+cambia un texto en español (de la interfaz o de los datos), su traducción deja de usarse y la
+CI falla hasta que se actualice, para que nunca se publique un inglés desfasado. Estilo: frases
+directas, sin dos puntos ni punto y coma como recurso, sin rayas y sin construcciones del tipo
+«not X but Y».
+
 ## Cómo aprobar
 
 En `src/i18n/revision.json`:
