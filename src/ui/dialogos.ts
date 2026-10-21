@@ -47,6 +47,42 @@ function listaFuentes(ids?: string[]): HTMLUListElement {
   return ul;
 }
 
+/** URL del repositorio, donde se reportan los errores (GitHub Issues; decisión del 2026-10-21). */
+export const REPOSITORIO = 'https://github.com/tonmaiveD/del-cinturon-a-la-vitrina';
+
+/**
+ * Reporte de un error ya rellenado con lo necesario para reproducirlo: versión, idioma y vista
+ * (la dirección solo guarda el estado de la escena). Nada personal; pedir una cuenta de GitHub
+ * es lo que cuesta este canal.
+ */
+export function enlaceReporte(pagina: string, idioma: string): string {
+  const cuerpo = t('reporte.cuerpo', { version: __VERSION__.commit, pagina, idioma });
+  const q = new URLSearchParams({ title: t('reporte.titulo'), body: cuerpo });
+  return `${REPOSITORIO}/issues/new?${q.toString()}`;
+}
+
+/** Versión publicada y enlace para reportar un error (M16). */
+function bloqueVersion(): HTMLElement {
+  const sec = elemento('section', undefined, 'version');
+  const fecha = __VERSION__.fecha.slice(0, 10);
+  sec.append(
+    elemento('h3', t('version.titulo')),
+    elemento('p', t('version.texto', { commit: __VERSION__.commit, fecha })),
+  );
+  const p = elemento('p');
+  const a = elemento('a', t('reporte.enlace'));
+  a.rel = 'noopener';
+  a.target = '_blank';
+  // Se arma al pulsar: así lleva la vista del momento, no la de la carga
+  a.href = enlaceReporte(location.pathname + location.search, idiomaActivo());
+  a.addEventListener('click', () => {
+    a.href = enlaceReporte(location.pathname + location.search, idiomaActivo());
+  });
+  p.append(a, ' ', elemento('span', t('reporte.nota'), 'nota'));
+  sec.append(p);
+  return sec;
+}
+
 function conectar(boton: HTMLButtonElement, dialogo: HTMLDialogElement): void {
   boton.addEventListener('click', () => dialogo.showModal());
   dialogo
@@ -63,7 +99,7 @@ export function montarDialogos(): void {
   const bFicha = document.querySelector<HTMLButtonElement>('#abrir-ficha')!;
   const dFuentes = document.querySelector<HTMLDialogElement>('#dialogo-fuentes')!;
   conectar(document.querySelector<HTMLButtonElement>('#abrir-fuentes')!, dFuentes);
-  dFuentes.querySelector('.contenido')!.append(listaFuentes());
+  dFuentes.querySelector('.contenido')!.append(listaFuentes(), bloqueVersion());
 
   // Cada idioma tiene su ficha y su aprobación; sin ficha en ese idioma, no hay botón
   const cruda = fichaDe(fichasCrudas, 'chelyabinsk', idiomaActivo());

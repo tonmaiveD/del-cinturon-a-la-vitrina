@@ -54,8 +54,12 @@ function asegurarCneos(): Promise<PanelCneos> {
   panelCneos ??= Promise.all([
     cargarJson<ResumenCneos>('data/cneos/eventos.json'),
     import('./cneos/panel'),
+    // Última consulta (M17): si falta, el panel usa la fecha del último cambio
+    cargarJson<{ consultado: string }>('data/cneos/consulta.json').catch(() => undefined),
   ])
-    .then(([r, { montarPanelCneos }]) => montarPanelCneos(r, estado.evento))
+    .then(([r, { montarPanelCneos }, consulta]) =>
+      montarPanelCneos(r, estado.evento, consulta?.consultado),
+    )
     .catch((e: unknown) => {
       panelCneos = undefined; // un fallo no queda guardado: el reintento vuelve a pedirlo
       throw e;

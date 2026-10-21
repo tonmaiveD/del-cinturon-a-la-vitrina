@@ -55,7 +55,10 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (manual y automático con histéresis). Pendiente: la prueba del usuario en su iPhone.
   O3 hecha: precargas de datos y textura en el HTML (`pipeline/precargas.ts`; escena −6 %,
   texto +100 ms); el modo CNEOS lento en la CI es un artefacto de la composición por software
-  (con GPU real, 237 ms). Siguiente: **O4** (estado operativo y errores, M17 y M16).
+  (con GPU real, 237 ms). O4 hecha: última consulta del CNEOS aparte del último cambio
+  (`public/data/cneos/consulta.json`), el bot publica cada día, vigilancia diaria
+  (`vigilancia.yml`) y versión + reporte por GitHub Issues en «Fuentes y créditos».
+  Siguiente: **O5** (CSP por `<meta>`, M31).
 - **Lección del 2026-10-13:** la revisión V5 (otra sesión) no actualizó la wiki; se corrigió
   y ahora la regla es actualizarla en el mismo paso que cada cambio que afecte a lo que explica.
 
@@ -92,7 +95,7 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`cneos-diario.yml`, 07:30 UTC, con retrasos posibles) y Dependabot revisa dependencias los
   lunes.
 - **Verificación al 2026-10-13:**
-  - 318 tests unitarios y 90 e2e (al 2026-10-21) (escritorio y móvil), más la medición de rendimiento
+  - 320 tests unitarios y 94 e2e (al 2026-10-21) (escritorio y móvil), más la medición de rendimiento
     (aislada: `npm run e2e:rendimiento`; en paralelo con las demás roza el límite de 3 s);
   - auditoría: 603 datos, 0 errores;
   - carga inicial unos 2,8 s en 4G lento;
@@ -204,7 +207,8 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
 - **Decidir** si se añaden caídas posteriores a 2016 (Hamburg, Flensburg, Novo Mesto,
   Winchcombe, Ribbeck…) desde sus artículos originales; recomendado después de la Fase 4.
 - **Rutina de publicación**: «Fetch origin» (y «Pull origin» si aparece) antes de «Push origin»
-  en GitHub Desktop, porque el bot del CNEOS hace commits en `main`. Desktop tiene dos
+  en GitHub Desktop, porque el bot del CNEOS hace commits en `main` (desde el 2026-10-21,
+  **todos los días**, aunque no haya datos nuevos: guarda la fecha de la consulta). Desktop tiene dos
   repositorios: el proyecto y la wiki. Si alguna vez hace falta un push forzado (solo con
   autorización expresa), el usuario lo hizo con éxito desde el menú de Desktop: el botón
   principal solo ofrecía «Pull origin».

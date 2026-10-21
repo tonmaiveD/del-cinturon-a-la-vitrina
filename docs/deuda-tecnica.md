@@ -566,6 +566,27 @@ errores (M17, M16; reporte por GitHub Issues) → **O5** CSP por `<meta>` (M31) 
 exportable (M42). Fuera por ahora: M39 (sin carga objetivo), M41 (decisión del usuario) y el
 recorrido animado de los bólidos del CNEOS (función nueva, a pedido).
 
+### O4 · estado operativo y errores (M17 y M16) · **hecha el 2026-10-21**
+
+- **Tres fechas del CNEOS**: `pipeline/cneos-descargar.ts` escribe en cada consulta válida, con
+  o sin cambios, `public/data/cneos/consulta.json` (`ConsultaCneos`: fecha, si trajo cambios,
+  número de eventos). El panel muestra la última consulta, el último cambio en los datos y el
+  evento más reciente; la descripción del globo, la última consulta. La auditoría comprueba
+  que la consulta no es anterior al último cambio y que cuenta los mismos eventos.
+- **Bot** (`cneos-diario.yml`): guarda y publica cada día, aunque no haya cambios («Consulta
+  del CNEOS sin cambios»); las órbitas, el reporte y las e2e solo corren si cambiaron los datos.
+  El commit diario mantiene el repositorio activo (los cron se desactivan tras 60 días sin
+  actividad). Archivo inicial con la última consulta conocida (2026-10-19).
+- **Vigilancia** (`vigilancia.yml`, 19:30 UTC, `pipeline/vigilancia.ts` sin dependencias):
+  falla, y GitHub avisa por correo, si la portada no responde, si el catálogo no es JSON válido
+  o si la última consulta tiene más de 48 h.
+- **Diagnóstico** (diálogo «Fuentes y créditos»): versión publicada (commit y fecha del build,
+  `__VERSION__` en `vite.config.ts`, con el commit de la copia de trabajo, que es el publicado
+  también cuando la CI la llama el bot) y enlace a GitHub Issues con título y cuerpo rellenados
+  (versión, vista e idioma; nada del navegador ni del dispositivo). Decisión del usuario:
+  GitHub Issues, que exige cuenta.
+- e2e `tests/e2e/diagnostico.spec.ts` y unitario de la regla de 48 h.
+
 ### O3 · coste inicial y modo CNEOS (M15) · **hecha el 2026-10-21**
 
 Primero se midió (perfil de CPU y traza del navegador, con 4G lento y CPU ×4, sin GPU y con la

@@ -4,6 +4,7 @@ import { KM_POR_AU } from '../src/core/marcos';
 import { RADIO_VISUAL_METEOROIDE_AU } from '../src/scene/sistema-solar';
 import type { OrbitaCneos, ResumenCneos } from '../src/cneos/resumen';
 import {
+  ConsultaCneos,
   CalidadCneos,
   Fuentes,
   Meteorito,
@@ -27,6 +28,9 @@ const filas = auditar({
   escape: RegionEscape.array().parse(leer('data/regiones-escape.json')),
   catalogo: leer<Catalogo>('public/data/catalogo.json'),
   textos: leer('src/i18n/es.json'),
+  consultaCneos: existsSync('public/data/cneos/consulta.json')
+    ? ConsultaCneos.parse(leer('public/data/cneos/consulta.json'))
+    : undefined,
   idiomas: Object.fromEntries(
     Object.keys(leerRevisiones())
       .filter((c) => existsSync(rutasIdioma(c).interfaz))

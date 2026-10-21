@@ -155,7 +155,15 @@ function detalle(ev: Evento, r: ResumenCneos, ktChely: number | undefined): HTML
   return raiz;
 }
 
-export function montarPanelCneos(resumen: ResumenCneos, inicial?: string) {
+/**
+ * `ultimaConsulta`: la de public/data/cneos/consulta.json (M17); `resumen.consultado` es la del
+ * último cambio en los datos.
+ */
+export function montarPanelCneos(
+  resumen: ResumenCneos,
+  inicial?: string,
+  ultimaConsulta = resumen.consultado,
+) {
   const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s)!;
   const selGrupo = $<HTMLSelectElement>('#cneos-grupo');
   const selDesde = $<HTMLSelectElement>('#cneos-desde');
@@ -166,6 +174,7 @@ export function montarPanelCneos(resumen: ResumenCneos, inicial?: string) {
   const caja = $('#cneos-evento');
 
   $('#cneos-actualizacion').textContent = t('cneos.actualizacion', {
+    consulta: fechaUtc(ultimaConsulta),
     consultado: fechaUtc(resumen.consultado),
     ultimo: fechaUtc(resumen.ultimo_evento, false),
   });
@@ -335,6 +344,7 @@ export function montarPanelCneos(resumen: ResumenCneos, inicial?: string) {
 
   return {
     resumen,
+    ultimaConsulta,
     actual: () => actual,
     evento: (id: string) => porId.get(id),
     visibles,

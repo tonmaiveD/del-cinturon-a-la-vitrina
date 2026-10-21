@@ -293,7 +293,7 @@ export async function iniciar3D(
         cneos: {
           evento: panelCneos.evento(panelCneos.actual())!,
           nVisibles: panelCneos.visibles().size,
-          consultado: panelCneos.resumen.consultado,
+          consultado: panelCneos.ultimaConsulta,
           nClones: nClonesCneos,
         },
       }),

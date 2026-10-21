@@ -327,3 +327,14 @@ export const RespuestaCneos = z.object({
   }),
 });
 export type RespuestaCneos = z.infer<typeof RespuestaCneos>;
+
+/**
+ * Última consulta a la API del CNEOS (public/data/cneos/consulta.json, M17), traiga o no
+ * cambios. `consultado` de data/cneos/eventos.json es, en cambio, la del último cambio.
+ */
+export const ConsultaCneos = z.object({
+  consultado: z.iso.datetime(),
+  con_cambios: z.boolean(),
+  eventos: z.number().int().nonnegative(),
+});
+export type ConsultaCneos = z.infer<typeof ConsultaCneos>;

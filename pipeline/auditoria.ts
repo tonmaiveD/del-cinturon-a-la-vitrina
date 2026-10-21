@@ -109,6 +109,8 @@ export interface EntradaAuditoria {
   /** Nubes de las piezas (public/data/nubes.json). */
   nubes?: NubesPedigri;
   cneos: { fuente: string; consultado: string; respuesta: { fields: string[]; data: string[][] } };
+  /** Última consulta al CNEOS (public/data/cneos/consulta.json, M17). */
+  consultaCneos?: { consultado: string; con_cambios: boolean; eventos: number };
   radioVisualMeteoroideKm: number;
   /** Trayectorias animadas de las piezas con pedigrí (índice y lector de archivos). */
   trayectorias?: {
@@ -518,6 +520,17 @@ export function auditar(e: EntradaAuditoria): Fila[] {
       resumen.consultado === crudo.consultado,
       'es la fecha de la consulta guardada con la respuesta cruda (nunca «en vivo»)',
     );
+    if (e.consultaCneos) {
+      const c = e.consultaCneos;
+      fila(
+        'fecha de «última consulta»',
+        c.consultado,
+        Date.parse(c.consultado) >= Date.parse(crudo.consultado) &&
+          c.eventos === Number(crudo.respuesta.count) &&
+          (!c.con_cambios || c.consultado === crudo.consultado),
+        'posterior o igual al último cambio, con el mismo número de eventos; si trajo cambios, es la fecha del último cambio',
+      );
+    }
     const alto = tabla4.grupos.find((g) => g.id === 'alto-dd')!;
     fila(
       'criterio de «órbita no verificable» y errores mostrados',

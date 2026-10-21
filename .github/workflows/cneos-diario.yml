@@ -2,8 +2,12 @@ name: Actualización diaria del CNEOS
 # Descarga la API Fireball; si hay cambios, calcula solo las órbitas nuevas, valida, audita y
 # pasa las pruebas e2e, y solo entonces guarda los datos y llama a la CI completa (que vuelve a
 # probar el build de producción y lo publica). Si algo falla, no se guarda ni se publica
-# nada. Los datos del CNEOS no son en tiempo real: la web muestra la fecha de la última
-# consulta que trajo cambios.
+# nada. Los datos del CNEOS no son en tiempo real.
+#
+# Desde el 2026-10-21 (M17) cada consulta válida se guarda y se publica aunque no traiga
+# cambios (public/data/cneos/consulta.json): la web distingue la última consulta del último
+# cambio, la vigilancia (vigilancia.yml) avisa si dejan de llegar, y el commit diario mantiene
+# el repositorio activo (GitHub desactiva las tareas programadas tras 60 días sin actividad).
 on:
   schedule:
     - cron: '30 7 * * *' # todos los días, 07:30 UTC
@@ -34,13 +38,16 @@ jobs:
       - run: npm ci
       - name: Descargar la API del CNEOS
         run: npm run datos:cneos:descargar
-      - name: Órbitas nuevas, catálogo y reporte (solo si cambiaron los datos)
+      - id: datos
+        name: Órbitas nuevas, catálogo y reporte (solo si cambiaron los datos)
         run: |
           if git diff --quiet -- data/cneos/eventos.json; then
             echo "Sin cambios en el CNEOS."
+            echo "cambiaron=false" >> "$GITHUB_OUTPUT"
           else
             npm run datos:cneos:orbitas
             npm run reporte:cneos
+            echo "cambiaron=true" >> "$GITHUB_OUTPUT"
           fi
       # Antes de guardar: esquema, tests unitarios y build (incluye la auditoría de trazabilidad)
       - run: npm run lint
@@ -49,13 +56,10 @@ jobs:
       # Las pruebas e2e también van antes de guardar: si fallan, main no recibe datos que no se
       # podrían publicar (pasó el 2026-10-10 y el 2026-10-11)
       - name: Pruebas e2e (solo si hay datos nuevos)
+        if: steps.datos.outputs.cambiaron == 'true'
         run: |
-          if git diff --quiet; then
-            echo "Sin cambios: no hace falta probar."
-          else
-            npx playwright install --with-deps chromium
-            E2E_DIST_LISTO=1 npm run e2e
-          fi
+          npx playwright install --with-deps chromium
+          E2E_DIST_LISTO=1 npm run e2e
       - id: guardar
         name: Guardar los datos nuevos
         run: |
@@ -66,7 +70,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/cneos public/data/cneos docs/reportes/cneos.md docs/reportes/trazabilidad.md
-          git commit -m "Datos del CNEOS actualizados ($(date -u +%Y-%m-%d))"
+          if [ "${{ steps.datos.outputs.cambiaron }}" = "true" ]; then
+            git commit -m "Datos del CNEOS actualizados ($(date -u +%Y-%m-%d))"
+          else
+            git commit -m "Consulta del CNEOS sin cambios ($(date -u +%Y-%m-%d))"
+          fi
           git push origin HEAD:main
           echo "cambio=true" >> "$GITHUB_OUTPUT"
           echo "ref=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"

@@ -112,7 +112,7 @@
   "modo.pedigri": "Meteorites with known orbits",
   "modo.cneos": "CNEOS fireballs",
   "cneos.cargando": "Loading CNEOS fireballs…",
-  "cneos.actualizacion": "Data from the CNEOS Fireball API (NASA/JPL). They are not continuously updated. Last data update {consultado} UTC, most recent event {ultimo}.",
+  "cneos.actualizacion": "Data from the CNEOS Fireball API (NASA/JPL). They are not continuously updated. Last check {consulta} UTC, last data change {consultado} UTC, most recent event {ultimo}.",
   "cneos.leyenda.con-orbita": "With computed orbit",
   "cneos.leyenda.no-verificable": "Orbit cannot be verified (before {anio} and under {kt} kt)",
   "cneos.leyenda.sin-trayectoria": "No velocity vector or no altitude, position only",
@@ -150,7 +150,7 @@
   "etiqueta.cneos": "Fireball of {fecha}",
   "etiqueta.nube.cneos": "Possible orbits of the fireball",
   "escala.marcadores.cneos": "Fireball symbols show position and energy, not true size.",
-  "desc.tierra.cneos": "Earth on {fecha} UTC. Each symbol is a fireball recorded by CNEOS ({n} with the current filters), and the highlighted one is selected.{tray} The data are not continuously updated (last update {consultado} UTC).",
+  "desc.tierra.cneos": "Earth on {fecha} UTC. Each symbol is a fireball recorded by CNEOS ({n} with the current filters), and the highlighted one is selected.{tray} The data are not continuously updated (last check {consultado} UTC).",
   "desc.tierra.cneos.tray": " The bright line is its atmospheric entry trajectory to peak brightness, drawn from an altitude of {alto} km.",
   "desc.sistema-solar.cneos": "Inner solar system on {fecha} UTC. The blue cloud gathers {n} possible orbits of the selected fireball, computed from variants of its velocity vector according to the typical errors measured on the geocentric radiant. The density of the cloud is not a calibrated probability.",
   "desc.sistema-solar.cneos.sin": "Inner solar system on {fecha} UTC. The selected fireball has no computed orbit. The reason is given in the panel.",
@@ -241,5 +241,11 @@
   "formato.porcentaje": "{v}%",
   "economico.etiqueta": "Low-power mode",
   "economico.aviso": "Low-power mode: lower resolution and no glow effect, to use less battery. The data are the same.",
-  "economico.aviso.auto": "Low-power mode turned on automatically because the scene was running slowly on this device. It uses a lower resolution and no glow effect, but the data are the same."
+  "economico.aviso.auto": "Low-power mode turned on automatically because the scene was running slowly on this device. It uses a lower resolution and no glow effect, but the data are the same.",
+  "version.titulo": "Version and errors",
+  "version.texto": "Published version {commit}, built on {fecha} (UTC).",
+  "reporte.enlace": "Report an error on GitHub",
+  "reporte.nota": "A GitHub account is required. The report includes the version and the current view, so do not add personal data.",
+  "reporte.titulo": "Error on the website",
+  "reporte.cuerpo": "What I did and what I saw:\n\nWhat I expected to see:\n\n---\nVersion: {version}\nView: {pagina}\nLanguage: {idioma}"
 }
