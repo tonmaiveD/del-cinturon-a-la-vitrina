@@ -68,6 +68,7 @@ export interface DatosEscena {
   trayectoria: { instante_referencia: string; helio_ecl_au: Muestra[]; geo_eqj_km: Muestra[] };
 }
 
+import { marcar } from './ui/metricas';
 import { cargarJson, urlTextura } from './ui/recursos';
 
 /** Arranca la parte 3D (se carga con import() dinámico desde main.ts). */
@@ -236,6 +237,7 @@ export async function iniciar3D(
       // que la precede (llegada, movimiento reducido)
       const antes = descripcionVista();
       solarCreada!.cat.fijarNubes(n);
+      marcar('nubes');
       const texto = descripcion.textContent ?? '';
       if (!secuencia.activa() && texto.endsWith(antes))
         descripcion.textContent = texto.slice(0, texto.length - antes.length) + descripcionVista();
@@ -463,6 +465,7 @@ export async function iniciar3D(
       quitarAviso('orbita');
       nClonesCneos = o.clones.length;
       asegurarSolar().nubeCneos.fijar(o.clones, o.nominal);
+      marcar('cneos-nube');
       aplicarModoSolar();
       if (!secuencia.activa()) descripcion.textContent = descripcionVista();
     } catch {
@@ -536,6 +539,7 @@ export async function iniciar3D(
     tierra.mostrarBolido(false);
     aplicarModoSolar();
     aplicarEvento(pc.actual(), tInicial);
+    marcar('cneos-panel');
   }
 
   reloj.alCambiar((e) => {
@@ -735,6 +739,7 @@ export async function iniciar3D(
   void tierra.primeraCargada.then(() =>
     requestAnimationFrame(() => {
       (window as unknown as Record<string, unknown>).__listo = performance.now();
+      marcar('escena');
       // Con la Tierra ya visible, se prepara la vista solar en un momento de reposo
       const enReposo = window.requestIdleCallback ?? ((f: () => void) => window.setTimeout(f, 300));
       enReposo(() => asegurarSolar());

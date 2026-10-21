@@ -14,6 +14,7 @@ import { montarPanelPieza } from './ui/panel-pieza';
 import type { ResumenCneos } from './cneos/resumen';
 import type { PanelCneos } from './cneos/panel';
 import { cargarJson, precargar } from './ui/recursos';
+import { marcar } from './ui/metricas';
 import { aplicarTextos } from './ui/textos';
 import type { DatosEscena } from './app3d';
 
@@ -28,6 +29,7 @@ const catalogo = cargarJson<Catalogo>('data/catalogo.json');
 await prepararIdioma();
 aplicarTextos();
 montarSelectorIdioma(idiomaActivo());
+marcar('texto');
 montarDialogos();
 const hoja = montarHoja();
 // En pantallas pequeñas los filtros empiezan plegados (cada pestaña de la hoja ya separa el resto)
@@ -39,7 +41,11 @@ const estado = leerEstadoUrl(location.search, {
   vista: 'tierra',
   escalaVisual: true,
 });
-const panel = catalogo.then((c) => montarPanelPieza(c, estado.pieza));
+const panel = catalogo.then((c) => {
+  const p = montarPanelPieza(c, estado.pieza);
+  marcar('catalogo');
+  return p;
+});
 const modo = montarModo(estado.modo ?? 'pedigri');
 
 // Datos del CNEOS: solo se descargan al entrar en ese modo (la carga inicial no los necesita)

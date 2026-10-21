@@ -47,6 +47,11 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   ficha `chelyabinsk.en.md`), tras una pasada de estilo sin rasgos de texto de IA (menos dos
   puntos y punto y coma como recurso, sin rayas ni «not X but Y»). El usuario puede seguir
   editándolo: los tests exigen que siga completo y al día con el español.
+- **Ola 5 en curso (plan del 2026-10-21, O1–O6 en `docs/deuda-tecnica.md`).** O1 (medir, M22)
+  hecha: hitos con User Timing (`src/ui/metricas.ts`), prueba de rendimiento con mediana de 3,
+  LCP/CLS/tareas largas, y presupuestos de tamaño que bloquean el build
+  (`pipeline/presupuestos.ts`). Siguiente: **O2** (render bajo demanda, pausa en segundo plano,
+  modo económico; el usuario probará en su iPhone).
 - **Lección del 2026-10-13:** la revisión V5 (otra sesión) no actualizó la wiki; se corrigió
   y ahora la regla es actualizarla en el mismo paso que cada cambio que afecte a lo que explica.
 
@@ -83,7 +88,7 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`cneos-diario.yml`, 07:30 UTC, con retrasos posibles) y Dependabot revisa dependencias los
   lunes.
 - **Verificación al 2026-10-13:**
-  - 315 tests unitarios y 84 e2e con el inglés publicado (al 2026-10-21) (escritorio y móvil), más la medición de rendimiento
+  - 317 tests unitarios y 84 e2e con el inglés publicado (al 2026-10-21) (escritorio y móvil), más la medición de rendimiento
     (aislada: `npm run e2e:rendimiento`; en paralelo con las demás roza el límite de 3 s);
   - auditoría: 603 datos, 0 errores;
   - carga inicial unos 2,8 s en 4G lento;
@@ -426,7 +431,8 @@ textura Blue Marble según las directrices de medios de NASA (verificado el 2026
 ## Comandos
 
 - `npm run dev` · `npm test` · `npm run lint` · `npm run build` (incluye `validate`)
-- `npm run e2e` (escritorio + móvil) · `npm run e2e:rendimiento` (4G lento + CPU ×4, aislado)
+- `npm run e2e` (escritorio + móvil) · `npm run e2e:rendimiento` (4G lento + CPU ×4, aislado;
+  mediana de `REPETICIONES=3`) · `tsx pipeline/presupuestos.ts` (tamaños; parte del build)
 - Datos: `npm run datos` (validación Chelyabinsk + trayectoria), `npm run datos:pedigri`
   (Granvik & Brown + JPL 2008 TC3 + catálogo), `npm run datos:texturas`, `npm run verificacion:cruzada`
 - CNEOS: `npm run datos:cneos` (descarga + órbitas), `npm run reporte:cneos`.

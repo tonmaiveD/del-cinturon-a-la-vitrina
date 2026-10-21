@@ -558,6 +558,31 @@ Modelo y protecciones, sin interfaz todavía (guía en `docs/coleccion.md`):
 - Queda para la interfaz: dónde y cómo se muestran los ejemplares, la ficha del ejemplar
   (separada de la divulgativa) y, si hiciera falta, un campo de certificado.
 
+### Ola 5 · plan acordado el 2026-10-21
+
+Orden aprobado por el usuario: **O1** medir (M22) → **O2** no trabajar de más (M14, M13, con
+prueba en su iPhone) → **O3** coste inicial y modo CNEOS (M15) → **O4** estado operativo y
+errores (M17, M16; reporte por GitHub Issues) → **O5** CSP por `<meta>` (M31) → **O6** ficha
+exportable (M42). Fuera por ahora: M39 (sin carga objetivo), M41 (decisión del usuario) y el
+recorrido animado de los bólidos del CNEOS (función nueva, a pedido).
+
+### O1 · medir antes de optimizar (M22) · **hecha el 2026-10-21**
+
+- **Hitos** con User Timing (`src/ui/metricas.ts`, sin enviar nada): `texto`, `catalogo`,
+  `escena` (además de `__listo`), `nubes`, `cneos-panel`, `cneos-nube` (la nube completa: antes
+  la medición del modo CNEOS terminaba al aparecer el título).
+- **Prueba de rendimiento** (`tests/e2e/rendimiento.spec.ts`): 3 cargas en sesiones nuevas
+  (`REPETICIONES`), mediana; LCP, CLS y tareas largas con observadores desde antes de la carga;
+  resultados en `tests/e2e/.resultados/rendimiento-<proyecto>.json`. Bloquea (en local): FCP y
+  escena < 3 s en mediana, CLS < 0,1 en todas. En la CI sigue informativa por el hardware.
+- **Presupuestos de tamaño** (`pipeline/presupuestos.ts`, último paso de `npm run build`, sí
+  bloquean la CI porque no dependen del hardware): siete grupos en kB gzip con ~10 % de margen.
+- **Línea de base** (local, 4G lento, CPU ×4, mediana de 3): FCP 420 ms, texto 523, catálogo
+  785, LCP 580, escena 2752 ms; CLS 0; 5 tareas largas (1,0 s en total); 314 kB transferidos.
+  Modo CNEOS: panel 1216 ms, nube completa 1831 ms. fps vista solar (sin GPU): 28,6.
+  Tamaños: inicial 35,3 kB, módulo 3D 187,8, datos iniciales 40,7, textura 47,8, nubes 65,6,
+  CNEOS 51,5, inglés 9,4.
+
 ### M38 · etapa E2, traducción al inglés · **aprobada y publicada el 2026-10-21**
 
 - `src/i18n/en.json` (todas las claves, mismos parámetros), `src/i18n/datos.en.json` (25 textos
