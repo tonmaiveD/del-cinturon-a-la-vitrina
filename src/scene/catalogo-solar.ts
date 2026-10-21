@@ -6,6 +6,7 @@
  * - regiones de escape con geometría publicada (Hungaria, Phocaea) como volúmenes aproximados
  *   y anillos en el centro nominal de las resonancias 3:1, 5:2 y 2:1.
  */
+import { TEMA } from '../tema';
 import {
   BufferAttribute,
   BufferGeometry,
@@ -28,8 +29,8 @@ const DETALLE = { cerca: [24, 128], lejos: [8, 48], seleccion: [160, 160] } as c
 /** Distancia de la cámara al Sol (AU) a partir de la cual se usa el nivel «lejos». */
 export const DISTANCIA_LOD = 6;
 
-const COLOR_NUBE = new Color(0x8f9bd6);
-const COLOR_SELECCION = new Color(0x6fd3ff);
+const COLOR_NUBE = new Color(TEMA.capas.otras);
+const COLOR_SELECCION = new Color(TEMA.capas.seleccion);
 
 function geometriaNube(formas: FormaOrbita[], n: number): BufferGeometry {
   const pos = new Float32Array(formas.length * n * 6);
@@ -103,12 +104,15 @@ export function crearCatalogoSolar(catalogo: Catalogo) {
   const regiones = new Group();
   regiones.name = 'regiones-escape';
   const anclas: { texto: string; objeto: Object3D }[] = [];
-  const colorZona = { hungaria: 0x9be7a8, phocaea: 0xf0b6ff } as Record<string, number>;
+  const colorZona: Record<string, string> = {
+    hungaria: TEMA.capas.hungaria,
+    phocaea: TEMA.capas.phocaea,
+  };
   for (const z of catalogo.zonas) {
     const tanI = Math.tan(((z.i_max ?? 0) * Math.PI) / 180);
     // Contorno del volumen aproximado: a ∈ [a_min, a_max] y |latitud eclíptica| ≤ i_max.
     // Solo aristas (un relleno translúcido se acumula en neblina con el bloom).
-    const color = colorZona[z.id] ?? 0xffffff;
+    const color = colorZona[z.id] ?? '#ffffff';
     const contorno = new Group();
     contorno.name = `zona-${z.id}`;
     for (const a of [z.a_min, z.a_max])
@@ -135,7 +139,7 @@ export function crearCatalogoSolar(catalogo: Catalogo) {
     anclas.push({ texto: z.id, objeto: ancla });
   }
   for (const r of catalogo.resonancias) {
-    regiones.add(anillo(r.a, 0xffd36b, 0.55, true));
+    regiones.add(anillo(r.a, TEMA.capas.resonancias, 0.55, true));
     const ancla = new Object3D();
     ancla.position.set(r.a * Math.SQRT1_2, 0, r.a * Math.SQRT1_2);
     regiones.add(ancla);
@@ -145,7 +149,7 @@ export function crearCatalogoSolar(catalogo: Catalogo) {
 
   function anillo(
     radio: number,
-    color: number,
+    color: string,
     opacidad: number,
     discontinuo: boolean,
     altura = 0,

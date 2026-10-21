@@ -1,4 +1,5 @@
 /** Vista geocéntrica: globo orientado según la fecha, atmósfera y trayectoria del bólido. */
+import { TEMA } from '../tema';
 import * as Astro from 'astronomy-engine';
 import {
   AdditiveBlending,
@@ -127,16 +128,33 @@ export function crearVistaTierra(
   const superficie = new Mesh(new SphereGeometry(1, 128, 64), material);
   globo.add(superficie);
 
-  // Luz solar real (dirección geocéntrica del Sol en cada instante)
+  // Luz real: dirección geocéntrica del Sol en cada instante. Luz de presentación («siempre de
+  // día», M35): desde detrás de la cámara y algo por encima, para que la cara visible del globo
+  // esté iluminada aunque allí fuera de noche; la interfaz lo rotula (no es la posición del Sol).
   const dirSol = new Vector3();
+  const dirLuz = new Vector3();
   const luz = new DirectionalLight(0xffffff, 3);
+  const ambiente = new AmbientLight(0xffffff, 0.04);
+  let presentacion = true;
   function iluminar(tt: Astro.AstroTime): void {
     const sol = Astro.GeoVector(Astro.Body.Sun, tt, true);
     dirSol.copy(aThree([sol.x, sol.y, sol.z])).normalize();
-    luz.position.copy(dirSol).multiplyScalar(10);
+  }
+  const arriba = new Vector3();
+  const lado = new Vector3();
+  function orientarLuz(camara: Camera): void {
+    if (presentacion) {
+      // Luz principal de estudio: un poco arriba y a la izquierda de la cámara
+      const pos = camara.getWorldPosition(new Vector3()).normalize();
+      arriba.set(0, 1, 0).applyQuaternion(camara.quaternion);
+      lado.set(-1, 0, 0).applyQuaternion(camara.quaternion);
+      dirLuz.copy(pos).addScaledVector(arriba, 0.35).addScaledVector(lado, 0.35).normalize();
+    } else dirLuz.copy(dirSol);
+    luz.position.copy(dirLuz).multiplyScalar(10);
+    ambiente.intensity = presentacion ? 0.12 : 0.04;
   }
   iluminar(t);
-  escena.add(luz, new AmbientLight(0xffffff, 0.04));
+  escena.add(luz, ambiente);
 
   const atmosfera = new Mesh(
     new SphereGeometry(1.025, 96, 48),
@@ -155,7 +173,10 @@ export function crearVistaTierra(
   // Bólido: punto final (pico de brillo o posición de referencia) y, si se conoce el vector de
   // velocidad, trayectoria de entrada; en ECEF (hijos del globo). Se fijan con fijarBolido().
   const kmAUnidad = 1 / RADIO_TIERRA_KM;
-  const trayectoria = new Line(new BufferGeometry(), new LineBasicMaterial({ color: 0xffc46b }));
+  const trayectoria = new Line(
+    new BufferGeometry(),
+    new LineBasicMaterial({ color: TEMA.capas.entrada }),
+  );
   globo.add(trayectoria);
 
   // Marcador del punto final: exagerado en escala visual
@@ -171,7 +192,7 @@ export function crearVistaTierra(
   let geomAprox = new BufferGeometry();
   const lineaAprox = new Line(
     geomAprox,
-    new LineBasicMaterial({ color: 0xff9a3c, transparent: true, opacity: 0.85 }),
+    new LineBasicMaterial({ color: TEMA.capas.aproximacion, transparent: true, opacity: 0.85 }),
   );
   lineaAprox.frustumCulled = false;
   escena.add(lineaAprox);
@@ -287,9 +308,15 @@ export function crearVistaTierra(
   });
 
   function actualizar(camara: Camera): void {
-    // El shader trabaja en espacio de vista: se transforma la dirección del Sol
+    orientarLuz(camara);
+    // El shader trabaja en espacio de vista: se transforma la dirección de la luz
     const mat = atmosfera.material as ShaderMaterial;
-    mat.uniforms.uSol!.value.copy(dirSol).transformDirection(camara.matrixWorldInverse);
+    mat.uniforms.uSol!.value.copy(dirLuz).transformDirection(camara.matrixWorldInverse);
+  }
+
+  /** Luz de presentación (siempre de día) o luz real del Sol en ese instante. */
+  function fijarIluminacion(dePresentacion: boolean): void {
+    presentacion = dePresentacion;
   }
 
   function mostrarBolido(si: boolean): void {
@@ -309,5 +336,8 @@ export function crearVistaTierra(
     aplicarEscala,
     actualizar,
     actualizarTiempo,
+    fijarIluminacion,
+    /** Para las pruebas: dirección de la luz y del Sol real (unitarias, EQJ). */
+    luces: () => ({ presentacion, luz: dirLuz.clone(), sol: dirSol.clone() }),
   };
 }

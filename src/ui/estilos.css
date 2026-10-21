@@ -1,16 +1,6 @@
+/* Los valores de las variables (--fondo, --acento…) vienen de src/tema.ts (M35). */
 :root {
-  --fondo: #000;
-  --texto: #eef0f5;
-  --texto-suave: #b4bbcc;
-  --panel: rgba(12, 14, 20, 0.82);
-  --borde: rgba(255, 255, 255, 0.14);
-  --acento: #ffb25c;
-  --aviso: #ffd59a;
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    sans-serif;
+  font-family: var(--fuente);
 }
 * {
   box-sizing: border-box;
@@ -110,14 +100,14 @@ body {
 }
 .boton[aria-pressed='true'] {
   background: var(--acento);
-  color: #1a1206;
+  color: var(--texto-sobre-acento);
   border-color: var(--acento);
   font-weight: 600;
 }
 .boton:focus-visible,
 .interruptor:focus-visible,
 summary:focus-visible {
-  outline: 2px solid #8ec5ff;
+  outline: 2px solid var(--foco);
   outline-offset: 2px;
 }
 .interruptor {
@@ -214,7 +204,7 @@ summary:focus-visible {
   font: inherit;
   font-size: 0.85rem;
   color: var(--texto);
-  background: #181b24;
+  background: var(--superficie-alta);
   border: 1px solid var(--borde);
   border-radius: 8px;
   padding: 6px 8px;
@@ -227,7 +217,7 @@ summary:focus-visible {
 }
 .deslizador:focus-visible,
 .selector:focus-visible {
-  outline: 2px solid #8ec5ff;
+  outline: 2px solid var(--foco);
   outline-offset: 2px;
 }
 .fecha {
@@ -253,7 +243,7 @@ summary:focus-visible {
   max-width: min(42rem, calc(100vw - 32px));
   max-height: calc(100vh - 64px);
   color: var(--texto);
-  background: #0f1219;
+  background: var(--superficie);
   border: 1px solid var(--borde);
   border-radius: 12px;
   padding: 0;
@@ -270,7 +260,7 @@ summary:focus-visible {
   border-bottom: 1px solid var(--borde);
   position: sticky;
   top: 0;
-  background: #0f1219;
+  background: var(--superficie);
 }
 .dialogo h2 {
   margin: 0;
@@ -285,7 +275,7 @@ summary:focus-visible {
   margin: 18px 0 6px;
 }
 .dialogo a {
-  color: #9fd0ff;
+  color: var(--enlace);
 }
 .lista-fuentes {
   padding-left: 18px;
@@ -497,7 +487,7 @@ summary:focus-visible {
   background: rgba(111, 211, 255, 0.12);
 }
 .lista-eventos .evento:focus-visible {
-  outline: 2px solid #8ec5ff;
+  outline: 2px solid var(--foco);
   outline-offset: 2px;
 }
 .datos-orbita {
@@ -602,7 +592,7 @@ summary:focus-visible {
     background: rgba(255, 255, 255, 0.35);
   }
   .hoja-asa:focus-visible {
-    outline: 2px solid #8ec5ff;
+    outline: 2px solid var(--foco);
     outline-offset: -2px;
     border-radius: 8px;
   }
@@ -704,7 +694,7 @@ summary:focus-visible {
   line-height: 1;
 }
 #escena:focus-visible {
-  outline: 3px solid #8ec5ff;
+  outline: 3px solid var(--foco);
   outline-offset: -3px;
 }
 

@@ -3,6 +3,7 @@
  * Planetas y sus órbitas desde astronomy-engine; órbita de Chelyabinsk como nube de órbitas
  * calculadas desde su radiante (nunca una sola línea) más la órbita central publicada.
  */
+import { TEMA } from '../tema';
 import * as Astro from 'astronomy-engine';
 import {
   AdditiveBlending,
@@ -142,7 +143,7 @@ export function crearVistaSistemaSolar(
   const nube = new LineSegments(
     geomNube,
     new LineBasicMaterial({
-      color: 0xff9a3c,
+      color: TEMA.capas.chelyabinsk,
       transparent: true,
       opacity: Math.min(0.5, 12 / n),
       blending: AdditiveBlending,
@@ -155,7 +156,7 @@ export function crearVistaSistemaSolar(
   ptsNominal.push(ptsNominal[0]!.clone());
   const nominal = new Line(
     new BufferGeometry().setFromPoints(ptsNominal),
-    new LineBasicMaterial({ color: 0xffe2b8, transparent: true, opacity: 0.9 }),
+    new LineBasicMaterial({ color: TEMA.capas['linea-central'], transparent: true, opacity: 0.9 }),
   );
   escena.add(nominal);
 
@@ -163,7 +164,7 @@ export function crearVistaSistemaSolar(
   let tray: Muestra[] = trayectoria;
   let tRef = 0; // días UT de J2000 del instante de referencia de la trayectoria
   let geomEstela = new BufferGeometry();
-  const estela = new Line(geomEstela, new LineBasicMaterial({ color: 0xffd08a }));
+  const estela = new Line(geomEstela, new LineBasicMaterial({ color: TEMA.capas.estela }));
   estela.frustumCulled = false;
   escena.add(estela);
   const meteoroide = new Mesh(
@@ -180,7 +181,7 @@ export function crearVistaSistemaSolar(
   const puntosClones = new Points(
     geomPuntos,
     new PointsMaterial({
-      color: 0xffb066,
+      color: TEMA.capas.posiciones,
       size: 3,
       sizeAttenuation: false,
       transparent: true,

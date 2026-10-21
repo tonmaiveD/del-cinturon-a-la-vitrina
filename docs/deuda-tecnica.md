@@ -558,6 +558,27 @@ Modelo y protecciones, sin interfaz todavía (guía en `docs/coleccion.md`):
 - Queda para la interfaz: dónde y cómo se muestran los ejemplares, la ficha del ejemplar
   (separada de la divulgativa) y, si hiciera falta, un campo de certificado.
 
+### M35 · iluminación de presentación y tema de marca · **hecha el 2026-10-21** (parte)
+
+Pedido del amigo («que siempre sea de día» y adaptar el aspecto a la tienda):
+
+- **Siempre de día** (por defecto): `fijarIluminacion` en `src/scene/tierra.ts`; la luz sale de
+  detrás de la cámara, algo arriba y a la izquierda, y la atmósfera la sigue. Rotulado como
+  la escala visual: interruptor «Siempre de día», aviso `#aviso-iluminacion` y una frase en la
+  descripción accesible; `?luz=real` vuelve al Sol real. La vista solar no cambia. e2e nueva
+  (`tests/e2e/iluminacion.spec.ts`): luz a < 40° de la cámara en presentación y a < 0,01° del
+  Sol en real; con Novato (caída nocturna) se ve la diferencia.
+- **Tema** (`src/tema.ts`, guía `docs/marca.md`): variables CSS de la interfaz (inyectadas en
+  `index.html` por `pipeline/tema-css.ts`, sin destello inicial), colores de capa de la escena y
+  de la leyenda, grupos del CNEOS. Tests: cada `var(--…)` existe en el tema, la leyenda usa
+  colores de capa, la escena no escribe colores de capa a mano.
+- **Corregido de paso**: (1) con cualquier pieza que no fuera Chelyabinsk, el marcador final
+  del globo decía «Pico de brillo (CNEOS)»; ahora «Final de la aproximación calculada»;
+  (2) la leyenda pintaba la estela de las piezas con el color de la línea central de
+  Chelyabinsk (`#ffe2b8`) en lugar del de la estela (`#ffd08a`).
+- **Queda de M35**: los recursos de marca de la tienda (colores, tipografía, logo); la
+  jerarquía de avisos que compiten con la escena y las etiquetas que se cruzan con los paneles.
+
 ### Etapa 4 de la Fase 4 · `app3d.ts` dividido (M37) · **hecha el 2026-10-17**
 
 De 1027 a 736 líneas, sin cambiar comportamiento (80 e2e iguales; carga 2,8 s y modo CNEOS

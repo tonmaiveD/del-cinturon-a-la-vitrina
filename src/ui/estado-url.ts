@@ -1,4 +1,4 @@
-/** Estado compartible por URL: modo, pieza o evento, instante, vista y escala. */
+/** Estado compartible por URL: modo, pieza o evento, instante, vista, escala e iluminación. */
 export type Vista = 'tierra' | 'sistema-solar';
 export type Modo = 'pedigri' | 'cneos';
 
@@ -10,6 +10,8 @@ export interface EstadoUrl {
   t?: number;
   vista: Vista;
   escalaVisual: boolean;
+  /** Luz de presentación (siempre de día, por defecto) o luz real del Sol: `luz=real`. */
+  luzPresentacion?: boolean;
 }
 
 const VISTAS: Vista[] = ['tierra', 'sistema-solar'];
@@ -26,6 +28,9 @@ export function leerEstadoUrl(busqueda: string, porDefecto: EstadoUrl): EstadoUr
     t: Number.isFinite(t) ? t : porDefecto.t,
     vista: vista && VISTAS.includes(vista) ? vista : porDefecto.vista,
     escalaVisual: p.has('escala') ? p.get('escala') !== 'real' : porDefecto.escalaVisual,
+    ...((p.has('luz') || porDefecto.luzPresentacion !== undefined) && {
+      luzPresentacion: p.has('luz') ? p.get('luz') !== 'real' : porDefecto.luzPresentacion,
+    }),
   };
 }
 
@@ -38,5 +43,7 @@ export function escribirEstadoUrl(e: EstadoUrl): string {
   if (e.t !== undefined) p.set('t', new Date(e.t).toISOString().replace('.000Z', 'Z'));
   p.set('vista', e.vista);
   p.set('escala', e.escalaVisual ? 'visual' : 'real');
+  // La luz de presentación es la de partida: solo se escribe la real
+  if (e.luzPresentacion === false) p.set('luz', 'real');
   return `?${p.toString()}`;
 }

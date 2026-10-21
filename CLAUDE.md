@@ -5,7 +5,7 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
 
 ## Retomar aquí
 
-### Estado (2026-10-17)
+### Estado (2026-10-21)
 
 - **Todo subido y publicado.** El proyecto (último commit `b8c6e9a`) y la wiki (`6f3dcf0`)
   están al día con GitHub; la CI de `b8c6e9a` pasó y la web en vivo incluye la ficha aprobada.
@@ -31,11 +31,18 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`npm run datos:fotos`), `verificar-dist` contra lo privado; formatos por idioma en
   `src/i18n/formato.ts`. Guía: `docs/coleccion.md`. Detalle y evaluación del tercero en
   `docs/deuda-tecnica.md`.
+- **M35 (parte) hecha el 2026-10-21:** globo «Siempre de día» por defecto (luz de presentación
+  rotulada, interruptor `#iluminacion`, `?luz=real`) y tema de marca en `src/tema.ts` (variables
+  CSS inyectadas por `pipeline/tema-css.ts`, colores de capa compartidos con la leyenda). Guía:
+  `docs/marca.md`. Corregidos de paso: la etiqueta «Pico de brillo (CNEOS)» en piezas sin dato
+  del CNEOS y el color de la estela en la leyenda de las piezas.
 - **Lección del 2026-10-13:** la revisión V5 (otra sesión) no actualizó la wiki; se corrigió
   y ahora la regla es actualizarla en el mismo paso que cada cambio que afecte a lo que explica.
 
 ### Pendientes por prioridad (orden acordado el 2026-10-17, tras la evaluación del tercero)
 
+0. **Orden acordado el 2026-10-21:** M35 (iluminación y tema, hecho salvo los recursos de
+   marca) → **versión en inglés (M38), adelantada** → Fase 4 cuando llegue la lista de piezas.
 1. **Ola 3 = Fase 4 (colección y fichas).** Hechos el mantenimiento corto (2026-10-13), la
    etapa 2, M33 + M32, la etapa 3, huella del CNEOS por grafo de imports, y la etapa 4,
    `app3d.ts` dividido (M37) (las tres el 2026-10-17). Sigue:
@@ -48,8 +55,8 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
    del usuario, M34, M36; M12 solo si hace falta captar tráfico.
 4. **Ola 5 (optimización y ampliación):** M13–M15 y M22 (rendimiento; modo CNEOS > 3 s en la
    CI), M16, M17, M31, M37, M38, M39, M41, M42; recorrido animado de los bólidos del CNEOS.
-   **M38 (inglés de EE. UU.) confirmado por el usuario el 2026-10-14**: se hará después de la
-   Fase 4; mientras tanto, todo lo nuevo se diseña para dos idiomas.
+   **M38 (inglés de EE. UU.)**: confirmado el 2026-10-14 y **adelantado el 2026-10-21** (va
+   después de M35, antes de la Fase 4); todo lo nuevo se diseña para dos idiomas.
 5. **Del usuario:** decisiones de la Fase 4, PDF de MetBull (M11), marca y MP3, caídas
    posteriores a 2016, revisar PR de Dependabot, purga opcional de commits reescritos.
 
@@ -65,7 +72,7 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`cneos-diario.yml`, 07:30 UTC, con retrasos posibles) y Dependabot revisa dependencias los
   lunes.
 - **Verificación al 2026-10-13:**
-  - 298 tests unitarios y 80 e2e (al 2026-10-17) (escritorio y móvil), más la medición de rendimiento
+  - 304 tests unitarios y 82 e2e (al 2026-10-21) (escritorio y móvil), más la medición de rendimiento
     (aislada: `npm run e2e:rendimiento`; en paralelo con las demás roza el límite de 3 s);
   - auditoría: 603 datos, 0 errores;
   - carga inicial unos 2,8 s en 4G lento;
@@ -220,6 +227,15 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
   frases en código ni en valores científicos), formatos con el idioma activo y fichas con
   aprobación por idioma. Estimación medida: 227 textos de interfaz (~2500 palabras), ~500 del
   dataset, la ficha (~900), 5 archivos con `'es'` fijo; 2–3 sesiones más la revisión del inglés.
+- 2026-10-21: **colección pública como vitrina sin precios ni stock**: cada ejemplar enlaza a
+  su página en la tienda del amigo, que gestiona precio, stock y compra (M10: si la vitrina pasa
+  a ser la tienda misma, otro hosting; revisar antes sus condiciones de uso comercial).
+- 2026-10-21: **fichas sin la API de Claude**: ficha automática por plantilla para cada
+  ejemplar (desde los datos, sin IA) y ficha narrativa por meteorito redactada por Claude en
+  sesión y aprobada por el usuario; la API solo si algún día el volumen lo justifica.
+- 2026-10-21: «customization de look» = **adaptar la web a la marca de la tienda** (no temas
+  elegibles por el visitante). Globo **siempre de día por defecto**, rotulado, con luz real
+  opcional.
 - 2026-10-11: el usuario **mantiene el gmail como correo principal** de su cuenta de GitHub y
   quiere que **solo apaec@yahoo.com sea visible**. Autorizó reescribir la historia de la wiki y
   de `main` (hecho, con push forzado suyo). Nunca escribir el gmail en archivos del repo.
@@ -452,6 +468,9 @@ textura Blue Marble según las directrices de medios de NASA (verificado el 2026
   lo privado en `data/coleccion/privado/`, ignorado por git), `src/coleccion/vista.ts`
   (recorrido o procedencia por clase, nunca una órbita inventada), `pipeline/coleccion.ts`
   (reglas en `npm run validate`), `pipeline/coleccion-fotos.ts`, `pipeline/verificar-dist.ts`.
+- Tema de marca (M35): `src/tema.ts` (interfaz → variables CSS inyectadas en `index.html` por
+  `pipeline/tema-css.ts`; capas de la escena y de la leyenda; grupos del CNEOS). Luz del globo:
+  `fijarIluminacion` en `src/scene/tierra.ts` (presentación desde detrás de la cámara, o el Sol).
 - Formato de números y fechas: solo `src/i18n/formato.ts` (idioma activo; un test prohíbe
   fijar `'es'` en otro sitio). Lo nuevo se diseña bilingüe (`TextoIdiomas`, revisión por idioma).
 - e2e contra `pipeline/servidor-estatico.ts` (gzip, como un hosting real; `vite preview` no

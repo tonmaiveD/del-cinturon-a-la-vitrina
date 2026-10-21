@@ -29,6 +29,7 @@ import {
   descripcionVista as describir,
   nodosLeyenda,
   textoAvisoEscala,
+  textoAvisoLuz,
   textoFecha as fechaRelativa,
   textoLlegada,
   type Clave,
@@ -111,7 +112,8 @@ export async function iniciar3D(
     perdido ? avisarError('contexto', t('error.contexto')) : quitarAviso('contexto'),
   );
   const camT = motor.registrar('tierra', tierra.escena, 1e-4, 2e3, (cam) => tierra.actualizar(cam));
-  motor.etiqueta(t('etiqueta.bolido'), tierra.marcador, 'bolido');
+  // El marcador del final: pico de brillo del CNEOS (Chelyabinsk) o final de la aproximación
+  const etiquetaFinal = motor.etiqueta(t('etiqueta.bolido'), tierra.marcador, 'bolido');
   motor.etiqueta(t('etiqueta.meteoroide'), tierra.meteoroide, 'bolido');
   const { catalogo } = panel;
   const piezaDe = (id: string) => catalogo.piezas.find((p) => p.id === id)!;
@@ -152,6 +154,7 @@ export async function iniciar3D(
     t: undefined,
     vista: 'tierra',
     escalaVisual: true,
+    luzPresentacion: true,
   });
   const reloj = crearReloj(impacto - 365 * DIA_MS, impacto, inicial.t ?? impacto);
   let vista: NombreVista = inicial.vista;
@@ -172,6 +175,7 @@ export async function iniciar3D(
   let nClonesCneos = 0;
   let pedidoOrbita = 0;
   let escalaVisual = inicial.escalaVisual;
+  let luzPresentacion = inicial.luzPresentacion ?? true;
   fijarCamara('tierra', encuadreTierra().pos, ORIGEN);
 
   // Vista del sistema solar: se construye bajo demanda (o en reposo tras el primer cuadro) para
@@ -242,6 +246,8 @@ export async function iniciar3D(
   // Controles del panel
   const avisoEscala = $('#aviso-escala');
   const interruptor = $<HTMLButtonElement>('#escala');
+  const bLuz = $<HTMLButtonElement>('#iluminacion');
+  const avisoLuz = $('#aviso-iluminacion');
   const botonesVista = [...document.querySelectorAll<HTMLButtonElement>('[data-vista]')];
   const bRecorrido = $<HTMLButtonElement>('#recorrido');
   const bSaltar = $<HTMLButtonElement>('#saltar');
@@ -265,6 +271,7 @@ export async function iniciar3D(
   const estadoDescrito = (): EstadoDescrito => ({
     modo,
     vista,
+    luzPresentacion,
     impacto,
     catalogo,
     pieza: piezaDe(panel.actual()),
@@ -298,6 +305,7 @@ export async function iniciar3D(
         t: Math.round(reloj.estado().t / 1000) * 1000,
         vista,
         escalaVisual,
+        luzPresentacion,
       });
       history.replaceState(null, '', q);
     }, 400);
@@ -311,6 +319,11 @@ export async function iniciar3D(
     motor.activar(vista);
     for (const b of botonesVista) b.setAttribute('aria-pressed', String(b.dataset.vista === vista));
     interruptor.setAttribute('aria-checked', String(escalaVisual));
+    bLuz.setAttribute('aria-checked', String(luzPresentacion));
+    tierra.fijarIluminacion(luzPresentacion);
+    // La luz de presentación solo afecta al globo: en la vista solar ilumina el Sol real
+    avisoLuz.hidden = vista !== 'tierra';
+    avisoLuz.textContent = textoAvisoLuz(luzPresentacion);
     tierra.aplicarEscala(escalaVisual);
     solarCreada?.solar.aplicarEscala(escalaVisual);
     avisoEscala.textContent = textoAvisoEscala(escalaVisual, vista, conMeteoroide(), EXAGERACION);
@@ -376,6 +389,7 @@ export async function iniciar3D(
       escenaConOtra = false;
     }
     tierra.mostrarBolido(chely);
+    etiquetaFinal.element.textContent = t(chely ? 'etiqueta.bolido' : 'etiqueta.bolido.pieza');
     if (!chely && indiceTray.has(id)) void cargarTrayectoriaPieza(id);
     marcadores.seleccionar(id);
     etiquetaCaida.element.textContent = t('etiqueta.caida', { nombre: nombrePieza(p) });
@@ -626,6 +640,10 @@ export async function iniciar3D(
     escalaVisual = !escalaVisual;
     refrescarVista();
   });
+  bLuz.addEventListener('click', () => {
+    luzPresentacion = !luzPresentacion;
+    refrescarVista();
+  });
   bRecorrido.addEventListener('click', verRecorrido);
   bSaltar.addEventListener('click', terminarSecuencia);
   bReproducir.addEventListener('click', () => {
@@ -729,6 +747,7 @@ export async function iniciar3D(
     panel,
     marcadores,
     camT,
+    tierra,
     solar: () => solarCreada,
     tiempoRecorrido: () => tiempoRecorrido,
     cneos: () => ({ modo, panel: panelCneos, bolidos, nClones: nClonesCneos }),

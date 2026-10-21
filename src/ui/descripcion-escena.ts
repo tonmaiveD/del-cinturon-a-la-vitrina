@@ -7,6 +7,7 @@ import type { EventoCneos } from '../cneos/eventos';
 import { t } from '../i18n';
 import { fecha as fechaLocal, numero } from '../i18n/formato';
 import type { NombreVista } from '../scene/escena';
+import { TEMA } from '../tema';
 import { ALTURA_INICIO_KM } from '../scene/trayectoria-entrada';
 import type { Catalogo, PiezaCatalogo } from './catalogo';
 import type { Modo } from './estado-url';
@@ -32,6 +33,8 @@ export interface TrayectoriaDescrita {
 export interface EstadoDescrito {
   modo: Modo;
   vista: NombreVista;
+  /** Luz de presentación en el globo (siempre de día) o luz real del Sol. */
+  luzPresentacion: boolean;
   /** Instante de referencia de lo seleccionado (ms). */
   impacto: number;
   catalogo: Catalogo;
@@ -116,8 +119,14 @@ function clavePieza(metodo: string | undefined): Clave {
   return 'desc.sistema-solar.pieza';
 }
 
-/** Descripción accesible de lo que muestra la escena. */
+/** Descripción accesible de lo que muestra la escena (en el globo, también qué luz lo ilumina). */
 export function descripcionVista(e: EstadoDescrito): string {
+  const base = descripcionBase(e);
+  if (e.vista !== 'tierra') return base;
+  return `${base} ${t(e.luzPresentacion ? 'desc.luz.presentacion' : 'desc.luz.real')}`;
+}
+
+function descripcionBase(e: EstadoDescrito): string {
   if (e.modo === 'cneos' && e.cneos) return descripcionCneos(e, e.cneos);
   const p = e.pieza;
   const c = e.catalogo;
@@ -172,6 +181,10 @@ export function textoLlegada(e: Pick<EstadoDescrito, 'pieza' | 'bolido' | 'impac
       });
 }
 
+/** Aviso de la iluminación del globo (solo en la vista terrestre). */
+export const textoAvisoLuz = (luzPresentacion: boolean): string =>
+  t(luzPresentacion ? 'luz.aviso.presentacion' : 'luz.aviso.real');
+
 /** Aviso de escala: qué está exagerado en la vista actual. */
 export function textoAvisoEscala(
   escalaVisual: boolean,
@@ -194,27 +207,28 @@ export function textoAvisoEscala(
 /**
  * Leyenda por capa de la vista solar (M27): fuente y método de lo que se dibuja, con la
  * advertencia de que la densidad de una nube no es una probabilidad calibrada. Los colores
- * son los de src/scene/catalogo-solar.ts, sistema-solar.ts y cneos-solar.ts.
+ * salen del tema (src/tema.ts), igual que los de la escena.
  */
 export function capasLeyenda(
   e: Pick<EstadoDescrito, 'modo' | 'pieza'>,
   conTrayectoria: boolean,
 ): [string, Clave][] {
-  if (e.modo === 'cneos') return [['#6fd3ff', 'capas.cneos']];
+  const c = TEMA.capas;
+  if (e.modo === 'cneos') return [[c.cneos, 'capas.cneos']];
   return [
     ...(e.pieza.id === 'chelyabinsk'
       ? ([
-          ['#ff9a3c', 'capas.chelyabinsk'],
-          ['#ffd08a', 'capas.estela'],
+          [c.chelyabinsk, 'capas.chelyabinsk'],
+          [c.estela, 'capas.estela'],
         ] as [string, Clave][])
       : ([
-          ['#6fd3ff', 'capas.seleccion'],
-          ...(conTrayectoria ? [['#ffe2b8', 'capas.estela']] : []),
+          [c.seleccion, 'capas.seleccion'],
+          ...(conTrayectoria ? [[c.estela, 'capas.estela']] : []),
         ] as [string, Clave][])),
-    ['#8f9bd6', 'capas.otras'],
-    ['#9be7a8', 'capas.hungaria'],
-    ['#f0b6ff', 'capas.phocaea'],
-    ['#ffd36b', 'capas.resonancias'],
+    [c.otras, 'capas.otras'],
+    [c.hungaria, 'capas.hungaria'],
+    [c.phocaea, 'capas.phocaea'],
+    [c.resonancias, 'capas.resonancias'],
   ];
 }
 

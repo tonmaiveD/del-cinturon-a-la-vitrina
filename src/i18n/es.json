@@ -10,7 +10,7 @@
   "escala.visual.tierra": "Escala visual: el marcador del bólido está agrandado (60 km de radio). El brillo de la atmósfera es un efecto visual.",
   "escala.visual.sistema-solar": "Escala visual: Sol ×{sol}, planetas interiores ×{planetas}, Júpiter ×{jupiter} y meteoroide agrandado a ~900 000 km de radio. Las distancias son reales.",
   "escala.real": "Escala real: tamaños y distancias reales. Los planetas no se ven a esta distancia; usa las etiquetas.",
-  "desc.tierra": "La Tierra el {fecha} UTC, iluminada por el Sol de ese instante. La línea naranja es la trayectoria de entrada del bólido de Chelyabinsk desde 100 km de altura hasta el pico de brillo, a {alt} km sobre {lat}, {lon} (datos CNEOS). La aproximación de las horas previas sale de la órbita que publican Popova y colaboradores. El punto de caída de los meteoritos está pendiente de verificación y no se muestra.",
+  "desc.tierra": "La Tierra el {fecha} UTC. La línea naranja es la trayectoria de entrada del bólido de Chelyabinsk desde 100 km de altura hasta el pico de brillo, a {alt} km sobre {lat}, {lon} (datos CNEOS). La aproximación de las horas previas sale de la órbita que publican Popova y colaboradores. El punto de caída de los meteoritos está pendiente de verificación y no se muestra.",
   "desc.sistema-solar": "Sistema solar interior el {fecha} UTC, en el plano de la eclíptica. La nube naranja reúne {n} órbitas posibles del meteoroide de Chelyabinsk: se sortean los elementos de la órbita que publican Popova y colaboradores, con su incertidumbre 1σ, y solo se conservan las que pasan junto a la Tierra en el momento del impacto. La línea clara es esa órbita con todas las cifras que publican, y la estela, la trayectoria del año previo calculada con N cuerpos desde la dirección y la velocidad con que entró en la atmósfera. Su perihelio está cerca de Venus y su afelio cerca del cinturón de asteroides.",
   "etiqueta.bolido": "Pico de brillo (CNEOS)",
   "etiqueta.sol": "Sol",
@@ -225,5 +225,11 @@
   "capas.phocaea": "Región Phocaea, volumen aproximado según Novaković y colaboradores.",
   "capas.resonancias": "Resonancias con Júpiter, dibujadas en su centro nominal y sin la anchura de la zona.",
   "capas.cneos": "Órbitas calculadas con variantes del vector del CNEOS, según los errores típicos que midieron Peña-Asensio y colaboradores sobre el radiante geocéntrico.",
-  "capas.densidad": "Donde una nube se ve más densa hay más variantes del modelo. No es una probabilidad calibrada de dónde estuvo el objeto."
+  "capas.densidad": "Donde una nube se ve más densa hay más variantes del modelo. No es una probabilidad calibrada de dónde estuvo el objeto.",
+  "luz.etiqueta": "Siempre de día",
+  "luz.aviso.presentacion": "Siempre de día: la cara visible del globo está iluminada aunque en ese instante allí fuera de noche. La luz no sale de la posición real del Sol; desactívalo para ver la luz de ese momento.",
+  "luz.aviso.real": "Luz real: el globo está iluminado por el Sol de ese instante y la parte de noche se ve oscura.",
+  "desc.luz.presentacion": "El globo se muestra siempre de día, con una luz de presentación que no corresponde a la posición real del Sol.",
+  "desc.luz.real": "El globo está iluminado por el Sol de ese instante.",
+  "etiqueta.bolido.pieza": "Final de la aproximación calculada"
 }

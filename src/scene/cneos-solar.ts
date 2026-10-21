@@ -2,6 +2,7 @@
  * Nube de órbitas del bólido CNEOS seleccionado en la vista heliocéntrica (AU, eclíptica J2000).
  * Se dibujan todos los clones del Monte Carlo, también los hiperbólicos (rama con r ≤ 6 AU).
  */
+import { TEMA } from '../tema';
 import {
   BufferAttribute,
   BufferGeometry,
@@ -23,7 +24,7 @@ export function crearNubeCneos() {
   const nube = new LineSegments(
     new BufferGeometry(),
     new LineBasicMaterial({
-      color: new Color(0x6fd3ff),
+      color: new Color(TEMA.capas.cneos),
       transparent: true,
       opacity: 0.12,
       depthWrite: false,

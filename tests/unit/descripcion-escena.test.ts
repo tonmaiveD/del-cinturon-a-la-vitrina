@@ -24,6 +24,7 @@ const bolido = {
 const estado = (extra: Partial<EstadoDescrito> = {}): EstadoDescrito => ({
   modo: 'pedigri',
   vista: 'tierra',
+  luzPresentacion: true,
   impacto: bolido.fecha.getTime(),
   catalogo,
   pieza: pieza('chelyabinsk'),
@@ -102,6 +103,14 @@ describe('textos de la escena (descripción accesible, fecha, escala, leyenda)',
     expect(descripcionVista({ ...e, vista: 'sistema-solar' })).not.toBe(
       descripcionVista({ ...e, vista: 'sistema-solar', cneos: { ...e.cneos!, nClones: 200 } }),
     );
+  });
+
+  it('el globo dice qué luz lo ilumina (siempre de día o el Sol real); la vista solar no', () => {
+    expect(descripcionVista(estado())).toContain('siempre de día');
+    expect(descripcionVista(estado({ luzPresentacion: false }))).toContain('Sol de ese instante');
+    expect(descripcionVista(estado({ luzPresentacion: false }))).not.toContain('siempre de día');
+    const solar = estado({ vista: 'sistema-solar' });
+    expect(descripcionVista(solar)).toBe(descripcionVista({ ...solar, luzPresentacion: false }));
   });
 
   it('llegada, aviso de escala y leyenda de capas', () => {

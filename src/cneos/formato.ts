@@ -1,5 +1,6 @@
 /** Textos y cifras del modo CNEOS (sin Three.js). */
 import { fijo } from '../i18n/formato';
+import { TEMA } from '../tema';
 import type { CalidadEvento, EventoCneos } from './eventos';
 import type { Percentiles } from './resumen';
 
@@ -27,11 +28,11 @@ export const grupoLeyenda = ({ calidad, orbita }: ConCalidad): GrupoLeyenda =>
 
 /** Colores de la leyenda, compartidos por el panel y los símbolos del globo. */
 export const COLOR_LEYENDA: Record<GrupoLeyenda, string> = {
-  'con-orbita': '#6fd3ff',
-  'orbita-fallida': '#b58cff',
-  'no-verificable': '#ffb25c',
-  'sin-trayectoria': '#c8ccd8',
-  'sin-ubicacion': '#7d8494',
+  'con-orbita': TEMA.cneos['con-orbita'],
+  'orbita-fallida': TEMA.cneos['orbita-fallida'],
+  'no-verificable': TEMA.cneos['no-verificable'],
+  'sin-trayectoria': TEMA.cneos['sin-trayectoria'],
+  'sin-ubicacion': TEMA.cneos['sin-ubicacion'],
 };
 
 const num = fijo;

@@ -78,6 +78,14 @@ describe('estado en la URL', () => {
     expect(q).toBe('?modo=cneos&evento=cneos-20250101-000000&vista=tierra&escala=visual');
     expect(leerEstadoUrl(q, base)).toEqual(e);
   });
+  it('luz de presentación por defecto; solo la real se escribe en la URL', () => {
+    const conLuz = { ...base, luzPresentacion: true };
+    expect(escribirEstadoUrl(conLuz)).not.toContain('luz');
+    const real = { ...conLuz, luzPresentacion: false };
+    expect(escribirEstadoUrl(real)).toContain('luz=real');
+    expect(leerEstadoUrl(escribirEstadoUrl(real), conLuz)).toEqual(real);
+    expect(leerEstadoUrl('?luz=presentacion', conLuz).luzPresentacion).toBe(true);
+  });
   it('ignora valores inválidos', () => {
     expect(leerEstadoUrl('?vista=marte&t=ayer', base)).toEqual(base);
   });

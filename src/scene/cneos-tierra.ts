@@ -3,6 +3,7 @@
  * en el punto del pico de brillo publicado; el tamaño crece con el logaritmo de la energía de
  * impacto y el color indica la calidad (leyenda en el panel). Son símbolos, no objetos a escala.
  */
+import { TEMA } from '../tema';
 import * as Astro from 'astronomy-engine';
 import {
   BufferGeometry,
@@ -61,7 +62,10 @@ export function crearBolidosTierra(globo: Group, eventos: (EventoCneos & ConCali
   resalte.visible = false;
   globo.add(resalte);
 
-  const trayectoria = new Line(new BufferGeometry(), new LineBasicMaterial({ color: 0xffe3b0 }));
+  const trayectoria = new Line(
+    new BufferGeometry(),
+    new LineBasicMaterial({ color: TEMA.cneos.entrada }),
+  );
   trayectoria.visible = false;
   trayectoria.frustumCulled = false;
   globo.add(trayectoria);
