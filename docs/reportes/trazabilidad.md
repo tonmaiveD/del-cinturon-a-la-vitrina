@@ -6,7 +6,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 - Verificados: 521
 - Pendientes mostrados con aviso: 25
 - Calculados con método documentado: 30
-- Convenciones visuales o de notación: 72
+- Convenciones visuales o de notación: 76
 - **Errores: 0**
 
 ## Pieza: almahata-sitta
@@ -786,6 +786,8 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | cneos.orbita.no-verificable | 2025 | src/i18n/es.json | convencion | año de la cita (Peña-Asensio et al. 2025) |
 | error.webgl | 3 | src/i18n/es.json | convencion | nombre del tipo de visualización («3D») |
 | error.contexto | 3 | src/i18n/es.json | convencion | nombre del tipo de visualización («3D») |
+| ficha.tipos | 3 | src/i18n/es.json | convencion | nombre del tipo de visualización («3D») |
+| ficha.tipo.ilustracion | 3 | src/i18n/es.json | convencion | nombre del tipo de visualización («3D») |
 | en: app.estado | 3 | src/i18n/en.json | convencion | número de fase del proyecto |
 | en: escena.descripcion | 3 | src/i18n/en.json | convencion | nombre del tipo de visualización («3D») |
 | en: escala.visual.tierra | 60 | src/i18n/en.json | convencion | convención visual: radio dibujado del marcador en escala visual (src/scene/tierra.ts) |
@@ -813,6 +815,8 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | en: cneos.orbita.no-verificable | 2025 | src/i18n/en.json | convencion | año de la cita (Peña-Asensio et al. 2025) |
 | en: error.webgl | 3 | src/i18n/en.json | convencion | nombre del tipo de visualización («3D») |
 | en: error.contexto | 3 | src/i18n/en.json | convencion | nombre del tipo de visualización («3D») |
+| en: ficha.tipos | 3 | src/i18n/en.json | convencion | nombre del tipo de visualización («3D») |
+| en: ficha.tipo.ilustracion | 3 | src/i18n/en.json | convencion | nombre del tipo de visualización («3D») |
 | en: region:resonancia-nu6 | 6 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
 | en: region:resonancia-3-1 | 3 1 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
 | en: region:resonancia-5-2 | 5 2 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |

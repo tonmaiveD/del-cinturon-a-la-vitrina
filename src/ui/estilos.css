@@ -754,3 +754,60 @@ summary:focus-visible {
   margin: 0;
   flex: 1;
 }
+
+/* Ficha exportable (M42): al imprimir desde la ficha solo sale la ficha, sobre fondo blanco */
+.exportar .cita {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+@media print {
+  /* La página es una escena a pantalla completa (alto fijo, sin desbordamiento): al imprimir la
+     ficha, el documento tiene que crecer con ella para que no se corte en la primera página */
+  html:has(body.imprimiendo-ficha),
+  body.imprimiendo-ficha {
+    height: auto;
+    overflow: visible;
+    background: #fff;
+    color: #000;
+  }
+  body.imprimiendo-ficha > :not(#dialogo-ficha) {
+    display: none !important;
+  }
+  body.imprimiendo-ficha #dialogo-ficha {
+    position: static;
+    max-width: none;
+    max-height: none;
+    overflow: visible;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    color: #000;
+    background: #fff;
+  }
+  body.imprimiendo-ficha #dialogo-ficha * {
+    color: #000;
+  }
+  body.imprimiendo-ficha #dialogo-ficha::backdrop {
+    background: none;
+  }
+  body.imprimiendo-ficha #dialogo-ficha .cabeza {
+    position: static;
+    background: none;
+    border: 0;
+  }
+  body.imprimiendo-ficha #dialogo-ficha button,
+  body.imprimiendo-ficha #dialogo-ficha .acciones {
+    display: none;
+  }
+  body.imprimiendo-ficha #dialogo-ficha a {
+    color: #000;
+  }
+  body.imprimiendo-ficha #dialogo-ficha a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.8em;
+  }
+  body.imprimiendo-ficha #dialogo-ficha .cita,
+  body.imprimiendo-ficha #dialogo-ficha .nota {
+    color: #333;
+  }
+}

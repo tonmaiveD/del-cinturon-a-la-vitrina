@@ -247,5 +247,13 @@
   "reporte.enlace": "Report an error on GitHub",
   "reporte.nota": "A GitHub account is required. The report includes the version and the current view, so do not add personal data.",
   "reporte.titulo": "Error on the website",
-  "reporte.cuerpo": "What I did and what I saw:\n\nWhat I expected to see:\n\n---\nVersion: {version}\nView: {pagina}\nLanguage: {idioma}"
+  "reporte.cuerpo": "What I did and what I saw:\n\nWhat I expected to see:\n\n---\nVersion: {version}\nView: {pagina}\nLanguage: {idioma}",
+  "ficha.exportar": "Use this fact sheet",
+  "ficha.imprimir": "Print or save as PDF",
+  "ficha.descargar": "Download the data (JSON)",
+  "ficha.tipos": "The figures in this fact sheet are measurements published by the cited sources. Those computed by the project, such as the capture radius or the orbit clouds, are explained in the text and in the reports. The 3D scene is an illustration with exaggerated scales and is not included.",
+  "ficha.tipo.medicion": "Values published by the cited sources, with their uncertainty when they publish it.",
+  "ficha.tipo.calculo": "Calculations by the project from those measurements, namely the orbit cloud, the trail over the previous year, the capture radius and the conversion of radiated energy to kilotons.",
+  "ficha.tipo.ilustracion": "The 3D scene, with exaggerated and labeled scales; it is not part of these data.",
+  "ficha.cita": "How to cite: Del cinturón a la vitrina ({anio}). {nombre} fact sheet, version {version}. {url}. License {licencia}."
 }

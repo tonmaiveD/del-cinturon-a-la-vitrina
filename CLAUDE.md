@@ -59,7 +59,8 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`public/data/cneos/consulta.json`), el bot publica cada día, vigilancia diaria
   (`vigilancia.yml`) y versión + reporte por GitHub Issues en «Fuentes y créditos».
   O5 hecha: CSP en `<meta>` sin `unsafe-inline` (`pipeline/csp.ts`; el estilo del tema por su
-  huella). Siguiente: **O6** (ficha exportable, M42).
+  huella). O6 hecha: ficha exportable (imprimir o PDF, JSON con manifiesto, cómo citar).
+  **Ola 5 cerrada el 2026-10-21**; pendiente la prueba del usuario en su iPhone (O2, O5).
 - **Lección del 2026-10-13:** la revisión V5 (otra sesión) no actualizó la wiki; se corrigió
   y ahora la regla es actualizarla en el mismo paso que cada cambio que afecte a lo que explica.
 
@@ -96,7 +97,7 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`cneos-diario.yml`, 07:30 UTC, con retrasos posibles) y Dependabot revisa dependencias los
   lunes.
 - **Verificación al 2026-10-13:**
-  - 322 tests unitarios y 98 e2e (al 2026-10-21) (escritorio y móvil), más la medición de rendimiento
+  - 322 tests unitarios y 100 e2e (al 2026-10-21) (escritorio y móvil), más la medición de rendimiento
     (aislada: `npm run e2e:rendimiento`; en paralelo con las demás roza el límite de 3 s);
   - auditoría: 603 datos, 0 errores;
   - carga inicial unos 2,8 s en 4G lento;

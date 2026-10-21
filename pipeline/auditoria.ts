@@ -35,6 +35,8 @@ export const CIFRAS_PERMITIDAS: Record<string, { cifras: string[]; motivo: strin
   'escena.descripcion': { cifras: ['3'], motivo: 'nombre del tipo de visualización («3D»)' },
   'error.webgl': { cifras: ['3'], motivo: 'nombre del tipo de visualización («3D»)' },
   'error.contexto': { cifras: ['3'], motivo: 'nombre del tipo de visualización («3D»)' },
+  'ficha.tipos': { cifras: ['3'], motivo: 'nombre del tipo de visualización («3D»)' },
+  'ficha.tipo.ilustracion': { cifras: ['3'], motivo: 'nombre del tipo de visualización («3D»)' },
   'escala.visual.tierra': {
     cifras: ['60'],
     motivo: 'convención visual: radio dibujado del marcador en escala visual (src/scene/tierra.ts)',

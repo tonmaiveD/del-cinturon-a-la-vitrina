@@ -566,6 +566,31 @@ errores (M17, M16; reporte por GitHub Issues) → **O5** CSP por `<meta>` (M31) 
 exportable (M42). Fuera por ahora: M39 (sin carga objetivo), M41 (decisión del usuario) y el
 recorrido animado de los bólidos del CNEOS (función nueva, a pedido).
 
+### O6 · ficha exportable (M42) · **hecha el 2026-10-21**
+
+- Sección «Usar esta ficha» al final de la ficha publicada (`src/ui/dialogos.ts`), en los dos
+  idiomas: imprimir o guardar en PDF (impresión del navegador), descargar los datos en JSON y
+  cómo citar (proyecto, año, versión, dirección, licencia CC BY 4.0), más una frase que separa
+  medición, cálculo propio e ilustración. Solo existe en fichas publicadas: no se exportan
+  borradores ni nada privado.
+- **JSON** (`datosFicha`): manifiesto (versión y fecha del build, licencia, cita, fecha de
+  consulta del CNEOS, tipos de valor con los reportes), las cifras tal como las muestra la ficha
+  con su fuente, las fuentes citadas completas y el registro del meteorito en el dataset.
+- **Impresión** (`@media print` con `body.imprimiendo-ficha`): solo la ficha, en negro sobre
+  blanco, con la dirección de cada enlace. Se encontraron y corrigieron dos cortes: el diálogo
+  modal vive en la capa superior del navegador y cortaba el principio (se imprime como diálogo
+  normal y se vuelve a abrir como modal), y la página, de alto fijo y sin desbordamiento, cortaba
+  el final (al imprimir crece con la ficha). PDF de prueba: dos páginas A4.
+- e2e `tests/e2e/ficha-exportable.spec.ts`: descarga y contenido del JSON, impresión desde el
+  título hasta la cita sin la escena ni los paneles, y PDF generado.
+
+### Ola 5 · cierre (2026-10-21)
+
+Hechas O1–O6 (M22, M14, M13, M15, M17, M16, M31, M42). Pendiente del usuario: probar en su
+iPhone el dibujo bajo demanda, el modo económico y la CSP en Safari. Fuera de la ola, por
+decisión: M39 (sin carga objetivo), M41 (caídas posteriores a 2016, decisión del usuario) y el
+recorrido animado de los bólidos del CNEOS (función nueva, a pedido).
+
 ### O5 · política de seguridad de contenido (M31) · **hecha el 2026-10-21**
 
 - `pipeline/csp.ts` (solo en el build) pone una CSP en `<meta>`, porque Pages no admite

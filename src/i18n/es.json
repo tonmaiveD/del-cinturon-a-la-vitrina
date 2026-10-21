@@ -247,5 +247,13 @@
   "reporte.enlace": "Informar de un error en GitHub",
   "reporte.nota": "Hace falta una cuenta de GitHub. El reporte lleva la versión y la vista actual; no incluyas datos personales.",
   "reporte.titulo": "Error en la web",
-  "reporte.cuerpo": "Qué hice y qué vi:\n\nQué esperaba ver:\n\n---\nVersión: {version}\nVista: {pagina}\nIdioma: {idioma}"
+  "reporte.cuerpo": "Qué hice y qué vi:\n\nQué esperaba ver:\n\n---\nVersión: {version}\nVista: {pagina}\nIdioma: {idioma}",
+  "ficha.exportar": "Usar esta ficha",
+  "ficha.imprimir": "Imprimir o guardar en PDF",
+  "ficha.descargar": "Descargar los datos (JSON)",
+  "ficha.tipos": "Las cifras de esta ficha son mediciones publicadas por las fuentes citadas. Las que calcula el proyecto, como el radio de captura o las nubes de órbitas, se explican en el texto y en los reportes. La escena 3D es una ilustración con escalas exageradas y no se incluye.",
+  "ficha.tipo.medicion": "Valores publicados por las fuentes citadas, con su incertidumbre cuando la publican.",
+  "ficha.tipo.calculo": "Cálculos del proyecto a partir de esas mediciones: la nube de órbitas, la estela del año previo, el radio de captura y la conversión de la energía radiada a kilotones.",
+  "ficha.tipo.ilustracion": "La escena 3D, con escalas exageradas y rotuladas; no forma parte de estos datos.",
+  "ficha.cita": "Cómo citar: Del cinturón a la vitrina ({anio}). Ficha de {nombre}, versión {version}. {url}. Licencia {licencia}."
 }
