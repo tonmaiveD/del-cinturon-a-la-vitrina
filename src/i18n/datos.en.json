@@ -37,11 +37,11 @@
   },
   "asociacion:hebe-h:nombre": {
     "es": "(6) Hebe u otros cuerpos del cinturón interior",
-    "en": "(6) Hebe or other bodies of the inner belt"
+    "en": "(6) Hebe or other bodies of the inner main belt"
   },
   "asociacion:hebe-h:justificacion": {
     "es": "Granvik & Brown (2018) encuentran que las condritas H con órbita medida escapan sobre todo por la resonancia 3:1 o por ν6, compatible con un origen en el cinturón interior «potencialmente vinculado» a (6) Hebe o a cuerpos menores de esa zona. Ejby y Košice muestran además probabilidades notables (con gran error) de origen cometario.",
-    "en": "Granvik & Brown (2018) find that H chondrites with measured orbits escape mainly through the 3:1 resonance or through ν6, consistent with an origin in the inner belt, \"potentially linked to (6) Hebe\" or to smaller bodies in that zone. Ejby and Košice also show notable probabilities (with large errors) of a cometary origin."
+    "en": "Granvik & Brown (2018) find that H chondrites with measured orbits escape mainly through the 3:1 resonance or through ν6, consistent with an origin in the inner main belt, \"potentially linked to (6) Hebe\" or to smaller bodies in that zone. Ejby and Košice also show notable probabilities (with large errors) of a cometary origin."
   },
   "sin-asociacion:benesov": {
     "es": "Caída heterogénea (H5/LL3.5); no se asigna a una sola familia.",
@@ -53,7 +53,7 @@
   },
   "region:cruzadores-marte": {
     "es": "Región de cruzadores intermedios de Marte (IMC)",
-    "en": "Intermediate Mars-crosser region (IMC)"
+    "en": "Intermediate Mars-crossers (IMC)"
   },
   "region:cinturon-exterior": {
     "es": "Cinturón principal exterior",
@@ -61,7 +61,7 @@
   },
   "asociacion:flora-nu6-ll:nombre": {
     "es": "Familia Flora (borde interior del cinturón, junto a la resonancia ν6)",
-    "en": "Flora family (inner edge of the belt, next to the ν6 resonance)"
+    "en": "Flora family (inner edge of the main belt, next to the ν6 resonance)"
   },
   "asociacion:flora-nu6-ll:justificacion": {
     "es": "La similitud espectral entre las condritas LL y (8) Flora, y la cercanía de esa familia a la resonancia ν6, se han propuesto como indicio de que Flora es su progenitor (citado por Granvik & Brown 2018). Popova et al. (2013) presentan la órbita de Chelyabinsk como apoyo a esa hipótesis. Es una hipótesis respaldada, no un consenso.",
@@ -77,15 +77,15 @@
   },
   "asociacion:gefion-l:justificacion": {
     "es": "Se ha propuesto que las condritas L provienen de la familia Gefion, en el cinturón exterior. Granvik & Brown (2018) señalan que las cinco órbitas L medidas apuntan a escapes del cinturón interior (ν6 y, en menor grado, 3:1), «algo en desacuerdo» con ese origen. Se muestra la propuesta junto con la discrepancia.",
-    "en": "It has been proposed that L chondrites come from the Gefion family, in the outer belt. Granvik & Brown (2018) note that the five measured L orbits point to escapes from the inner belt (ν6 and, to a lesser degree, 3:1), \"somewhat at odds with\" that origin. The proposal is shown together with the discrepancy."
+    "en": "It has been proposed that L chondrites come from the Gefion family, in the outer main belt. Granvik & Brown (2018) note that the five measured L orbits point to escapes from the inner main belt (ν6 and, to a lesser degree, 3:1), \"somewhat at odds with\" that origin. The proposal is shown together with the discrepancy."
   },
   "asociacion:cm-cinturon-medio:nombre": {
     "es": "Asteroides de tipo B o Ch/Cgh del cinturón medio",
-    "en": "B-type or Ch/Cgh-type asteroids of the middle belt"
+    "en": "B-type or Ch/Cgh-type asteroids of the middle main belt"
   },
   "asociacion:cm-cinturon-medio:justificacion": {
     "es": "Las CM se han vinculado a asteroides de tipo B y Ch/Cgh. Granvik & Brown (2018) concluyen que Maribo y Sutter's Mill provienen «muy probablemente» de ese tipo de asteroides del cinturón medio, aunque con afinidad notable con los cometas de la familia de Júpiter. No hay un cuerpo progenitor concreto.",
-    "en": "CM chondrites have been linked to B-type and Ch/Cgh-type asteroids. Granvik & Brown (2018) conclude that Maribo and Sutter's Mill \"most likely\" come from such asteroids in the middle belt, although with a notable affinity to the Jupiter-family comets. There is no specific parent body."
+    "en": "CM chondrites have been linked to B-type and Ch/Cgh-type asteroids. Granvik & Brown (2018) conclude that Maribo and Sutter's Mill \"most likely\" come from such asteroids in the middle main belt, although with a notable affinity to the Jupiter-family comets. There is no specific parent body."
   },
   "sin-asociacion:neuschwanstein": {
     "es": "Condrita de enstatita (EL6) sin propuesta de progenitor en las fuentes leídas.",
@@ -93,11 +93,11 @@
   },
   "asociacion:c-cinturon-interior:nombre": {
     "es": "Asteroide de tipo C del cinturón interior",
-    "en": "C-type asteroid of the inner belt"
+    "en": "C-type asteroid of the inner main belt"
   },
   "asociacion:c-cinturon-interior:justificacion": {
     "es": "Granvik & Brown (2018) interpretan Tagish Lake (carbonácea no agrupada) como una muestra muy probable de un asteroide de tipo C del cinturón interior, en contraste con trabajos previos que daban más peso al cinturón exterior. Es el resultado de un estudio, con la mayor incertidumbre orbital de la muestra.",
-    "en": "Granvik & Brown (2018) interpret Tagish Lake (an ungrouped carbonaceous chondrite) as a very likely sample of a C-type asteroid of the inner belt, in contrast with earlier work that gave more weight to the outer belt. It is the result of one study, with the largest orbital uncertainty in the sample."
+    "en": "Granvik & Brown (2018) interpret Tagish Lake (an ungrouped carbonaceous chondrite) as a very likely sample of a C-type asteroid of the inner main belt, in contrast with earlier work that gave more weight to the outer main belt. It is the result of one study, with the largest orbital uncertainty in the sample."
   },
   "licencia:Datos del Gobierno de EE. UU.; la documentación no indica licencia explícita": {
     "es": "Datos del Gobierno de EE. UU.; la documentación no indica licencia explícita",

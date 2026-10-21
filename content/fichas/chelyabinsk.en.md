@@ -18,7 +18,7 @@ The fragments that reached the ground are meteorites of type **{{clase}}**. The 
 
 Before the impact, the asteroid orbited the Sun on an orbit with a semi-major axis of {{a}} au, an eccentricity of {{e}} and an inclination of {{i}}° to the ecliptic, the plane of Earth's orbit. These are the values published by Popova et al. At its closest point to the Sun (perihelion) it passed at {{q}} au, near the orbit of Venus; at its farthest (aphelion) it reached {{Q}} au, within the main asteroid belt.
 
-Popova et al. applied a statistical source model to that orbit ({{modelo_procedencia}}). According to that model, there are three main routes by which it could have arrived from the belt: the {{n_nu6}}, with {{p_nu6}}%; the {{n_imc}}, with {{p_imc}}%; and the {{n_31}}, with {{p_31}}%. The remaining {{p_ob}}% corresponds to the {{n_ob}}; the model assigns {{p_jfc}}% to the {{n_jfc}}. These are probabilities from a model, not a trajectory reconstructed backward.
+Popova et al. applied a statistical source-region model to that orbit ({{modelo_procedencia}}). According to that model, there are three main routes by which it could have arrived from the belt: the {{n_nu6}}, with {{p_nu6}}%; the {{n_imc}}, with {{p_imc}}%; and the {{n_31}}, with {{p_31}}%. The remaining {{p_ob}}% corresponds to the {{n_ob}}; the model assigns {{p_jfc}}% to the {{n_jfc}}. These are probabilities from a model, not a trajectory reconstructed backward.
 
 ## How to read the visualization
 

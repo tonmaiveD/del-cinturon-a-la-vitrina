@@ -247,7 +247,9 @@ Explicada al usuario el 2026-10-08; falta su respuesta para presentar el plan de
   elegibles por el visitante). Globo **siempre de día por defecto**, rotulado, con luz real
   opcional.
 - 2026-10-21: inglés (M38): **detección del idioma del navegador**, **unidades métricas** en
-  los dos idiomas, **revisa el usuario**, **wiki solo en español** por ahora.
+  los dos idiomas, **revisa el usuario**, **wiki solo en español** por ahora. «Del cinturón a
+  la vitrina» es el nombre del proyecto, no de la web: **no se traduce** (la cabecera llevará
+  la marca de la tienda). Terminología científica estándar en inglés y horas UTC en 24 h.
 - 2026-10-11: el usuario **mantiene el gmail como correo principal** de su cuenta de GitHub y
   quiere que **solo apaec@yahoo.com sea visible**. Autorizó reescribir la historia de la wiki y
   de `main` (hecho, con push forzado suyo). Nunca escribir el gmail en archivos del repo.

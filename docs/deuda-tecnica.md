@@ -577,6 +577,14 @@ Modelo y protecciones, sin interfaz todavía (guía en `docs/coleccion.md`):
   idioma, no hay botón en ese idioma. El build de revisión incluye la ficha en borrador.
 - Las e2e fijan `locale: 'es-ES'`: con el inglés publicado, el navegador de pruebas (en-US)
   habría abierto la web en inglés.
+- **Revisión de terminología del 2026-10-21** (pedida por el usuario): el título no se traduce
+  (es el nombre del proyecto; la web llevará el de la tienda); horas UTC en formato de 24 horas
+  en todos los idiomas (`hourCycle: 'h23'` en `fecha()`: «03:20 UTC», no «3:20 AM»); «true
+  scale», «luminous trajectory», «atmospheric entry trajectory», «N-body integration», «escape
+  route» e «intermediate Mars-crossers (IMC)» como en Granvik et al. 2018; «inner / middle /
+  outer main belt»; en la ficha, los nombres de región conservan la mayúscula de los nombres
+  propios («the Jupiter-family comets»). Ningún texto en inglés añade afirmaciones que no estén
+  en el español (se retiró una sobre Benešov durante la revisión).
 
 ### M38 · etapa E1, infraestructura de idiomas · **hecha el 2026-10-21**
 

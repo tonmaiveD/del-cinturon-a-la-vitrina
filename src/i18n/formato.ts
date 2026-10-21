@@ -17,9 +17,15 @@ export const numero = (x: number, opciones?: Intl.NumberFormatOptions): string =
 export const fijo = (x: number, dec: number): string =>
   numero(x, { minimumFractionDigits: dec, maximumFractionDigits: dec });
 
-/** Fecha con las opciones de `Intl.DateTimeFormat` (las de la interfaz siempre en UTC). */
+/**
+ * Fecha con las opciones de `Intl.DateTimeFormat` (las de la interfaz siempre en UTC). La hora,
+ * en formato de 24 horas en todos los idiomas, como es convención con UTC («03:20», no «3:20 AM»).
+ */
 export const fecha = (d: Date, opciones: Intl.DateTimeFormatOptions): string =>
-  new Intl.DateTimeFormat(localeActivo(), opciones).format(d);
+  new Intl.DateTimeFormat(localeActivo(), {
+    ...opciones,
+    ...((opciones.timeStyle || opciones.hour) && { hourCycle: 'h23' as const }),
+  }).format(d);
 
 /** Letra de un punto cardinal en el idioma activo (el oeste es «O» en español y «W» en inglés). */
 export const cardinal = (letra: 'N' | 'S' | 'E' | 'O'): string => t(`cardinal.${letra}`);

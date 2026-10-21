@@ -36,6 +36,13 @@ const NIVEL: Record<string, string> = {
   'formal-sin-nivel': 'incertidumbre formal sin nivel declarado',
 };
 
+/**
+ * Nombre de región dentro de una frase: en minúscula inicial, salvo que empiece por un nombre
+ * propio (en inglés, «Jupiter-family comets»; en español no hay ninguno al principio).
+ */
+const PROPIOS = /^(Jupiter|Hungaria|Phocaea|Flora|Gefion|Vesta)\b/;
+const enFrase = (n: string) => (PROPIOS.test(n) ? n : n.charAt(0).toLowerCase() + n.slice(1));
+
 function dato(v: Valor | undefined, texto: (v: Valor) => string): DatoFicha | undefined {
   if (!v || v.estado !== 'verificado') return undefined;
   return { texto: texto(v), fuente: v.fuente };
@@ -190,10 +197,7 @@ export function contextoFicha(
     // El nombre de la región también sale del dataset (evita cifras escritas a mano, p. ej. «3:1»)
     poner(
       `n_${clave}`,
-      dato(p.probabilidad, () => {
-        const n = tDato(claveRegion(p.region), p.nombre);
-        return n.charAt(0).toLowerCase() + n.slice(1);
-      }),
+      dato(p.probabilidad, () => enFrase(tDato(claveRegion(p.region), p.nombre))),
     );
     if (p.modelo) poner('modelo_procedencia', cita(p.modelo));
   }
