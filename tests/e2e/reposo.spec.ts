@@ -16,8 +16,22 @@ test('en reposo la escena casi no se redibuja, y un cambio sí se dibuja (M14)',
   page,
 }) => {
   await page.goto('/');
-  await page.waitForFunction(() => performance.getEntriesByName('escena').length > 0);
-  await page.waitForTimeout(1500); // termina la carga de la textura grande y la inercia
+  // Reposo de verdad: después de las cargas tardías, que sí deben dibujarse (la vista solar se
+  // construye en segundo plano y trae las nubes; la textura grande llega después). En la CI, sin
+  // GPU, todo eso tarda varios segundos.
+  await page.waitForFunction(() => performance.getEntriesByName('nubes').length > 0, null, {
+    timeout: 60_000,
+  });
+  await expect
+    .poll(
+      async () => {
+        const a = (await motor(page)).dibujados;
+        await page.waitForTimeout(1500);
+        return (await motor(page)).dibujados - a;
+      },
+      { timeout: 60_000, intervals: [0] },
+    )
+    .toBeLessThanOrEqual(2);
   const antes = (await motor(page)).dibujados;
   await page.waitForTimeout(3000);
   const enReposo = (await motor(page)).dibujados - antes;
@@ -36,12 +50,18 @@ test('en reposo la escena casi no se redibuja, y un cambio sí se dibuja (M14)',
 });
 
 test('modo económico: interruptor, aviso y elección recordada (M13)', async ({ page }) => {
+  // Se parte de una elección explícita («apagado»), que desactiva la activación automática: sin
+  // ella, en la CI (sin GPU) el modo se encendería solo a mitad de la prueba
+  await page.addInitScript(() => {
+    if (!sessionStorage.getItem('prueba-iniciada')) {
+      localStorage.setItem('modo-economico', '0');
+      sessionStorage.setItem('prueba-iniciada', '1');
+    }
+  });
   await page.goto('/');
   await page.waitForFunction(() => performance.getEntriesByName('escena').length > 0);
   await abrirPestana(page, 'escena');
   const sw = page.getByRole('switch', { name: 'Modo económico' });
-  // Sin elección previa, el modo depende de la velocidad del equipo (puede activarse solo)
-  if ((await sw.getAttribute('aria-checked')) === 'true') await sw.click();
   await expect(sw).toHaveAttribute('aria-checked', 'false');
   await expect(page.locator('#aviso-economico')).toBeHidden();
   await sw.click();
