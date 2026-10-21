@@ -2,7 +2,8 @@
 import fuentes from '../../data/fuentes.json';
 import cneos from '../../data/cneos/chelyabinsk.json';
 import pedigri from '../../data/pedigri/chelyabinsk.json';
-import { t } from '../i18n';
+import { idiomaActivo, t, tDato } from '../i18n';
+import { claveLicencia } from '../i18n/datos';
 import type { Meteorito } from '../schema';
 import { fichaDe, leerFicha, publicable, renderizarFicha } from './ficha';
 import { contextoFicha } from './ficha-datos';
@@ -38,7 +39,8 @@ function listaFuentes(ids?: string[]): HTMLUListElement {
       a.target = '_blank';
       li.append(' ', a);
     }
-    li.append(elemento('span', `${t('fuentes.licencia')}: ${f.licencia}`, 'licencia'));
+    const licencia = tDato(claveLicencia(f.licencia), f.licencia);
+    li.append(elemento('span', `${t('fuentes.licencia')}: ${licencia}`, 'licencia'));
     if (!f.metadatos_verificados) li.append(elemento('span', t('fuentes.pendiente'), 'pendiente'));
     ul.append(li);
   }
@@ -63,9 +65,11 @@ export function montarDialogos(): void {
   conectar(document.querySelector<HTMLButtonElement>('#abrir-fuentes')!, dFuentes);
   dFuentes.querySelector('.contenido')!.append(listaFuentes());
 
-  const cruda = fichaDe(fichasCrudas, 'chelyabinsk');
+  // Cada idioma tiene su ficha y su aprobación; sin ficha en ese idioma, no hay botón
+  const cruda = fichaDe(fichasCrudas, 'chelyabinsk', idiomaActivo());
   const ficha = cruda ? leerFicha(cruda) : undefined;
-  if (!ficha || !publicable(ficha, import.meta.env.DEV)) {
+  const enRevision = __VISTA_PREVIA__.split(',').includes(idiomaActivo());
+  if (!ficha || !publicable(ficha, import.meta.env.DEV || enRevision)) {
     bFicha.hidden = true;
     return;
   }

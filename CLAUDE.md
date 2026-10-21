@@ -41,7 +41,10 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`pipeline/idiomas-publicables.ts`: borradores solo en desarrollo o con
   `IDIOMAS_VISTA_PREVIA=en`), textos de datos traducibles con su original (`src/i18n/datos.ts`,
   `tDato`), auditoría y `verificar-dist` para otros idiomas. Guía: `docs/idiomas.md`.
-  Siguiente: **etapa E2**, traducir (`en.json`, `datos.en.json`, ficha) para revisión del usuario.
+  **Etapa E2 (traducción) hecha el 2026-10-21, en borrador**: `src/i18n/en.json` (240 textos),
+  `src/i18n/datos.en.json` (38, con su original), `content/fichas/chelyabinsk.en.md`;
+  `revision.json` con `en: borrador`. **Pendiente: revisión y aprobación del usuario** (en
+  `npm run dev` con `?lang=en`); al aprobar, `revision.json` y la ficha pasan a `aprobada`.
 - **Lección del 2026-10-13:** la revisión V5 (otra sesión) no actualizó la wiki; se corrigió
   y ahora la regla es actualizarla en el mismo paso que cada cambio que afecte a lo que explica.
 
@@ -78,7 +81,8 @@ su región de origen hasta la Tierra, con rigor científico verificable. Plan: f
   (`cneos-diario.yml`, 07:30 UTC, con retrasos posibles) y Dependabot revisa dependencias los
   lunes.
 - **Verificación al 2026-10-13:**
-  - 310 tests unitarios y 82 e2e, más 2 de idioma que se activan con el inglés (al 2026-10-21) (escritorio y móvil), más la medición de rendimiento
+  - 315 tests unitarios y 82 e2e, más 2 de idioma que se activan con el inglés (84 con el build
+    de revisión `IDIOMAS_VISTA_PREVIA=en`) (al 2026-10-21) (escritorio y móvil), más la medición de rendimiento
     (aislada: `npm run e2e:rendimiento`; en paralelo con las demás roza el límite de 3 s);
   - auditoría: 603 datos, 0 errores;
   - carga inicial unos 2,8 s en 4G lento;

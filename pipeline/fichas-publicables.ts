@@ -22,13 +22,25 @@ export function leerFichasCrudas(dir = DIR_FICHAS): Record<string, string> {
   );
 }
 
-/** Subconjunto publicable: aprobadas (o todas en desarrollo). */
+/** Idioma de una ficha por su nombre de archivo («x.md» español, «x.en.md» inglés). */
+export const idiomaDeFicha = (archivo: string) => /\.([a-z]{2})\.md$/.exec(archivo)?.[1] ?? 'es';
+
+/**
+ * Subconjunto publicable: aprobadas (o todas en desarrollo). Con `IDIOMAS_VISTA_PREVIA=en`, un
+ * build local de revisión incluye también los borradores en inglés.
+ */
 export function seleccionarFichas(
   crudas: Record<string, string>,
   desarrollo: boolean,
+  vistaPrevia = (process.env.IDIOMAS_VISTA_PREVIA ?? '').split(',').filter(Boolean),
 ): Record<string, string> {
   return Object.fromEntries(
-    Object.entries(crudas).filter(([, md]) => desarrollo || leerFicha(md).estado === 'aprobada'),
+    Object.entries(crudas).filter(
+      ([archivo, md]) =>
+        desarrollo ||
+        leerFicha(md).estado === 'aprobada' ||
+        vistaPrevia.includes(idiomaDeFicha(archivo)),
+    ),
   );
 }
 

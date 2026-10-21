@@ -10,7 +10,7 @@ import {
 } from '../../pipeline/idiomas-publicables';
 import { idiomasBorradorEnDist } from '../../pipeline/verificar-dist';
 import { fijarIdioma, registrarIdioma, t, tDato } from '../../src/i18n';
-import { textosDeDatos } from '../../src/i18n/datos';
+import { textosDeDatos, textosDeFuentes } from '../../src/i18n/datos';
 import { idiomaInicial } from '../../src/i18n/eleccion';
 import es from '../../src/i18n/es.json';
 import type { Catalogo } from '../../src/ui/catalogo';
@@ -56,6 +56,18 @@ describe('idiomas (M38): elección, publicación y traducción de datos', () => 
     expect(tDato('region:hungaria', 'Grupo Hungaria')).toBe('Grupo Hungaria');
   });
 
+  it('inglés: el oeste es W y el porcentaje va pegado al número', async () => {
+    const { cardinal, porcentaje } = await import('../../src/i18n/formato');
+    const en = JSON.parse(readFileSync('src/i18n/en.json', 'utf8')) as Record<string, string>;
+    registrarIdioma('en', en);
+    fijarIdioma('en');
+    expect(cardinal('O')).toBe('W');
+    expect(porcentaje('62')).toBe('62%');
+    fijarIdioma('es');
+    expect(cardinal('O')).toBe('O');
+    expect(porcentaje('62')).toBe('62 %');
+  });
+
   it('solo se publica un idioma aprobado (con revisor y fecha); en desarrollo, todos', () => {
     const ap = { estado: 'aprobada', revisado_por: 'P', fecha_revision: '2026-10-21' } as const;
     const borr = carpeta({ en: { estado: 'borrador' } }, { 'app.titulo': 'x' });
@@ -86,7 +98,8 @@ describe('idiomas (M38): elección, publicación y traducción de datos', () => 
 
   it('los idiomas del proyecto: mismas claves y parámetros; completos y al día si están aprobados', () => {
     const catalogo = JSON.parse(readFileSync('public/data/catalogo.json', 'utf8')) as Catalogo;
-    const datosActuales = textosDeDatos(catalogo);
+    const fuentes = JSON.parse(readFileSync('data/fuentes.json', 'utf8')) as { licencia: string }[];
+    const datosActuales = { ...textosDeDatos(catalogo), ...textosDeFuentes(fuentes) };
     for (const [codigo, rev] of Object.entries(leerRevisiones())) {
       const r = rutasIdioma(codigo);
       const interfaz = JSON.parse(readFileSync(r.interfaz, 'utf8')) as Record<string, string>;

@@ -6,7 +6,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 - Verificados: 520
 - Pendientes mostrados con aviso: 25
 - Calculados con método documentado: 30
-- Convenciones visuales o de notación: 28
+- Convenciones visuales o de notación: 72
 - **Errores: 0**
 
 ## Pieza: almahata-sitta
@@ -785,4 +785,48 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | cneos.orbita.no-verificable | 2025 | src/i18n/es.json | convencion | año de la cita (Peña-Asensio et al. 2025) |
 | error.webgl | 3 | src/i18n/es.json | convencion | nombre del tipo de visualización («3D») |
 | error.contexto | 3 | src/i18n/es.json | convencion | nombre del tipo de visualización («3D») |
+| en: app.estado | 3 | src/i18n/en.json | convencion | número de fase del proyecto |
+| en: escena.descripcion | 3 | src/i18n/en.json | convencion | nombre del tipo de visualización («3D») |
+| en: escala.visual.tierra | 60 | src/i18n/en.json | convencion | convención visual: radio dibujado del marcador en escala visual (src/scene/tierra.ts) |
+| en: escala.visual.sistema-solar | 900 000 | src/i18n/en.json | convencion | convención visual: RADIO_VISUAL_METEOROIDE_AU ≈ 900 000 km (se comprueba abajo) |
+| en: desc.tierra | 100 | src/i18n/en.json | convencion | convención visual: altura desde la que se dibuja la entrada (ALTURA_INICIO_KM) |
+| en: desc.sistema-solar | 1 | src/i18n/en.json | convencion | notación («1σ») |
+| en: velocidad.60 | 1 | src/i18n/en.json | convencion | opción de velocidad de la interfaz |
+| en: velocidad.3600 | 1 | src/i18n/en.json | convencion | opción de velocidad de la interfaz |
+| en: velocidad.86400 | 1 | src/i18n/en.json | convencion | opción de velocidad de la interfaz |
+| en: velocidad.864000 | 10 | src/i18n/en.json | convencion | opción de velocidad de la interfaz |
+| en: velocidad.1000000 | 1 000 000 | src/i18n/en.json | convencion | opción de velocidad de la interfaz |
+| en: pieza.orbita | 1 | src/i18n/en.json | convencion | notación del nivel de incertidumbre («1σ») |
+| en: procedencia.escape-nota | 1 | src/i18n/en.json | convencion | notación («±1σ») |
+| en: zona.resonancia-3-1 | 3 1 | src/i18n/en.json | convencion | nombre de la resonancia p:q |
+| en: zona.resonancia-5-2 | 5 2 | src/i18n/en.json | convencion | nombre de la resonancia p:q |
+| en: zona.resonancia-2-1 | 2 1 | src/i18n/en.json | convencion | nombre de la resonancia p:q |
+| en: desc.sistema-solar.pieza | 1 | src/i18n/en.json | convencion | notación («1σ») |
+| en: desc.sistema-solar.pieza.condicionada | 1 | src/i18n/en.json | convencion | notación («1σ») |
+| en: desc.sistema-solar.pieza.jpl | 1 | src/i18n/en.json | convencion | notación («1σ») |
+| en: desc.regiones | 6 | src/i18n/en.json | convencion | nombre de la resonancia secular («ν6») |
+| en: cneos.evento.energia | 10 | src/i18n/en.json | convencion | unidad en que la API publica la energía radiada (10¹⁰ J) |
+| en: cneos.orbita.calculada | 68 16 84 | src/i18n/en.json | convencion | definición del rango mostrado (percentiles 16 y 84 de la nube) |
+| en: cneos.orbita.hiperbolicas | 1 | src/i18n/en.json | convencion | definición de órbita hiperbólica (excentricidad ≥ 1) |
+| en: cneos.orbita.metodo | 2025 | src/i18n/en.json | convencion | año de la cita (Peña-Asensio et al. 2025) |
+| en: cneos.orbita.no-verificable | 2025 | src/i18n/en.json | convencion | año de la cita (Peña-Asensio et al. 2025) |
+| en: error.webgl | 3 | src/i18n/en.json | convencion | nombre del tipo de visualización («3D») |
+| en: error.contexto | 3 | src/i18n/en.json | convencion | nombre del tipo de visualización («3D») |
+| en: region:resonancia-nu6 | 6 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
+| en: region:resonancia-3-1 | 3 1 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
+| en: region:resonancia-5-2 | 5 2 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
+| en: region:resonancia-2-1 | 2 1 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
+| en: asociacion:asteroide-2008-tc3:nombre | 2008 3 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
+| en: asociacion:asteroide-2008-tc3:justificacion | 2008 3 20 2015 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
+| en: asociacion:hebe-h:nombre | 6 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
+| en: asociacion:hebe-h:justificacion | 2018 3 1 6 6 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
+| en: sin-asociacion:benesov | 5 3 5 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
+| en: sin-asociacion:bunburra-rockhole | 6 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
+| en: asociacion:flora-nu6-ll:nombre | 6 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
+| en: asociacion:flora-nu6-ll:justificacion | 8 6 2018 2013 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
+| en: sin-asociacion:innisfree | 5 5 2018 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
+| en: asociacion:gefion-l:justificacion | 2018 6 3 1 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
+| en: asociacion:cm-cinturon-medio:justificacion | 2018 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
+| en: sin-asociacion:neuschwanstein | 6 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
+| en: asociacion:c-cinturon-interior:justificacion | 2018 | src/i18n/datos.en.json | convencion | las mismas cifras que el texto original del dataset |
 | radio visual del meteoroide | 897587 km | src/scene/sistema-solar.ts | convencion | el texto dice «~900 000 km» |

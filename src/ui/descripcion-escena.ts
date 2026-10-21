@@ -4,8 +4,8 @@
  * (salvo la leyenda, que solo crea nodos): se prueban sin navegador.
  */
 import type { EventoCneos } from '../cneos/eventos';
-import { t } from '../i18n';
-import { fecha as fechaLocal, numero } from '../i18n/formato';
+import { citaLocal, t } from '../i18n';
+import { cardinal, fecha as fechaLocal, numero } from '../i18n/formato';
 import type { NombreVista } from '../scene/escena';
 import { TEMA } from '../tema';
 import { ALTURA_INICIO_KM } from '../scene/trayectoria-entrada';
@@ -78,7 +78,7 @@ export function textoFecha(ms: number, e: Pick<EstadoDescrito, 'modo' | 'pieza' 
 export const claveIrAlFinal = (e: Pick<EstadoDescrito, 'modo' | 'pieza'>): Clave =>
   conPico(e) ? 'tiempo.ir-pico' : 'tiempo.ir-referencia';
 
-const fuenteCorta = (c: Catalogo, id: string) => c.fuentes[id] ?? id;
+const fuenteCorta = (c: Catalogo, id: string) => citaLocal(c.fuentes[id] ?? id);
 
 function descripcionRegiones(c: Catalogo): string {
   const zona = (id: string) => c.zonas.find((z) => z.id === id);
@@ -135,8 +135,8 @@ function descripcionBase(e: EstadoDescrito): string {
       ? t('desc.tierra', {
           fecha: formatoFecha(e.bolido.fecha),
           alt: numero(e.bolido.alturaKm),
-          lat: coord(e.bolido.latGrados, 'N', 'S'),
-          lon: coord(e.bolido.lonGrados, 'E', 'O'),
+          lat: coord(e.bolido.latGrados, cardinal('N'), cardinal('S')),
+          lon: coord(e.bolido.lonGrados, cardinal('E'), cardinal('O')),
         })
       : `${t('desc.sistema-solar', { fecha: formatoFecha(e.bolido.fecha), n: e.nOrbitasChelyabinsk })} ${descripcionRegiones(c)}`;
   const fecha = formatoFecha(new Date(e.impacto));
@@ -146,8 +146,8 @@ function descripcionBase(e: EstadoDescrito): string {
       t('desc.tierra.pieza', {
         fecha,
         nombre: nombrePieza(p),
-        lat: p.punto ? coordenada(p.punto.lat, 'N', 'S') : '—',
-        lon: p.punto ? coordenada(p.punto.lon, 'E', 'O') : '—',
+        lat: p.punto ? coordenada(p.punto.lat, cardinal('N'), cardinal('S')) : '—',
+        lon: p.punto ? coordenada(p.punto.lon, cardinal('E'), cardinal('O')) : '—',
         n: e.nVisibles,
       }) +
       (tray

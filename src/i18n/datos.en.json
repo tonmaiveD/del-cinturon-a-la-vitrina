@@ -1,0 +1,154 @@
+{
+  "region:hungaria": {
+    "es": "Región de Hungaria",
+    "en": "Hungaria region"
+  },
+  "region:resonancia-nu6": {
+    "es": "Resonancia secular ν6",
+    "en": "ν6 secular resonance"
+  },
+  "region:phocaea": {
+    "es": "Región de Phocaea",
+    "en": "Phocaea region"
+  },
+  "region:resonancia-3-1": {
+    "es": "Resonancia de movimiento medio 3:1 con Júpiter",
+    "en": "3:1 mean-motion resonance with Jupiter"
+  },
+  "region:resonancia-5-2": {
+    "es": "Resonancia de movimiento medio 5:2 con Júpiter",
+    "en": "5:2 mean-motion resonance with Jupiter"
+  },
+  "region:resonancia-2-1": {
+    "es": "Resonancia de movimiento medio 2:1 con Júpiter",
+    "en": "2:1 mean-motion resonance with Jupiter"
+  },
+  "region:cometas-jfc": {
+    "es": "Cometas de la familia de Júpiter",
+    "en": "Jupiter-family comets"
+  },
+  "asociacion:asteroide-2008-tc3:nombre": {
+    "es": "Asteroide 2008 TC3 (observado antes del impacto)",
+    "en": "Asteroid 2008 TC3 (observed before impact)"
+  },
+  "asociacion:asteroide-2008-tc3:justificacion": {
+    "es": "2008 TC3 se descubrió con telescopio unas 20 horas antes de impactar; sus restos se recuperaron como los meteoritos Almahata Sitta (Borovička et al. 2015). Es el vínculo directo entre un asteroide observado y sus meteoritos, no la identificación del cuerpo progenitor de las ureilitas, que sigue sin establecerse.",
+    "en": "2008 TC3 was discovered by telescope about 20 hours before impact; its remains were recovered as the Almahata Sitta meteorites (Borovička et al. 2015). It is the direct link between an observed asteroid and its meteorites, not the identification of the parent body of the ureilites, which remains unestablished."
+  },
+  "asociacion:hebe-h:nombre": {
+    "es": "(6) Hebe u otros cuerpos del cinturón interior",
+    "en": "(6) Hebe or other bodies of the inner belt"
+  },
+  "asociacion:hebe-h:justificacion": {
+    "es": "Granvik & Brown (2018) encuentran que las condritas H con órbita medida escapan sobre todo por la resonancia 3:1 o por ν6, compatible con un origen en el cinturón interior «potencialmente vinculado» a (6) Hebe o a cuerpos menores de esa zona. Ejby y Košice muestran además probabilidades notables (con gran error) de origen cometario.",
+    "en": "Granvik & Brown (2018) find that H chondrites with measured orbits escape mainly through the 3:1 resonance or through ν6, consistent with an origin in the inner belt, \"potentially linked to (6) Hebe\" or to smaller bodies in that zone. Ejby and Košice also show notable probabilities (with large errors) of a cometary origin."
+  },
+  "sin-asociacion:benesov": {
+    "es": "Caída heterogénea (H5/LL3.5); no se asigna a una sola familia.",
+    "en": "Heterogeneous fall (H5/LL3.5); not assigned to a single family."
+  },
+  "sin-asociacion:bunburra-rockhole": {
+    "es": "Eucrita anómala: su clasificación no permite asignarla a Vesta sin una fuente primaria específica, que no se ha leído. Su ruta de escape (ν6) sí está en el dataset.",
+    "en": "Anomalous eucrite: its classification does not allow assigning it to Vesta without a specific primary source, which has not been read. Its escape route (ν6) is in the dataset."
+  },
+  "region:cruzadores-marte": {
+    "es": "Región de cruzadores intermedios de Marte (IMC)",
+    "en": "Intermediate Mars-crosser region (IMC)"
+  },
+  "region:cinturon-exterior": {
+    "es": "Cinturón principal exterior",
+    "en": "Outer main belt"
+  },
+  "asociacion:flora-nu6-ll:nombre": {
+    "es": "Familia Flora (borde interior del cinturón, junto a la resonancia ν6)",
+    "en": "Flora family (inner edge of the belt, next to the ν6 resonance)"
+  },
+  "asociacion:flora-nu6-ll:justificacion": {
+    "es": "La similitud espectral entre las condritas LL y (8) Flora, y la cercanía de esa familia a la resonancia ν6, se han propuesto como indicio de que Flora es su progenitor (citado por Granvik & Brown 2018). Popova et al. (2013) presentan la órbita de Chelyabinsk como apoyo a esa hipótesis. Es una hipótesis respaldada, no un consenso.",
+    "en": "The spectral similarity between LL chondrites and (8) Flora, and the proximity of that family to the ν6 resonance, have been proposed as a sign that Flora is their parent (cited by Granvik & Brown 2018). Popova et al. (2013) present the orbit of Chelyabinsk as support for that hypothesis. It is a supported hypothesis, not a consensus."
+  },
+  "sin-asociacion:innisfree": {
+    "es": "Clasificación disputada (L5 o LL5 según la fuente, citado por Granvik & Brown 2018); no se asigna a ninguna familia.",
+    "en": "Disputed classification (L5 or LL5 depending on the source, cited by Granvik & Brown 2018); not assigned to any family."
+  },
+  "asociacion:gefion-l:nombre": {
+    "es": "Familia Gefion (propuesta, en conflicto con las órbitas medidas)",
+    "en": "Gefion family (proposed, in conflict with the measured orbits)"
+  },
+  "asociacion:gefion-l:justificacion": {
+    "es": "Se ha propuesto que las condritas L provienen de la familia Gefion, en el cinturón exterior. Granvik & Brown (2018) señalan que las cinco órbitas L medidas apuntan a escapes del cinturón interior (ν6 y, en menor grado, 3:1), «algo en desacuerdo» con ese origen. Se muestra la propuesta junto con la discrepancia.",
+    "en": "It has been proposed that L chondrites come from the Gefion family, in the outer belt. Granvik & Brown (2018) note that the five measured L orbits point to escapes from the inner belt (ν6 and, to a lesser degree, 3:1), \"somewhat at odds with\" that origin. The proposal is shown together with the discrepancy."
+  },
+  "asociacion:cm-cinturon-medio:nombre": {
+    "es": "Asteroides de tipo B o Ch/Cgh del cinturón medio",
+    "en": "B-type or Ch/Cgh-type asteroids of the middle belt"
+  },
+  "asociacion:cm-cinturon-medio:justificacion": {
+    "es": "Las CM se han vinculado a asteroides de tipo B y Ch/Cgh. Granvik & Brown (2018) concluyen que Maribo y Sutter's Mill provienen «muy probablemente» de ese tipo de asteroides del cinturón medio, aunque con afinidad notable con los cometas de la familia de Júpiter. No hay un cuerpo progenitor concreto.",
+    "en": "CM chondrites have been linked to B-type and Ch/Cgh-type asteroids. Granvik & Brown (2018) conclude that Maribo and Sutter's Mill \"most likely\" come from such asteroids in the middle belt, although with a notable affinity to the Jupiter-family comets. There is no specific parent body."
+  },
+  "sin-asociacion:neuschwanstein": {
+    "es": "Condrita de enstatita (EL6) sin propuesta de progenitor en las fuentes leídas.",
+    "en": "Enstatite chondrite (EL6) with no proposed parent body in the sources read."
+  },
+  "asociacion:c-cinturon-interior:nombre": {
+    "es": "Asteroide de tipo C del cinturón interior",
+    "en": "C-type asteroid of the inner belt"
+  },
+  "asociacion:c-cinturon-interior:justificacion": {
+    "es": "Granvik & Brown (2018) interpretan Tagish Lake (carbonácea no agrupada) como una muestra muy probable de un asteroide de tipo C del cinturón interior, en contraste con trabajos previos que daban más peso al cinturón exterior. Es el resultado de un estudio, con la mayor incertidumbre orbital de la muestra.",
+    "en": "Granvik & Brown (2018) interpret Tagish Lake (an ungrouped carbonaceous chondrite) as a very likely sample of a C-type asteroid of the inner belt, in contrast with earlier work that gave more weight to the outer belt. It is the result of one study, with the largest orbital uncertainty in the sample."
+  },
+  "licencia:Datos del Gobierno de EE. UU.; la documentación no indica licencia explícita": {
+    "es": "Datos del Gobierno de EE. UU.; la documentación no indica licencia explícita",
+    "en": "U.S. Government data; the documentation states no explicit license"
+  },
+  "licencia:Datos del Gobierno de EE. UU.; la página no indica licencia explícita": {
+    "es": "Datos del Gobierno de EE. UU.; la página no indica licencia explícita",
+    "en": "U.S. Government data; the page states no explicit license"
+  },
+  "licencia:MIT": {
+    "es": "MIT",
+    "en": "MIT"
+  },
+  "licencia:Cita bibliográfica": {
+    "es": "Cita bibliográfica",
+    "en": "Bibliographic citation"
+  },
+  "licencia:Cita bibliográfica; copia de repositorio institucional para uso personal": {
+    "es": "Cita bibliográfica; copia de repositorio institucional para uso personal",
+    "en": "Bibliographic citation; institutional repository copy for personal use"
+  },
+  "licencia:Licencia de distribución de arXiv": {
+    "es": "Licencia de distribución de arXiv",
+    "en": "arXiv distribution license"
+  },
+  "licencia:Por verificar": {
+    "es": "Por verificar",
+    "en": "To be verified"
+  },
+  "licencia:Contenido de NASA: en general no sujeto a copyright en EE. UU.; uso educativo e informativo (incluidas páginas web) permitido reconociendo a NASA como fuente": {
+    "es": "Contenido de NASA: en general no sujeto a copyright en EE. UU.; uso educativo e informativo (incluidas páginas web) permitido reconociendo a NASA como fuente",
+    "en": "NASA content: generally not subject to copyright in the U.S.; educational and informational use (including web pages) is allowed with NASA credited as the source"
+  },
+  "licencia:Dato del Gobierno de EE. UU.": {
+    "es": "Dato del Gobierno de EE. UU.",
+    "en": "U.S. Government data"
+  },
+  "licencia:Cita bibliográfica; preprint arXiv": {
+    "es": "Cita bibliográfica; preprint arXiv",
+    "en": "Bibliographic citation; arXiv preprint"
+  },
+  "licencia:Datos del Gobierno de EE. UU.": {
+    "es": "Datos del Gobierno de EE. UU.",
+    "en": "U.S. Government data"
+  },
+  "licencia:Cita bibliográfica; versión de autor": {
+    "es": "Cita bibliográfica; versión de autor",
+    "en": "Bibliographic citation; author's version"
+  },
+  "licencia:Documento del Gobierno de EE. UU.": {
+    "es": "Documento del Gobierno de EE. UU.",
+    "en": "U.S. Government document"
+  }
+}

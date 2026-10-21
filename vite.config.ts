@@ -7,6 +7,8 @@ export default defineConfig({
   // GitHub Pages sirve el sitio bajo /<repositorio>/: la CI pasa la ruta en BASE_PUBLICA
   plugins: [fichasPublicables(), idiomasPublicables(), temaCss()],
   base: process.env.BASE_PUBLICA ?? '/',
+  // Idiomas en revisión local (pipeline/idiomas-publicables.ts); vacío en la CI y en producción
+  define: { __VISTA_PREVIA__: JSON.stringify(process.env.IDIOMAS_VISTA_PREVIA ?? '') },
   build: { target: 'es2022', sourcemap: true },
   test: {
     include: ['tests/unit/**/*.test.ts'],

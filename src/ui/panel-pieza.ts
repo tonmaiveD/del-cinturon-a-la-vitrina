@@ -3,9 +3,9 @@
  * (no depende de Three.js). Dos capas que nunca se mezclan: región de escape (probabilidades por
  * fuente) y asociación con cuerpo progenitor (con su confianza).
  */
-import { t, tDato } from '../i18n';
+import { citaLocal, t, tDato } from '../i18n';
 import { claveAsociacion, claveRegion, claveSinAsociacion } from '../i18n/datos';
-import { fijo } from '../i18n/formato';
+import { cardinal, fijo, porcentaje } from '../i18n/formato';
 import {
   cumpleFiltro,
   GRUPOS,
@@ -66,14 +66,18 @@ function bloqueEscape(p: PiezaCatalogo, catalogo: Catalogo): HTMLElement {
     fig.append(
       el(
         'figcaption',
-        t('procedencia.segun', { fuente: catalogo.fuentes[grupo.fuente] ?? grupo.fuente }),
+        t('procedencia.segun', {
+          fuente: citaLocal(catalogo.fuentes[grupo.fuente] ?? grupo.fuente),
+        }),
       ),
     );
     const ul = el('ul');
     for (const r of [...grupo.regiones].sort((a, b) => b.p - a.p)) {
       const li = el('li');
       const texto =
-        r.sigma === undefined ? `${numero(r.p)} %` : `${numero(r.p)} ± ${numero(r.sigma)} %`;
+        r.sigma === undefined
+          ? porcentaje(numero(r.p))
+          : porcentaje(`${numero(r.p)} ± ${numero(r.sigma)}`);
       li.append(
         el('span', tDato(claveRegion(r.region), r.nombre), 'region'),
         el('span', texto, 'valor'),
@@ -106,7 +110,7 @@ function bloqueProgenitor(p: PiezaCatalogo, catalogo: Catalogo): HTMLElement {
   h.id = 'titulo-progenitor';
   sec.append(h);
   const a = p.asociacion;
-  const citas = a.fuentes.map((f) => catalogo.fuentes[f] ?? f).join('; ');
+  const citas = a.fuentes.map((f) => citaLocal(catalogo.fuentes[f] ?? f)).join('; ');
   if ('confianza' in a) {
     const linea = el('p', undefined, 'asociacion');
     linea.append(
@@ -135,14 +139,14 @@ export function renderizarProcedencia(p: PiezaCatalogo, catalogo: Catalogo): HTM
   titulo.append(` · ${p.clase.valor} · ${anioPieza(p)}`);
   raiz.append(titulo);
   if (!p.nombre.verificado) raiz.append(el('p', t('pieza.nombre-pendiente'), 'nota pendiente'));
-  const f = (id: string) => catalogo.fuentes[id] ?? id;
+  const f = (id: string) => citaLocal(catalogo.fuentes[id] ?? id);
   raiz.append(
     el(
       'p',
       p.punto
         ? t('pieza.punto', {
-            lat: coordenada(p.punto.lat, 'N', 'S'),
-            lon: coordenada(p.punto.lon, 'E', 'O'),
+            lat: coordenada(p.punto.lat, cardinal('N'), cardinal('S')),
+            lon: coordenada(p.punto.lon, cardinal('E'), cardinal('O')),
             fuente: f(p.punto.fuente),
           })
         : t('pieza.sin-punto'),

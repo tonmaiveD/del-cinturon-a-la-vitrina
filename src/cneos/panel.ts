@@ -3,7 +3,7 @@
  * evento seleccionado. Nunca se presenta como tiempo real (principio 4).
  */
 import { t } from '../i18n';
-import { fecha, fijo, numero } from '../i18n/formato';
+import { cardinal, fecha, fijo, numero } from '../i18n/formato';
 import {
   COLOR_LEYENDA,
   comparacionChelyabinsk,
@@ -66,13 +66,13 @@ function detalle(ev: Evento, r: ResumenCneos, ktChely: number | undefined): HTML
         'p',
         ev.alt_km !== undefined
           ? t('cneos.evento.ubicacion', {
-              lat: coord(ev.lat, 'N', 'S'),
-              lon: coord(ev.lon!, 'E', 'O'),
+              lat: coord(ev.lat, cardinal('N'), cardinal('S')),
+              lon: coord(ev.lon!, cardinal('E'), cardinal('O')),
               alt: num(ev.alt_km, 1),
             })
           : t('cneos.evento.ubicacion-sin-alt', {
-              lat: coord(ev.lat, 'N', 'S'),
-              lon: coord(ev.lon!, 'E', 'O'),
+              lat: coord(ev.lat, cardinal('N'), cardinal('S')),
+              lon: coord(ev.lon!, cardinal('E'), cardinal('O')),
             }),
         'nota',
       ),

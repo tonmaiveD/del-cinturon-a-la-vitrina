@@ -10,7 +10,9 @@ export default defineConfig({
   // las pruebas con muchos pasos (pestañas de la hoja móvil) pasaban de 30 s (2026-10-09)
   timeout: process.env.CI ? 90_000 : 30_000,
   reporter: process.env.CI ? [['github'], ['list']] : 'list',
-  use: { baseURL: 'http://localhost:4173' },
+  // Navegador en español: las pruebas esperan los textos en español aunque el inglés esté
+  // publicado (la web elige el idioma del navegador; tests/e2e/idioma.spec.ts usa otros)
+  use: { baseURL: 'http://localhost:4173', locale: 'es-ES' },
   webServer: {
     // En la CI se prueba el mismo dist/ que se publica (construido una vez con BASE_PUBLICA):
     // E2E_DIST_LISTO evita reconstruirlo. En local se construye antes de probar.
@@ -21,9 +23,17 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
   },
   projects: [
-    { name: 'escritorio', use: { ...devices['Desktop Chrome'] }, testIgnore: /rendimiento/ },
-    { name: 'movil', use: { ...devices['Pixel 7'] }, testIgnore: /rendimiento/ },
+    {
+      name: 'escritorio',
+      use: { ...devices['Desktop Chrome'], locale: 'es-ES' },
+      testIgnore: /rendimiento/,
+    },
+    { name: 'movil', use: { ...devices['Pixel 7'], locale: 'es-ES' }, testIgnore: /rendimiento/ },
     // Medición aislada: `npm run e2e:rendimiento` (un solo worker, sin otras pruebas en paralelo)
-    { name: 'rendimiento', use: { ...devices['Pixel 7'] }, testMatch: /rendimiento/ },
+    {
+      name: 'rendimiento',
+      use: { ...devices['Pixel 7'], locale: 'es-ES' },
+      testMatch: /rendimiento/,
+    },
   ],
 });

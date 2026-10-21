@@ -82,10 +82,14 @@ export function renderizarFicha(
 
 /**
  * Ficha cruda de una pieza dentro del módulo `virtual:fichas`, cuyas claves son nombres de
- * archivo («chelyabinsk.md»; ver pipeline/fichas-publicables.ts).
+ * archivo («chelyabinsk.md» en español, «chelyabinsk.en.md» en inglés; ver
+ * pipeline/fichas-publicables.ts).
  */
-export const fichaDe = (crudas: Record<string, string>, pieza: string): string | undefined =>
-  crudas[`${pieza}.md`];
+export const fichaDe = (
+  crudas: Record<string, string>,
+  pieza: string,
+  idioma = 'es',
+): string | undefined => crudas[idioma === 'es' ? `${pieza}.md` : `${pieza}.${idioma}.md`];
 
 /** En producción solo se publican fichas aprobadas. */
 export const publicable = (f: Ficha, desarrollo: boolean) => f.estado === 'aprobada' || desarrollo;

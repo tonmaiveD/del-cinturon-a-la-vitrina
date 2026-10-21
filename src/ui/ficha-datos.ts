@@ -1,6 +1,8 @@
 /** Construye el contexto de la ficha a partir del dataset (solo valores verificados). */
 import { radioCaptura } from '../core/encuentro';
-import { fecha as formatoFecha, fijo } from '../i18n/formato';
+import { citaLocal, tDato } from '../i18n';
+import { claveRegion } from '../i18n/datos';
+import { cardinal, fecha as formatoFecha, fijo } from '../i18n/formato';
 import type { Meteorito, Valor } from '../schema';
 import { citaCorta } from './catalogo';
 import type { ContextoFicha, DatoFicha } from './ficha';
@@ -52,7 +54,7 @@ export function contextoFicha(
   const n = (v: Valor) => num(v.valor as number, dec(v));
   const cita = (id: string): DatoFicha | undefined => {
     const f = fuentes.find((x) => x.id === id);
-    return f && { texto: citaCorta(f.cita), fuente: id };
+    return f && { texto: citaLocal(citaCorta(f.cita)), fuente: id };
   };
 
   const fecha = new Date(String(m.fecha_caida.valor));
@@ -94,8 +96,12 @@ export function contextoFicha(
   const desdeCneos = (texto: string): DatoFicha => ({ texto, fuente: cneos.fuente });
   ctx.alt_pico_cneos = desdeCneos(num(Number(c('alt')), 1));
   ctx.v_pico_cneos = desdeCneos(num(Number(c('vel')), 1));
-  ctx.lat = desdeCneos(`${num(Number(c('lat')), 1)}° ${c('lat-dir') === 'N' ? 'N' : 'S'}`);
-  ctx.lon = desdeCneos(`${num(Number(c('lon')), 1)}° ${c('lon-dir') === 'E' ? 'E' : 'O'}`);
+  ctx.lat = desdeCneos(
+    `${num(Number(c('lat')), 1)}° ${cardinal(c('lat-dir') === 'N' ? 'N' : 'S')}`,
+  );
+  ctx.lon = desdeCneos(
+    `${num(Number(c('lon')), 1)}° ${cardinal(c('lon-dir') === 'E' ? 'E' : 'O')}`,
+  );
   ctx.energia_kt = desdeCneos(num(Number(c('impact-e')), 0));
   ctx.energia_radiada_kt = desdeCneos(
     num(Math.round((Number(c('energy')) * J_POR_UNIDAD_ENERGY) / J_POR_KT), 0),
@@ -184,7 +190,10 @@ export function contextoFicha(
     // El nombre de la región también sale del dataset (evita cifras escritas a mano, p. ej. «3:1»)
     poner(
       `n_${clave}`,
-      dato(p.probabilidad, () => p.nombre.charAt(0).toLowerCase() + p.nombre.slice(1)),
+      dato(p.probabilidad, () => {
+        const n = tDato(claveRegion(p.region), p.nombre);
+        return n.charAt(0).toLowerCase() + n.slice(1);
+      }),
     );
     if (p.modelo) poner('modelo_procedencia', cita(p.modelo));
   }

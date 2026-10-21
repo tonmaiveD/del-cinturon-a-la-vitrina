@@ -558,6 +558,26 @@ Modelo y protecciones, sin interfaz todavía (guía en `docs/coleccion.md`):
 - Queda para la interfaz: dónde y cómo se muestran los ejemplares, la ficha del ejemplar
   (separada de la divulgativa) y, si hiciera falta, un campo de certificado.
 
+### M38 · etapa E2, traducción al inglés · **hecha el 2026-10-21, en borrador**
+
+- `src/i18n/en.json` (todas las claves, mismos parámetros), `src/i18n/datos.en.json` (25 textos
+  de datos y 13 licencias, cada uno con su original) y `content/fichas/chelyabinsk.en.md`
+  (mismos marcadores; sin cifras a mano). `revision.json`: `en` en borrador.
+- Términos: «meteorites with known orbits» (pedigrí), «fireball» (bólido), «fall» (caída),
+  «fact sheet» (ficha), «Always daytime». Las tres citas de Granvik & Brown 2018 van con sus
+  palabras originales (LaTeX en `.trabajo/gb2018`: «potentially linked to (6) Hebe», «most
+  likely», «somewhat at odds with»), no retraducidas del español.
+- Para no usar «real-time» (lo prohíbe el test del CNEOS aunque sea para negarlo): «Not
+  continuously updated»; la velocidad «Tiempo real» es «True speed».
+- Encontrado al revisar las capturas y corregido: la letra del oeste estaba fija («O»; en
+  inglés, W) y los porcentajes llevaban el espacio del español; ahora `cardinal()` y
+  `porcentaje()` en `src/i18n/formato.ts`. La conjunción de las citas cortas («Granvik y Brown»)
+  sigue el idioma (`citaLocal`). Las licencias del diálogo de fuentes también se traducen.
+- La ficha va por idioma (`chelyabinsk.en.md`, aprobación propia); sin ficha aprobada en un
+  idioma, no hay botón en ese idioma. El build de revisión incluye la ficha en borrador.
+- Las e2e fijan `locale: 'es-ES'`: con el inglés publicado, el navegador de pruebas (en-US)
+  habría abierto la web en inglés.
+
 ### M38 · etapa E1, infraestructura de idiomas · **hecha el 2026-10-21**
 
 Sin traducir aún (guía en `docs/idiomas.md`). Decisiones del usuario: detección del navegador,

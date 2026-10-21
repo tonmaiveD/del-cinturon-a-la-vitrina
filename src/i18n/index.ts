@@ -43,3 +43,10 @@ export function tDato(clave: string, original: string): string {
   const tr = datosPorIdioma[idioma]?.[clave];
   return tr && tr.es === original && tr.en ? tr.en : original;
 }
+
+/**
+ * Cita corta en el idioma activo: la de dos autores se genera con «y» («Granvik y Brown 2018»,
+ * citaCorta en src/ui/catalogo.ts) y se muestra con la conjunción del idioma.
+ */
+export const citaLocal = (cita: string): string =>
+  idioma === 'es' ? cita : cita.replace(/ y (?=\p{Lu})/gu, t('cita.y'));

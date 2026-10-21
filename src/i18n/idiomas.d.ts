@@ -9,3 +9,6 @@ declare module 'virtual:idiomas' {
   >;
   export default cargadores;
 }
+
+/** Idiomas de un build de revisión local (`IDIOMAS_VISTA_PREVIA`); vacío en producción. */
+declare const __VISTA_PREVIA__: string;

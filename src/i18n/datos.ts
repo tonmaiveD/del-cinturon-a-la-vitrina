@@ -1,7 +1,8 @@
 /**
  * Textos de los datos que la interfaz muestra (no pasan por el diccionario): nombres de las
  * regiones de escape, nombre y justificación de cada asociación con progenitor y motivo de las
- * piezas sin asociación. Cada uno tiene una clave estable para su traducción
+ * piezas sin asociación, y las licencias del diálogo de fuentes. Cada uno tiene una clave estable
+ * para su traducción
  * (`src/i18n/datos.<idioma>.json`).
  */
 import type { Catalogo, PiezaCatalogo } from '../ui/catalogo';
@@ -10,6 +11,8 @@ export const claveRegion = (id: string) => `region:${id}`;
 export const claveAsociacion = (id: string, campo: 'nombre' | 'justificacion') =>
   `asociacion:${id}:${campo}`;
 export const claveSinAsociacion = (meteorito: string) => `sin-asociacion:${meteorito}`;
+/** Las licencias se repiten entre fuentes: la clave es el propio texto. */
+export const claveLicencia = (texto: string) => `licencia:${texto}`;
 
 function textosDePieza(p: PiezaCatalogo): [string, string][] {
   const out: [string, string][] = [];
@@ -34,4 +37,9 @@ export function textosDeDatos(c: Catalogo): Record<string, string> {
       out[k] = v;
     }
   return out;
+}
+
+/** Licencias de las fuentes (diálogo de fuentes y ficha), por clave. */
+export function textosDeFuentes(fuentes: { licencia: string }[]): Record<string, string> {
+  return Object.fromEntries(fuentes.map((f) => [claveLicencia(f.licencia), f.licencia]));
 }

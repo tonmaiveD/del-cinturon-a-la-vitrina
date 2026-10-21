@@ -18,12 +18,18 @@ describe('fichas publicables (M01)', () => {
     expect(Object.keys(seleccionarFichas(crudas, true))).toEqual(['x.md', 'y.md']);
   });
 
+  it('un build de revisión del inglés lleva sus borradores, no los de otros idiomas', () => {
+    const crudas = { 'x.md': borrador, 'x.en.md': borrador, 'y.md': aprobada };
+    expect(Object.keys(seleccionarFichas(crudas, false, ['en']))).toEqual(['x.en.md', 'y.md']);
+    expect(Object.keys(seleccionarFichas(crudas, false, []))).toEqual(['y.md']);
+  });
+
   it('el diálogo encuentra cada ficha con las claves del módulo virtual', () => {
     // Entre el 2026-10-09 y el 2026-10-12 el diálogo buscaba «…/chelyabinsk.md» y no la hallaba
     const crudas = seleccionarFichas(leerFichasCrudas(), true);
     for (const archivo of Object.keys(crudas)) {
-      const pieza = archivo.replace(/\.md$/, '');
-      expect(leerFicha(fichaDe(crudas, pieza)!).pieza, archivo).toBe(pieza);
+      const [, pieza, idioma] = /^(.+?)(?:\.([a-z]{2}))?\.md$/.exec(archivo)!;
+      expect(leerFicha(fichaDe(crudas, pieza!, idioma)!).pieza, archivo).toBe(pieza);
     }
     expect(fichaDe(seleccionarFichas({ 'y.md': aprobada }, false), 'y')).toBe(aprobada);
   });

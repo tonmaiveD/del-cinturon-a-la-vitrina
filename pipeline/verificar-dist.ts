@@ -10,7 +10,7 @@ import { Ejemplar, EjemplarPrivado } from '../src/schema/coleccion';
 import { leerFicha } from '../src/ui/ficha';
 import { leerColeccion, type DatosColeccion } from './coleccion';
 import { metadatosSensibles } from './coleccion-fotos';
-import { leerFichasCrudas } from './fichas-publicables';
+import { idiomaDeFicha, leerFichasCrudas } from './fichas-publicables';
 import { idiomasIncluidos, leerRevisiones, rutasIdioma } from './idiomas-publicables';
 
 /** Fragmentos literales de la plantilla (entre marcadores), largos y sin caracteres que JSON escape. */
@@ -109,7 +109,9 @@ export function borradoresEnDist(dir: string, crudas: Record<string, string>): s
   const errores: string[] = [];
   for (const [nombre, md] of Object.entries(crudas)) {
     const f = leerFicha(md);
-    if (f.estado === 'aprobada') continue;
+    // Un build de revisión (IDIOMAS_VISTA_PREVIA) lleva a propósito los borradores de ese idioma
+    const vistaPrevia = (process.env.IDIOMAS_VISTA_PREVIA ?? '').split(',').filter(Boolean);
+    if (f.estado === 'aprobada' || vistaPrevia.includes(idiomaDeFicha(nombre))) continue;
     const ts = testigos(f.cuerpo);
     if (ts.length === 0) errores.push(`${nombre}: sin fragmentos testigo para comprobar`);
     for (const [p, txt] of textos)

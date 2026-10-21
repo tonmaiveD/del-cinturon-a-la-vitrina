@@ -22,7 +22,12 @@ un test lo señala hasta que se revise.
 3. Corregir en `en.json` / `datos.en.json`, o pedir los cambios.
 
 Para revisar exactamente lo que se publicaría: `IDIOMAS_VISTA_PREVIA=en npm run build` y
-`npx tsx pipeline/servidor-estatico.ts 4173`.
+`npx tsx pipeline/servidor-estatico.ts 4173`. Ese build incluye también la ficha en inglés en
+borrador (`content/fichas/chelyabinsk.en.md`); el normal, no.
+
+Las pruebas e2e usan un navegador en español (`locale: 'es-ES'` en `playwright.config.ts`):
+con el inglés publicado, un navegador en inglés abriría la web en inglés y las pruebas que
+esperan textos en español fallarían. Con el build de revisión pasan las 84.
 
 ## Cómo aprobar
 
