@@ -751,7 +751,7 @@ errores). Cada dato que muestra la interfaz se contrasta con su valor de origen 
 | --- | --- | --- | --- | --- |
 | eventos mostrados (fecha, posición, altura, velocidad, energías, calidad) | 1074 eventos | cneos-fireball-api | verificado | el resumen publicado coincide campo a campo con la respuesta cruda guardada |
 | fecha de «última actualización» | 2026-10-26T14:26:58Z | cneos-fireball-api | verificado | es la fecha de la consulta guardada con la respuesta cruda (nunca «en vivo») |
-| fecha de «última consulta» | 2026-10-26T14:26:58Z | cneos-fireball-api | verificado | posterior o igual al último cambio, con el mismo número de eventos; si trajo cambios, es la fecha del último cambio |
+| fecha de «última consulta» | 2026-10-27T13:27:05Z | cneos-fireball-api | verificado | posterior o igual al último cambio, con el mismo número de eventos; si trajo cambios, es la fecha del último cambio |
 | criterio de «órbita no verificable» y errores mostrados | año < 2018 y < 0.45 kt | pena-asensio-2025 | verificado | coincide con la Tabla 4 guardada (data/calibracion/pena-asensio-2025-tabla4.json) |
 | órbitas y nubes calculadas | 258 nubes | cálculo propio; σ de pena-asensio-2025 | calculado | σ = mediana de la Tabla 4 / 0,6745 en todas; el resumen mostrado coincide con cada archivo |
 
